@@ -1,0 +1,11 @@
+{
+    "name": "Click-Image",
+    "title": "Click Image - Click Images To Display Them",
+    "description": "A module to click images in a journal and display them as a tile",
+    "author": "Eva",
+    "version": "1.0.0",
+    "minimumCoreVersion": "0.7.5",
+    "scripts": [
+        "scripts/ClickImageInJournal.js"
+    ]
+}
