@@ -111,7 +111,7 @@ async function displayImage(ev) {
 	};
 	const tex = await loadTexture(data.src);
 
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, canvas.dimensions.sceneWidth, canvas.dimensions.sceneHeight);
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 	//DisplaySceneFound();
 	tileData.width = dimensionObject.width;
 	tileData.height = dimensionObject.height;
