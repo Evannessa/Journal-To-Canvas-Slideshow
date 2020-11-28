@@ -98,7 +98,17 @@ async function displayImage(ev) {
 	}
 	else{
 		console.log("No display scene");
+		return;
 	}
+	// if(displayTile == null){
+	// 	displayTile = await Tile.create({
+	// 	img: "darkbackground.jpg",
+	// 	width: 2000,
+	// 	height: 1000,
+	// 	y: 0,
+	// 	x: 1000//(displayScene.data.width/ 2) - (dimensionObject.width / 2)
+	// 	});
+	// }
 	let element = ev.currentTarget;
 	let url = element.src;
 
@@ -145,6 +155,7 @@ async function displayImage(ev) {
 }
 
 async function GenerateDisplayScene() {
+	console.log("Generating new display scene");
 	//create a Display" scene 
 	//set the scene to 2000 by 2000, and set the background color to a dark gray
 	if (displayScene == null) {
@@ -152,13 +163,22 @@ async function GenerateDisplayScene() {
 			name: "Display",
 			width: 2000,
 			height: 2000,
-			backgroundColor: "#202020"
+			backgroundColor: "#202020",
+			padding: 0
 		});
-		displayTile = Tile.create({
+		await displayScene.activate();
+		console.log(canvas.scene);
+		displayScene.update({name: "Display",
+			width: 2000,
+			height: 2000,
+			backgroundColor: "#202020",
+			padding: 0});
+		displayTile = await Tile.create({
+			img: "darkbackground.jpg",
 			width: 2000,
 			height: 1000,
-			x: 0,
-			y: (canvas.dimensions.sceneWidth / 2) - (dimensionObject.width / 2)
+			y: 0,
+			x: 1000//(displayScene.data.width/ 2) - (dimensionObject.width / 2)
 		});
 	}
 
