@@ -4,20 +4,19 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 
 
 
-class ClickImageInJournal {
-	static displayScene;
-	static displayTile;
-	static highlight(ev) {
+	var displayScene;
+	var displayTile;
+	function highlight(ev) {
 		ev.target.style.borderStyle = "solid"; //css("border-style", "solid", "border-color", "white", "border-width", "4px");
 		ev.target.style.borderColor = "white";
 		ev.target.style.borderWidth = "4px";
 	}
 
-	static dehighlight(ev) {
+	function dehighlight(ev) {
 		ev.target.style.borderStyle = "none";
 	}
 
-	static async findClickableImage(ev) {
+	async function findClickableImage(ev) {
 		let element = ev.currentTarget;
 		let url = element.src;
 
@@ -72,7 +71,7 @@ class ClickImageInJournal {
 
 	}
 
-	static async displayImage(ev) {
+	async function displayImage(ev) {
 		if (DisplaySceneFound()) {
 			displayScene.activate();
 		} else {
@@ -133,40 +132,27 @@ class ClickImageInJournal {
 		}
 	}
 
-	static createSceneButton(app, html) {
+	function createSceneButton(app, html) {
 		if (!game.user.isGM) {
 			return;
 		}
 		if (app.options.id == "scenes") {
 			let button = $("<button>Create Display Scene</button>");
 			//if the display scene already exists, open and activate it; if not, create a new one
-			button.click(ClickImageInJournal.GenerateDisplayScene); //GenerateDisplayScene());
+			button.click(GenerateDisplayScene); //GenerateDisplayScene());
 			html.find(".directory-footer").prepend(button);
 		}
 
 
 	}
 
-	static buttonTest() {
+	function buttonTest() {
 		console.log("DISPLAY BUTOTN CLICKED");
 	}
 
-	// static function getSceneControlButtons(buttons){
-	// 	let notesButton = buttons.find(b => b.name === "token");
+	
 
-	// 	notesButton.tools.push({
-	// 		name: "createDisplayScene",
-	// 		title: game.i18n.localize("QE.CreateDisplayScene.Button"),
-	// 		icon: "",
-	// 		toggle: false,
-	// 		button: true,
-	// 		visible: game.user.isGM,
-	// 		onClick: event => ClickImageInJournal.GenerateDisplayScene()
-
-	// 	});
-	// }
-
-	static async GenerateDisplayScene() {
+	async function GenerateDisplayScene() {
 		console.log("Generating new display scene");
 		//create a Display" scene 
 		//set the scene to 2000 by 2000, and set the background color to a dark gray
@@ -188,18 +174,20 @@ class ClickImageInJournal {
 				padding: 0
 			});
 
+			//create a tile for the scene
 			const tex = await loadTexture("darkbackground.jpg");
 			var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+			// console.log((displayScene.data.width / 2) - (dimensionObject.width / 2));
 			displayTile = await Tile.create({
 				img: "darkbackground.jpg",
 				width: dimensionObject.width,
 				height: dimensionObject.height,
 				x: 0,
-				y: (displayScene.data.width / 2) - (dimensionObject.width / 2)
+				y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
 			});
-			await displayTile.update({
-				x: (displayScene.data.width / 2) - (dimensionObject.width / 2)
-			});
+			// await displayTile.update({
+			// 	x: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+			// });
 
 		}
 
@@ -208,7 +196,7 @@ class ClickImageInJournal {
 		//	display.update({width: 2000, height: 2000, backgroundColor: "#202020"});
 	}
 
-	static DisplaySceneFound() {
+	function DisplaySceneFound() {
 		// getting the scenes, we want to make sure the tile only happens on the particular display scene
 		// so we want it to update on the specific scene and no others
 		var scenes = game.scenes.entries;
@@ -224,7 +212,7 @@ class ClickImageInJournal {
 	}
 
 	/*https://stackoverflow.com/questions/3971841/how-to-resize-images-proportionally-keeping-the-aspect-ratio*/
-	static calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+	function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
 		var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
 		return {
 			width: srcWidth * ratio,
@@ -232,9 +220,8 @@ class ClickImageInJournal {
 		};
 
 	}
-}
 //Hooks.on("getSceneControlButtons", ClickImageInJournal.createSceneButton); //for scene control buttons on right
-Hooks.on("renderSidebarTab", ClickImageInJournal.createSceneButton); //for sidebar stuff on left
+Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 // Hooks.on("ready", ()  =>{
 
@@ -252,9 +239,9 @@ Hooks.on("renderSidebarTab", ClickImageInJournal.createSceneButton); //for sideb
 Hooks.on("renderJournalSheet", (app, html, options) => {
 	html.find('img').attr("class", "clickableImage");
 	html.find('.clickableImage').each((i, div) => {
-		div.addEventListener("click", /*findClickableImage*/ ClickImageInJournal.displayImage, false);
-		div.addEventListener("mouseover", ClickImageInJournal.highlight, false);
-		div.addEventListener("mouseout", ClickImageInJournal.dehighlight, false);
+		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
+		div.addEventListener("mouseover", highlight, false);
+		div.addEventListener("mouseout", dehighlight, false);
 	});
 	console.log("A journal sheet has opened");
 	//findClickableImage(html);
