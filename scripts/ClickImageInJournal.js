@@ -52,22 +52,6 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 				y: canvas.dimensions.sceneHeight / 2 - (dimensionObject.height / 2)
 			});
 		}
-		//canvas.tiles.placeables[0].update({width: dimensionObject.width, height: dimensionObject.height, img: url});
-		/*canvas.tiles.placeables[0].data.width = dimensionObject.width;
-		canvas.tiles.placeables[0].data.height = dimensionObject.height;
-		canvas.tiles.placeables[0].data.img = url;*/
-		/*tileData.x = canvas.dimensions.sceneRect.x;// canvas.dimensions.sceneWidth/2;//canvas.stage.scale.x/2;
-		tileData.y = canvas.dimensions.sceneRect.y;//canvas.dimensions.sceneHeight/2;//canvas.stage.scale.y/2;
-        Tile.create(tileData);*/
-
-		//if it's a tall image rather than a wide image
-		/*if(displayTile.data.height > displayTile.data.width){
-			displayTile.update({y: canvas.dimensions.sceneHeight/4, x: 0});
-		}
-		//if it's a wide image
-		else if(displayTile.data.width > displayTile.data.height){
-			displayTile.update({x: canvas.dimensions.sceneWidth/4, y: 0});
-		}*/
 
 	}
 
@@ -137,7 +121,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 			return;
 		}
 		if (app.options.id == "scenes") {
-			let button = $("<button>Create Display Scene</button>");
+			let button = $("<button>Create or Show Display Scene</button>");
 			//if the display scene already exists, open and activate it; if not, create a new one
 			button.click(GenerateDisplayScene); //GenerateDisplayScene());
 			html.find(".directory-footer").prepend(button);
@@ -146,24 +130,23 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 
 	}
 
-	function buttonTest() {
-		console.log("DISPLAY BUTOTN CLICKED");
-	}
-
 	
 
 	async function GenerateDisplayScene() {
-		console.log("Generating new display scene");
 		//create a Display" scene 
 		//set the scene to 2000 by 2000, and set the background color to a dark gray
-		if (typeof displayScene == 'undefined') {
+		if (!DisplaySceneFound()) {
+			displayScene = null;
+			displayTile = null;
+			console.log("Generating new display scene");
 			displayScene = await Scene.create({
 				name: "Display",
-				width: 2000,
-				height: 2000,
+				width: 100,
+				height: 100,
 				backgroundColor: "#202020",
 				padding: 0
 			});
+			console.log(displayScene.data.width + " by " + displayScene.data.height);
 			await displayScene.activate();
 			console.log(canvas.scene);
 			displayScene.update({
@@ -175,9 +158,11 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 			});
 
 			//create a tile for the scene
+			console.log("Display Scene Dimensions" + displayScene.data.width + " by " + displayScene.data.height);
 			const tex = await loadTexture("darkbackground.jpg");
 			var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
-			// console.log((displayScene.data.width / 2) - (dimensionObject.width / 2));
+			console.log("Texture dimensions " + tex.width + " by " + tex.height);
+			console.log("Dimension Object dimensions " + dimensionObject.width + " by " + dimensionObject.height);
 			displayTile = await Tile.create({
 				img: "darkbackground.jpg",
 				width: dimensionObject.width,
@@ -185,9 +170,14 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 				x: 0,
 				y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
 			});
-			// await displayTile.update({
-			// 	x: (displayScene.data.height / 2) - (dimensionObject.height / 2)
-			// });
+			
+			canvas.draw();
+
+		}
+		else{
+			console.log("Display scene already exists");
+			//if the display scene exits already
+			displayScene.activate();
 
 		}
 
@@ -214,6 +204,8 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 	/*https://stackoverflow.com/questions/3971841/how-to-resize-images-proportionally-keeping-the-aspect-ratio*/
 	function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
 		var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+		console.log("Max width " + maxWidth + ", Max hieght " + maxHeight + ", Source width " + srcWidth + ", Source Height " + srcHeight);
+		console.log("Ratio " + ratio + ", width " + srcWidth * ratio + ", height " + srcHeight * ratio);
 		return {
 			width: srcWidth * ratio,
 			height: srcHeight * ratio
