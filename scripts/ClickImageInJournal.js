@@ -138,6 +138,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		if (!DisplaySceneFound()) {
 			displayScene = null;
 			displayTile = null;
+			console.log("Display scene " + displayScene);
 			console.log("Generating new display scene");
 			displayScene = await Scene.create({
 				name: "Display",
@@ -149,7 +150,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 			console.log(displayScene.data.width + " by " + displayScene.data.height);
 			await displayScene.activate();
 			console.log(canvas.scene);
-			displayScene.update({
+			await displayScene.update({
 				name: "Display",
 				width: 2000,
 				height: 2000,
@@ -170,7 +171,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 				x: 0,
 				y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
 			});
-			
+			console.log(displayScene.data.width + " By " + displayScene.data.height)	;
 			canvas.draw();
 
 		}
