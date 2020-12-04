@@ -176,7 +176,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		}
 		else{
 			console.log("Display scene already exists");
-			//if the display scene exits already
+			//if the display scene exits already, just activate it
 			displayScene.activate();
 
 		}
