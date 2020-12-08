@@ -89,7 +89,9 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		tileData.height = dimensionObject.height;
 		var displayTile = displayScene.getEmbeddedCollection("Tile")[0]; //canvas.tiles.placeables[0];
 		console.log(displayTile);
-
+		var scaleDownFactor = 200;
+		dimensionObject.width -= scaleDownFactor;
+		dimensionObject.height -= scaleDownFactor;
 		//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
 		console.log(displayScene);
 		var wideImageUpdate = {
@@ -97,16 +99,16 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 			width: dimensionObject.width,
 			height: dimensionObject.height,
 			img: url,
-			x: 0,
-			y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+			x: scaleDownFactor/2,
+			y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
 		};
 		var tallImageUpdate = {
 			_id: displayTile._id,
 			width: dimensionObject.width,
 			height: dimensionObject.height,
 			img: url,
-			y: 0,
-			x: (displayScene.data.width / 2) - (dimensionObject.width / 2)
+			y: scaleDownFactor/2,
+			x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
 		};
 		//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
 		if (dimensionObject.height > dimensionObject.width) {
@@ -213,6 +215,18 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		};
 
 	}
+
+	function generateImageTag(url){
+		var journalEntry;
+		//create image tag with url of item
+		//gonna find some way to drag, drop, and insert image into journal
+		var image = document.createElement("IMG");
+		//will want to perhaps add folder stuff to this as well
+		image.src = url;
+		//append the child to the body of the journal entry -- gotta figure out how to add it to the journal entry specifically
+		document.body.appendChild(image);
+	//	journalEntry.innerHTML = "<img src=" + url + ">";
+	}
 //Hooks.on("getSceneControlButtons", ClickImageInJournal.createSceneButton); //for scene control buttons on right
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
@@ -228,6 +242,7 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 // 		console.log("Display scene already exists :)");
 // 	}
 // });
+
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
 	html.find('img').attr("class", "clickableImage");
