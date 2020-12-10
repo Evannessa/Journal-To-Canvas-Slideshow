@@ -245,6 +245,9 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
+	console.log(html);
+	console.log(app.object.data.content);
+	console.log(options);
 	html.find('img').attr("class", "clickableImage");
 	html.find('.clickableImage').each((i, div) => {
 		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
