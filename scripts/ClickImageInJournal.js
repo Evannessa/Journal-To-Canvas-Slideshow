@@ -227,6 +227,10 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		document.body.appendChild(image);
 	//	journalEntry.innerHTML = "<img src=" + url + ">";
 	}
+
+	function addImageToJournal(app, url){
+		app.object.data.content += "<img src=" + url + ">";
+	}
 //Hooks.on("getSceneControlButtons", ClickImageInJournal.createSceneButton); //for scene control buttons on right
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
@@ -245,9 +249,7 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
-	console.log(html);
-	console.log(app.object.data.content);
-	console.log(options);
+	//addImageToJournal(app, "1920x1080.jpg");
 	html.find('img').attr("class", "clickableImage");
 	html.find('.clickableImage').each((i, div) => {
 		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
