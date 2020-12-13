@@ -132,6 +132,8 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 
 	}
 
+
+
 	
 
 	async function GenerateDisplayScene() {
@@ -231,6 +233,28 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 	function addImageToJournal(app, url){
 		app.object.data.content += "<img src=" + url + ">";
 	}
+
+	async function handleDrop(app, event){
+		event.preventDefault();
+
+		var files = event.dataTransfer.files;
+		file = files[0];
+		CreateNewImage(app, event, file);
+	}
+
+	async function CreateNewImage(app, event, file){
+		var source = "data";
+		let response;
+		if (file.isExternalUrl){
+			response = {path: file.url}
+		}
+		else{
+			response = await FilePicker.upload(source, "tokens", file, {});
+		}
+		addImageToJournal(app, response.path);
+
+	}
+
 //Hooks.on("getSceneControlButtons", ClickImageInJournal.createSceneButton); //for scene control buttons on right
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
@@ -250,12 +274,26 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
 	//addImageToJournal(app, "1920x1080.jpg");
+	console.log(app);
+	console.log(html);
+	console.log(options);
 	html.find('img').attr("class", "clickableImage");
+	document.querySelector("div.editor-content").addEventListener("drop", (event) => {
+		//addImageToJournal(app, )
+		console.log("Dropped something");
+		handleDrop(app, event);
+	});
 	html.find('.clickableImage').each((i, div) => {
 		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 	});
+	// document.getElementById("journal").addEventListener("drop", (event) => {
+
+
+	// }
+
+	//)
 	console.log("A journal sheet has opened");
 	//findClickableImage(html);
 });
