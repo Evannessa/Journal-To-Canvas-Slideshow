@@ -218,15 +218,19 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 
 	}
 
-	function generateImageTag(url){
+	function addImage(url){
 		var journalEntry;
 		//create image tag with url of item
 		//gonna find some way to drag, drop, and insert image into journal
-		var image = document.createElement("IMG");
+		var image = new Image();//document.createElement("IMG");
 		//will want to perhaps add folder stuff to this as well
-		image.src = url;
 		//append the child to the body of the journal entry -- gotta figure out how to add it to the journal entry specifically
-		document.body.appendChild(image);
+		console.log(document.querySelector("div.editor-content"));
+		image.onload = function(){
+			document.querySelector("div.editor-content").appendChild(image);
+			image.src = url;
+		}
+
 	//	journalEntry.innerHTML = "<img src=" + url + ">";
 	}
 
@@ -235,15 +239,15 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		app.object.data.content += "<img src=" + url + ">";
 	}
 
-	async function handleDrop(app, event){
+	async function handleDrop(event){
 		event.preventDefault();
 
 		var files = event.dataTransfer.files;
 		file = files[0];
-		CreateNewImage(app, event, file);
+		CreateNewImage(event, file);
 	}
 
-	async function CreateNewImage(app, event, file){
+	async function CreateNewImage(event, file){
 		var source = "data";
 		let response;
 		if (file.isExternalUrl){
@@ -252,7 +256,8 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		else{
 			response = await FilePicker.upload(source, "tokens", file, {});
 		}
-		addImageToJournal(app, response.path);
+		addImage(response.path);
+		//addImageToJournal(app, response.path);
 
 	}
 
@@ -282,7 +287,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	document.querySelector("form.editable").addEventListener("drop", (event) => {
 		//addImageToJournal(app, )
 		console.log("Dropped something");
-		handleDrop(app, event);
+		handleDrop(event);
 	});
 	html.find('.clickableImage').each((i, div) => {
 		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
