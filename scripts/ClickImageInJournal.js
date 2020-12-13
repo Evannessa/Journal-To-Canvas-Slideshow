@@ -232,7 +232,9 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		var journalDiv = document.getElementById(currentJournalId);
 		console.log(journalDiv.getElementsByTagName("form"));
 		var journalForm = journalDiv.getElementsByTagName("form")[0];
-		journalForm.appendChild(image);
+		//console.log(journalForm.getElementsByClassName("editor")[0]);
+		//console.log(journalForm.getElementsByClassName("editor-content")[0]);
+		journalForm.getElementsByClassName("editor-content")[0].appendChild(image);
 		image.src = url;
 
 	//	journalEntry.innerHTML = "<img src=" + url + ">";
