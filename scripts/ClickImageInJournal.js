@@ -231,6 +231,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 	}
 
 	function addImageToJournal(app, url){
+		//THIS does not work --- it resets when you refresh. Need to find a better way to access it.
 		app.object.data.content += "<img src=" + url + ">";
 	}
 
@@ -278,7 +279,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	console.log(html);
 	console.log(options);
 	html.find('img').attr("class", "clickableImage");
-	document.querySelector("div.editor-content").addEventListener("drop", (event) => {
+	document.querySelector("form.editable").addEventListener("drop", (event) => {
 		//addImageToJournal(app, )
 		console.log("Dropped something");
 		handleDrop(app, event);
