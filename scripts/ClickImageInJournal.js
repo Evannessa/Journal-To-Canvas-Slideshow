@@ -35,7 +35,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		// 	});
 		// }
 		let element = ev.currentTarget;
-		let url = element.src;
+		let url = element.getAttribute("src");
 
 		const data = {
 			type: "image",
@@ -56,7 +56,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		dimensionObject.width -= scaleDownFactor;
 		dimensionObject.height -= scaleDownFactor;
 		//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
-		console.log(displayScene);
+		console.log(element.src);
 		var wideImageUpdate = {
 			_id: displayTile._id,
 			width: dimensionObject.width,
