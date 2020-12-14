@@ -237,6 +237,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		console.log(app.object.data.content);
 	//	let updated = await
 		 app.object.update({content : app.object.data.content});
+		 app.render(false, {});
 	}
 
 	function addImageToJournal(app, url){
