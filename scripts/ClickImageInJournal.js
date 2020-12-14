@@ -218,26 +218,25 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 
 	}
 
-	function addImage(url, currentJournalId){
-		//wasn't working because wasn't getting specific journal entry
-		//must use proper journal id or somehow find which journal is open, but I think "html" gives that id
+	function addImage(app, url, currentJournalId){
 		var journalEntry;
 		//create image tag with url of item
-		//gonna find some way to drag, drop, and insert image into journal
+		var containerParagraph;//document.createElement("p");
 		var image = new Image();//document.createElement("IMG");
-		//will want to perhaps add folder stuff to this as well
 		//append the child to the body of the journal entry -- gotta figure out how to add it to the journal entry specifically
-		console.log("Should be journal V");
-		console.log(document.getElementById(currentJournalId));
 		var journalDiv = document.getElementById(currentJournalId);
-		console.log(journalDiv.getElementsByTagName("form"));
-		var journalForm = journalDiv.getElementsByTagName("form")[0];
-		//console.log(journalForm.getElementsByClassName("editor")[0]);
-		//console.log(journalForm.getElementsByClassName("editor-content")[0]);
-		journalForm.getElementsByClassName("editor-content")[0].appendChild(image);
-		image.src = url;
 
-	//	journalEntry.innerHTML = "<img src=" + url + ">";
+		var journalForm = journalDiv.getElementsByTagName("form")[0];
+		var editorContent = journalForm.getElementsByClassName("editor-content")[0];
+		containerParagraph = journalForm.getElementsByClassName("editor-content")[0].querySelector("p");//appendChild(containerParagraph);
+		containerParagraph.appendChild(image);
+		//journalForm.getElementsByClassName("editor-content")[0].appendChild(image);
+		image.src = url;
+		//console.log(editorContent.innerHTML);
+		app.object.data.content = editorContent.innerHTML;
+		console.log(app.object.data.content);
+	//	let updated = await
+		 app.object.update({content : app.object.data.content});
 	}
 
 	function addImageToJournal(app, url){
@@ -245,15 +244,15 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		app.object.data.content += "<img src=" + url + ">";
 	}
 
-	async function handleDrop(event, currentJournalId){
+	async function handleDrop(app, event, currentJournalId){
 		event.preventDefault();
 
 		var files = event.dataTransfer.files;
 		file = files[0];
-		CreateNewImage(file, currentJournalId);
+		CreateNewImage(app, file, currentJournalId);
 	}
 
-	async function CreateNewImage(file, currentJournalId){
+	async function CreateNewImage(app, file, currentJournalId){
 		var source = "data";
 		let response;
 		if (file.isExternalUrl){
@@ -262,7 +261,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		else{
 			response = await FilePicker.upload(source, "tokens", file, {});
 		}
-		addImage(response.path, currentJournalId);
+		addImage(app, response.path, currentJournalId);
 		//addImageToJournal(app, response.path);
 
 	}
@@ -287,13 +286,15 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 Hooks.on("renderJournalSheet", (app, html, options) => {
 	//addImageToJournal(app, "1920x1080.jpg");
 	console.log(app);
+	console.log(html);
 	var currentJournalId = html[0].id;
 	console.log(options);
 	html.find('img').attr("class", "clickableImage");
 	document.querySelector("form.editable").addEventListener("drop", (event) => {
-		//addImageToJournal(app, )
 		console.log("Dropped something");
-		handleDrop(event, currentJournalId);
+		handleDrop(app, event, currentJournalId);
+		//console.log(app.object.data.content);
+		//app.object.update({content: app.object.data.content});
 	});
 	html.find('.clickableImage').each((i, div) => {
 		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
