@@ -16,44 +16,7 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		ev.target.style.borderStyle = "none";
 	}
 
-	async function findClickableImage(ev) {
-		let element = ev.currentTarget;
-		let url = element.src;
 
-		const data = {
-			type: "image",
-			src: url
-		};
-		let tileData = {
-			img: data.src
-		};
-		const tex = await loadTexture(data.src);
-
-		var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, canvas.dimensions.sceneWidth, canvas.dimensions.sceneHeight);
-		tileData.width = dimensionObject.width;
-		tileData.height = dimensionObject.height;
-		var displayTile = canvas.tiles.placeables[0];
-		//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
-		if (dimensionObject.height > dimensionObject.width) {
-			//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
-			displayTile.update({
-				width: dimensionObject.width,
-				height: dimensionObject.height,
-				img: url,
-				y: 0,
-				x: (canvas.dimensions.sceneWidth / 2) - (dimensionObject.width / 2)
-			});
-		} else if (dimensionObject.width > dimensionObject.height) {
-			displayTile.update({
-				width: dimensionObject.width,
-				height: dimensionObject.height,
-				img: url,
-				x: 0,
-				y: canvas.dimensions.sceneHeight / 2 - (dimensionObject.height / 2)
-			});
-		}
-
-	}
 
 	async function displayImage(ev) {
 		if (DisplaySceneFound()) {
@@ -237,7 +200,10 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		console.log(app.object.data.content);
 	//	let updated = await
 		 app.object.update({content : app.object.data.content});
+
 		 app.render(false, {});
+		 app.object.prepareData();
+	
 	}
 
 	function addImageToJournal(app, url){
@@ -258,14 +224,17 @@ console.log("Hello world! This code runs immediately when the file is loaded");
 		let response;
 		if (file.isExternalUrl){
 			response = {path: file.url}
+			console.log("External Url Response path is " + response.path)
 		}
 		else{
 			response = await FilePicker.upload(source, "tokens", file, {});
+			console.log("ELSE Response path is " + response.path)
 		}
 		addImage(app, response.path, currentJournalId);
 		//addImageToJournal(app, response.path);
 
 	}
+
 
 //Hooks.on("getSceneControlButtons", ClickImageInJournal.createSceneButton); //for scene control buttons on right
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
@@ -294,6 +263,9 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	document.querySelector("form.editable").addEventListener("drop", (event) => {
 		console.log("Dropped something");
 		handleDrop(app, event, currentJournalId);
+		//_activateEditor()
+		//html.find('editor-content[data-edit]').each((i, div) => { app._activateEditor(div)});
+		//html.find('editor-content').each((i, div) => _activateEditor(div.get_attribute("data-edit")));
 		//console.log(app.object.data.content);
 		//app.object.update({content: app.object.data.content});
 	});
