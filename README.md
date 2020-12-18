@@ -1,6 +1,8 @@
 # ClickImage
 Test FoundryVTT Project
 
+Heres the manifest URL: https://raw.githubusercontent.com/EvanesceExotica/ClickImage/master/module.json
+
 Here's some info on how to set things up. Skip to the bottom with the step-by-step if you want to just know how to set up the Display scene.
 
 ***Warning***: I'm a noob to Foundry and a mostly self-taught programmer, so this is a hacky and probably inflexible solution. Forgive me if something doesn't work right; I'll try to get it fixed up if I ever officially release this as a module lol.
