@@ -7,5 +7,8 @@
     "minimumCoreVersion": "0.7.5",
     "scripts": [
         "scripts/ClickImageInJournal.js"
-    ]
+    ],
+    "url": "https://github.com/EvanesceExotica/ClickImage",
+    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/ClickImage/master/module.json",
+    "download": "https://github.com/EvanesceExotica/ClickImage/archive/master.zip"
 }
