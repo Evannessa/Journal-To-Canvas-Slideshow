@@ -229,7 +229,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 		
 	// });
 	html.find('.clickableImage').each((i, div) => {
-		div.addEventListener("click", /*findClickableImage*/ displayImage, false);
+		div.addEventListener("click", displayImage, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 	});
