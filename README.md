@@ -3,6 +3,17 @@ Test FoundryVTT Project
 
 Heres the manifest URL: https://raw.githubusercontent.com/EvanesceExotica/ClickImage/master/module.json
 
+
+***UPDATE:***
+
+The button in the scenes tab that says "Create or Show Display Scene" should work now. If you're having trouble setting the Display scene up manually, uninstall and reinstall the module, delete your Display scene and try creating the Display scene by clicking that button (Clicking it again will activate the scene after it already exists).
+
+Also, this should work with .webm and .mp4 files now; This works in the base Foundry (has nothing to do with my module), but if you want to know how to put a video in the journal, check out this page: https://www.w3schools.com/html/html5_video.asp , and scroll down a bit to the part that says "Example". 
+
+Open up your journal entry, click the edit button, then click the button along the top that looks like this "< >" to access the entry's source code. You can copy and paste the code example shown on the above w3schools site  into the source code, and change the file path in quotations (where it says <source="movie.mp4" type="video/mp4">, change the 'movie.mp4' part to be the file path of your .webm or .mp4 video and the type to the matching type "mp4" or "webm").
+
+-----------------------------------------
+
 Here's some info on how to set things up. Skip to the bottom with the step-by-step if you want to just know how to set up the Display scene.
 
 ***Warning***: I'm a noob to Foundry and a mostly self-taught programmer, so this is a hacky and probably inflexible solution. Forgive me if something doesn't work right; I'll try to get it fixed up if I ever officially release this as a module lol.
