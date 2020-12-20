@@ -34,10 +34,8 @@ async function displayImage(ev) {
 
 	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
 	if (type == "IMG") {
-		console.log("It's an image");
 		url = element.getAttribute("src");
 	} else if (type == "VIDEO") {
-		console.log("It's a video");
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
 	} else {
 		console.log("Type not supported");
