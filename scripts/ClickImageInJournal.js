@@ -203,6 +203,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
 	//and event listeners for the "displayImage" function when clicked
 	html.find('.clickableImage').each((i, div) => {
+		div.crossorigin="use-credentials";
 		div.addEventListener("click", displayImage, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
