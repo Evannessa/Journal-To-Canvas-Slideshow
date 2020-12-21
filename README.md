@@ -42,10 +42,6 @@ The script basically goes through the images in a journal entry when it renders,
 
 This event handler handles changing the tile's source to that of the image in the journal.
 
-The script also adds button in the scene tab that lets you generate a 'Display' scene and was thinking about adding some configuration options to that, but I haven't figured that part out yet, so I'd avoid using it for now and set up the "Display" scene manually.
-
-There are also some functions in there for some drag-and-drop functionality I was trying to implement. I've commented the functionality out mostly so feel free to ignore those.  
-
 ***So here's how to manually set it up your "Display" scene: (Should be unnecessary with the update)***
 
 1. Create a new scene, name it "Display" — unsure if this is case sensitive, but I'd capitalize it just to be safe.
