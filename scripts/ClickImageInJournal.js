@@ -37,7 +37,14 @@ async function displayImage(ev) {
 		url = element.getAttribute("src");
 	} else if (type == "VIDEO") {
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
-	} else {
+	} 
+	else if (type == "DIV" && element.classList.contains("lightbox-image")){
+		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
+		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
+		let img = element.style;
+		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+	}
+	else {
 		console.log("Type not supported");
 		return;
 
@@ -199,16 +206,18 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	//find all img and video tags in the html, and add the clickableImage class to all of them
 	html.find('img').attr("class", "clickableImage");
 	html.find('video').attr("class", "clickableImage");
+	//find the lightbox images for the 'image' journal mode as well and do the same as above
+	html.find(".lightbox-image").each((i, div) => {
+		div.classList.add("clickableImage");
+	})
 
 	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
 	//and event listeners for the "displayImage" function when clicked
 	html.find('.clickableImage').each((i, div) => {
-		div.crossorigin="use-credentials";
 		div.addEventListener("click", displayImage, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 	});
 
 
-	console.log("A journal sheet has opened");
 });
