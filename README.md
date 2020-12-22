@@ -6,8 +6,6 @@ If your image's source is from somewhere online, there's a chance there will be 
 
 If so, for now, try saving/downloading the image and placing it in your Foundry data folder somewhere, then in the journal entry, have the image's source link to that file path instead. I'll try to see if I can find a way around this.
 
-This also for now only works with images placed in the text mode journal entries, and not in the image mode. 
-
 # About the Project
 
 This project brings functionality to images and videos in your Foundry journal entries and allows you to create a Display Scene. You can click on journal images and videos, which will change a tile in the Display Scene to match the image in the journal.
@@ -29,7 +27,7 @@ To install this module, go to the Configuration and Setup options in Foundry VTT
 
 There will be a text box toward the bottom where you can paste this Manifest URL:
 
- https://raw.githubusercontent.com/EvanesceExotica/ClickImage/master/module.json
+https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json
 
 Then click "Install". 
 
@@ -47,7 +45,7 @@ Then click "Install".
 
 5. You can  change the scene's background image and add extra tiles for decoration, but 
 make sure that the very first tile on the canvas is the tile you wish to display your images. 
-6. Open up a journal entry with images (**Note**: This must be a 'text mode' journal entry, not an 'image mode'.) You should notice the images highlight in white when you hover over them.
+6. Open up a journal entry with images (**Note**: This should work with Image Mode journal entries too). You should notice the images highlight in white when you hover over them.
 7. Clicking on them will cause the tile in the Display scene to resize/reposition and change to match the image you clicked on.
 8. Have fun!
 
