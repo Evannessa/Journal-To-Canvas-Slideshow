@@ -149,11 +149,11 @@ async function GenerateDisplayScene() {
 		});
 
 		//create a tile for the scene
-		const tex = await loadTexture("/modules/Click-Image/artwork/DarkBackground.png");
+		const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
 		var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 		displayTile = await Tile.create({
-			img: "/modules/Click-Image/artwork/DarkBackground.png",
+			img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
 			width: dimensionObject.width,
 			height: dimensionObject.height,
 			x: 0,
