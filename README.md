@@ -1,4 +1,4 @@
-# Click Image In Journal
+# Journal to Canvas Slideshow
 
 ## WARNING 
 
@@ -20,7 +20,7 @@ This is meant to make sharing art with your players while narrating or reading y
 
 ## Built With
 
-* Javascript
+* JavaScript
 * JQuery
 
 # Getting Started
