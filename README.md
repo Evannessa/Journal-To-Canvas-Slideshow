@@ -98,7 +98,7 @@ GMForge -- this feature was originally built into [GMForge](https://store.steamp
 
 My figuring out how to do this in FoundryVTT is thanks largely to studying the source code of the modules [Drag Upload](https://github.com/cswendrowski/FoundryVTT-Drag-Upload) by *cswendrowski*, [Image-Drop](https://gitlab.com/mesfoliesludiques/foundryvtt-image-drop) by *U~man*, [Journal-Links](https://github.com/Sigafoos/journal-links) by *Sigafoos* and [Sound-Link](https://github.com/superseva/sound-link) by *superseva*. 
 
-Thanks to Joe Neeves's tabletop art from Gumroad: https://gumroad.com/limonium for the decorative tiles.
+Thanks to Joe Neeves whose tabletop art from Gumroad: https://gumroad.com/limonium provided the decorative tiles.
 
 # Contact Me
 
