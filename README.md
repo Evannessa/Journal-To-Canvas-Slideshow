@@ -99,3 +99,7 @@ GMForge -- this feature was originally built into [GMForge](https://store.steamp
 My figuring out how to do this in FoundryVTT is thanks largely to studying the source code of the modules [Drag Upload](https://github.com/cswendrowski/FoundryVTT-Drag-Upload) by *cswendrowski*, [Image-Drop](https://gitlab.com/mesfoliesludiques/foundryvtt-image-drop) by *U~man*, [Journal-Links](https://github.com/Sigafoos/journal-links) by *Sigafoos* and [Sound-Link](https://github.com/superseva/sound-link) by *superseva*. 
 
 
+# Contact Me
+
+*Discord*: Eva#3782
+*Email*: EvanesceExotica@gmail.com
