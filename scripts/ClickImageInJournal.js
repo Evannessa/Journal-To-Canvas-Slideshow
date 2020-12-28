@@ -78,6 +78,10 @@ async function displayImage(ev) {
 
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+	console.log(displayTile);
+	if(!displayTile){
+		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
+	}
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
@@ -224,7 +228,7 @@ function DisplaySceneFound() {
 	}
 	if(!displaySceneFound){
 		//notify the user that there's no display scene
-		ui.notifications.error("No display scene found");
+		ui.notifications.error("No display scene found -- make sure there's a scene named 'Display'");
 	}
 	//return whether or not we've found a scene named 'Display'
 	return displaySceneFound;
