@@ -37,7 +37,8 @@ async function displayImage(ev) {
 
 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
 	if (DisplaySceneFound()) {
-		displayScene.activate();
+		//TODO: Make this configurable
+		//displayScene.activate();
 	} else {
 		//if there is no display scene, return
 		console.log("No display scene");
