@@ -200,6 +200,9 @@ async function clearDisplayTile(){
 	}
 
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+	if(!displayTile){
+		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
+	}
 	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png");
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
