@@ -108,6 +108,7 @@ async function displayImage(ev) {
 
 
 
+
 function createSceneButton(app, html) {
 	if (!game.user.isGM) {
 		//if the user isn't the GM, return
@@ -170,6 +171,27 @@ async function GenerateDisplayScene() {
 
 }
 
+async function clearDisplayTile(){
+	//create a tile for the scene
+	if(!DisplaySceneFound()){
+		return;
+	}
+
+	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png");
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+
+	var clearTileUpdate = {
+			_id: displayTile._id,
+			img: "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png",
+			width: dimensionObject.width,
+			height: dimensionObject.height,
+			x: 0,
+			y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+	};
+	const updated = await displayScene.updateEmbeddedEntity("Tile", clearTileUpdate);
+}
+
 function DisplaySceneFound() {
 	// getting the scenes, we want to make sure the tile only happens on the particular display scene
 	// so we want it to update on the specific scene and no others
@@ -181,6 +203,10 @@ function DisplaySceneFound() {
 			displayScene = scn;
 			displaySceneFound = true;
 		}
+	}
+	if(!displaySceneFound){
+		//notify the user that there's no display scene
+		ui.notifications.error("No display scene found");
 	}
 	//return whether or not we've found a scene named 'Display'
 	return displaySceneFound;
@@ -198,7 +224,20 @@ function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
 
 }
 
-
+Hooks.on("getSceneControlButtons", (controls) => {
+	//controls refers to all of the controls
+	const tileControls = controls.find((control) => control?.name === "tiles");
+	if(game.user.isGM){
+		tileControls.tools.push({
+				name: 'ClearDisplay',
+				title: 'ClearDisplay',
+				icon: 'far fa-times-circle',
+				onClick: () => {
+					clearDisplayTile();	
+				}
+			})
+		}
+});
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
