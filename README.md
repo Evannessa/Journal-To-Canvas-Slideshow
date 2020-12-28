@@ -1,4 +1,26 @@
+
 # Journal to Canvas Slideshow
+
+### Table of Contents
+- [Journal to Canvas Slideshow](#journal-to-canvas-slideshow)
+  * [WARNING](#warning)
+- [About the Project](#about-the-project)
+  * [Built With](#built-with)
+- [Installation and Getting Started](#getting-started)
+- [How to Use](#how-to-use)
+  * [Videos in Journal](#videos)
+- [Changelog](#changelog)
+  * [**v0.1.1** - 2020-12-28](#--v011-----2020-12-28)
+    + [**Added**](#--added--)
+    + [**Changes**](#--changes--)
+- [Roadmap](#roadmap)
+- [Code Explanation](#code-explanation)
+- [Motivation](#motivation)
+- [Credits](#credits)
+- [Contact Me](#contact-me)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ## WARNING 
 
@@ -10,7 +32,7 @@ If so, for now, try saving/downloading the image and placing it in your Foundry 
 
 This project brings functionality to images and videos in your Foundry journal entries and allows you to create a Display Scene. You can click on journal images and videos, which will change a tile in the Display Scene to match the image in the journal.
 
-!["Demonstration of module"](https://media2.giphy.com/media/24FOKvWRayT3ZQC5sd/giphy.gif)
+!["Demonstration of module"](https://media4.giphy.com/media/nCBKGGweEGVYObw3ZB/giphy.gif)
 
 This is meant to make sharing art with your players while narrating or reading your notes a lot more seamless. It fits well with Theater of the Mind style play. 
 
@@ -21,7 +43,8 @@ This is meant to make sharing art with your players while narrating or reading y
 * JavaScript
 * JQuery
 
-# Getting Started
+
+# Installation and Getting Started
 
 To install this module, go to the Configuration and Setup options in Foundry VTT, click on "Add-on Modules", then "Install Module".
 
@@ -49,7 +72,7 @@ make sure that the very first tile on the canvas is the tile you wish to display
 7. Clicking on them will cause the tile in the Display scene to resize/reposition and change to match the image you clicked on.
 8. Have fun!
 
-## Videos
+## Videos in Journal
 
 This project does support .webm and .mp4 files, however inserting a video into a journal entry requires a different approach than using an image.
 
@@ -66,6 +89,27 @@ This project does support .webm and .mp4 files, however inserting a video into a
 4. You can then click on the video, and it will change the Display tile.
 
 !["Clicking on vid to change tile"](https://media0.giphy.com/media/rF4mjVrm5L6Y4MrmSx/giphy.gif)
+
+# Changelog
+
+## **v0.1.1** - 2020-12-28
+
+### **Added**
+ **Major:**
+* Added "Clear Display" button in Tiles scene control buttons. Will set 'slideshow' tile to a transparent image.
+
+**Minor:**
+* More visual effects when hovering over and clicking images in journal, for more user feedback
+* Changed cursor to pointer on hover of journal images
+
+### **Changes**
+
+* Clicking on image in journal no longer activates the 'Display' scene if a different scene is active. Plan to add functionality later to toggle this behavior.
+
+(Red arrow pointing at new 'Clear Display' button')
+!["Location of clear button"](https://i.imgur.com/aPtU9QL.jpg)
+
+!["Showing off updates"](https://media2.giphy.com/media/sIKIPBhN3c5vLPVxGu/giphy.gif)
 
 # Roadmap
 
