@@ -2,19 +2,36 @@ var displayScene;
 var displayTile;
 
 function highlight(ev) {
-	//when hovering over an image, 'highlight' it by changing its border
+	//when hovering over an image, 'highlight' it by changing its shadow
 	let element = ev.target;
 	element.style.borderStyle = "solid";
 	element.style.borderColor = "white";
-	element.style.borderWidth = "4px";
+	element.style.borderSize = "4px";
+	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
+	element.style.cursor = "pointer";
 }
 
 function dehighlight(ev) {
 	//when no longer hovering over an image, remove the 'highlight'
 	let element = ev.target;
+	element.style.cursor = "default";
+	element.style.boxShadow = "none";
 	element.style.borderStyle = "none";
 }
 
+function depressImage(ev){
+	//as click
+	let element = ev.target;
+	element.style.boxShadow = "2px 2px 2px rgba(50, 51, 59, 0.5)";
+}
+
+function liftImage(ev){
+	//after click
+	let element = ev.target;
+	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
+	
+
+}
 
 async function displayImage(ev) {
 
@@ -256,6 +273,8 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 		div.addEventListener("click", displayImage, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
+		div.addEventListener("mousedown", depressImage, false);
+		div.addEventListener("mouseup", liftImage, false);
 	});
 
 
