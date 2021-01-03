@@ -1,3 +1,9 @@
+
+## **v0.1.2** 
+
+**Major:**
+* Fixed an incompatability issue with the Call of Cthulhu 7e (CoC7) system.
+
 # v0.1.1
 
 2020-12-28
