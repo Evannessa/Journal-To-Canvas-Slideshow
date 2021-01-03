@@ -19,17 +19,17 @@ function dehighlight(ev) {
 	element.style.borderStyle = "none";
 }
 
-function depressImage(ev){
+function depressImage(ev) {
 	//as click
 	let element = ev.target;
 	element.style.boxShadow = "2px 2px 2px rgba(50, 51, 59, 0.5)";
 }
 
-function liftImage(ev){
+function liftImage(ev) {
 	//after click
 	let element = ev.target;
 	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
-	
+
 
 }
 
@@ -55,14 +55,12 @@ async function displayImage(ev) {
 		url = element.getAttribute("src");
 	} else if (type == "VIDEO") {
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
-	} 
-	else if (type == "DIV" && element.classList.contains("lightbox-image")){
+	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
 		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
 		let img = element.style;
 		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-	}
-	else {
+	} else {
 		console.log("Type not supported");
 		return;
 
@@ -79,7 +77,7 @@ async function displayImage(ev) {
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
 	console.log(displayTile);
-	if(!displayTile){
+	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
 	}
 
@@ -193,26 +191,26 @@ async function GenerateDisplayScene() {
 
 }
 
-async function clearDisplayTile(){
+async function clearDisplayTile() {
 	//create a tile for the scene
-	if(!DisplaySceneFound()){
+	if (!DisplaySceneFound()) {
 		return;
 	}
 
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
-	if(!displayTile){
+	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
 	}
 	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png");
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 	var clearTileUpdate = {
-			_id: displayTile._id,
-			img: "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png",
-			width: dimensionObject.width,
-			height: dimensionObject.height,
-			x: 0,
-			y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+		_id: displayTile._id,
+		img: "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png",
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		x: 0,
+		y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
 	};
 	const updated = await displayScene.updateEmbeddedEntity("Tile", clearTileUpdate);
 }
@@ -229,7 +227,7 @@ function DisplaySceneFound() {
 			displaySceneFound = true;
 		}
 	}
-	if(!displaySceneFound){
+	if (!displaySceneFound) {
 		//notify the user that there's no display scene
 		ui.notifications.error("No display scene found -- make sure there's a scene named 'Display'");
 	}
@@ -249,19 +247,39 @@ function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
 
 }
 
+function setEventListeners(html) {
+	wait().then(execute.bind(null, html));
+}
+
+function wait(callback) {
+	return new Promise(function (resolve, reject) {
+		resolve();
+	})
+}
+
+function execute(html) {
+	html.find('.clickableImage').each((i, div) => {
+		div.addEventListener("click", displayImage, false);
+		div.addEventListener("mouseover", highlight, false);
+		div.addEventListener("mouseout", dehighlight, false);
+		div.addEventListener("mousedown", depressImage, false);
+		div.addEventListener("mouseup", liftImage, false);
+	});
+}
+
 Hooks.on("getSceneControlButtons", (controls) => {
 	//controls refers to all of the controls
 	const tileControls = controls.find((control) => control?.name === "tiles");
-	if(game.user.isGM){
+	if (game.user.isGM) {
 		tileControls.tools.push({
-				name: 'ClearDisplay',
-				title: 'ClearDisplay',
-				icon: 'far fa-times-circle',
-				onClick: () => {
-					clearDisplayTile();	
-				}
-			})
-		}
+			name: 'ClearDisplay',
+			title: 'ClearDisplay',
+			icon: 'far fa-times-circle',
+			onClick: () => {
+				clearDisplayTile();
+			}
+		})
+	}
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
@@ -277,13 +295,15 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 
 	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
 	//and event listeners for the "displayImage" function when clicked
-	html.find('.clickableImage').each((i, div) => {
-		div.addEventListener("click", displayImage, false);
-		div.addEventListener("mouseover", highlight, false);
-		div.addEventListener("mouseout", dehighlight, false);
-		div.addEventListener("mousedown", depressImage, false);
-		div.addEventListener("mouseup", liftImage, false);
-	});
+	console.log("rendering journal sheet");
+	setEventListeners(html);
+	// html.find('.clickableImage').each((i, div) => {
+	// 	div.addEventListener("click", displayImage, false);
+	// 	div.addEventListener("mouseover", highlight, false);
+	// 	div.addEventListener("mouseout", dehighlight, false);
+	// 	div.addEventListener("mousedown", depressImage, false);
+	// 	div.addEventListener("mouseup", liftImage, false);
+	// });
 
 
 });
