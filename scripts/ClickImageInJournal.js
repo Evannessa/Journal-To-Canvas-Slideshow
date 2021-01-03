@@ -248,6 +248,8 @@ function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
 }
 
 function setEventListeners(html) {
+	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
+	//and event listeners for the "displayImage" function when clicked
 	wait().then(execute.bind(null, html));
 }
 
@@ -293,8 +295,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 		div.classList.add("clickableImage");
 	})
 
-	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
-	//and event listeners for the "displayImage" function when clicked
+	
 	console.log("rendering journal sheet");
 	setEventListeners(html);
 	// html.find('.clickableImage').each((i, div) => {
