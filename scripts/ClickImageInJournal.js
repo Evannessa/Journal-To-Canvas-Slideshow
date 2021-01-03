@@ -1,3 +1,5 @@
+//var DisplayTileConfig = require('./DisplayTileConfig.js');
+import  DisplayTileConfig  from '../classes/DisplayTileConfig.js'
 var displayScene;
 var displayTile;
 
@@ -259,9 +261,19 @@ Hooks.on("getSceneControlButtons", (controls) => {
 				icon: 'far fa-times-circle',
 				onClick: () => {
 					clearDisplayTile();	
-				}
+				},
+				button: true
 			})
 		}
+		tileControls.tools.push({
+			name: 'Display Config',
+			title: 'Display Config',
+			icon: 'fas fa-cog',
+			onClick: () => {
+				new DisplayTileConfig().render(true);
+			},
+			button: true
+		})
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
