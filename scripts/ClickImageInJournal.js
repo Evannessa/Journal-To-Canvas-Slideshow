@@ -50,7 +50,7 @@ function FindDisplayJournal(){
     journalEntries.forEach( element => {
         //go through elements. If found, set bool to true. If not, it'll remain false. Return.
         if(element.name == "Display Journal"){
-            displayJournal = element;
+			displayJournal = element;
             foundDisplayJournal = true;
         }
     });
@@ -58,8 +58,16 @@ function FindDisplayJournal(){
 
 }
 
-function CreateDisplayJournal(){
-
+async function CreateDisplayJournal(){
+	//create a display journal
+	if(!FindDisplayJournal()){
+		displayJournal = await JournalEntry.create({name: "Display Journal"});
+	}
+	else{
+		//if it already exists, render it and show to players
+		displayJournal.render(false);
+		displayJournal.show("image", true);
+	}
 
 }
 
@@ -72,10 +80,16 @@ async function ChangeDisplayImage(url){
 	}
 	else{
 		console.log(journalImage);
+		displayJournal.render(false, {});
 	}
-    //change the background image to be the clicked image in the journal
-    journalImage[0].style.backgroundImage = `url(${url})`;
+	//change the background image to be the clicked image in the journal
+	//TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
+	let update = {
+		_id: displayJournal._id,
+		img: url
+	}
 
+	const updated = await displayJournal.update(update, {});
 
 }
 async function displayImageInPopout(ev){
@@ -219,6 +233,13 @@ function createSceneButton(app, html) {
 		let button = $("<button>Create or Show Display Scene</button>");
 		//if the display scene already exists, open and activate it; if not, create a new one
 		button.click(GenerateDisplayScene);
+		html.find(".directory-footer").prepend(button);
+	}
+	console.log(app.options.id);
+	if(app.options.id == "journal"){
+		//create the journal button for generating a popout
+		let button = $("<button>Create or Show Display Entry</button>");
+		button.click(CreateDisplayJournal);
 		html.find(".directory-footer").prepend(button);
 	}
 
