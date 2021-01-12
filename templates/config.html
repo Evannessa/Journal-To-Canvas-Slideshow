@@ -1,18 +1,21 @@
 <form>
-    <div>
-        <label for="scale-down">Scale down Value</label>
-        <input type="number" id="scale-down">
+    <div class="form-group">
+        <label for="scaleDown">Scale down Value</label>
+        <input type="number" name="scaleDown" value="{{ scaleDown }}"data-dtype="Number">
         <!--scale down value-->
     </div>
     <div>
-        <label for="scene">Display in Display Scene</label>
-        <input type="radio" id="scene">
-        <label for="journal">Display in Image Journal</label>
-        <input type="radio" id="journal"> <!-- scene or journal toggle -->
+        <label for="displayInScene">Display in Display Scene</label>
+        <!-- <input type="radio" id="displayInScene" name="displayLocation" value="{{ displayLocation }}" data-dtype="radio"> -->
+
+        <input type="radio" id="displayInScene" name="displayLocation" value=1 data-dtype="radio">
+        <label for="displayInPopout">Display in Image Journal Popout</label>
+        <input type="radio" id="displayInPopout" name="displayLocation" value=2 data-dtype="radio" checked> <!-- scene or journal toggle -->
+        <!-- <input type="radio" id="displayInPopout" name="displayLocation" value="{{ displayLocation }}" data-dtype="radio" checked> scene or journal toggle -->
     </div>
     <div>
-        <label for="activate-scene"> Activate Display Scene on Image Click </label>
-        <input type="checkbox" id="activate-scene"> <!-- activate scene on image click toggle-->
+        <label for="activateDisplayScene"> Activate Display Scene on Image Click </label>
+        <input type="checkbox" name="activateDisplayScene" value="{{ activateDisplayScene }}" data-dtype="Boolean"> <!-- activate scene on image click toggle-->
     </div>
     <div>
         <input type="submit" id="submit-btn">

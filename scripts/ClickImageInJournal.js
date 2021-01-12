@@ -1,7 +1,13 @@
 //var DisplayTileConfig = require('./DisplayTileConfig.js');
 import  DisplayTileConfig  from '../classes/DisplayTileConfig.js'
+import  { registerSettings } from './settings.js'
 var displayScene;
 var displayTile;
+
+
+function changeScaleValue(){
+
+}
 
 function highlight(ev) {
 	//when hovering over an image, 'highlight' it by changing its shadow
@@ -40,7 +46,12 @@ async function displayImage(ev) {
 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
 	if (DisplaySceneFound()) {
 		//TODO: Make this configurable
-		//displayScene.activate();
+		console.log("Activate scene? " + game.settings.get("journal-to-canvas-slideshow", "activateDisplayScene"));
+		if(game.settings.get("journal-to-canvas-slideshow", "activateDisplayScene")){
+			//this should evaluate to true or false
+			console.log("Should activate Display Scene");
+			displayScene.activate();
+		}
 	} else {
 		//if there is no display scene, return
 		console.log("No display scene");
@@ -85,7 +96,8 @@ async function displayImage(ev) {
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
-	var scaleDownFactor = 200;
+	var scaleDownFactor = game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
+	console.log(scaleDownFactor);
 	dimensionObject.width -= scaleDownFactor;
 	dimensionObject.height -= scaleDownFactor;
 	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
@@ -306,16 +318,22 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	html.find(".lightbox-image").each((i, div) => {
 		div.classList.add("clickableImage");
 	})
+	setEventListeners(html);
 
 	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
 	//and event listeners for the "displayImage" function when clicked
-	html.find('.clickableImage').each((i, div) => {
-		div.addEventListener("click", displayImage, false);
-		div.addEventListener("mouseover", highlight, false);
-		div.addEventListener("mouseout", dehighlight, false);
-		div.addEventListener("mousedown", depressImage, false);
-		div.addEventListener("mouseup", liftImage, false);
-	});
+	// html.find('.clickableImage').each((i, div) => {
+	// 	div.addEventListener("click", displayImage, false);
+	// 	div.addEventListener("mouseover", highlight, false);
+	// 	div.addEventListener("mouseout", dehighlight, false);
+	// 	div.addEventListener("mousedown", depressImage, false);
+	// 	div.addEventListener("mouseup", liftImage, false);
+	// });
 
 
 });
+
+Hooks.once('init', async function(){
+	console.log("Initializing Journal to Canvas Slideshow");
+	registerSettings();
+})
