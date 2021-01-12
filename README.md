@@ -92,6 +92,11 @@ This project does support .webm and .mp4 files, however inserting a video into a
 
 # Changelog
 
+## **v0.1.2** - 2021-01-03
+
+**Major:**
+* Fixed an incompatability issue with the Call of Cthulhu 7e (CoC7) system.
+
 ## **v0.1.1** - 2020-12-28
 
 ### **Added**

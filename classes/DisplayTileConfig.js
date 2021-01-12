@@ -16,15 +16,16 @@ export default class DisplayTileConfig extends FormApplication {
 
     getData(){
         return {
-            padding: game.scenes.active.getFlag("world", 'padding'),//200, //scale down factor
-            sceneOrJournal: game.scenes.active.getFlag("world", 'sceneOrJournal'), //toggle for if you want it to display in a scene or a journal
-            activateDisplaySceneOnClick: game.scenes.active.getFlag("world", 'activateDisplayScene') //toggle for if you want the display scene to activate when you click on a journal image or not
-            
-
+            scaleDown: game.scenes.active.getFlag("world", "scaleDown"),//200, //scale down factor
+            displayLocation: game.scenes.active.getFlag("world", "displayLocation"),
+            // displayInScene: game.scenes.active.getFlag("world", "displayInScene"), //toggle for if you want it to display in a scene or a journal
+            // displayInPopout: game.scenes.active.getFlag("world", "displayInPopout"),
+            activateDisplayScene: game.scenes.active.getFlag("world", 'activateDisplayScene') //toggle for if you want the display scene to activate when you click on a journal image or not
         };
     }
 
     async _updateObject(event, formData){
+      console.log(event);
       console.log(formData);
       Object.entries(formData).forEach(async ([key, val]) => {
         console.log(key, val);
