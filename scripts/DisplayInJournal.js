@@ -1,7 +1,7 @@
-let displayJournal;
-let journalImage;
+export let displayJournal;
+export let journalImage;
 
-function FindDisplayJournal(){
+export function FindDisplayJournal(){
     let journalEntries = game.journal.entries;
     let foundDisplayJournal = false;
     journalEntries.forEach( element => {
@@ -20,7 +20,7 @@ function CreateDisplayJournal(){
 
 }
 
-function ChangeDisplayImage(url){
+export function ChangeDisplayImage(url){
     //get the url from the image clicked in the journal
     if(!FindDisplayJournal()){
         //couldn't find display journal, so return
@@ -33,10 +33,10 @@ function ChangeDisplayImage(url){
 
 }
 
-Hooks.on("renderJournalSheet", (app, html, options) => {
-    console.log(displayJournal + " vs " + app.object);
-    if(FindDisplayJournal() && app.object == displayJournal){
-        //the image that will be changed 
-        journalImage = html.find(".lightbox-image");
-    }
-})
+// Hooks.on("renderJournalSheet", (app, html, options) => {
+//     console.log(displayJournal + " vs " + app.object);
+//     if(FindDisplayJournal() && app.object == displayJournal){
+//         //the image that will be changed 
+//         journalImage = html.find(".lightbox-image");
+//     }
+// })
