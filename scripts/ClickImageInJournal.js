@@ -1,9 +1,11 @@
 //var DisplayTileConfig = require('./DisplayTileConfig.js');
 import  DisplayTileConfig  from '../classes/DisplayTileConfig.js'
 import  { registerSettings } from './settings.js'
+
 var displayScene;
 var displayTile;
-
+var displayJournal;
+var journalImage;
 
 function changeScaleValue(){
 
@@ -41,9 +43,73 @@ function liftImage(ev){
 
 }
 
+
+function FindDisplayJournal(){
+    let journalEntries = game.journal.entries;
+    let foundDisplayJournal = false;
+    journalEntries.forEach( element => {
+        //go through elements. If found, set bool to true. If not, it'll remain false. Return.
+        if(element.name == "Display Journal"){
+            displayJournal = element;
+            foundDisplayJournal = true;
+        }
+    });
+    return foundDisplayJournal;
+
+}
+
+function CreateDisplayJournal(){
+
+
+}
+
+async function ChangeDisplayImage(url){
+    //get the url from the image clicked in the journal
+    if(!FindDisplayJournal()){
+        //couldn't find display journal, so return
+        ui.notifications.error("No display journal found");
+        return;
+	}
+	else{
+		console.log(journalImage);
+	}
+    //change the background image to be the clicked image in the journal
+    journalImage[0].style.backgroundImage = `url(${url})`;
+
+
+}
+async function displayImageInPopout(ev){
+
+	let element = ev.currentTarget;
+	let type = element.nodeName;
+	let url;
+
+
+	if (type == "IMG") {
+		url = element.getAttribute("src");
+	} else if (type == "VIDEO") {
+		url = element.getElementsByTagName("source")[0].getAttribute("src");
+	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
+		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
+		let img = element.style;
+		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+	} else {
+		console.log("Type not supported");
+		return;
+
+	}
+
+	//add setting to activate 'show to players' or not
+	ChangeDisplayImage(url);
+	//load the texture from the source
+//	const tex = await loadTexture(url);
+}
+
 async function displayImage(ev) {
 
 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
+		// 0 should equal the default, a scene
 	if (DisplaySceneFound()) {
 		//TODO: Make this configurable
 		console.log("Activate scene? " + game.settings.get("journal-to-canvas-slideshow", "activateDisplayScene"));
@@ -275,7 +341,14 @@ function wait(callback) {
 
 function execute(html) {
 	html.find('.clickableImage').each((i, div) => {
+	if(game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "0"){
+		//if the setting is to display it in a scene, proceed as normal
 		div.addEventListener("click", displayImage, false);
+	}
+	else{
+		//if the setting is to display it in a popout, change it to display in a popout
+		div.addEventListener("click", displayImageInPopout, false);
+	}
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 		div.addEventListener("mousedown", depressImage, false);
@@ -318,8 +391,12 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	html.find(".lightbox-image").each((i, div) => {
 		div.classList.add("clickableImage");
 	})
-	setEventListeners(html);
 
+	setEventListeners(html);
+  	if(FindDisplayJournal() && app.object == displayJournal){
+        //the image that will be changed 
+        journalImage = html.find(".lightbox-image");
+    }
 	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
 	//and event listeners for the "displayImage" function when clicked
 	// html.find('.clickableImage').each((i, div) => {
