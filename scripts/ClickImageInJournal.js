@@ -339,25 +339,26 @@ Hooks.on("renderSidebarTab", (app, html) => {
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
-	//find all img and video tags in the html, and add the clickableImage class to all of them
-	html.find('img').attr("class", "clickableImage");
-	html.find('video').attr("class", "clickableImage");
-	//find the lightbox images for the 'image' journal mode as well and do the same as above
-	html.find(".lightbox-image").each((i, div) => {
-		div.classList.add("clickableImage");
-	})
+	if (game.user.isGM) {
+		//find all img and video tags in the html, and add the clickableImage class to all of them
+		html.find('img').attr("class", "clickableImage");
+		html.find('video').attr("class", "clickableImage");
+		//find the lightbox images for the 'image' journal mode as well and do the same as above
+		html.find(".lightbox-image").each((i, div) => {
+			div.classList.add("clickableImage");
+		})
 
 
-	console.log("rendering journal sheet");
-	setEventListeners(html);
-	// html.find('.clickableImage').each((i, div) => {
-	// 	div.addEventListener("click", displayImage, false);
-	// 	div.addEventListener("mouseover", highlight, false);
-	// 	div.addEventListener("mouseout", dehighlight, false);
-	// 	div.addEventListener("mousedown", depressImage, false);
-	// 	div.addEventListener("mouseup", liftImage, false);
-	// });
-
+		// console.log("rendering journal sheet");
+		setEventListeners(html);
+		// html.find('.clickableImage').each((i, div) => {
+		// 	div.addEventListener("click", displayImage, false);
+		// 	div.addEventListener("mouseover", highlight, false);
+		// 	div.addEventListener("mouseout", dehighlight, false);
+		// 	div.addEventListener("mousedown", depressImage, false);
+		// 	div.addEventListener("mouseup", liftImage, false);
+		// });
+	}
 
 });
 
