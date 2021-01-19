@@ -45,27 +45,7 @@ async function displayImage(ev) {
 		return;
 	}
 
-	//get the element whose source we want to display as a tile, and what type it is (image or video)
-	let element = ev.currentTarget;
-	let type = element.nodeName;
-	let url;
-
-	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
-	if (type == "IMG") {
-		url = element.getAttribute("src");
-	} else if (type == "VIDEO") {
-		url = element.getElementsByTagName("source")[0].getAttribute("src");
-	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
-		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
-		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
-		let img = element.style;
-		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-	} else {
-		console.log("Type not supported");
-		return;
-
-	}
-
+	let url = retrieveMediaUrl(ev);
 
 	//load the texture from the source
 	const tex = await loadTexture(url);
@@ -76,7 +56,7 @@ async function displayImage(ev) {
 
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
-	console.log(displayTile);
+	// console.log(displayTile);
 	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
 	}
@@ -127,6 +107,44 @@ async function displayImage(ev) {
 }
 
 
+function displayImageAsPopout(ev) {
+	let url = retrieveMediaUrl(ev);
+
+	const popout = new ImagePopout(url, {
+		title: '',
+		shareable: true
+	});
+
+	popout.render(true);
+
+	if (game.settings.get("journal-to-canvas-slideshow", "shareWithPlayers")) {
+		popout.shareImage();
+	}
+}
+
+function retrieveMediaUrl(ev) {
+	//get the element whose source we want to display as a tile, and what type it is (image or video)
+	let element = ev.currentTarget;
+	let type = element.nodeName;
+	let url;
+
+	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
+	if (type == "IMG") {
+		url = element.getAttribute("src");
+	} else if (type == "VIDEO") {
+		url = element.getElementsByTagName("source")[0].getAttribute("src");
+	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript --
+		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
+		let img = element.style;
+		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+	} else {
+		console.log("Type not supported");
+		return;
+	}
+
+	return url;
+}
 
 
 function createSceneButton(app, html) {
@@ -147,7 +165,7 @@ function createSceneButton(app, html) {
 
 
 async function GenerateDisplayScene() {
-	//create a Display" scene 
+	//create a Display" scene
 	//set the scene to 2000 by 2000, and set the background color to a dark gray
 	if (!DisplaySceneFound()) {
 		displayScene = null;
@@ -157,7 +175,7 @@ async function GenerateDisplayScene() {
 		displayScene = await Scene.create({
 			name: "Display",
 		});
-		//activate the scene 
+		//activate the scene
 		await displayScene.activate();
 		//update the scene
 		await displayScene.update({
@@ -261,7 +279,11 @@ function wait(callback) {
 
 function execute(html) {
 	html.find('.clickableImage').each((i, div) => {
-		div.addEventListener("click", displayImage, false);
+		if (game.settings.get("journal-to-canvas-slideshow", "toPopout")) {
+			div.addEventListener("click", displayImageAsPopout, false);
+		} else {
+			div.addEventListener("click", displayImage, false);
+		}
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 		div.addEventListener("mousedown", depressImage, false);
@@ -269,21 +291,51 @@ function execute(html) {
 	});
 }
 
+function registerSettings() {
+	game.settings.register('journal-to-canvas-slideshow', 'toPopout', {
+		name: 'Render media in a popout',
+		hint: 'Check this if you want to use a popout rather than a scene do display your media.',
+		scope: 'world',
+		config: true,
+		default: false,
+		type: Boolean,
+		onChange: () => {
+			location.reload();
+		}
+	});
+
+	game.settings.register('journal-to-canvas-slideshow', 'shareWithPlayers', {
+		name: 'Automatically share popout window.',
+		hint: 'Automatically share the popout with the players (Popout only).',
+		scope: 'world',
+		config: true,
+		default: false,
+		type: Boolean
+	});
+}
+
 Hooks.on("getSceneControlButtons", (controls) => {
 	//controls refers to all of the controls
-	const tileControls = controls.find((control) => control?.name === "tiles");
-	if (game.user.isGM) {
-		tileControls.tools.push({
-			name: 'ClearDisplay',
-			title: 'ClearDisplay',
-			icon: 'far fa-times-circle',
-			onClick: () => {
-				clearDisplayTile();
-			}
-		})
+	if (!game.settings.get("journal-to-canvas-slideshow", "toPopout")) {
+		const tileControls = controls.find((control) => control?.name === "tiles");
+		if (game.user.isGM) {
+			tileControls.tools.push({
+				name: 'ClearDisplay',
+				title: 'ClearDisplay',
+				icon: 'far fa-times-circle',
+				onClick: () => {
+					clearDisplayTile();
+				}
+			})
+		}
 	}
 });
-Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
+
+Hooks.on("renderSidebarTab", (app, html) => {
+	if (!game.settings.get("journal-to-canvas-slideshow", "toPopout")) {
+		createSceneButton(app, html)
+	}
+}); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
@@ -295,7 +347,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 		div.classList.add("clickableImage");
 	})
 
-	
+
 	console.log("rendering journal sheet");
 	setEventListeners(html);
 	// html.find('.clickableImage').each((i, div) => {
@@ -307,4 +359,8 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	// });
 
 
+});
+
+Hooks.once('init', async function () {
+	registerSettings();
 });
