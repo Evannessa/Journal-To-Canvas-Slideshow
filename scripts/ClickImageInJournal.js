@@ -7,10 +7,6 @@ var displayTile;
 var displayJournal;
 var journalImage;
 
-function changeScaleValue(){
-
-}
-
 function highlight(ev) {
 	//when hovering over an image, 'highlight' it by changing its shadow
 	let element = ev.target;
@@ -75,12 +71,15 @@ async function ChangeDisplayImage(url){
     //get the url from the image clicked in the journal
     if(!FindDisplayJournal()){
         //couldn't find display journal, so return
-        ui.notifications.error("No display journal found");
+        ui.notifications.error("No journal entry named 'Display Journal' found");
         return;
 	}
 	else{
-		console.log(journalImage);
-		displayJournal.render(false, {});
+		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+			//if we have the auto show display settings on, automatically show the journal after the button is clicked
+			displayJournal.render(false, {});
+			displayJournal.show("image", true);
+		}
 	}
 	//change the background image to be the clicked image in the journal
 	//TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
@@ -126,10 +125,10 @@ async function displayImage(ev) {
 		// 0 should equal the default, a scene
 	if (DisplaySceneFound()) {
 		//TODO: Make this configurable
-		console.log("Activate scene? " + game.settings.get("journal-to-canvas-slideshow", "activateDisplayScene"));
-		if(game.settings.get("journal-to-canvas-slideshow", "activateDisplayScene")){
+		console.log("Auto show display? " + game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay"));
+		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
 			//this should evaluate to true or false
-			console.log("Should activate Display Scene");
+			console.log("Should automatically show display?");
 			displayScene.activate();
 		}
 	} else {
@@ -176,7 +175,7 @@ async function displayImage(ev) {
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
-	var scaleDownFactor = game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
+	var scaleDownFactor = 200;//game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
 	console.log(scaleDownFactor);
 	dimensionObject.width -= scaleDownFactor;
 	dimensionObject.height -= scaleDownFactor;
@@ -360,16 +359,27 @@ function wait(callback) {
 	})
 }
 
+function determineLocation(ev){
+	//on click, this method will determine if the image should open in a scene or in a display journal
+	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+	console.log(location);
+	console.log(location=="window");
+	if(location == "scene"){
+		//if the setting is to display it in a scene, proceed as normal
+		console.log("Displaying image in scene");
+		displayImage(ev);
+	}
+	else if(location=="window"){
+		//if the setting is to display it in a popout, change it to display in a popout
+		console.log("Displaying image in window");
+		displayImageInPopout(ev);
+	}
+
+
+}
 function execute(html) {
 	html.find('.clickableImage').each((i, div) => {
-	if(game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "0"){
-		//if the setting is to display it in a scene, proceed as normal
-		div.addEventListener("click", displayImage, false);
-	}
-	else{
-		//if the setting is to display it in a popout, change it to display in a popout
-		div.addEventListener("click", displayImageInPopout, false);
-	}
+	 	div.addEventListener("click", determineLocation, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 		div.addEventListener("mousedown", depressImage, false);
@@ -406,32 +416,30 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
 	//find all img and video tags in the html, and add the clickableImage class to all of them
-	html.find('img').attr("class", "clickableImage");
-	html.find('video').attr("class", "clickableImage");
-	//find the lightbox images for the 'image' journal mode as well and do the same as above
-	html.find(".lightbox-image").each((i, div) => {
-		div.classList.add("clickableImage");
-	})
+	console.log(app.object + " vs " + displayJournal);
+	if(app.object != displayJournal){
+		//unless it's a display journal, as we don't want it clickable
+		html.find('img').attr("class", "clickableImage");
+		html.find('video').attr("class", "clickableImage");
+		//find the lightbox images for the 'image' journal mode as well and do the same as above
+		html.find(".lightbox-image").each((i, div) => {
+			div.classList.add("clickableImage");
+		})
+}
 
 	setEventListeners(html);
   	if(FindDisplayJournal() && app.object == displayJournal){
         //the image that will be changed 
         journalImage = html.find(".lightbox-image");
     }
-	//look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
-	//and event listeners for the "displayImage" function when clicked
-	// html.find('.clickableImage').each((i, div) => {
-	// 	div.addEventListener("click", displayImage, false);
-	// 	div.addEventListener("mouseover", highlight, false);
-	// 	div.addEventListener("mouseout", dehighlight, false);
-	// 	div.addEventListener("mousedown", depressImage, false);
-	// 	div.addEventListener("mouseup", liftImage, false);
-	// });
-
 
 });
 
 Hooks.once('init', async function(){
 	console.log("Initializing Journal to Canvas Slideshow");
 	registerSettings();
-})
+});
+Hooks.once('ready', ()=>{
+	FindDisplayJournal();
+	DisplaySceneFound();
+});
