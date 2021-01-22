@@ -291,6 +291,30 @@ async function GenerateDisplayScene() {
 
 }
 
+async function determineWhatToClear(){
+	console.log("Determining what to clear!");
+	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+	if(location == "scene"){
+		clearDisplayTile();
+	}
+	else if(location == "window"){
+		clearDisplayWindow();
+	}
+}
+
+async function clearDisplayWindow(){
+	if(!FindDisplayJournal()){
+		return;
+	}
+	let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";   
+	let update = {
+		_id: displayJournal._id,
+		img: url
+	}
+
+	const updated = await displayJournal.update(update, {});
+
+}
 async function clearDisplayTile() {
 	//create a tile for the scene
 	if (!DisplaySceneFound()) {
@@ -362,8 +386,6 @@ function wait(callback) {
 function determineLocation(ev){
 	//on click, this method will determine if the image should open in a scene or in a display journal
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-	console.log(location);
-	console.log(location=="window");
 	if(location == "scene"){
 		//if the setting is to display it in a scene, proceed as normal
 		console.log("Displaying image in scene");
@@ -396,20 +418,20 @@ Hooks.on("getSceneControlButtons", (controls) => {
 				title: 'ClearDisplay',
 				icon: 'far fa-times-circle',
 				onClick: () => {
-					clearDisplayTile();	
+					determineWhatToClear();//clearDisplayTile();	
 				},
 				button: true
 			})
 		}
-		tileControls.tools.push({
-			name: 'Display Config',
-			title: 'Display Config',
-			icon: 'fas fa-cog',
-			onClick: () => {
-				new DisplayTileConfig().render(true);
-			},
-			button: true
-		})
+		// tileControls.tools.push({
+		// 	name: 'Display Config',
+		// 	title: 'Display Config',
+		// 	icon: 'fas fa-cog',
+		// 	onClick: () => {
+		// 		new DisplayTileConfig().render(true);
+		// 	},
+		// 	button: true
+		// })
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
