@@ -98,19 +98,21 @@ The module now includes a feature to display your journal images in a window rat
 
 !["Display in Window"](https://media.giphy.com/media/2ubtah0ZPWcWtpzyh6/source.gif)
 
-In order to use this new feature, navigate to the "Journal" tab and click on the button that says "Create or Show Display Entry". A journal will be created named "Display Journal".
+In order to use this new feature 
+
+1. navigate to the "Journal" tab and click on the button that says "Create or Show Display Entry". A journal will be created named "Display Journal".
 
 (*Note*: You can click this button again after the Display Journal is created to show the Display Journal to all of your players.)
 
 (*Note*: Do not rename the Display Journal for now. The script searches for a journal with the name "Display Journal", so renaming it will make it so the script cannot find it.)
 
-Next, navigate to "Journal to Canvas Slideshow"'s settings in the "Module Settings" tab of the "Configure Game Settings" window. 
+2. Navigate to "Journal to Canvas Slideshow"'s settings in the "Module Settings" tab of the "Configure Game Settings" window. 
 
-You will see a setting called "Display Location", and you can switch it from "Scene" to "Window". 
+3. You will see a setting called "Display Location", and you can switch it from "Scene" to "Window". 
 
 !["Module settings"](https://i.imgur.com/djMriuR.jpg)
 
-This will allow clicked-on journal images to be shown in the Display Journal rather than in the Display scene, as demonstrated in the gif above.
+4. This will allow clicked-on journal images to be shown in the Display Journal rather than in the Display scene, as demonstrated in the above gif.
 
 ( *Note*: For right now, to 'clear' the Display Journal, (while it's selected as the Display Location in the module settings), you can click on the same "ClearDisplay" button under the Tiles section of the scene controls as you would use to clear the tile in the Display scene. This will set the image to a blank/transparent image. I intend to add a button to the actual window later on. )
 
@@ -135,9 +137,6 @@ A toggleable option is also included in the module settings to automatically act
 
 * NEW: Module settings
 
-**Changes**
-
-* New: 
 
 
 ## **v0.1.2** - 2021-01-03
