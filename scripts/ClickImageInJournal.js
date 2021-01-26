@@ -1,5 +1,11 @@
+//var DisplayTileConfig = require('./DisplayTileConfig.js');
+import  DisplayTileConfig  from '../classes/DisplayTileConfig.js'
+import  { registerSettings } from './settings.js'
+
 var displayScene;
 var displayTile;
+var displayJournal;
+var journalImage;
 
 function highlight(ev) {
 	//when hovering over an image, 'highlight' it by changing its shadow
@@ -33,12 +39,98 @@ function liftImage(ev) {
 
 }
 
+
+function FindDisplayJournal(){
+    let journalEntries = game.journal.entries;
+    let foundDisplayJournal = false;
+    journalEntries.forEach( element => {
+        //go through elements. If found, set bool to true. If not, it'll remain false. Return.
+        if(element.name == "Display Journal"){
+			displayJournal = element;
+            foundDisplayJournal = true;
+        }
+    });
+    return foundDisplayJournal;
+
+}
+
+async function CreateDisplayJournal(){
+	//create a display journal
+	if(!FindDisplayJournal()){
+		displayJournal = await JournalEntry.create({name: "Display Journal"});
+	}
+	else{
+		//if it already exists, render it and show to players
+		displayJournal.render(false);
+		displayJournal.show("image", true);
+	}
+
+}
+
+async function ChangeDisplayImage(url){
+    //get the url from the image clicked in the journal
+    if(!FindDisplayJournal()){
+        //couldn't find display journal, so return
+        ui.notifications.error("No journal entry named 'Display Journal' found");
+        return;
+	}
+	else{
+		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+			//if we have the auto show display settings on, automatically show the journal after the button is clicked
+			displayJournal.render(false, {});
+			displayJournal.show("image", true);
+		}
+	}
+	//change the background image to be the clicked image in the journal
+	//TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
+	let update = {
+		_id: displayJournal._id,
+		img: url
+	}
+
+	const updated = await displayJournal.update(update, {});
+
+}
+async function displayImageInPopout(ev){
+
+	let element = ev.currentTarget;
+	let type = element.nodeName;
+	let url;
+
+
+	if (type == "IMG") {
+		url = element.getAttribute("src");
+	} else if (type == "VIDEO") {
+		url = element.getElementsByTagName("source")[0].getAttribute("src");
+	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
+		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
+		let img = element.style;
+		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+	} else {
+		console.log("Type not supported");
+		return;
+
+	}
+
+	//add setting to activate 'show to players' or not
+	ChangeDisplayImage(url);
+	//load the texture from the source
+//	const tex = await loadTexture(url);
+}
+
 async function displayImage(ev) {
 
 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
+		// 0 should equal the default, a scene
 	if (DisplaySceneFound()) {
 		//TODO: Make this configurable
-		//displayScene.activate();
+		console.log("Auto show display? " + game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay"));
+		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+			//this should evaluate to true or false
+			console.log("Should automatically show display?");
+			displayScene.activate();
+		}
 	} else {
 		//if there is no display scene, return
 		console.log("No display scene");
@@ -83,7 +175,8 @@ async function displayImage(ev) {
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
-	var scaleDownFactor = 200;
+	var scaleDownFactor = 200;//game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
+	console.log(scaleDownFactor);
 	dimensionObject.width -= scaleDownFactor;
 	dimensionObject.height -= scaleDownFactor;
 	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
@@ -141,6 +234,13 @@ function createSceneButton(app, html) {
 		button.click(GenerateDisplayScene);
 		html.find(".directory-footer").prepend(button);
 	}
+	console.log(app.options.id);
+	if(app.options.id == "journal"){
+		//create the journal button for generating a popout
+		let button = $("<button>Create or Show Display Entry</button>");
+		button.click(CreateDisplayJournal);
+		html.find(".directory-footer").prepend(button);
+	}
 
 
 }
@@ -191,6 +291,30 @@ async function GenerateDisplayScene() {
 
 }
 
+async function determineWhatToClear(){
+	console.log("Determining what to clear!");
+	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+	if(location == "scene"){
+		clearDisplayTile();
+	}
+	else if(location == "window"){
+		clearDisplayWindow();
+	}
+}
+
+async function clearDisplayWindow(){
+	if(!FindDisplayJournal()){
+		return;
+	}
+	let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";   
+	let update = {
+		_id: displayJournal._id,
+		img: url
+	}
+
+	const updated = await displayJournal.update(update, {});
+
+}
 async function clearDisplayTile() {
 	//create a tile for the scene
 	if (!DisplaySceneFound()) {
@@ -259,9 +383,25 @@ function wait(callback) {
 	})
 }
 
+function determineLocation(ev){
+	//on click, this method will determine if the image should open in a scene or in a display journal
+	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+	if(location == "scene"){
+		//if the setting is to display it in a scene, proceed as normal
+		console.log("Displaying image in scene");
+		displayImage(ev);
+	}
+	else if(location=="window"){
+		//if the setting is to display it in a popout, change it to display in a popout
+		console.log("Displaying image in window");
+		displayImageInPopout(ev);
+	}
+
+
+}
 function execute(html) {
 	html.find('.clickableImage').each((i, div) => {
-		div.addEventListener("click", displayImage, false);
+	 	div.addEventListener("click", determineLocation, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 		div.addEventListener("mousedown", depressImage, false);
@@ -274,37 +414,45 @@ Hooks.on("getSceneControlButtons", (controls) => {
 	const tileControls = controls.find((control) => control?.name === "tiles");
 	if (game.user.isGM) {
 		tileControls.tools.push({
-			name: 'ClearDisplay',
-			title: 'ClearDisplay',
-			icon: 'far fa-times-circle',
-			onClick: () => {
-				clearDisplayTile();
-			}
-		})
-	}
+				name: 'ClearDisplay',
+				title: 'ClearDisplay',
+				icon: 'far fa-times-circle',
+				onClick: () => {
+					determineWhatToClear();//clearDisplayTile();	
+				},
+				button: true
+			})
+		}
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
 	//find all img and video tags in the html, and add the clickableImage class to all of them
-	html.find('img').attr("class", "clickableImage");
-	html.find('video').attr("class", "clickableImage");
-	//find the lightbox images for the 'image' journal mode as well and do the same as above
-	html.find(".lightbox-image").each((i, div) => {
-		div.classList.add("clickableImage");
-	})
+	console.log(app.object + " vs " + displayJournal);
+	if(app.object != displayJournal){
+		//unless it's a display journal, as we don't want it clickable
+		html.find('img').attr("class", "clickableImage");
+		html.find('video').attr("class", "clickableImage");
+		//find the lightbox images for the 'image' journal mode as well and do the same as above
+		html.find(".lightbox-image").each((i, div) => {
+			div.classList.add("clickableImage");
+		})
+}
 
-	
-	console.log("rendering journal sheet");
 	setEventListeners(html);
-	// html.find('.clickableImage').each((i, div) => {
-	// 	div.addEventListener("click", displayImage, false);
-	// 	div.addEventListener("mouseover", highlight, false);
-	// 	div.addEventListener("mouseout", dehighlight, false);
-	// 	div.addEventListener("mousedown", depressImage, false);
-	// 	div.addEventListener("mouseup", liftImage, false);
-	// });
+  	if(FindDisplayJournal() && app.object == displayJournal){
+        //the image that will be changed 
+        journalImage = html.find(".lightbox-image");
+    }
 
+});
 
+Hooks.once('init', async function(){
+	console.log("Initializing Journal to Canvas Slideshow");
+	registerSettings();
+});
+Hooks.once('ready', ()=>{
+	FindDisplayJournal();
+	DisplaySceneFound();
 });
