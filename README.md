@@ -96,7 +96,7 @@ This project does support .webm and .mp4 files, however inserting a video into a
 
 The module now includes a feature to display your journal images in a window rather than in a dedicated scene. This will allow you to click through and present your 'slideshow' to your players even while they're on another scene, like a battlemap.
 
-!["Display in Window"](https://media4.giphy.com/media/2ubtah0ZPWcWtpzyh6/giphy.gif)
+!["Display in Window"](https://media.giphy.com/media/2ubtah0ZPWcWtpzyh6/giphy.gif)
 
 (Note: If above gif doesn't display, please click this link to see it: https://media.giphy.com/media/2ubtah0ZPWcWtpzyh6/source.gif)
 
