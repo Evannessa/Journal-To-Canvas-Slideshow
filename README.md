@@ -2,14 +2,17 @@
 # Journal to Canvas Slideshow
 
 ### Table of Contents
-- [Journal to Canvas Slideshow](#journal-to-canvas-slideshow)
   * [WARNING](#warning)
 - [About the Project](#about-the-project)
   * [Built With](#built-with)
-- [Installation and Getting Started](#getting-started)
+- [Installation and Getting Started](#installation-and-getting-started)
 - [How to Use](#how-to-use)
-  * [Videos in Journal](#videos)
+  * [Videos in Journal](#videos-in-journal)
+  * [Display In Window and Module Settings](#display-in-window-and-module-settings)
+    + [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
 - [Changelog](#changelog)
+  * [**v0.1.3** - 2021-01-15](#--v013-----2021-01-15)
+  * [**v0.1.2** - 2021-01-03](#--v012-----2021-01-03)
   * [**v0.1.1** - 2020-12-28](#--v011-----2020-12-28)
     + [**Added**](#--added--)
     + [**Changes**](#--changes--)
@@ -20,7 +23,6 @@
 - [Contact Me](#contact-me)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 
 ## WARNING 
 
@@ -90,7 +92,52 @@ This project does support .webm and .mp4 files, however inserting a video into a
 
 !["Clicking on vid to change tile"](https://media0.giphy.com/media/rF4mjVrm5L6Y4MrmSx/giphy.gif)
 
+## Display In Window and Module Settings
+
+The module now includes a feature to display your journal images in a window rather than in a dedicated scene. This will allow you to click through and present your 'slideshow' to your players even while they're on another scene, like a battlemap.
+
+!["Display in Window"](https://media.giphy.com/media/2ubtah0ZPWcWtpzyh6/source.gif)
+
+In order to use this new feature 
+
+1. navigate to the "Journal" tab and click on the button that says "Create or Show Display Entry". A journal will be created named "Display Journal".
+
+(*Note*: You can click this button again after the Display Journal is created to show the Display Journal to all of your players.)
+
+(*Note*: Do not rename the Display Journal for now. The script searches for a journal with the name "Display Journal", so renaming it will make it so the script cannot find it.)
+
+2. Navigate to "Journal to Canvas Slideshow"'s settings in the "Module Settings" tab of the "Configure Game Settings" window. 
+
+3. You will see a setting called "Display Location", and you can switch it from "Scene" to "Window". 
+
+!["Module settings"](https://i.imgur.com/djMriuR.jpg)
+
+4. This will allow clicked-on journal images to be shown in the Display Journal rather than in the Display scene, as demonstrated in the above gif.
+
+( *Note*: For right now, to 'clear' the Display Journal, (while it's selected as the Display Location in the module settings), you can click on the same "ClearDisplay" button under the Tiles section of the scene controls as you would use to clear the tile in the Display scene. This will set the image to a blank/transparent image. I intend to add a button to the actual window later on. )
+
+### Auto-Activate or Auto-Show Toggle
+
+A toggleable option is also included in the module settings to automatically activate the "Display" scene OR automatically show the "Display Journal" window to players when you click on a journal image, depending on which option you have selected for the Display Location setting.
+
+!["Module settings1"](https://i.imgur.com/k3CwDBa.jpg)
+
+(*Note*: A notification appears each time you click a journal image while having this setting turned on in conjunction with the "Window" option for the Display Location setting. This is because it uses the same functionality as the "Show Players" button at the top of a journal in image mode. I'll have to figure out how to change that if possible.)
+
 # Changelog
+
+## **v0.1.3** - 2021-01-22
+
+**ADDED**
+
+**Major**:
+
+* NEW: Added option to display journal images in a window rather than display scene
+
+
+* NEW: Module settings
+
+
 
 ## **v0.1.2** - 2021-01-03
 
@@ -118,7 +165,7 @@ This project does support .webm and .mp4 files, however inserting a video into a
 
 # Roadmap
 
-Might add some more configuration options for the sizing of the tile compared to the canvas.
+Might add some configuration options for the sizing of the tile compared to the canvas.
 
 # Code Explanation
 
