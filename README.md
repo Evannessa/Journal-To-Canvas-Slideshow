@@ -98,6 +98,8 @@ The module now includes a feature to display your journal images in a window rat
 
 !["Display in Window"](https://media4.giphy.com/media/2ubtah0ZPWcWtpzyh6/giphy.gif)
 
+(Note: If above gif doesn't display, please click this link to see it: https://media.giphy.com/media/2ubtah0ZPWcWtpzyh6/source.gif)
+
 In order to use this new feature 
 
 1. navigate to the "Journal" tab and click on the button that says "Create or Show Display Entry". A journal will be created named "Display Journal".
