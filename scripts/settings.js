@@ -35,6 +35,18 @@ game.settings.register("journal-to-canvas-slideshow", "autoShowDisplay", {
 
 });
 
+// game.settings.register("journal-to-canvas-slideshow", "displayJournalName",{
+
+// });
+
+game.settings.register("journal-to-canvas-slideshow", "displaySceneName", {
+	name: "Display Scene Name",
+	hint: "What would you like to name the display scene?",
+	scope: "client",
+	config: true,
+	type: String,
+	default: "Display"
+});
 // game.settings.register("journal-to-canvas-slideshow", "displayJournal", {
 // 	name: "Display Journal",
 // 	hint: "Which journal entry the display will show in",
