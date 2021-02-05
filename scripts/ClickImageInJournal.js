@@ -255,13 +255,13 @@ async function GenerateDisplayScene() {
 
 		//create a new scene named display
 		displayScene = await Scene.create({
-			name: "Display",
+			name: game.settings.get("journal-to-canvas-slideshow", "displaySceneName")
 		});
 		//activate the scene 
 		await displayScene.activate();
 		//update the scene
 		await displayScene.update({
-			name: "Display",
+			name: game.settings.get("journal-to-canvas-slideshow", "displaySceneName"),
 			width: 2000,
 			height: 2000,
 			backgroundColor: "#202020",
@@ -345,7 +345,7 @@ function DisplaySceneFound() {
 	var scenes = game.scenes.entries;
 	var displaySceneFound = false;
 	for (var scn of scenes) {
-		if (scn.name == "Display") {
+		if (scn.name == game.settings.get("journal-to-canvas-slideshow", "displaySceneName")) {
 			//if we found the scene, make the display scene variable equal this scene
 			displayScene = scn;
 			displaySceneFound = true;
@@ -353,7 +353,7 @@ function DisplaySceneFound() {
 	}
 	if (!displaySceneFound) {
 		//notify the user that there's no display scene
-		ui.notifications.error("No display scene found -- make sure there's a scene named 'Display'");
+		ui.notifications.error("No display scene found -- make sure there's a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"));
 	}
 	//return whether or not we've found a scene named 'Display'
 	return displaySceneFound;

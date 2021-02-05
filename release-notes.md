@@ -8,6 +8,7 @@
 
 
 * NEW: Module settings
+
 ## **v0.1.2** 
 
 **Major:**
