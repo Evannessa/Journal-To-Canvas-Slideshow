@@ -114,9 +114,7 @@ async function displayImageInPopout(ev){
 	}
 
 	//add setting to activate 'show to players' or not
-	ChangeDisplayImage(url);
-	//load the texture from the source
-//	const tex = await loadTexture(url);
+	displayImageInPopoutFromUrl(url);
 }
 
 async function displayImage(ev) {
@@ -158,65 +156,7 @@ async function displayImage(ev) {
 
 	}
 
-
-	//load the texture from the source
-	const tex = await loadTexture(url);
-
-	//scales down the dimensions to meet the scene's canvas's size, but keeps the image or video's aspect ratio -- keep track of these dimensions in an object
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
-
-
-	//keep track of the tile, which should be the first tile in the display scene
-	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
-	console.log(displayTile);
-	if (!displayTile) {
-		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
-	}
-
-	//scane down factor is how big the tile will be in the scene
-	//make this scale down factor configurable at some point
-	var scaleDownFactor = 200;//game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
-	console.log(scaleDownFactor);
-	dimensionObject.width -= scaleDownFactor;
-	dimensionObject.height -= scaleDownFactor;
-	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
-
-	//separate objects depending on the texture's dimensions --
-	//create an 'update' object for if the image is wide (width is bigger than height)
-	var wideImageUpdate = {
-		_id: displayTile._id,
-		width: dimensionObject.width,
-		height: dimensionObject.height,
-		img: url,
-		x: scaleDownFactor / 2,
-		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
-	};
-	//create an 'update' object for if the image is tall (height is bigger than width)
-	var tallImageUpdate = {
-		_id: displayTile._id,
-		width: dimensionObject.width,
-		height: dimensionObject.height,
-		img: url,
-		y: scaleDownFactor / 2,
-		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
-	};
-	//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
-	//^used the above StackOverflow post to help me figure that out
-
-	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
-	if (dimensionObject.height > dimensionObject.width) {
-		//if the height is longer than the width, use the tall image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
-
-	} else if (dimensionObject.width > dimensionObject.height) {
-		//if the width is longer than the height, use the wide image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
-	} else {
-		//if the image length and width are pretty much the same, just default to the wide image update object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
-	}
-
-
+	displayImageFromUrl(url);
 }
 
 
@@ -422,12 +362,25 @@ Hooks.on("getSceneControlButtons", (controls) => {
 				},
 				button: true
 			})
-		}
+		tileControls.tools.push({
+		//tokenButton.tools.push({
+			name: "set-url-image",
+			title: 'Set url image',
+			icon: "fa fa-eye",
+			visible: true,
+			onClick: () => {
+				setUrlImageToShow();
+			},
+			button: true
+		});
+		
+	}
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
+	if (game.user.isGM) {
 	//find all img and video tags in the html, and add the clickableImage class to all of them
 	console.log(app.object + " vs " + displayJournal);
 	if(app.object != displayJournal){
@@ -445,6 +398,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
         //the image that will be changed 
         journalImage = html.find(".lightbox-image");
     }
+	}
 
 });
 
@@ -456,3 +410,134 @@ Hooks.once('ready', ()=>{
 	FindDisplayJournal();
 	DisplaySceneFound();
 });
+
+
+function setUrlImageToShow(){
+	new Dialog({
+		title:'Set url image',
+		content:`
+		  <form>
+			<div class="form-group">
+			  <label>Set url image</label>
+			  <input type='text' name='inputField'></input>
+			</div>
+		  </form>`,
+		buttons:{
+		  yes: {
+			icon: "<i class='fas fa-check'></i>",
+			label: `Apply Changes`
+		  }},
+		default:'yes',
+		close: html => {
+		  let result = html.find('input[name=\'inputField\']');
+		  if (result.val()!== '') {
+			//   let chatData = {
+			// 	  user: game.user._id,
+			// 	  speaker: ChatMessage.getSpeaker(),
+			// 	  content: result.val()
+			//   };
+			//   ChatMessage.create(chatData, {});
+			determineLocationFromUrl(result.val());
+		  }
+		}
+	}).render(true);
+}
+
+function determineLocationFromUrl(url){
+	//on click, this method will determine if the image should open in a scene or in a display journal
+	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+	if(location == "scene"){
+		//if the setting is to display it in a scene, proceed as normal
+		console.log("Displaying image in scene");
+		displayImageFromUrl(url);
+	}
+	else if(location=="window"){
+		//if the setting is to display it in a popout, change it to display in a popout
+		console.log("Displaying image in window");
+		displayImageInPopoutFromUrl(url);
+	}
+
+
+}
+
+async function displayImageInPopoutFromUrl(url){
+	ChangeDisplayImage(url);
+}
+
+async function displayImageFromUrl(url) {
+
+	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
+		// 0 should equal the default, a scene
+	if (DisplaySceneFound()) {
+		//TODO: Make this configurable
+		console.log("Auto show display? " + game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay"));
+		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+			//this should evaluate to true or false
+			console.log("Should automatically show display?");
+			displayScene.activate();
+		}
+	} else {
+		//if there is no display scene, return
+		console.log("No display scene");
+		return;
+	}
+
+	//load the texture from the source
+	const tex = await loadTexture(url);
+
+	//scales down the dimensions to meet the scene's canvas's size, but keeps the image or video's aspect ratio -- keep track of these dimensions in an object
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+
+
+	//keep track of the tile, which should be the first tile in the display scene
+	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+	console.log(displayTile);
+	if (!displayTile) {
+		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
+	}
+
+	//scane down factor is how big the tile will be in the scene
+	//make this scale down factor configurable at some point
+	var scaleDownFactor = 200;//game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
+	console.log(scaleDownFactor);
+	dimensionObject.width -= scaleDownFactor;
+	dimensionObject.height -= scaleDownFactor;
+	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
+
+	//separate objects depending on the texture's dimensions --
+	//create an 'update' object for if the image is wide (width is bigger than height)
+	var wideImageUpdate = {
+		_id: displayTile._id,
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		img: url,
+		x: scaleDownFactor / 2,
+		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
+	};
+	//create an 'update' object for if the image is tall (height is bigger than width)
+	var tallImageUpdate = {
+		_id: displayTile._id,
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		img: url,
+		y: scaleDownFactor / 2,
+		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
+	};
+	//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
+	//^used the above StackOverflow post to help me figure that out
+
+	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
+	if (dimensionObject.height > dimensionObject.width) {
+		//if the height is longer than the width, use the tall image object
+		const updated = await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
+
+	} else if (dimensionObject.width > dimensionObject.height) {
+		//if the width is longer than the height, use the wide image object
+		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	} else {
+		//if the image length and width are pretty much the same, just default to the wide image update object
+		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	}
+
+
+}
