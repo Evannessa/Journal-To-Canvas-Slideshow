@@ -488,7 +488,7 @@ async function displayImageFromUrl(url) {
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
 	//keep track of the bounding tile, should have the image name "bounding_tile"
-	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.includes("bounding_tile"));
+	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
 
 	console.log(displayTile);
 	if (!displayTile) {
@@ -498,13 +498,13 @@ async function displayImageFromUrl(url) {
 	if (!boundingTile){
         var imageUpdate = scaleToScene(displayTile, tex);
 	}else{
-		var imageUpdate = scaleToBoundingTile(boundingTile, tex)
+		var imageUpdate = scaleToBoundingTile(displayTile, boundingTile, tex)
 	}
 
 	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
 }
 
-async function scaleToScene(displayTile, tex, displayScene){
+async function scaleToScene(displayTile, tex){
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 	//scane down factor is how big the tile will be in the scene
@@ -521,7 +521,7 @@ async function scaleToScene(displayTile, tex, displayScene){
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: url,
+		img: tex.baseTexture.resource.url,
 		x: scaleDownFactor / 2,
 		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
 	};
@@ -530,7 +530,7 @@ async function scaleToScene(displayTile, tex, displayScene){
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: url,
+		img: tex.baseTexture.resource.url,
 		y: scaleDownFactor / 2,
 		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
 	};
@@ -551,14 +551,14 @@ async function scaleToScene(displayTile, tex, displayScene){
 	return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
 }
 
-async function scaleToBoundingTile(boundingTile, tex){
+async function scaleToBoundingTile(displayTile, boundingTile, tex){
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
 			
 		var imageUpdate = {
 			_id: displayTile._id,
 			width: dimensionObject.width,
 			height: dimensionObject.height,
-			img: url,
+			img: tex.baseTexture.resource.url,
 			y: boundingTile.y,
 			x: boundingTile.x
 		};
