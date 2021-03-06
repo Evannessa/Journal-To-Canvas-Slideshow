@@ -138,15 +138,6 @@ A toggleable option is also included in the module settings to automatically act
 (*Note*: A notification appears each time you click a journal image while having this setting turned on in conjunction with the "Window" option for the Display Location setting. This is because it uses the same functionality as the "Show Players" button at the top of a journal in image mode. I'll have to figure out how to change that if possible.)
 
 # Changelog
-## **v0.1.4** - 2021-03-06
-
-**ADDED**
-
-**Major**:
-
-* NEW: Added bound tile, to limit the size of the image instead of whole scene.
-
-
 ## **v0.1.3** - 2021-01-22
 
 **ADDED**
