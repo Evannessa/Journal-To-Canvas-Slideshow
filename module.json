@@ -1,5 +1,5 @@
 {
-    "name": "journal-to-canvas-slideshow",
+    "name": "journal-to-canvas-slideshow-Occidio",
     "title": "Journal to Canvas Slideshow - Display Journal Art on the Canvas",
     "description": "Clicking an image in a journal entry will update a canvas tile to show that image, providing a slideshow effect for your players as you narrate or read notes.",
     "author": "Eva",
@@ -9,7 +9,7 @@
     "esmodules": [
         "scripts/ClickImageInJournal.js"
     ], 
-    "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
-    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/master.zip" 
+    "url": "https://github.com/Occidio/Journal-To-Canvas-Slideshow",
+    "manifest": "https://raw.githubusercontent.com/Occidio/Journal-To-Canvas-Slideshow/master/module.json",
+    "download": "https://github.com/Occidio/Journal-To-Canvas-Slideshow/archive/master.zip" 
 }
