@@ -487,6 +487,7 @@ async function displayImageFromUrl(url) {
 
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+	//keep track of the bounding tile, should have the image name "bounding_tile"
 	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.includes("bounding_tile"));
 
 	console.log(displayTile);
@@ -497,23 +498,14 @@ async function displayImageFromUrl(url) {
 	if (!boundingTile){
         var imageUpdate = scaleToScene(displayTile, tex);
 	}else{
-		var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
-			
-		var imageUpdate = {
-			_id: displayTile._id,
-			width: dimensionObject.width,
-			height: dimensionObject.height,
-			img: url,
-			y: boundingTile.y,
-			x: boundingTile.x
-		};
+		var imageUpdate = scaleToBoundingTile(boundingTile, tex)
 	}
 
 	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
 }
 
-async function scaleToScene(displayTile, tex){
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
+async function scaleToScene(displayTile, tex, displayScene){
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.width, displayScene.height);
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
@@ -548,13 +540,42 @@ async function scaleToScene(displayTile, tex){
 	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
 	if (dimensionObject.height > dimensionObject.width) {
 		//if the height is longer than the width, use the tall image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
+		return await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
 
 	} else if (dimensionObject.width > dimensionObject.height) {
 		//if the width is longer than the height, use the wide image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
-	} else {
-		//if the image length and width are pretty much the same, just default to the wide image update object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+		return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
 	}
+
+	//if the image length and width are pretty much the same, just default to the wide image update object
+	return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+}
+
+async function scaleToBoundingTile(boundingTile, tex){
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
+			
+		var imageUpdate = {
+			_id: displayTile._id,
+			width: dimensionObject.width,
+			height: dimensionObject.height,
+			img: url,
+			y: boundingTile.y,
+			x: boundingTile.x
+		};
+
+		//Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
+		var boundingMiddle = {
+			x: (boundingTile.x + boundingTile.width/2),
+			y: (boundingTile.y + boundingTile.height/2)
+		};
+
+		var imageMiddle = {
+			x: (imageUpdate.x + imageUpdate.width/2),
+			y: (imageUpdate.y + imageUpdate.height/2)
+		};
+
+		imageUpdate.x += (boundingMiddle.x - imageMiddle.x);
+		imageUpdate.y += (boundingMiddle.y - imageMiddle.y);
+
+		return imageUpdate;
 }
