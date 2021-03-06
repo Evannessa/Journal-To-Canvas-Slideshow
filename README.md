@@ -7,6 +7,7 @@
   * [Built With](#built-with)
 - [Installation and Getting Started](#installation-and-getting-started)
 - [How to Use](#how-to-use)
+  * [Contain image in a bounding tile](#contain-image-in-a-bounding-tile)
   * [Videos in Journal](#videos-in-journal)
   * [Display In Window and Module Settings](#display-in-window-and-module-settings)
     + [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
@@ -73,6 +74,16 @@ make sure that the very first tile on the canvas is the tile you wish to display
 6. Open up a journal entry with images (**Note**: This should work with Image Mode journal entries too). You should notice the images highlight in white when you hover over them.
 7. Clicking on them will cause the tile in the Display scene to resize/reposition and change to match the image you clicked on.
 8. Have fun!
+
+## Contain image in a bounding tile
+
+The module now includes a feature to add a Bounding Tile to the scene which will limit the size of the image selected in from a journal.
+
+In order to use this new feature:
+
+1. Ensure a the Tile for your image already exists in the scene.
+2. Add a new tile and enter a "Tile Sprite" image with the name of "bounding_tile" (case insensitive). There is a transparent image contained in the module that can be used to hide the bounding tile completely.
+3. Profit
 
 ## Videos in Journal
 
