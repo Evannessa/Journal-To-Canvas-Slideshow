@@ -487,24 +487,74 @@ async function displayImageFromUrl(url) {
 
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
-
-	//scales down the dimensions to meet the scene's canvas's size, but keeps the image or video's aspect ratio -- keep track of these dimensions in an object
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayTile.width, displayTile.height);
-
+	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.includes("bounding_tile"));
 
 	console.log(displayTile);
 	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
 	}
-	
+
+	if (!boundingTile){
+        var imageUpdate = scaleToScene(displayTile, tex);
+	}else{
+		var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
+			
+		var imageUpdate = {
+			_id: displayTile._id,
+			width: dimensionObject.width,
+			height: dimensionObject.height,
+			img: url,
+			y: boundingTile.y,
+			x: boundingTile.x
+		};
+	}
+
+	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
+}
+
+async function scaleToScene(displayTile, tex){
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
+
+	//scane down factor is how big the tile will be in the scene
+	//make this scale down factor configurable at some point
+	var scaleDownFactor = 200;//game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
+	console.log(scaleDownFactor);
+	dimensionObject.width -= scaleDownFactor;
+	dimensionObject.height -= scaleDownFactor;
+	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
+
+	//separate objects depending on the texture's dimensions --
+	//create an 'update' object for if the image is wide (width is bigger than height)
 	var wideImageUpdate = {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
 		img: url,
-		y: displayTile.y,
-		x: displayTile.x
+		x: scaleDownFactor / 2,
+		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
 	};
+	//create an 'update' object for if the image is tall (height is bigger than width)
+	var tallImageUpdate = {
+		_id: displayTile._id,
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		img: url,
+		y: scaleDownFactor / 2,
+		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
+	};
+	//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
+	//^used the above StackOverflow post to help me figure that out
 
-	const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
+	if (dimensionObject.height > dimensionObject.width) {
+		//if the height is longer than the width, use the tall image object
+		const updated = await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
+
+	} else if (dimensionObject.width > dimensionObject.height) {
+		//if the width is longer than the height, use the wide image object
+		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	} else {
+		//if the image length and width are pretty much the same, just default to the wide image update object
+		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	}
 }
