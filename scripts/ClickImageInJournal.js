@@ -505,7 +505,7 @@ async function displayImageFromUrl(url) {
 }
 
 async function scaleToScene(displayTile, tex, displayScene){
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.width, displayScene.height);
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
