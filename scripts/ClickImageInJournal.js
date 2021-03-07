@@ -496,9 +496,9 @@ async function displayImageFromUrl(url) {
 	}
 
 	if (!boundingTile){
-        var imageUpdate = scaleToScene(displayTile, tex);
+        var imageUpdate = await scaleToScene(displayTile, tex);
 	}else{
-		var imageUpdate = scaleToBoundingTile(displayTile, boundingTile, tex)
+		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
 	}
 
 	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
