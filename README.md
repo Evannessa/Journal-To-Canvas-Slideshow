@@ -7,6 +7,7 @@
   * [Built With](#built-with)
 - [Installation and Getting Started](#installation-and-getting-started)
 - [How to Use](#how-to-use)
+  * [Contain image in a bounding tile](#contain-image-in-a-bounding-tile)
   * [Videos in Journal](#videos-in-journal)
   * [Display In Window and Module Settings](#display-in-window-and-module-settings)
     + [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
@@ -74,6 +75,16 @@ make sure that the very first tile on the canvas is the tile you wish to display
 7. Clicking on them will cause the tile in the Display scene to resize/reposition and change to match the image you clicked on.
 8. Have fun!
 
+## Contain image in a bounding tile
+
+The module now includes a feature to add a Bounding Tile to the scene which will limit the size of the image selected in from a journal.
+
+In order to use this new feature:
+
+1. Ensure a the Tile for your image already exists in the scene.
+2. Add a new tile and enter a "Tile Sprite" image with the name of "bounding_tile" (case insensitive). There is a transparent image contained in the module that can be used to hide the bounding tile completely.
+3. Profit
+
 ## Videos in Journal
 
 This project does support .webm and .mp4 files, however inserting a video into a journal entry requires a different approach than using an image.
@@ -127,7 +138,6 @@ A toggleable option is also included in the module settings to automatically act
 (*Note*: A notification appears each time you click a journal image while having this setting turned on in conjunction with the "Window" option for the Display Location setting. This is because it uses the same functionality as the "Show Players" button at the top of a journal in image mode. I'll have to figure out how to change that if possible.)
 
 # Changelog
-
 ## **v0.1.3** - 2021-01-22
 
 **ADDED**

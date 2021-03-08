@@ -485,16 +485,27 @@ async function displayImageFromUrl(url) {
 	//load the texture from the source
 	const tex = await loadTexture(url);
 
-	//scales down the dimensions to meet the scene's canvas's size, but keeps the image or video's aspect ratio -- keep track of these dimensions in an object
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
-
-
 	//keep track of the tile, which should be the first tile in the display scene
 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+	//keep track of the bounding tile, should have the image name "bounding_tile"
+	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
+
 	console.log(displayTile);
 	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
 	}
+
+	if (!boundingTile){
+        var imageUpdate = await scaleToScene(displayTile, tex);
+	}else{
+		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
+	}
+
+	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
+}
+
+async function scaleToScene(displayTile, tex){
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
@@ -510,7 +521,7 @@ async function displayImageFromUrl(url) {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: url,
+		img: tex.baseTexture.resource.url,
 		x: scaleDownFactor / 2,
 		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
 	};
@@ -519,7 +530,7 @@ async function displayImageFromUrl(url) {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: url,
+		img: tex.baseTexture.resource.url,
 		y: scaleDownFactor / 2,
 		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
 	};
@@ -529,15 +540,42 @@ async function displayImageFromUrl(url) {
 	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
 	if (dimensionObject.height > dimensionObject.width) {
 		//if the height is longer than the width, use the tall image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
+		return await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
 
 	} else if (dimensionObject.width > dimensionObject.height) {
 		//if the width is longer than the height, use the wide image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
-	} else {
-		//if the image length and width are pretty much the same, just default to the wide image update object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+		return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
 	}
 
+	//if the image length and width are pretty much the same, just default to the wide image update object
+	return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+}
 
+async function scaleToBoundingTile(displayTile, boundingTile, tex){
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
+			
+		var imageUpdate = {
+			_id: displayTile._id,
+			width: dimensionObject.width,
+			height: dimensionObject.height,
+			img: tex.baseTexture.resource.url,
+			y: boundingTile.y,
+			x: boundingTile.x
+		};
+
+		//Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
+		var boundingMiddle = {
+			x: (boundingTile.x + boundingTile.width/2),
+			y: (boundingTile.y + boundingTile.height/2)
+		};
+
+		var imageMiddle = {
+			x: (imageUpdate.x + imageUpdate.width/2),
+			y: (imageUpdate.y + imageUpdate.height/2)
+		};
+
+		imageUpdate.x += (boundingMiddle.x - imageMiddle.x);
+		imageUpdate.y += (boundingMiddle.y - imageMiddle.y);
+
+		return imageUpdate;
 }
