@@ -1,11 +1,14 @@
 //var DisplayTileConfig = require('./DisplayTileConfig.js');
-import  DisplayTileConfig  from '../classes/DisplayTileConfig.js'
-import  { registerSettings } from './settings.js'
+import DisplayTileConfig from '../classes/DisplayTileConfig.js'
+import {
+	registerSettings
+} from './settings.js'
 
 var displayScene;
 var displayTile;
 var displayJournal;
 var journalImage;
+var popout;
 
 function highlight(ev) {
 	//when hovering over an image, 'highlight' it by changing its shadow
@@ -40,26 +43,27 @@ function liftImage(ev) {
 }
 
 
-function FindDisplayJournal(){
-    let journalEntries = game.journal.entries;
-    let foundDisplayJournal = false;
-    journalEntries.forEach( element => {
-        //go through elements. If found, set bool to true. If not, it'll remain false. Return.
-        if(element.name == "Display Journal"){
+function FindDisplayJournal() {
+	let journalEntries = game.journal.entries;
+	let foundDisplayJournal = false;
+	journalEntries.forEach(element => {
+		//go through elements. If found, set bool to true. If not, it'll remain false. Return.
+		if (element.name == "Display Journal") {
 			displayJournal = element;
-            foundDisplayJournal = true;
-        }
-    });
-    return foundDisplayJournal;
+			foundDisplayJournal = true;
+		}
+	});
+	return foundDisplayJournal;
 
 }
 
-async function CreateDisplayJournal(){
+async function CreateDisplayJournal() {
 	//create a display journal
-	if(!FindDisplayJournal()){
-		displayJournal = await JournalEntry.create({name: "Display Journal"});
-	}
-	else{
+	if (!FindDisplayJournal()) {
+		displayJournal = await JournalEntry.create({
+			name: "Display Journal"
+		});
+	} else {
 		//if it already exists, render it and show to players
 		displayJournal.render(false);
 		displayJournal.show("image", true);
@@ -67,31 +71,72 @@ async function CreateDisplayJournal(){
 
 }
 
-async function ChangeDisplayImage(url){
-    //get the url from the image clicked in the journal
-    if(!FindDisplayJournal()){
-        //couldn't find display journal, so return
-        ui.notifications.error("No journal entry named 'Display Journal' found");
-        return;
+async function ChangePopoutImage(url) {
+	// get the url from the image clicked in the journal
+	//if popout doesn't exist
+	console.log(popout);
+	var position;
+	var left;
+	var top;
+	var width;
+	var height;
+	var scale;
+	//	
+	if (!popout) {
+		popout = new ImagePopout(url, {
+			title: game.settings.get("journal-to-canvas-slideshow", "displaySceneName"), //TODO: Change this after you add the new setting
+			shareable: true,
+
+		});
+	} else {
+
+		console.log("Setting new positions, left, right, top, width, scale");
+		position = popout.position;
+		left = position.left;
+		top = position.top;
+		width = position.width;
+		height = position.height;
+		scale = 1;
+		popout.object = url;
+		//popout.setPosition(left, top, width, height, 0.5);
+		let pos = popout.setPosition(left, top, 300, 300, 0.5);
 	}
-	else{
-		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
-			//if we have the auto show display settings on, automatically show the journal after the button is clicked
-			displayJournal.render(false, {});
-			displayJournal.show("image", true);
-		}
-	}
-	//change the background image to be the clicked image in the journal
-	//TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
-	let update = {
-		_id: displayJournal._id,
-		img: url
+	popout.render(true, {
+		left,
+		top,
+		width,
+		height
+	});
+	console.log(left + "," + top + "," + width + "," + height);
+	if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+		popout.shareImage();
+		popout.setPosition(200, 200, 300, 300, 0.5);
+		let min = await popout.minimize()
 	}
 
-	const updated = await displayJournal.update(update, {});
+	// if(!FindDisplayJournal()){
+	//     //couldn't find display journal, so return
+	//     ui.notifications.error("No journal entry named 'Display Journal' found");
+	//     return;
+	// }
+	// else{
+	// 	if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+	// 		//if we have the auto show display settings on, automatically show the journal after the button is clicked
+	// 		displayJournal.render(false, {});
+	// 		displayJournal.show("image", true);
+	// 	}
+	// }
+	// //change the background image to be the clicked image in the journal
+	// //TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
+	// let update = {
+	// 	_id: displayJournal._id,
+	// 	img: url
+	// }
+
+	// const updated = await displayJournal.update(update, {});
 
 }
-async function displayImageInPopout(ev){
+async function displayImageInPopout(ev) {
 
 	let element = ev.currentTarget;
 	let type = element.nodeName;
@@ -114,112 +159,130 @@ async function displayImageInPopout(ev){
 	}
 
 	//add setting to activate 'show to players' or not
-	ChangeDisplayImage(url);
+	ChangePopoutImage(url);
 	//load the texture from the source
-//	const tex = await loadTexture(url);
+	//	const tex = await loadTexture(url);
 }
 
-async function displayImage(ev) {
+async function createDisplayTile(ourScene) {
+	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
+	var newTile;
+	newTile = await Tile.create({
+		img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		x: 0,
+		y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+	});
 
+	newTile.setFlag("journal-to-canvas-slideshow", "name", "displayTile");
+
+}
+
+
+
+async function displayImage(ev, externalURL) {
+
+	//this means we're getting the URL from the URL button
+	
 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
-		// 0 should equal the default, a scene
-	if (DisplaySceneFound()) {
-		//TODO: Make this configurable
-		console.log("Auto show display? " + game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay"));
-		if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
-			//this should evaluate to true or false
-			console.log("Should automatically show display?");
-			displayScene.activate();
+	// 0 should equal the default, a scene
+	var ourScene;
+	var boundingTile = game.scenes.active.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
+	if (game.settings.get("journal-to-canvas-slideshow", "useDisplayScene") == true) {
+		if (DisplaySceneFound()) {
+			if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+				//this should evaluate to true or false
+				console.log("Should automatically show display?");
+				displayScene.activate();
+			}
+			//set the scene we're using to be the display scene
+			ourScene = displayScene;
+			console.log(ourScene);
+		} else {
+			//if there is no display scene, return
+			console.log("No display scene");
+			return;
 		}
 	} else {
-		//if there is no display scene, return
-		console.log("No display scene");
-		return;
+		if (boundingTile) {
+			console.log("BOUNDING TILE FOUND")
+			//if the scene isn't a display scene but has a bounding Tile, if there is no display tile, create one
+			//createDisplayTile();
+			//the scene we're using is the currently active scene
+			ourScene = game.scenes.active;
+			console.log("Our scene is: ")
+			console.log(ourScene)
+			//canvas.draw();
+		}
 	}
 
 	//get the element whose source we want to display as a tile, and what type it is (image or video)
-	let element = ev.currentTarget;
-	let type = element.nodeName;
 	let url;
 
+	if(externalURL != null){
+		url = externalURL;		
+	}
 	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
-	if (type == "IMG") {
-		url = element.getAttribute("src");
-	} else if (type == "VIDEO") {
-		url = element.getElementsByTagName("source")[0].getAttribute("src");
-	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
-		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
-		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
-		let img = element.style;
-		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-	} else {
-		console.log("Type not supported");
-		return;
+	else{
+		let element = ev.currentTarget;
+		let type = element.nodeName;
+		if (type == "IMG") {
+			url = element.getAttribute("src");
+		} else if (type == "VIDEO") {
+			url = element.getElementsByTagName("source")[0].getAttribute("src");
+		} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+			//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
+			//used elements from the above StackOverflow to help me understand how to retrieve the background image url
+			let img = element.style;
+			url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+		} else {
+			console.log("Type not supported");
+			return;
+	}
+}
 
+	//keep track of the tile, which should be the first tile in the display scene
+	//TODO: Find tile with flag name of DisplayTile
+	var displayTile = FindDisplayTile(ourScene); //displayScene.getEmbeddedCollection("Tile")[0];
+	//keep track of the bounding tile, should have the image name "bounding_tile"
+	//	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
+
+	if (!displayTile) {
+		ui.notifcations.error("No display tile found -- make sure your scene has a display tile");
 	}
 
 
 	//load the texture from the source
 	const tex = await loadTexture(url);
 
-	//scales down the dimensions to meet the scene's canvas's size, but keeps the image or video's aspect ratio -- keep track of these dimensions in an object
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
-
-
-	//keep track of the tile, which should be the first tile in the display scene
-	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
-	console.log(displayTile);
-	if (!displayTile) {
-		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
-	}
-
-	//scane down factor is how big the tile will be in the scene
-	//make this scale down factor configurable at some point
-	var scaleDownFactor = 200;//game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
-	console.log(scaleDownFactor);
-	dimensionObject.width -= scaleDownFactor;
-	dimensionObject.height -= scaleDownFactor;
-	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
-
-	//separate objects depending on the texture's dimensions --
-	//create an 'update' object for if the image is wide (width is bigger than height)
-	var wideImageUpdate = {
-		_id: displayTile._id,
-		width: dimensionObject.width,
-		height: dimensionObject.height,
-		img: url,
-		x: scaleDownFactor / 2,
-		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
-	};
-	//create an 'update' object for if the image is tall (height is bigger than width)
-	var tallImageUpdate = {
-		_id: displayTile._id,
-		width: dimensionObject.width,
-		height: dimensionObject.height,
-		img: url,
-		y: scaleDownFactor / 2,
-		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
-	};
-	//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
-	//^used the above StackOverflow post to help me figure that out
-
-	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
-	if (dimensionObject.height > dimensionObject.width) {
-		//if the height is longer than the width, use the tall image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
-
-	} else if (dimensionObject.width > dimensionObject.height) {
-		//if the width is longer than the height, use the wide image object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	if (!boundingTile) {
+		var imageUpdate = await scaleToScene(displayTile, tex);
 	} else {
-		//if the image length and width are pretty much the same, just default to the wide image update object
-		const updated = await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
 	}
+	console.log(imageUpdate);
+
+	const updated = await ourScene.updateEmbeddedEntity("Tile", imageUpdate);
 
 
 }
 
-
+function FindDisplayTile(ourScene) {
+	var ourTile;
+	var tiles = ourScene.getEmbeddedCollection("Tile");
+	console.log(ourScene)
+	console.log(tiles)
+	canvas.tiles.placeables.forEach( (tile) => {
+		console.log(tile);
+		if(tile.getFlag("journal-to-canvas-slideshow", "name")){
+			ourTile = tile;
+		}
+	})
+	
+	return ourTile.data
+}
 
 
 function createSceneButton(app, html) {
@@ -235,7 +298,7 @@ function createSceneButton(app, html) {
 		html.find(".directory-footer").prepend(button);
 	}
 	console.log(app.options.id);
-	if(app.options.id == "journal"){
+	if (app.options.id == "journal") {
 		//create the journal button for generating a popout
 		let button = $("<button>Create or Show Display Entry</button>");
 		button.click(CreateDisplayJournal);
@@ -270,16 +333,17 @@ async function GenerateDisplayScene() {
 		});
 
 		//create a tile for the scene
-		const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
-		var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+		createDisplayTile(displayScene);
+		// const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
+		// var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
-		displayTile = await Tile.create({
-			img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
-			width: dimensionObject.width,
-			height: dimensionObject.height,
-			x: 0,
-			y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
-		});
+		// displayTile = await Tile.create({
+		// 	img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
+		// 	width: dimensionObject.width,
+		// 	height: dimensionObject.height,
+		// 	x: 0,
+		// 	y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+		// });
 		//this should refresh the canvas
 		canvas.draw();
 
@@ -291,22 +355,21 @@ async function GenerateDisplayScene() {
 
 }
 
-async function determineWhatToClear(){
+async function determineWhatToClear() {
 	console.log("Determining what to clear!");
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-	if(location == "scene"){
+	if (location == "scene") {
 		clearDisplayTile();
-	}
-	else if(location == "window"){
+	} else if (location == "window") {
 		clearDisplayWindow();
 	}
 }
 
-async function clearDisplayWindow(){
-	if(!FindDisplayJournal()){
+async function clearDisplayWindow() {
+	if (!FindDisplayJournal()) {
 		return;
 	}
-	let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";   
+	let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
 	let update = {
 		_id: displayJournal._id,
 		img: url
@@ -383,29 +446,43 @@ function wait(callback) {
 	})
 }
 
-function determineLocation(ev){
+function determineLocation(ev, url) {
 	//on click, this method will determine if the image should open in a scene or in a display journal
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-	if(location == "scene"){
+	if (location == "scene") {
 		//if the setting is to display it in a scene, proceed as normal
 		console.log("Displaying image in scene");
-		displayImage(ev);
-	}
-	else if(location=="window"){
+		displayImage(ev, url);
+	} else if (location == "window") {
 		//if the setting is to display it in a popout, change it to display in a popout
 		console.log("Displaying image in window");
-		displayImageInPopout(ev);
+		ChangePopoutImage(url);
+		//displayImageInPopout(ev, url);
 	}
 
 
 }
+
 function execute(html) {
 	html.find('.clickableImage').each((i, div) => {
-	 	div.addEventListener("click", determineLocation, false);
+		div.addEventListener("click", determineLocation, false);
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 		div.addEventListener("mousedown", depressImage, false);
 		div.addEventListener("mouseup", liftImage, false);
+	});
+}
+
+async function createBoundingTile() {
+	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+
+	displayTile = await Tile.create({
+		img: "/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png",
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		x: 0,
+		y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
 	});
 }
 
@@ -414,45 +491,247 @@ Hooks.on("getSceneControlButtons", (controls) => {
 	const tileControls = controls.find((control) => control?.name === "tiles");
 	if (game.user.isGM) {
 		tileControls.tools.push({
-				name: 'ClearDisplay',
-				title: 'ClearDisplay',
-				icon: 'far fa-times-circle',
-				onClick: () => {
-					determineWhatToClear();//clearDisplayTile();	
-				},
-				button: true
-			})
-		}
+			name: 'ClearDisplay',
+			title: 'ClearDisplay',
+			icon: 'far fa-times-circle',
+			onClick: () => {
+				determineWhatToClear(); //clearDisplayTile();	
+			},
+			button: true
+		})
+		tileControls.tools.push({
+			//tokenButton.tools.push({
+			name: "set-url-image",
+			title: 'Set url image',
+			icon: "fa fa-eye",
+			visible: true,
+			onClick: () => {
+				setUrlImageToShow();
+			},
+			button: true
+		});
+
+		tileControls.tools.push({
+			name: 'Create-Bounding-Tile',
+			title: "Create bounding tile",
+			icon: "far fa-square",
+			visible: true,
+			onClick: () => {
+				createBoundingTile();
+			},
+			button: true
+		})
+		tileControls.tools.push({
+			name: 'Create-Display-Tile',
+			title: "Create Display tile",
+			icon: "far fa-image",
+			visible: true,
+			onClick: () => {
+				createDisplayTile(game.scenes.active);
+			},
+			button: true
+		})
+
+	}
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
-	//find all img and video tags in the html, and add the clickableImage class to all of them
-	console.log(app.object + " vs " + displayJournal);
-	if(app.object != displayJournal){
-		//unless it's a display journal, as we don't want it clickable
-		html.find('img').attr("class", "clickableImage");
-		html.find('video').attr("class", "clickableImage");
-		//find the lightbox images for the 'image' journal mode as well and do the same as above
-		html.find(".lightbox-image").each((i, div) => {
-			div.classList.add("clickableImage");
-		})
-}
+	if (game.user.isGM) {
+		//find all img and video tags in the html, and add the clickableImage class to all of them
+		if (app.object != displayJournal) {
+			//unless it's a display journal, as we don't want it clickable
+			html.find('img').attr("class", "clickableImage");
+			html.find('video').attr("class", "clickableImage");
+			//find the lightbox images for the 'image' journal mode as well and do the same as above
+			html.find(".lightbox-image").each((i, div) => {
+				div.classList.add("clickableImage");
+			})
+		}
 
-	setEventListeners(html);
-  	if(FindDisplayJournal() && app.object == displayJournal){
-        //the image that will be changed 
-        journalImage = html.find(".lightbox-image");
-    }
+		setEventListeners(html);
+		if (FindDisplayJournal() && app.object == displayJournal) {
+			//the image that will be changed 
+			journalImage = html.find(".lightbox-image");
+		}
+	}
 
 });
 
-Hooks.once('init', async function(){
+Hooks.once('init', async function () {
 	console.log("Initializing Journal to Canvas Slideshow");
 	registerSettings();
 });
-Hooks.once('ready', ()=>{
+Hooks.once('ready', () => {
 	FindDisplayJournal();
 	DisplaySceneFound();
 });
+
+
+function setUrlImageToShow() {
+	new Dialog({
+		title: 'Set url image',
+		content: `
+		  <form>
+			<div class="form-group">
+			  <label>Set url image</label>
+			  <input type='text' name='inputField'></input>
+			</div>
+		  </form>`,
+		buttons: {
+			yes: {
+				icon: "<i class='fas fa-check'></i>",
+				label: `Apply Changes`
+			}
+		},
+		default: 'yes',
+		close: html => {
+			let result = html.find('input[name=\'inputField\']');
+			if (result.val() !== '') {
+				//   let chatData = {
+				// 	  user: game.user._id,
+				// 	  speaker: ChatMessage.getSpeaker(),
+				// 	  content: result.val()
+				//   };
+				//   ChatMessage.create(chatData, {});
+				determineLocation(null, result.val());
+			}
+		}
+	}).render(true);
+}
+
+// function determineLocationFromUrl(url) {
+// 	//on click, this method will determine if the image should open in a scene or in a display journal
+// 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+// 	if (location == "scene") {
+// 		//if the setting is to display it in a scene, proceed as normal
+// 		console.log("Displaying image in scene");
+// 		displayImageFromUrl(url);
+// 	} else if (location == "window") {
+// 		//if the setting is to display it in a popout, change it to display in a popout
+// 		console.log("Displaying image in window");
+// 		displayImageInPopoutFromUrl(url);
+// 	}
+
+
+// }
+
+// async function displayImageInPopoutFromUrl(url) {
+// 	ChangePopoutImage(url);
+// }
+
+// async function displayImageFromUrl(url) {
+
+// 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
+// 	// 0 should equal the default, a scene
+// 	if (DisplaySceneFound()) {
+// 		if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+// 			//this should evaluate to true or false
+// 			console.log("Should automatically show display?");
+// 			displayScene.activate();
+// 		}
+// 	} else {
+// 		//if there is no display scene, return
+// 		console.log("No display scene");
+// 		return;
+// 	}
+
+// 	//load the texture from the source
+// 	const tex = await loadTexture(url);
+
+// 	//keep track of the tile, which should be the first tile in the display scene
+// 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+// 	//keep track of the bounding tile, should have the image name "bounding_tile"
+// 	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({
+// 		img
+// 	}) => img.toLowerCase().includes("bounding_tile"));
+
+// 	if (!displayTile) {
+// 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
+// 	}
+
+// 	if (!boundingTile) {
+// 		var imageUpdate = await scaleToScene(displayTile, tex);
+// 	} else {
+// 		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
+// 	}
+
+// 	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
+// }
+
+async function scaleToScene(displayTile, tex) {
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+
+	//scane down factor is how big the tile will be in the scene
+	//make this scale down factor configurable at some point
+	var scaleDownFactor = 200; //game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
+	console.log(scaleDownFactor);
+	dimensionObject.width -= scaleDownFactor;
+	dimensionObject.height -= scaleDownFactor;
+	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
+
+	//separate objects depending on the texture's dimensions --
+	//create an 'update' object for if the image is wide (width is bigger than height)
+	var wideImageUpdate = {
+		_id: displayTile._id,
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		img: tex.baseTexture.resource.url,
+		x: scaleDownFactor / 2,
+		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
+	};
+	//create an 'update' object for if the image is tall (height is bigger than width)
+	var tallImageUpdate = {
+		_id: displayTile._id,
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		img: tex.baseTexture.resource.url,
+		y: scaleDownFactor / 2,
+		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
+	};
+	//https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
+	//^used the above StackOverflow post to help me figure that out
+
+	//Determine if the image or video is wide, tall, or same dimensions and update depending on that
+	if (dimensionObject.height > dimensionObject.width) {
+		//if the height is longer than the width, use the tall image object
+		return await displayScene.updateEmbeddedEntity("Tile", tallImageUpdate);
+
+	} else if (dimensionObject.width > dimensionObject.height) {
+		//if the width is longer than the height, use the wide image object
+		return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+	}
+
+	//if the image length and width are pretty much the same, just default to the wide image update object
+	return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
+}
+
+async function scaleToBoundingTile(displayTile, boundingTile, tex) {
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
+
+	var imageUpdate = {
+		_id: displayTile._id,
+		width: dimensionObject.width,
+		height: dimensionObject.height,
+		img: tex.baseTexture.resource.url,
+		y: boundingTile.y,
+		x: boundingTile.x
+	};
+	console.log(displayTile);
+	//Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
+	var boundingMiddle = {
+		x: (boundingTile.x + boundingTile.width / 2),
+		y: (boundingTile.y + boundingTile.height / 2)
+	};
+
+	var imageMiddle = {
+		x: (imageUpdate.x + imageUpdate.width / 2),
+		y: (imageUpdate.y + imageUpdate.height / 2)
+	};
+
+	imageUpdate.x += (boundingMiddle.x - imageMiddle.x);
+	imageUpdate.y += (boundingMiddle.y - imageMiddle.y);
+
+	return imageUpdate;
+}

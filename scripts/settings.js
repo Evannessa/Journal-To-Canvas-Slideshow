@@ -47,6 +47,15 @@ game.settings.register("journal-to-canvas-slideshow", "displaySceneName", {
 	type: String,
 	default: "Display"
 });
+
+game.settings.register("journal-to-canvas-slideshow", "useDisplayScene", {
+	name: "Use Display Scene",
+	hint: "Would you like to user the display scene, or use a bounding tile in a different scene?",
+	scope: "client",
+	config: true,
+	type: Boolean,
+	default: true
+});
 // game.settings.register("journal-to-canvas-slideshow", "displayJournal", {
 // 	name: "Display Journal",
 // 	hint: "Which journal entry the display will show in",
