@@ -70,6 +70,10 @@ async function CreateDisplayJournal() {
 	}
 
 }
+//borrowed this code from Foundry Discord
+async function sleep(millis) {
+  return new Promise(r => setTimeout(r, millis));
+}
 
 async function ChangePopoutImage(url) {
 	// get the url from the image clicked in the journal
@@ -82,8 +86,11 @@ async function ChangePopoutImage(url) {
 	var height;
 	var scale;
 	//	
+	
+
+
 	if (!popout) {
-		popout = new ImagePopout(url, {
+		popout = await new ImagePopout(url, {
 			title: game.settings.get("journal-to-canvas-slideshow", "displaySceneName"), //TODO: Change this after you add the new setting
 			shareable: true,
 
@@ -98,20 +105,17 @@ async function ChangePopoutImage(url) {
 		height = position.height;
 		scale = 1;
 		popout.object = url;
-		//popout.setPosition(left, top, width, height, 0.5);
-		let pos = popout.setPosition(left, top, 300, 300, 0.5);
+		await popout.render(true)
+		await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
+		//otherwise an error will be thrown
+		let pos = popout.setPosition({left: left, top: top, width: width, height: height});
 	}
-	popout.render(true, {
-		left,
-		top,
-		width,
-		height
-	});
-	console.log(left + "," + top + "," + width + "," + height);
 	if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+		await popout.render(true)
+		await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
+		//otherwise an error will be thrown
+		popout.setPosition({left: left, top: top, width: width, height: height});
 		popout.shareImage();
-		popout.setPosition(200, 200, 300, 300, 0.5);
-		let min = await popout.minimize()
 	}
 
 	// if(!FindDisplayJournal()){
@@ -136,7 +140,7 @@ async function ChangePopoutImage(url) {
 	// const updated = await displayJournal.update(update, {});
 
 }
-async function displayImageInPopout(ev) {
+async function getImageSource(ev) {
 
 	let element = ev.currentTarget;
 	let type = element.nodeName;
@@ -182,7 +186,7 @@ async function createDisplayTile(ourScene) {
 
 
 
-async function displayImage(ev, externalURL) {
+async function displayImageInScene(ev, externalURL) {
 
 	//this means we're getting the URL from the URL button
 	
@@ -202,26 +206,26 @@ async function displayImage(ev, externalURL) {
 			console.log(ourScene);
 		} else {
 			//if there is no display scene, return
-			console.log("No display scene");
+			ui.notifications.error("No display scene found. Please make sure you have a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"))
 			return;
 		}
 	} else {
 		if (boundingTile) {
-			console.log("BOUNDING TILE FOUND")
-			//if the scene isn't a display scene but has a bounding Tile, if there is no display tile, create one
-			//createDisplayTile();
+			//if the scene isn't the display scene but has a bounding Tile
 			//the scene we're using is the currently active scene
 			ourScene = game.scenes.active;
-			console.log("Our scene is: ")
-			console.log(ourScene)
-			//canvas.draw();
+		}
+		else{
+			//
+			ui.notifications.error("Not on display scene, but no bounding tile present")
+			return;
 		}
 	}
 
 	//get the element whose source we want to display as a tile, and what type it is (image or video)
 	let url;
 
-	if(externalURL != null){
+	if(externalURL){
 		url = externalURL;		
 	}
 	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
@@ -251,6 +255,7 @@ async function displayImage(ev, externalURL) {
 
 	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure your scene has a display tile");
+		return;
 	}
 
 
@@ -271,11 +276,9 @@ async function displayImage(ev, externalURL) {
 
 function FindDisplayTile(ourScene) {
 	var ourTile;
-	var tiles = ourScene.getEmbeddedCollection("Tile");
-	console.log(ourScene)
-	console.log(tiles)
+//	var tiles = ourScene.getEmbeddedCollection("Tile");
+
 	canvas.tiles.placeables.forEach( (tile) => {
-		console.log(tile);
 		if(tile.getFlag("journal-to-canvas-slideshow", "name")){
 			ourTile = tile;
 		}
@@ -414,10 +417,11 @@ function DisplaySceneFound() {
 			displaySceneFound = true;
 		}
 	}
-	if (!displaySceneFound) {
-		//notify the user that there's no display scene
-		ui.notifications.error("No display scene found -- make sure there's a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"));
-	}
+	//You only want to notify the user when they're doing something that involes the Display Scene
+	// if (!displaySceneFound) {
+	// 	//notify the user that there's no display scene
+	// 	ui.notifications.error("No display scene found -- make sure there's a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"));
+	// }
 	//return whether or not we've found a scene named 'Display'
 	return displaySceneFound;
 
@@ -451,13 +455,17 @@ function determineLocation(ev, url) {
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
 	if (location == "scene") {
 		//if the setting is to display it in a scene, proceed as normal
-		console.log("Displaying image in scene");
-		displayImage(ev, url);
+		displayImageInScene(ev, url);
 	} else if (location == "window") {
 		//if the setting is to display it in a popout, change it to display in a popout
-		console.log("Displaying image in window");
-		ChangePopoutImage(url);
-		//displayImageInPopout(ev, url);
+		if(url != undefined){
+			//if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
+			ChangePopoutImage(url);
+		}
+		else{
+			//if not, it happened because of an image click, so find the information of the clicked image
+			getImageSource(ev);
+		}
 	}
 
 
