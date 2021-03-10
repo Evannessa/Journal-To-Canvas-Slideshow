@@ -140,7 +140,7 @@ async function ChangePopoutImage(url) {
 	// const updated = await displayJournal.update(update, {});
 
 }
-async function getImageSource(ev) {
+function getImageSource(ev, myCallback) {
 
 	let element = ev.currentTarget;
 	let type = element.nodeName;
@@ -158,14 +158,16 @@ async function getImageSource(ev) {
 		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
 	} else {
 		console.log("Type not supported");
-		return;
+		url = null;
 
 	}
+	if(myCallback){
+		//if my callback is defined
+		myCallback(url);
+	}	
+	return url;
 
-	//add setting to activate 'show to players' or not
-	ChangePopoutImage(url);
 	//load the texture from the source
-	//	const tex = await loadTexture(url);
 }
 
 async function createDisplayTile(ourScene) {
@@ -230,21 +232,25 @@ async function displayImageInScene(ev, externalURL) {
 	}
 	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
 	else{
-		let element = ev.currentTarget;
-		let type = element.nodeName;
-		if (type == "IMG") {
-			url = element.getAttribute("src");
-		} else if (type == "VIDEO") {
-			url = element.getElementsByTagName("source")[0].getAttribute("src");
-		} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
-			//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
-			//used elements from the above StackOverflow to help me understand how to retrieve the background image url
-			let img = element.style;
-			url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-		} else {
-			console.log("Type not supported");
-			return;
-	}
+		url = getImageSource(ev)
+		if(url == null){
+			ui.notifcations.error("Type not supported")
+		}
+	// 	let element = ev.currentTarget;
+	// 	let type = element.nodeName;
+	// 	if (type == "IMG") {
+	// 		url = element.getAttribute("src");
+	// 	} else if (type == "VIDEO") {
+	// 		url = element.getElementsByTagName("source")[0].getAttribute("src");
+	// 	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+	// 		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
+	// 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
+	// 		let img = element.style;
+	// 		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+	// 	} else {
+	// 		console.log("Type not supported");
+	// 		return;
+	// }
 }
 
 	//keep track of the tile, which should be the first tile in the display scene
@@ -337,16 +343,7 @@ async function GenerateDisplayScene() {
 
 		//create a tile for the scene
 		createDisplayTile(displayScene);
-		// const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
-		// var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
-
-		// displayTile = await Tile.create({
-		// 	img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
-		// 	width: dimensionObject.width,
-		// 	height: dimensionObject.height,
-		// 	x: 0,
-		// 	y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
-		// });
+		
 		//this should refresh the canvas
 		canvas.draw();
 
@@ -417,11 +414,6 @@ function DisplaySceneFound() {
 			displaySceneFound = true;
 		}
 	}
-	//You only want to notify the user when they're doing something that involes the Display Scene
-	// if (!displaySceneFound) {
-	// 	//notify the user that there's no display scene
-	// 	ui.notifications.error("No display scene found -- make sure there's a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"));
-	// }
 	//return whether or not we've found a scene named 'Display'
 	return displaySceneFound;
 
@@ -464,7 +456,7 @@ function determineLocation(ev, url) {
 		}
 		else{
 			//if not, it happened because of an image click, so find the information of the clicked image
-			getImageSource(ev);
+			getImageSource(ev, ChangePopoutImage);
 		}
 	}
 
