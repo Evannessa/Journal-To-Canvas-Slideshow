@@ -12,13 +12,14 @@ export const registerSettings = function() {
 
 game.settings.register("journal-to-canvas-slideshow", "displayLocation", {
 	name: "Display Location",
-	hint: "Display clicked journal images in a scene (default) or in a separate journal window",
+	hint: "Display clicked journal images in a dedicated display scene (default), in a separate journal window, or in any scene using a bounding tile.",
 	scope: "client",
 	config: true,
 	type: String,
 	choices: {
-		"scene": "Scene",
-		"window": "Window"
+		"displayScene": "Display Scene",
+		"window": "Window",
+		"anyScene": "Any Scene"
 	},
 	default: "scene",
 //	onChange: swapDisplayModes
@@ -48,15 +49,15 @@ game.settings.register("journal-to-canvas-slideshow", "displaySceneName", {
 	default: "Display"
 });
 
-game.settings.register("journal-to-canvas-slideshow", "useDisplayScene", {
-	name: "Use Display Scene",
-	hint: "Would you like to user the display scene, or use a bounding tile in a different scene?",
-	scope: "client",
-	config: true,
-	type: Boolean,
-	default: true
-});
-// game.settings.register("journal-to-canvas-slideshow", "displayJournal", {
+// game.settings.register("journal-to-canvas-slideshow", "useDisplayScene", {
+// 	name: "Use Display Scene",
+// 	hint: "Would you like to user the display scene, or use a bounding tile in a different scene?",
+// 	scope: "client",
+// 	config: true,
+// 	type: Boolean,
+// 	default: true
+// });
+// // game.settings.register("journal-to-canvas-slideshow", "displayJournal", {
 // 	name: "Display Journal",
 // 	hint: "Which journal entry the display will show in",
 // 	scope: "client",

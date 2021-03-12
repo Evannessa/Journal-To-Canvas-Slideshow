@@ -1,5 +1,4 @@
-//var DisplayTileConfig = require('./DisplayTileConfig.js');
-import DisplayTileConfig from '../classes/DisplayTileConfig.js'
+import MultiMediaPopout from '../classes/MultiMediaPopout.js'
 import {
 	registerSettings
 } from './settings.js'
@@ -196,16 +195,15 @@ async function displayImageInScene(ev, externalURL) {
 	// 0 should equal the default, a scene
 	var ourScene;
 	var boundingTile = game.scenes.active.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
-	if (game.settings.get("journal-to-canvas-slideshow", "useDisplayScene") == true) {
+	console.log(game.settings.get("journal-to-canvas-slideshow", "displayLocation"))
+	if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
 		if (DisplaySceneFound()) {
 			if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
 				//this should evaluate to true or false
-				console.log("Should automatically show display?");
 				displayScene.activate();
 			}
 			//set the scene we're using to be the display scene
 			ourScene = displayScene;
-			console.log(ourScene);
 		} else {
 			//if there is no display scene, return
 			ui.notifications.error("No display scene found. Please make sure you have a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"))
@@ -236,28 +234,11 @@ async function displayImageInScene(ev, externalURL) {
 		if(url == null){
 			ui.notifcations.error("Type not supported")
 		}
-	// 	let element = ev.currentTarget;
-	// 	let type = element.nodeName;
-	// 	if (type == "IMG") {
-	// 		url = element.getAttribute("src");
-	// 	} else if (type == "VIDEO") {
-	// 		url = element.getElementsByTagName("source")[0].getAttribute("src");
-	// 	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
-	// 		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
-	// 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
-	// 		let img = element.style;
-	// 		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-	// 	} else {
-	// 		console.log("Type not supported");
-	// 		return;
-	// }
 }
 
 	//keep track of the tile, which should be the first tile in the display scene
 	//TODO: Find tile with flag name of DisplayTile
 	var displayTile = FindDisplayTile(ourScene); //displayScene.getEmbeddedCollection("Tile")[0];
-	//keep track of the bounding tile, should have the image name "bounding_tile"
-	//	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
 
 	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure your scene has a display tile");
@@ -273,7 +254,6 @@ async function displayImageInScene(ev, externalURL) {
 	} else {
 		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
 	}
-	console.log(imageUpdate);
 
 	const updated = await ourScene.updateEmbeddedEntity("Tile", imageUpdate);
 
@@ -358,7 +338,7 @@ async function GenerateDisplayScene() {
 async function determineWhatToClear() {
 	console.log("Determining what to clear!");
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-	if (location == "scene") {
+	if (location == "displayScene" || location == "anyScene") {
 		clearDisplayTile();
 	} else if (location == "window") {
 		clearDisplayWindow();
@@ -445,7 +425,8 @@ function wait(callback) {
 function determineLocation(ev, url) {
 	//on click, this method will determine if the image should open in a scene or in a display journal
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-	if (location == "scene") {
+	console.log(location)
+	if (location == "displayScene" || location == "anyScene") {
 		//if the setting is to display it in a scene, proceed as normal
 		displayImageInScene(ev, url);
 	} else if (location == "window") {
@@ -474,15 +455,16 @@ function execute(html) {
 }
 
 async function createBoundingTile() {
+	var ourScene = game.scenes.active;
 	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
 
 	displayTile = await Tile.create({
 		img: "/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png",
 		width: dimensionObject.width,
 		height: dimensionObject.height,
 		x: 0,
-		y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+		y: (ourScene.data.height / 2) - (dimensionObject.height / 2)
 	});
 }
 
@@ -601,65 +583,6 @@ function setUrlImageToShow() {
 	}).render(true);
 }
 
-// function determineLocationFromUrl(url) {
-// 	//on click, this method will determine if the image should open in a scene or in a display journal
-// 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-// 	if (location == "scene") {
-// 		//if the setting is to display it in a scene, proceed as normal
-// 		console.log("Displaying image in scene");
-// 		displayImageFromUrl(url);
-// 	} else if (location == "window") {
-// 		//if the setting is to display it in a popout, change it to display in a popout
-// 		console.log("Displaying image in window");
-// 		displayImageInPopoutFromUrl(url);
-// 	}
-
-
-// }
-
-// async function displayImageInPopoutFromUrl(url) {
-// 	ChangePopoutImage(url);
-// }
-
-// async function displayImageFromUrl(url) {
-
-// 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
-// 	// 0 should equal the default, a scene
-// 	if (DisplaySceneFound()) {
-// 		if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-// 			//this should evaluate to true or false
-// 			console.log("Should automatically show display?");
-// 			displayScene.activate();
-// 		}
-// 	} else {
-// 		//if there is no display scene, return
-// 		console.log("No display scene");
-// 		return;
-// 	}
-
-// 	//load the texture from the source
-// 	const tex = await loadTexture(url);
-
-// 	//keep track of the tile, which should be the first tile in the display scene
-// 	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
-// 	//keep track of the bounding tile, should have the image name "bounding_tile"
-// 	var boundingTile = displayScene.getEmbeddedCollection("Tile").find(({
-// 		img
-// 	}) => img.toLowerCase().includes("bounding_tile"));
-
-// 	if (!displayTile) {
-// 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
-// 	}
-
-// 	if (!boundingTile) {
-// 		var imageUpdate = await scaleToScene(displayTile, tex);
-// 	} else {
-// 		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
-// 	}
-
-// 	const updated = await displayScene.updateEmbeddedEntity("Tile", imageUpdate);
-// }
-
 async function scaleToScene(displayTile, tex) {
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
@@ -718,7 +641,6 @@ async function scaleToBoundingTile(displayTile, boundingTile, tex) {
 		y: boundingTile.y,
 		x: boundingTile.x
 	};
-	console.log(displayTile);
 	//Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
 	var boundingMiddle = {
 		x: (boundingTile.x + boundingTile.width / 2),
@@ -735,3 +657,5 @@ async function scaleToBoundingTile(displayTile, boundingTile, tex) {
 
 	return imageUpdate;
 }
+
+
