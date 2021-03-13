@@ -1,4 +1,5 @@
 /* Code below written by zeelo1 https://github.com/zeel01/TokenHUDArtButton/blob/master/artbutton.js -- to handle videos in the popout
+/* with some tweaks to fit my module
 /**
  * Capable of handling images, as well as .mp4 and .webm video
  * not very sophisticated.
@@ -6,7 +7,8 @@
  * @class MultiMediaPopout
  * @extends {ImagePopout}
  */
-class MultiMediaPopout extends ImagePopout {
+
+export default class MultiMediaPopout extends ImagePopout {
 	/**
 	 * Creates an instance of MultiMediaPopout.
 	 *
@@ -21,7 +23,7 @@ class MultiMediaPopout extends ImagePopout {
 			src.slice(-4).toLowerCase()
 		);
 
-		this.options.template = "modules/token-hud-art-button/media-popout.html";
+		this.options.template = "modules/journal-to-canvas-slideshow/templates/media-popout.html";
 	}
 
 	/** @override */
