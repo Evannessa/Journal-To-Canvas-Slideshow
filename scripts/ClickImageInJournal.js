@@ -89,7 +89,7 @@ async function ChangePopoutImage(url) {
 
 
 	if (!popout) {
-		popout = await new ImagePopout(url, {
+		popout = await new MultiMediaPopout(url, {
 			title: game.settings.get("journal-to-canvas-slideshow", "displaySceneName"), //TODO: Change this after you add the new setting
 			shareable: true,
 

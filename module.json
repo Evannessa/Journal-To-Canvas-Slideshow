@@ -7,7 +7,8 @@
     "minimumCoreVersion": "0.7.5",
     "compatibleCoreVersion": "0.7.9",
     "esmodules": [
-        "scripts/ClickImageInJournal.js"
+        "scripts/ClickImageInJournal.js",
+        "classes/MultiMediaPopout.js"
     ], 
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
     "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
