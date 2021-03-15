@@ -12,7 +12,7 @@ export const registerSettings = function() {
 
 game.settings.register("journal-to-canvas-slideshow", "displayLocation", {
 	name: "Display Location",
-	hint: "Display clicked journal images in a dedicated display scene (default), in a separate journal window, or in any scene using a bounding tile.",
+	hint: "Display clicked journal images in a dedicated display scene (default), in a separate window, or in any scene using a bounding tile.",
 	scope: "client",
 	config: true,
 	type: String,
@@ -21,7 +21,7 @@ game.settings.register("journal-to-canvas-slideshow", "displayLocation", {
 		"window": "Window",
 		"anyScene": "Any Scene"
 	},
-	default: "scene",
+	default: "displayScene",
 //	onChange: swapDisplayModes
 });
 
@@ -36,19 +36,29 @@ game.settings.register("journal-to-canvas-slideshow", "autoShowDisplay", {
 
 });
 
-// game.settings.register("journal-to-canvas-slideshow", "displayJournalName",{
-
-// });
-
-game.settings.register("journal-to-canvas-slideshow", "displaySceneName", {
-	name: "Display Scene Name",
-	hint: "What would you like to name the display scene?",
+game.settings.register("journal-to-canvas-slideshow", "displayName", {
+	name: "Display Name",
+	hint: "What would you like to name the display scene, journal, or window?",
 	scope: "client",
 	config: true,
 	type: String,
 	default: "Display"
 });
 
+game.settings.register("journal-to-canvas-slideshow", "displayWindowBehavior", {
+	name: "Display Window Behavior",
+	hint: "Would you like the display window to be a dedicated journal entry (which cannot display video), or a new popout window that appears each time you click on an image (any previous display popout will close). Note that the dedicated journal entry option cannot display video files for now, but the new window popout can.",
+	scope: "client",
+	config: true,
+	type: String,
+	choices: {
+		"journalEntry": "Dedicated Journal Entry",
+		"newWindow": "New Window",
+	},
+	default: "journalEntry"
+
+
+});
 // game.settings.register("journal-to-canvas-slideshow", "useDisplayScene", {
 // 	name: "Use Display Scene",
 // 	hint: "Would you like to user the display scene, or use a bounding tile in a different scene?",

@@ -77,66 +77,97 @@ async function sleep(millis) {
 async function ChangePopoutImage(url) {
 	// get the url from the image clicked in the journal
 	//if popout doesn't exist
-	console.log(popout);
-	var position;
-	var left;
-	var top;
-	var width;
-	var height;
-	var scale;
-	//	
-	
+	if(game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow"){
+		//if we would like to display in a new popout window
+		console.log(popout);
+		var position;
+		var left;
+		var top;
+		var width;
+		var height;
+		var scale;
+		//	
+		
+		if(popout){
+			//if popout already exists
+			position = popout.position;
+			left = position.left;
+			top = position.top;
+			width = position.width;
+			height = position.height;
+			popout.close();
+		}
+		popout = MultiMediaPopout._handleShareMedia({image: url, title: game.settings.get("journal-to-canvas-slideshow", "displayName"), uuid: null})
+		
+			await sleep(50) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
+		// 	//otherwise an error will be thrown
+			
+			popout.setPosition({left: left, top: top, width: width, height: height});
+			if(popout.video){
 
 
-	if (!popout) {
-		popout = await new MultiMediaPopout(url, {
-			title: game.settings.get("journal-to-canvas-slideshow", "displaySceneName"), //TODO: Change this after you add the new setting
-			shareable: true,
-
-		});
-	} else {
-
-		console.log("Setting new positions, left, right, top, width, scale");
-		position = popout.position;
-		left = position.left;
-		top = position.top;
-		width = position.width;
-		height = position.height;
-		scale = 1;
-		popout.object = url;
-		await popout.render(true)
-		await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
-		//otherwise an error will be thrown
-		let pos = popout.setPosition({left: left, top: top, width: width, height: height});
+				popout._element[0].querySelector("form.flexcol").style.height = "100%"
+				popout._element[0].querySelector("video").style.objectFit = "contain"
+				console.log(height)
+				console.log(popout._element[0].querySelector("video"))
+			}
+			console.log(popout._element[0].querySelector("video"));
+			
+			popout.shareImage();
 	}
-	if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-		await popout.render(true)
-		await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
-		//otherwise an error will be thrown
-		popout.setPosition({left: left, top: top, width: width, height: height});
-		popout.shareImage();
+	// if (!popout) {
+	// 	popout = MultiMediaPopout._handleShareMedia({image: url, title: game.settings.get("journal-to-canvas-slideshow", "displayName"), uuid: null})
+	// 	// popout = await new MultiMediaPopout(url, {
+	// 	// 	title: game.settings.get("journal-to-canvas-slideshow", "displayName"), //TODO: Change this after you add the new setting
+	// 	// 	shareable: true,
+
+	// 	// });
+	// } else {
+
+	// 	console.log("Setting new positions, left, right, top, width, scale");
+	// 	position = popout.position;
+	// 	left = position.left;
+	// 	top = position.top;
+	// 	width = position.width;
+	// 	height = position.height;
+	// 	scale = 1;
+	// 	popout.object = url;
+	// 	await popout.render(true)
+	// 	await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
+	// 	//otherwise an error will be thrown
+	// 	let pos = popout.setPosition({left: left, top: top, width: width, height: height});
+	// }
+	// if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+	// 	await popout.render(true)
+	// 	await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
+	// 	//otherwise an error will be thrown
+	// 	popout.setPosition({left: left, top: top, width: width, height: height});
+	// 	popout.shareImage();
+	// }
+
+	else if(game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry"){
+		//if we would like to display in a dedicated journal entry
+		 if(!FindDisplayJournal()){
+		    //couldn't find display journal, so return
+		    ui.notifications.error("No journal entry named " + game.settings.get("journal-to-canvas-slideshow", "displayName") + " found");
+		    return;
+		}
+		else{
+			if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+				//if we have the auto show display settings on, automatically show the journal after the button is clicked
+				displayJournal.render(false, {});
+				displayJournal.show("image", true);
+			}
+		}
+		//change the background image to be the clicked image in the journal
+		//TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
+		let update = {
+			_id: displayJournal._id,
+			img: url
+		}
+
+		const updated = await displayJournal.update(update, {});
 	}
-
-	// if(!FindDisplayJournal()){
-	//     //couldn't find display journal, so return
-	//     ui.notifications.error("No journal entry named 'Display Journal' found");
-	//     return;
-	// }
-	// else{
-	// 	if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
-	// 		//if we have the auto show display settings on, automatically show the journal after the button is clicked
-	// 		displayJournal.render(false, {});
-	// 		displayJournal.show("image", true);
-	// 	}
-	// }
-	// //change the background image to be the clicked image in the journal
-	// //TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
-	// let update = {
-	// 	_id: displayJournal._id,
-	// 	img: url
-	// }
-
-	// const updated = await displayJournal.update(update, {});
 
 }
 function getImageSource(ev, myCallback) {
@@ -206,7 +237,7 @@ async function displayImageInScene(ev, externalURL) {
 			ourScene = displayScene;
 		} else {
 			//if there is no display scene, return
-			ui.notifications.error("No display scene found. Please make sure you have a scene named " + game.settings.get("journal-to-canvas-slideshow", "displaySceneName"))
+			ui.notifications.error("No display scene found. Please make sure you have a scene named " + game.settings.get("journal-to-canvas-slideshow", "displayName"))
 			return;
 		}
 	} else {
@@ -307,13 +338,13 @@ async function GenerateDisplayScene() {
 
 		//create a new scene named display
 		displayScene = await Scene.create({
-			name: game.settings.get("journal-to-canvas-slideshow", "displaySceneName")
+			name: game.settings.get("journal-to-canvas-slideshow", "displayName")
 		});
 		//activate the scene 
 		await displayScene.activate();
 		//update the scene
 		await displayScene.update({
-			name: game.settings.get("journal-to-canvas-slideshow", "displaySceneName"),
+			name: game.settings.get("journal-to-canvas-slideshow", "displayName"),
 			width: 2000,
 			height: 2000,
 			backgroundColor: "#202020",
@@ -388,7 +419,7 @@ function DisplaySceneFound() {
 	var scenes = game.scenes.entries;
 	var displaySceneFound = false;
 	for (var scn of scenes) {
-		if (scn.name == game.settings.get("journal-to-canvas-slideshow", "displaySceneName")) {
+		if (scn.name == game.settings.get("journal-to-canvas-slideshow", "displayName")) {
 			//if we found the scene, make the display scene variable equal this scene
 			displayScene = scn;
 			displaySceneFound = true;
