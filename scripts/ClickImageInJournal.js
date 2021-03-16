@@ -257,10 +257,10 @@ async function displayImageInScene(ev, externalURL) {
 
 	if (!boundingTile) {
 		console.log("There is no bounding tile")
-		imageUpdate = await scaleToScene(displayTile, tex);
+		imageUpdate = await scaleToScene(displayTile, tex, url);
 	} else {
 		console.log("There IS a bounding tile")
-		imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
+		imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex, url)
 	}
 	console.log(imageUpdate)
 
@@ -601,7 +601,8 @@ function setUrlImageToShow() {
 	}).render(true);
 }
 
-async function scaleToScene(displayTile, tex) {
+async function scaleToScene(displayTile, tex, url) {
+	console.log(url)
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 	//scane down factor is how big the tile will be in the scene
@@ -617,7 +618,7 @@ async function scaleToScene(displayTile, tex) {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: tex.baseTexture.resource.url,
+		img: url,
 		x: scaleDownFactor / 2,
 		y: ((displayScene.data.height / 2) - (dimensionObject.height / 2))
 	};
@@ -626,7 +627,7 @@ async function scaleToScene(displayTile, tex) {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: tex.baseTexture.resource.url,
+		img: url,// tex.baseTexture.resource.url,
 		y: scaleDownFactor / 2,
 		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
 	};
@@ -647,14 +648,14 @@ async function scaleToScene(displayTile, tex) {
 	return await displayScene.updateEmbeddedEntity("Tile", wideImageUpdate);
 }
 
-async function scaleToBoundingTile(displayTile, boundingTile, tex) {
+async function scaleToBoundingTile(displayTile, boundingTile, tex, url) {
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, boundingTile.width, boundingTile.height);
 
 	var imageUpdate = {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: tex.baseTexture.resource.url,
+		img: url,
 		y: boundingTile.y,
 		x: boundingTile.x
 	};
