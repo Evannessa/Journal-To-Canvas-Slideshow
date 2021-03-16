@@ -102,49 +102,16 @@ async function ChangePopoutImage(url) {
 			await sleep(50) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
 		// 	//otherwise an error will be thrown
 			
+			//set the popout's position to be that of the previous window
 			popout.setPosition({left: left, top: top, width: width, height: height});
 			if(popout.video){
-
-
+				//if the popout is a video, make some tweaks to the style of the elements to make it display properly (which it wasn't by default)
 				popout._element[0].querySelector("form.flexcol").style.height = "100%"
 				popout._element[0].querySelector("video").style.objectFit = "contain"
-				console.log(height)
-				console.log(popout._element[0].querySelector("video"))
 			}
-			console.log(popout._element[0].querySelector("video"));
 			
 			popout.shareImage();
 	}
-	// if (!popout) {
-	// 	popout = MultiMediaPopout._handleShareMedia({image: url, title: game.settings.get("journal-to-canvas-slideshow", "displayName"), uuid: null})
-	// 	// popout = await new MultiMediaPopout(url, {
-	// 	// 	title: game.settings.get("journal-to-canvas-slideshow", "displayName"), //TODO: Change this after you add the new setting
-	// 	// 	shareable: true,
-
-	// 	// });
-	// } else {
-
-	// 	console.log("Setting new positions, left, right, top, width, scale");
-	// 	position = popout.position;
-	// 	left = position.left;
-	// 	top = position.top;
-	// 	width = position.width;
-	// 	height = position.height;
-	// 	scale = 1;
-	// 	popout.object = url;
-	// 	await popout.render(true)
-	// 	await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
-	// 	//otherwise an error will be thrown
-	// 	let pos = popout.setPosition({left: left, top: top, width: width, height: height});
-	// }
-	// if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-	// 	await popout.render(true)
-	// 	await sleep(10) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
-	// 	//otherwise an error will be thrown
-	// 	popout.setPosition({left: left, top: top, width: width, height: height});
-	// 	popout.shareImage();
-	// }
-
 	else if(game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry"){
 		//if we would like to display in a dedicated journal entry
 		 if(!FindDisplayJournal()){
@@ -181,6 +148,8 @@ function getImageSource(ev, myCallback) {
 		url = element.getAttribute("src");
 	} else if (type == "VIDEO") {
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
+		console.log("Video url is ");
+		console.log(url)
 	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
 		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
@@ -191,6 +160,7 @@ function getImageSource(ev, myCallback) {
 		url = null;
 
 	}
+	console.log(myCallback)
 	if(myCallback){
 		//if my callback is defined
 		myCallback(url);
@@ -262,6 +232,8 @@ async function displayImageInScene(ev, externalURL) {
 	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
 	else{
 		url = getImageSource(ev)
+		console.log("Our url is ")
+		console.log(url)
 		if(url == null){
 			ui.notifcations.error("Type not supported")
 		}
@@ -279,12 +251,18 @@ async function displayImageInScene(ev, externalURL) {
 
 	//load the texture from the source
 	const tex = await loadTexture(url);
+	console.log("Our texture is ")
+	console.log(tex)
+	var imageUpdate;
 
 	if (!boundingTile) {
-		var imageUpdate = await scaleToScene(displayTile, tex);
+		console.log("There is no bounding tile")
+		imageUpdate = await scaleToScene(displayTile, tex);
 	} else {
-		var imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
+		console.log("There IS a bounding tile")
+		imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex)
 	}
+	console.log(imageUpdate)
 
 	const updated = await ourScene.updateEmbeddedEntity("Tile", imageUpdate);
 
@@ -390,27 +368,36 @@ async function clearDisplayWindow() {
 
 }
 async function clearDisplayTile() {
-	//create a tile for the scene
-	if (!DisplaySceneFound()) {
+	//clear a tile for the scene
+	var displayTile = FindDisplayTile(game.scenes.active)
+	if (!DisplaySceneFound() && displayTile == undefined) {
+		//if we're not on the display scene and there's no display tile 
 		return;
 	}
+	var ourScene
+	if(game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene"){
+		ourScene = displayScene;
+	}
+	else{
+		ourScene = game.scenes.active
+	}
 
-	var displayTile = displayScene.getEmbeddedCollection("Tile")[0];
+
 	if (!displayTile) {
 		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
 	}
 	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png");
-	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
+	// var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
 
 	var clearTileUpdate = {
 		_id: displayTile._id,
 		img: "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png",
-		width: dimensionObject.width,
-		height: dimensionObject.height,
-		x: 0,
-		y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+		// width: dimensionObject.width,
+		// height: dimensionObject.height,
+		// x: 0,
+		// y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
 	};
-	const updated = await displayScene.updateEmbeddedEntity("Tile", clearTileUpdate);
+	const updated = await ourScene.updateEmbeddedEntity("Tile", clearTileUpdate);
 }
 
 function DisplaySceneFound() {
@@ -620,7 +607,6 @@ async function scaleToScene(displayTile, tex) {
 	//scane down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
 	var scaleDownFactor = 200; //game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
-	console.log(scaleDownFactor);
 	dimensionObject.width -= scaleDownFactor;
 	dimensionObject.height -= scaleDownFactor;
 	//half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
