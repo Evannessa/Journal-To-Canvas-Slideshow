@@ -28,7 +28,7 @@ game.settings.register("journal-to-canvas-slideshow", "displayLocation", {
 
 game.settings.register("journal-to-canvas-slideshow", "autoShowDisplay", {
     name: "Automatically Show Display",
-    hint: "Automatically activate the 'Display' scene or show the 'Display Journal' to players after clicking on a journal image",
+    hint: "Automatically activate the 'Display' scene or show the Display Journal/Window to players after clicking on a journal image",
     scope: "client",
     config: true,
     type: Boolean,
