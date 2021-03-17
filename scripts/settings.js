@@ -59,6 +59,14 @@ game.settings.register("journal-to-canvas-slideshow", "displayWindowBehavior", {
 
 
 });
+
+game.settings.register("journal-to-canvas-slideshow", "showWelcomeMessage", {
+	name: "Show Welcome Message",
+	scope: "client",
+	type: Boolean,
+	config: true,
+	default: true
+});
 // game.settings.register("journal-to-canvas-slideshow", "useDisplayScene", {
 // 	name: "Use Display Scene",
 // 	hint: "Would you like to user the display scene, or use a bounding tile in a different scene?",

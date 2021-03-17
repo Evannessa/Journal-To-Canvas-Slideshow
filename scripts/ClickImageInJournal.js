@@ -65,21 +65,29 @@ async function CreateDisplayJournal() {
 	} else {
 		//if it already exists, render it and show to players
 		displayJournal.render(false);
-		displayJournal.show("image", true);
+		if(displayJournal.data.img != ""){
+			//if it's currentl on image mode
+			displayJournal.show("image", true);
+		}
+		else{
+			if(displayJournal.data.content != ""){
+
+				displayJournal.show("text", true);
+			}
+		}
 	}
 
 }
 //borrowed this code from Foundry Discord
 async function sleep(millis) {
-  return new Promise(r => setTimeout(r, millis));
+	return new Promise(r => setTimeout(r, millis));
 }
 
 async function ChangePopoutImage(url) {
 	// get the url from the image clicked in the journal
 	//if popout doesn't exist
-	if(game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow"){
+	if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow") {
 		//if we would like to display in a new popout window
-		console.log(popout);
 		var position;
 		var left;
 		var top;
@@ -87,56 +95,90 @@ async function ChangePopoutImage(url) {
 		var height;
 		var scale;
 		//	
-		
-		if(popout){
+
+		if (popout) {
 			//if popout already exists
 			position = popout.position;
 			left = position.left;
 			top = position.top;
 			width = position.width;
 			height = position.height;
-			popout.close();
-		}
-		popout = MultiMediaPopout._handleShareMedia({image: url, title: game.settings.get("journal-to-canvas-slideshow", "displayName"), uuid: null})
 		
+		} 
+			popout = MultiMediaPopout._handleShareMedia({
+				image: url,
+				title: game.settings.get("journal-to-canvas-slideshow", "displayName"),
+				uuid: null
+			})
+
 			await sleep(50) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
-		// 	//otherwise an error will be thrown
-			
+			// 	//otherwise an error will be thrown
+
 			//set the popout's position to be that of the previous window
-			popout.setPosition({left: left, top: top, width: width, height: height});
-			if(popout.video){
+			popout.setPosition({
+				left: left,
+				top: top,
+				width: width,
+				height: height
+			});
+			if (popout.video) {
 				//if the popout is a video, make some tweaks to the style of the elements to make it display properly (which it wasn't by default)
 				popout._element[0].querySelector("form.flexcol").style.height = "100%"
 				popout._element[0].querySelector("video").style.objectFit = "contain"
 			}
-			
-			popout.shareImage();
-	}
-	else if(game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry"){
+
+		popout.shareImage();
+		
+	} else if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry") {
 		//if we would like to display in a dedicated journal entry
-		 if(!FindDisplayJournal()){
-		    //couldn't find display journal, so return
-		    ui.notifications.error("No journal entry named " + game.settings.get("journal-to-canvas-slideshow", "displayName") + " found");
-		    return;
-		}
-		else{
-			if(game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")){
+		if (!FindDisplayJournal()) {
+			//couldn't find display journal, so return
+			ui.notifications.error("No journal entry named " + game.settings.get("journal-to-canvas-slideshow", "displayName") + " found");
+			return;
+		} else {
+
+			if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
 				//if we have the auto show display settings on, automatically show the journal after the button is clicked
 				displayJournal.render(false, {});
-				displayJournal.show("image", true);
+			//	displayJournal.show("image", true);
+			} 
+		}
+		var fileTypePattern = /\.[0-9a-z]+$/i;
+		var fileType = url.match(fileTypePattern);
+		let update;
+	
+		if (fileType == ".mp4" || fileType == ".webm") {
+			// if the file type is a video 
+			let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;"> 
+			<video width="100%" height="auto" autoplay>
+  				<source src=${url} type="video/mp4">
+  				<source src=${url} type="video/webm">
+			</video> 
+			</div>
+			`
+			
+			update = {
+				_id: displayJournal._id,
+				content: videoHTML,
+				img: ""
 			}
+		
+			const updated = await displayJournal.update(update, {})
+			displayJournal.show("text", true)
+		} else {
+			//change the background image to be the clicked image in the journal
+			update = {
+				_id: displayJournal._id,
+				content: "",
+				img: url
+			}
+			const updated = await displayJournal.update(update, {})
+			displayJournal.show("image", true)
 		}
-		//change the background image to be the clicked image in the journal
-		//TODO: find some way to add notifcation to see what mode the journal is in (TEXT OR IMAGE)
-		let update = {
-			_id: displayJournal._id,
-			img: url
-		}
-
-		const updated = await displayJournal.update(update, {});
 	}
 
 }
+
 function getImageSource(ev, myCallback) {
 
 	let element = ev.currentTarget;
@@ -148,23 +190,20 @@ function getImageSource(ev, myCallback) {
 		url = element.getAttribute("src");
 	} else if (type == "VIDEO") {
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
-		console.log("Video url is ");
-		console.log(url)
 	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
 		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
 		let img = element.style;
 		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
 	} else {
-		console.log("Type not supported");
+		ui.notifications.error("Type not supported");
 		url = null;
 
 	}
-	console.log(myCallback)
-	if(myCallback){
+	if (myCallback) {
 		//if my callback is defined
 		myCallback(url);
-	}	
+	}
 	return url;
 
 	//load the texture from the source
@@ -191,12 +230,13 @@ async function createDisplayTile(ourScene) {
 async function displayImageInScene(ev, externalURL) {
 
 	//this means we're getting the URL from the URL button
-	
+
 	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
 	// 0 should equal the default, a scene
 	var ourScene;
-	var boundingTile = game.scenes.active.getEmbeddedCollection("Tile").find(({img}) => img.toLowerCase().includes("bounding_tile"));
-	console.log(game.settings.get("journal-to-canvas-slideshow", "displayLocation"))
+	var boundingTile = game.scenes.active.getEmbeddedCollection("Tile").find(({
+		img
+	}) => img.toLowerCase().includes("bounding_tile"));
 	if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
 		if (DisplaySceneFound()) {
 			if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
@@ -215,8 +255,7 @@ async function displayImageInScene(ev, externalURL) {
 			//if the scene isn't the display scene but has a bounding Tile
 			//the scene we're using is the currently active scene
 			ourScene = game.scenes.active;
-		}
-		else{
+		} else {
 			//
 			ui.notifications.error("Not on display scene, but no bounding tile present")
 			return;
@@ -226,18 +265,16 @@ async function displayImageInScene(ev, externalURL) {
 	//get the element whose source we want to display as a tile, and what type it is (image or video)
 	let url;
 
-	if(externalURL){
-		url = externalURL;		
+	if (externalURL) {
+		url = externalURL;
 	}
 	//check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
-	else{
+	else {
 		url = getImageSource(ev)
-		console.log("Our url is ")
-		console.log(url)
-		if(url == null){
+		if (url == null) {
 			ui.notifcations.error("Type not supported")
 		}
-}
+	}
 
 	//keep track of the tile, which should be the first tile in the display scene
 	//TODO: Find tile with flag name of DisplayTile
@@ -251,18 +288,13 @@ async function displayImageInScene(ev, externalURL) {
 
 	//load the texture from the source
 	const tex = await loadTexture(url);
-	console.log("Our texture is ")
-	console.log(tex)
 	var imageUpdate;
 
 	if (!boundingTile) {
-		console.log("There is no bounding tile")
 		imageUpdate = await scaleToScene(displayTile, tex, url);
 	} else {
-		console.log("There IS a bounding tile")
 		imageUpdate = await scaleToBoundingTile(displayTile, boundingTile, tex, url)
 	}
-	console.log(imageUpdate)
 
 	const updated = await ourScene.updateEmbeddedEntity("Tile", imageUpdate);
 
@@ -271,14 +303,14 @@ async function displayImageInScene(ev, externalURL) {
 
 function FindDisplayTile(ourScene) {
 	var ourTile;
-//	var tiles = ourScene.getEmbeddedCollection("Tile");
+	//	var tiles = ourScene.getEmbeddedCollection("Tile");
 
-	canvas.tiles.placeables.forEach( (tile) => {
-		if(tile.getFlag("journal-to-canvas-slideshow", "name")){
+	canvas.tiles.placeables.forEach((tile) => {
+		if (tile.getFlag("journal-to-canvas-slideshow", "name")) {
 			ourTile = tile;
 		}
 	})
-	
+
 	return ourTile.data
 }
 
@@ -295,7 +327,6 @@ function createSceneButton(app, html) {
 		button.click(GenerateDisplayScene);
 		html.find(".directory-footer").prepend(button);
 	}
-	console.log(app.options.id);
 	if (app.options.id == "journal") {
 		//create the journal button for generating a popout
 		let button = $("<button>Create or Show Display Entry</button>");
@@ -331,8 +362,8 @@ async function GenerateDisplayScene() {
 		});
 
 		//create a tile for the scene
-		createDisplayTile(displayScene);
-		
+		await createDisplayTile(displayScene);
+
 		//this should refresh the canvas
 		canvas.draw();
 
@@ -345,7 +376,6 @@ async function GenerateDisplayScene() {
 }
 
 async function determineWhatToClear() {
-	console.log("Determining what to clear!");
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
 	if (location == "displayScene" || location == "anyScene") {
 		clearDisplayTile();
@@ -361,7 +391,8 @@ async function clearDisplayWindow() {
 	let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
 	let update = {
 		_id: displayJournal._id,
-		img: url
+		img: url,
+		content: `<div></div>`
 	}
 
 	const updated = await displayJournal.update(update, {});
@@ -375,10 +406,9 @@ async function clearDisplayTile() {
 		return;
 	}
 	var ourScene
-	if(game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene"){
+	if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
 		ourScene = displayScene;
-	}
-	else{
+	} else {
 		ourScene = game.scenes.active
 	}
 
@@ -443,17 +473,15 @@ function wait(callback) {
 function determineLocation(ev, url) {
 	//on click, this method will determine if the image should open in a scene or in a display journal
 	let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-	console.log(location)
 	if (location == "displayScene" || location == "anyScene") {
 		//if the setting is to display it in a scene, proceed as normal
 		displayImageInScene(ev, url);
 	} else if (location == "window") {
 		//if the setting is to display it in a popout, change it to display in a popout
-		if(url != undefined){
+		if (url != undefined) {
 			//if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
 			ChangePopoutImage(url);
-		}
-		else{
+		} else {
 			//if not, it happened because of an image click, so find the information of the clicked image
 			getImageSource(ev, ChangePopoutImage);
 		}
@@ -486,9 +514,42 @@ async function createBoundingTile() {
 	});
 }
 
+function ShowWelcomeMessage(){
+	let d = new Dialog({
+		title: "Welcome Message",
+		content: `<div><p>
+			<h2>Journal To Canvas Slideshow Has Updated</h2>
+			<ol style="list-style-type:decimal">
+				<li>Watch the tutorial video here: <a href=""></a></li><br>
+				<li>Please check the module's settings and reselect your prefered options, as the settings have changed</li><br>	
+				<li>Please recreate your Display Scene, or replace the tile in your display scene with a "Display Tile" (see tutorial video for how-to)</li><br>
+				<li>Please create all Display Tiles from now on using the "Create Display Tile" button under the Tile controls.</li><br>
+				<li>Note that Display Tiles now are "flagged" by the script and no longer need to be the very first tile in the scene, so you can add it after other tiles</li><br>
+			</ol>	
+		</p>
+		<p>The welcome message can be turned on and off in the module settings, but will be enabled after updates to inform you of important changes.</p>
+		</div> `,
+		buttons: {
+			disable : {
+				label: "Disable Welcome Message",
+				callback: DisableWelcomeMessage
+			},
+			continue: {
+				label: "Continue without Disabling"
+			}
+		}
+	});
+	d.render(true);
+}
+
+function DisableWelcomeMessage(){
+	//disable the welcome message
+	game.settings.set("journal-to-canvas-slideshow", "showWelcomeMessage", false)
+}
+
 Hooks.on("getSceneControlButtons", (controls) => {
 	//controls refers to all of the controls
-	const tileControls = controls.find((control) => control?.name === "tiles");
+	const tileControls = controls.find((control) => control ?.name === "tiles");
 	if (game.user.isGM) {
 		tileControls.tools.push({
 			name: 'ClearDisplay',
@@ -552,6 +613,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 
 		setEventListeners(html);
 		if (FindDisplayJournal() && app.object == displayJournal) {
+			//find the display journal
 			//the image that will be changed 
 			journalImage = html.find(".lightbox-image");
 		}
@@ -566,6 +628,11 @@ Hooks.once('init', async function () {
 Hooks.once('ready', () => {
 	FindDisplayJournal();
 	DisplaySceneFound();
+
+	if(game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true && game.user.isGM){
+		//if we have it set to show the welcome message, and the user is the GM
+		ShowWelcomeMessage();
+	}
 });
 
 
@@ -602,7 +669,6 @@ function setUrlImageToShow() {
 }
 
 async function scaleToScene(displayTile, tex, url) {
-	console.log(url)
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
 
 	//scane down factor is how big the tile will be in the scene
@@ -627,7 +693,7 @@ async function scaleToScene(displayTile, tex, url) {
 		_id: displayTile._id,
 		width: dimensionObject.width,
 		height: dimensionObject.height,
-		img: url,// tex.baseTexture.resource.url,
+		img: url, // tex.baseTexture.resource.url,
 		y: scaleDownFactor / 2,
 		x: ((displayScene.data.width / 2) - (dimensionObject.width / 2))
 	};
@@ -675,5 +741,3 @@ async function scaleToBoundingTile(displayTile, boundingTile, tex, url) {
 
 	return imageUpdate;
 }
-
-
