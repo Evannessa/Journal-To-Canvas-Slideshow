@@ -4,7 +4,7 @@
  * Capable of handling images, as well as .mp4 and .webm video
  * not very sophisticated.
  *
- * @class MultiMediaPopout
+ * @class ImageVideoPopout
  * @extends {ImagePopout}
  */
 
@@ -14,7 +14,7 @@ export default class ImageVideoPopout extends ImagePopout {
 	 *
 	 * @param {string} src
 	 * @param {object} [options={}]
-	 * @memberof MultiMediaPopout
+	 * @memberof ImageVideoPopout
 	 */
 	constructor(src, options = {}) {
 		super(src, options);
