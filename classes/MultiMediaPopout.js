@@ -8,7 +8,7 @@
  * @extends {ImagePopout}
  */
 
-export default class MultiMediaPopout extends ImagePopout {
+export default class ImageVideoPopout extends ImagePopout {
 	/**
 	 * Creates an instance of MultiMediaPopout.
 	 *
@@ -50,11 +50,11 @@ export default class MultiMediaPopout extends ImagePopout {
 	 * @param {string} image - The path to the image/media resource.
 	 * @param {string} title - The title for the popout title bar.
 	 * @param {string} uuid
-	 * @return {MultiMediaPopout}
+	 * @return {ImageVideoPopout}
 	 * @private
 	 */
 	static _handleShareMedia({ image, title, uuid } = {}) {
-		return new MultiMediaPopout(image, {
+		return new ImageVideoPopout(image, {
 			title: title,
 			uuid: uuid,
 			shareable: false,
@@ -65,5 +65,5 @@ export default class MultiMediaPopout extends ImagePopout {
 
 
 Hooks.once("ready", () => {
-	game.socket.on("module.token-hud-art-button", MultiMediaPopout._handleShareMedia);
+	game.socket.on("module.token-hud-art-button", ImageVideoPopout._handleShareMedia);
 });
