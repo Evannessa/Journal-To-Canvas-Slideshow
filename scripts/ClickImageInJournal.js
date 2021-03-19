@@ -1,4 +1,4 @@
-import MultiMediaPopout from '../classes/MultiMediaPopout.js'
+import ImageVideoPopout from '../classes/MultiMediaPopout.js'
 import {
 	registerSettings
 } from './settings.js'
@@ -88,46 +88,8 @@ async function ChangePopoutImage(url) {
 	//if popout doesn't exist
 	if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow") {
 		//if we would like to display in a new popout window
-		var position;
-		var left;
-		var top;
-		var width;
-		var height;
-		var scale;
-		//	
-
-		if (popout) {
-			//if popout already exists
-			position = popout.position;
-			left = position.left;
-			top = position.top;
-			width = position.width;
-			height = position.height;
+		popout = new ImageVideoPopout(url, {shareable: true}).render(true).shareImage();
 		
-		} 
-			popout = MultiMediaPopout._handleShareMedia({
-				image: url,
-				title: game.settings.get("journal-to-canvas-slideshow", "displayName"),
-				uuid: null
-			})
-
-			await sleep(50) //there's something a bit buggy here where you need some extra time before setPosition will work properly, which is why this is here
-			// 	//otherwise an error will be thrown
-
-			//set the popout's position to be that of the previous window
-			popout.setPosition({
-				left: left,
-				top: top,
-				width: width,
-				height: height
-			});
-			if (popout.video) {
-				//if the popout is a video, make some tweaks to the style of the elements to make it display properly (which it wasn't by default)
-				popout._element[0].querySelector("form.flexcol").style.height = "100%"
-				popout._element[0].querySelector("video").style.objectFit = "contain"
-			}
-
-		popout.shareImage();
 		
 	} else if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry") {
 		//if we would like to display in a dedicated journal entry
@@ -150,7 +112,7 @@ async function ChangePopoutImage(url) {
 		if (fileType == ".mp4" || fileType == ".webm") {
 			// if the file type is a video 
 			let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;"> 
-			<video width="100%" height="auto" autoplay>
+			<video width="100%" height="auto" autoplay loop>
   				<source src=${url} type="video/mp4">
   				<source src=${url} type="video/webm">
 			</video> 
@@ -229,20 +191,12 @@ async function createDisplayTile(ourScene) {
 
 async function displayImageInScene(ev, externalURL) {
 
-	//this means we're getting the URL from the URL button
-
-	//check for the display scene. If found, the displayScene variable will be set to it, and the display scene will be activated
-	// 0 should equal the default, a scene
 	var ourScene;
 	var boundingTile = game.scenes.active.getEmbeddedCollection("Tile").find(({
 		img
 	}) => img.toLowerCase().includes("bounding_tile"));
 	if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
 		if (DisplaySceneFound()) {
-			if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-				//this should evaluate to true or false
-				displayScene.activate();
-			}
 			//set the scene we're using to be the display scene
 			ourScene = displayScene;
 		} else {
@@ -251,14 +205,21 @@ async function displayImageInScene(ev, externalURL) {
 			return;
 		}
 	} else {
+		//if the display location setting is set to "Any Scene"
 		if (boundingTile) {
 			//if the scene isn't the display scene but has a bounding Tile
 			//the scene we're using is the currently active scene
 			ourScene = game.scenes.active;
 		} else {
 			//
-			ui.notifications.error("Not on display scene, but no bounding tile present")
-			return;
+			if(DisplaySceneFound() && displayScene == game.scenes.active){
+				ui.notifications.warn("'Any Scene' setting selected and Display Scene active, but no bounding tile present; reverting to showing image as default")
+				ourScene = displayScene;
+			}
+			else{
+				ui.notifications.error("Not on display scene, but no bounding tile present")
+				return;
+			}
 		}
 	}
 
@@ -298,20 +259,33 @@ async function displayImageInScene(ev, externalURL) {
 
 	const updated = await ourScene.updateEmbeddedEntity("Tile", imageUpdate);
 
+	if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+		//if the settings have it set to automatically show the display, activate the scene
+		ourScene.activate()
+	}
+
 
 }
 
 function FindDisplayTile(ourScene) {
+	//find the display tile in the scene
 	var ourTile;
-	//	var tiles = ourScene.getEmbeddedCollection("Tile");
-
-	canvas.tiles.placeables.forEach((tile) => {
-		if (tile.getFlag("journal-to-canvas-slideshow", "name")) {
+	var tiles = ourScene.getEmbeddedCollection("Tile")
+	console.log(tiles)
+	console.log(canvas.tiles.placeables)
+	for(let tile of tiles){
+		console.log(tile)
+		if(tile.flags["journal-to-canvas-slideshow"]?.name == "displayTile"){
 			ourTile = tile;
 		}
-	})
+	}
+	// canvas.tiles.placeables.forEach((tile) => {
+	// 	if (tile.getFlag("journal-to-canvas-slideshow", "name")) {
+	// 		ourTile = tile;
+	// 	}
+	// })
 
-	return ourTile.data
+	return ourTile//.data
 }
 
 
@@ -520,7 +494,7 @@ function ShowWelcomeMessage(){
 		content: `<div><p>
 			<h2>Journal To Canvas Slideshow Has Updated</h2>
 			<ol style="list-style-type:decimal">
-				<li>Watch the tutorial video here: <a href=""></a></li><br>
+				<li><a href="https://youtu.be/t4NX55vs9gU">Watch the tutorial video here</a></li><br>
 				<li>Please check the module's settings and reselect your prefered options, as the settings have changed</li><br>	
 				<li>Please recreate your Display Scene, or replace the tile in your display scene with a "Display Tile" (see tutorial video for how-to)</li><br>
 				<li>Please create all Display Tiles from now on using the "Create Display Tile" button under the Tile controls.</li><br>
@@ -634,7 +608,6 @@ Hooks.once('ready', () => {
 		ShowWelcomeMessage();
 	}
 });
-
 
 function setUrlImageToShow() {
 	new Dialog({
