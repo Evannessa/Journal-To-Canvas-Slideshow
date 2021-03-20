@@ -84,6 +84,7 @@ async function sleep(millis) {
 }
 
 async function ChangePopoutImage(url) {
+	//...
 	// get the url from the image clicked in the journal
 	//if popout doesn't exist
 	if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow") {
