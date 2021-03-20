@@ -1,4 +1,13 @@
 
+## **v0.1.3**
+**ADDED**
+
+**Major**:
+
+* NEW: Added option to display journal images in a window rather than display scene
+
+
+* NEW: Module settings
 ## **v0.1.2** 
 
 **Major:**
