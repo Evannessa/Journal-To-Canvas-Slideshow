@@ -3,7 +3,7 @@
     "title": "Journal to Canvas Slideshow - Display Journal Art on the Canvas",
     "description": "Clicking an image in a journal entry will update a canvas tile to show that image, providing a slideshow effect for your players as you narrate or read notes.",
     "author": "Eva",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "minimumCoreVersion": "0.7.5",
     "compatibleCoreVersion": "0.7.9",
     "esmodules": [

@@ -47,7 +47,7 @@ game.settings.register("journal-to-canvas-slideshow", "displayName", {
 
 game.settings.register("journal-to-canvas-slideshow", "displayWindowBehavior", {
 	name: "Display Window Behavior",
-	hint: "Would you like the display window to be a dedicated journal entry (which cannot display video), or a new popout window that appears each time you click on an image (any previous display popout will close). Note that the dedicated journal entry option cannot display video files for now, but the new window popout can.",
+	hint: "Would you like the display window to be a dedicated journal entry, or a new popout window that will appear each time you click on an image?",
 	scope: "client",
 	config: true,
 	type: String,
