@@ -1,17 +1,17 @@
 <form>
     <div class="form-group">
-        <label for="scaleDown">Scale down Value</label>
-        <input type="number" name="scaleDown" value="{{ scaleDown }}"data-dtype="Number">
-        <!--scale down value-->
+        <label for="createDisplayTile"></label>
+        <button id="createDisplayTile" name="createDisplayTile"></button>
+
+        <label for="createBoundingTile"></label>
+        <button id="createBoundingTile" name="createBoundingTile"></button>
     </div>
     <div>
         <label for="displayInScene">Display in Display Scene</label>
-        <!-- <input type="radio" id="displayInScene" name="displayLocation" value="{{ displayLocation }}" data-dtype="radio"> -->
 
         <input type="radio" id="displayInScene" name="displayLocation" value=1 data-dtype="radio">
         <label for="displayInPopout">Display in Image Journal Popout</label>
         <input type="radio" id="displayInPopout" name="displayLocation" value=2 data-dtype="radio" checked> <!-- scene or journal toggle -->
-        <!-- <input type="radio" id="displayInPopout" name="displayLocation" value="{{ displayLocation }}" data-dtype="radio" checked> scene or journal toggle -->
     </div>
     <div>
         <label for="activateDisplayScene"> Activate Display Scene on Image Click </label>

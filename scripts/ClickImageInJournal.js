@@ -3,11 +3,26 @@ import {
 	registerSettings
 } from './settings.js'
 
+import {
+	SlideshowConfig
+} from './SlideshowConfig.js'
+
 var displayScene;
 var displayTile;
 var displayJournal;
 var journalImage;
 var popout;
+
+// function registerLayer() {
+// 	const layers = mergeObject(Canvas.layers, {
+// 		slideshow: SlideshowLayer
+// 	});
+// 	Object.defineProperty(Canvas, 'layers', {
+// 		get: function () {
+// 			return layers;
+// 		}
+// 	});
+// }
 
 function highlight(ev) {
 	//when hovering over an image, 'highlight' it by changing its shadow
@@ -65,12 +80,11 @@ async function CreateDisplayJournal() {
 	} else {
 		//if it already exists, render it and show to players
 		displayJournal.render(false);
-		if(displayJournal.data.img != ""){
+		if (displayJournal.data.img != "") {
 			//if it's currentl on image mode
 			displayJournal.show("image", true);
-		}
-		else{
-			if(displayJournal.data.content != ""){
+		} else {
+			if (displayJournal.data.content != "") {
 
 				displayJournal.show("text", true);
 			}
@@ -89,9 +103,11 @@ async function ChangePopoutImage(url) {
 	//if popout doesn't exist
 	if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow") {
 		//if we would like to display in a new popout window
-		popout = new ImageVideoPopout(url, {shareable: true}).render(true).shareImage();
-		
-		
+		popout = new ImageVideoPopout(url, {
+			shareable: true
+		}).render(true).shareImage();
+
+
 	} else if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry") {
 		//if we would like to display in a dedicated journal entry
 		if (!FindDisplayJournal()) {
@@ -103,13 +119,13 @@ async function ChangePopoutImage(url) {
 			if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
 				//if we have the auto show display settings on, automatically show the journal after the button is clicked
 				displayJournal.render(false, {});
-			//	displayJournal.show("image", true);
-			} 
+				//	displayJournal.show("image", true);
+			}
 		}
 		var fileTypePattern = /\.[0-9a-z]+$/i;
 		var fileType = url.match(fileTypePattern);
 		let update;
-	
+
 		if (fileType == ".mp4" || fileType == ".webm") {
 			// if the file type is a video 
 			let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;"> 
@@ -119,13 +135,13 @@ async function ChangePopoutImage(url) {
 			</video> 
 			</div>
 			`
-			
+
 			update = {
 				_id: displayJournal._id,
 				content: videoHTML,
 				img: ""
 			}
-		
+
 			const updated = await displayJournal.update(update, {})
 			displayJournal.show("text", true)
 		} else {
@@ -150,10 +166,13 @@ function getImageSource(ev, myCallback) {
 
 
 	if (type == "IMG") {
+		//if it's an image element
 		url = element.getAttribute("src");
 	} else if (type == "VIDEO") {
+		//if it's a video element
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
 	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+		//if it's a lightbox image on an image-mode journal
 		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
 		let img = element.style;
@@ -181,7 +200,7 @@ async function createDisplayTile(ourScene) {
 		width: dimensionObject.width,
 		height: dimensionObject.height,
 		x: 0,
-		y: (displayScene.data.height / 2) - (dimensionObject.height / 2)
+		y: (ourScene.data.height / 2) - (dimensionObject.height / 2)
 	});
 
 	newTile.setFlag("journal-to-canvas-slideshow", "name", "displayTile");
@@ -193,13 +212,17 @@ async function createDisplayTile(ourScene) {
 async function displayImageInScene(ev, externalURL) {
 
 	var ourScene;
-	var boundingTile = game.scenes.active.getEmbeddedCollection("Tile").find(({
+	var boundingTile = game.scenes.viewed.getEmbeddedCollection("Tile").find(({
 		img
 	}) => img.toLowerCase().includes("bounding_tile"));
 	if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
 		if (DisplaySceneFound()) {
 			//set the scene we're using to be the display scene
 			ourScene = displayScene;
+			//if we're using the display scene, search for a bounding tile in the display scene rather than the viewed scene
+			boundingTile = displayScene.getEmbeddedCollection("Tile").find(({
+		img
+	}) => img.toLowerCase().includes("bounding_tile"));
 		} else {
 			//if there is no display scene, return
 			ui.notifications.error("No display scene found. Please make sure you have a scene named " + game.settings.get("journal-to-canvas-slideshow", "displayName"))
@@ -209,21 +232,23 @@ async function displayImageInScene(ev, externalURL) {
 		//if the display location setting is set to "Any Scene"
 		if (boundingTile) {
 			//if the scene isn't the display scene but has a bounding Tile
-			//the scene we're using is the currently active scene
-			ourScene = game.scenes.active;
+			//the scene we're using is the currently viewed scene
+			ourScene = game.scenes.viewed;
 		} else {
 			//
-			if(DisplaySceneFound() && displayScene == game.scenes.active){
-				ui.notifications.warn("'Any Scene' setting selected and Display Scene active, but no bounding tile present; reverting to showing image as default")
+			if (DisplaySceneFound() && displayScene == game.scenes.viewed) {
+				ui.notifications.warn("'Any Scene' setting selected and Display Scene viewed, but no bounding tile present; reverting to showing image as default")
 				ourScene = displayScene;
-			}
-			else{
-				ui.notifications.error("Not on display scene, but no bounding tile present")
+			} else {
+				ui.notifications.error("Not viewing display scene, but no bounding tile present")
 				return;
 			}
 		}
 	}
-
+	if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+		//if the settings have it set to automatically show the display, activate the scene
+		await ourScene.activate()
+	}
 	//get the element whose source we want to display as a tile, and what type it is (image or video)
 	let url;
 
@@ -234,7 +259,7 @@ async function displayImageInScene(ev, externalURL) {
 	else {
 		url = getImageSource(ev)
 		if (url == null) {
-			ui.notifcations.error("Type not supported")
+			ui.notifications.error("Type not supported")
 		}
 	}
 
@@ -243,7 +268,7 @@ async function displayImageInScene(ev, externalURL) {
 	var displayTile = FindDisplayTile(ourScene); //displayScene.getEmbeddedCollection("Tile")[0];
 
 	if (!displayTile) {
-		ui.notifcations.error("No display tile found -- make sure your scene has a display tile");
+		ui.notifications.error("No display tile found -- make sure your scene has a display tile");
 		return;
 	}
 
@@ -260,10 +285,7 @@ async function displayImageInScene(ev, externalURL) {
 
 	const updated = await ourScene.updateEmbeddedEntity("Tile", imageUpdate);
 
-	if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-		//if the settings have it set to automatically show the display, activate the scene
-		ourScene.activate()
-	}
+
 
 
 }
@@ -274,9 +296,9 @@ function FindDisplayTile(ourScene) {
 	var tiles = ourScene.getEmbeddedCollection("Tile")
 	console.log(tiles)
 	console.log(canvas.tiles.placeables)
-	for(let tile of tiles){
+	for (let tile of tiles) {
 		console.log(tile)
-		if(tile.flags["journal-to-canvas-slideshow"]?.name == "displayTile"){
+		if (tile.flags["journal-to-canvas-slideshow"] ?.name == "displayTile") {
 			ourTile = tile;
 		}
 	}
@@ -286,7 +308,7 @@ function FindDisplayTile(ourScene) {
 	// 	}
 	// })
 
-	return ourTile//.data
+	return ourTile //.data
 }
 
 
@@ -373,9 +395,10 @@ async function clearDisplayWindow() {
 	const updated = await displayJournal.update(update, {});
 
 }
+
 async function clearDisplayTile() {
 	//clear a tile for the scene
-	var displayTile = FindDisplayTile(game.scenes.active)
+	var displayTile = FindDisplayTile(game.scenes.viewed)
 	if (!DisplaySceneFound() && displayTile == undefined) {
 		//if we're not on the display scene and there's no display tile 
 		return;
@@ -384,12 +407,12 @@ async function clearDisplayTile() {
 	if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
 		ourScene = displayScene;
 	} else {
-		ourScene = game.scenes.active
+		ourScene = game.scenes.viewed
 	}
 
 
 	if (!displayTile) {
-		ui.notifcations.error("No display tile found -- make sure the display scene has a tile");
+		ui.notifications.error("No display tile found -- make sure the display scene has a tile");
 	}
 	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png");
 	// var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
@@ -466,8 +489,17 @@ function determineLocation(ev, url) {
 }
 
 function execute(html) {
+	//default behavior, for journals
 	html.find('.clickableImage').each((i, div) => {
 		div.addEventListener("click", determineLocation, false);
+		div.addEventListener("mouseover", highlight, false);
+		div.addEventListener("mouseout", dehighlight, false);
+		div.addEventListener("mousedown", depressImage, false);
+		div.addEventListener("mouseup", liftImage, false);
+	});
+	//this one is for actor sheets. Right click to keep it from conflicting with the default behavior of selecting an image for the actor.
+	html.find('.rightClickableImage').each((i, div) => {
+		div.addEventListener("contextmenu", determineLocation, false)  ;
 		div.addEventListener("mouseover", highlight, false);
 		div.addEventListener("mouseout", dehighlight, false);
 		div.addEventListener("mousedown", depressImage, false);
@@ -476,7 +508,7 @@ function execute(html) {
 }
 
 async function createBoundingTile() {
-	var ourScene = game.scenes.active;
+	var ourScene = game.scenes.viewed;
 	const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
 
@@ -489,7 +521,7 @@ async function createBoundingTile() {
 	});
 }
 
-function ShowWelcomeMessage(){
+function ShowWelcomeMessage() {
 	let d = new Dialog({
 		title: "Welcome Message",
 		content: `<div><p>
@@ -505,7 +537,7 @@ function ShowWelcomeMessage(){
 		<p>The welcome message can be turned on and off in the module settings, but will be enabled after updates to inform you of important changes.</p>
 		</div> `,
 		buttons: {
-			disable : {
+			disable: {
 				label: "Disable Welcome Message",
 				callback: DisableWelcomeMessage
 			},
@@ -517,69 +549,342 @@ function ShowWelcomeMessage(){
 	d.render(true);
 }
 
-function DisableWelcomeMessage(){
+function DisableWelcomeMessage() {
 	//disable the welcome message
 	game.settings.set("journal-to-canvas-slideshow", "showWelcomeMessage", false)
 }
 
+function setDisplayLocationInSettings(location) {
+	game.settings.set("journal-to-canvas-slideshow", "displayLocation", location)
+	var locationString;
+	if (location == "displayScene") {
+		locationString = "Display Scene"
+	} else if (location == "anyScene") {
+		locationString = "Any Scene"
+	} else {
+		locationString = "Window";
+	}
+	ui.notifications.info("Display location set to " + locationString)
+}
+
+function applySceneHeaderButtons(app, html, options) {
+	//likely being called by Hooks.on(renderJournalSheet)
+	var journalEntry = app.entity;
+	console.log("applying buttons")
+	console.log(app.element)
+	var element = app.element;
+	//console.log(html)
+	// console.log(options)
+	if (!game.user.isGM) {
+		//if the user isn't the GM, return
+		return;
+	}
+	//create a button 
+	let button = $(`<a class="header-button toggle-display-location"><i class="far fa-image"></i>Toggle Display Location</a>`);
+	console.log("How many buttons")
+	console.log(element[0])
+	// console.log(element.find("a.toggle-display-location"))
+	// console.log($('a.toggle-display-location'))
+	if (element.find("a.toggle-display-location").length == 0) {
+		//if you can't find a toggle display location button in the header, only then place it, as we don't want duplicates
+		button.click((event) => {
+			event.preventDefault();
+			toggleDisplayLocation(journalEntry, html, button)
+		});
+		let firstButton = element.find("a.header-button")[0];
+		firstButton.parentNode.insertBefore(button[0], firstButton)
+	}
+}
+
+function toggleDisplayLocation(journalEntry, html, button) {
+	let locations = [
+		"displayScene",
+		"window",
+		"anyScene"
+	]
+	let index = locations.indexOf(game.settings.get("journal-to-canvas-slideshow", "displayLocation"))
+	index += 1;
+	if (index === 3) {
+		index = 0;
+	}
+	setDisplayLocationInSettings(locations[index]);
+
+}
+
+function createDialog(){
+// 	return new Promise(resolve => {
+//         const data = {
+// ...
+//         }
+//         const options = {
+//             width: 350,
+//             height: 200,
+//         }
+//         new Dialog(data, options).render(true)
+	//new SlideshowConfig('example').render(true);
+	const options = {
+		width: 600,
+		height: 250,
+	} 
+	let myContent = function (val) {
+		return `<p>Create display and bounding tiles and/or select which display location you'd like to use</p>
+		 <form>
+			<div class="form-group">
+			  <label>Set url image</label>
+			  <input type='text' name='inputField' value=${val}></input>
+			</div>
+		  </form>`
+		
+	}
+	
+	let d = new Dialog({
+		title: "Slideshow Config",
+		content: myContent(''),
+		buttons: {
+			applyURLImage: {
+				label: "Set URL Image",
+				icon: "<i class='fa fa-eye'></i>",
+				callback: (html) => {
+					let result = html.find('input[name=\'inputField\']');
+					if (result.val() !== '') {
+						determineLocation(null, result.val());
+				}
+			}},
+			displayScene: {
+				label: "Use Display Scene",
+				icon: '<i class="fas fa-exchange-alt"></i>',
+				callback: (html) => {
+					setDisplayLocationInSettings("displayScene")
+					let result = html.find('input[name=\'inputField\']');
+					d.data.content = myContent(result.val())
+					d.render(true)
+				}
+			},
+			anyScene: {
+				label: "Use Any Scene With Bounding Tile",
+				icon: '<i class="fas fa-exchange-alt"></i>',
+				callback: (html) => {
+					setDisplayLocationInSettings("anyScene")
+					let result = html.find('input[name=\'inputField\']');
+					d.data.content = myContent(result.val())
+					d.render(true)
+				}
+			},
+			window: {
+				label: "Use Window",
+				icon: '<i class="fas fa-exchange-alt"></i>',
+				callback: (html) => {
+					setDisplayLocationInSettings("window")
+					let result = html.find('input[name=\'inputField\']');
+					d.data.content = myContent(result.val())
+					d.render(true)
+				}
+			},	
+			createDisplayTile: {
+				label: "Create Display Tile",
+				icon: "<i class='far fa-image'></i>",
+				callback: (html) => {
+					createDisplayTile(game.scenes.viewed)
+					let result = html.find('input[name=\'inputField\']');
+					d.data.content = myContent(result.val())
+					d.render(true)
+				}
+			},
+			createBoundingTile: {
+				label: "Create Bounding Tile",
+				icon: "<i class='far fa-square'></i>",
+				callback: (html) => {
+					createBoundingTile();
+					let result = html.find('input[name=\'inputField\']');
+					d.data.content = myContent(result.val())
+					d.render(true)
+				}
+			}
+		}
+	}, options).render(true);
+
+}
+function createToggleDialog() {
+	let d = new Dialog({
+		title: "Toggle Display Location",
+		content: "Click which display location you'd like to use",
+		buttons: {
+			displayScene: {
+				label: "Display Scene",
+				callback: () => {
+					setDisplayLocationInSettings("displayScene")
+				}
+			},
+			anyScene: {
+				label: "Any Scene",
+				callback: () => {
+					setDisplayLocationInSettings("anyScene")
+				}
+			},
+			window: {
+				label: "Window",
+				callback: () => {
+					setDisplayLocationInSettings("window")
+				}
+			}
+
+
+		}
+
+	}).render(true);
+}
+
+//#region 
+// function createSlideshowDialog() {
+// 	let d = new Dialog({
+// 		title: "Create Slideshow Tiles",
+// 		content: "Click whether you'd like to create a display or bounding tile",
+// 		buttons: {
+// 			createDisplayTile: {
+// 				label: "Create Display Tile",
+// 				callback: () => {
+// 					createDisplayTile(game.scenes.viewed)
+// 				}
+// 			},
+// 			createBoundingTile: {
+// 				label: "Create Bounding Tile",
+// 				callback: () => {
+// 					createBoundingTile();
+// 				}
+// 			}
+
+// 		}
+// 	}).render(true);
+
+
+// }
+//#endregion
 Hooks.on("getSceneControlButtons", (controls) => {
 	//controls refers to all of the controls
 	const tileControls = controls.find((control) => control ?.name === "tiles");
+
 	if (game.user.isGM) {
-		tileControls.tools.push({
-			name: 'ClearDisplay',
-			title: 'ClearDisplay',
-			icon: 'far fa-times-circle',
-			onClick: () => {
-				determineWhatToClear(); //clearDisplayTile();	
-			},
-			button: true
-		})
-		tileControls.tools.push({
-			//tokenButton.tools.push({
-			name: "set-url-image",
-			title: 'Set url image',
-			icon: "fa fa-eye",
-			visible: true,
-			onClick: () => {
-				setUrlImageToShow();
-			},
-			button: true
-		});
 
-		tileControls.tools.push({
-			name: 'Create-Bounding-Tile',
-			title: "Create bounding tile",
-			icon: "far fa-square",
-			visible: true,
-			onClick: () => {
-				createBoundingTile();
-			},
-			button: true
-		})
-		tileControls.tools.push({
-			name: 'Create-Display-Tile',
-			title: "Create Display tile",
-			icon: "far fa-image",
-			visible: true,
-			onClick: () => {
-				createDisplayTile(game.scenes.active);
-			},
-			button: true
-		})
+		if (game.settings.get("journal-to-canvas-slideshow", "hideTileButtons") == true) {
+			//if the user wants to hide the tile buttons in the settings, only push the button to show the slideshow dialog to the scene controls
+			tileControls.tools.push({
+				name: 'ShowJTCSConfig',
+				title: 'Show Slideshow Config',
+				icon: 'far fa-image',
+				onClick: () => {
+					createDialog();
+				},
+				button: true
+			})
+		} else {
+			tileControls.tools.push({
+				name: 'ToggleDisplayLocation',
+				title: 'Switch Display Location',
+				icon: 'fas fa-exchange-alt',
+				onClick: () => {
+					createToggleDialog();
+				},
+				button: true
+			})
+			tileControls.tools.push({
+				name: 'Create-Bounding-Tile',
+				title: "Create bounding tile",
+				icon: "far fa-square",
+				visible: true,
+				onClick: () => {
+					createBoundingTile();
+				},
+				button: true
+			})
+			tileControls.tools.push({
+				name: 'Create-Display-Tile',
+				title: "Create Display tile",
+				icon: "far fa-image",
+				visible: true,
+				onClick: () => {
+					createDisplayTile(game.scenes.viewed);
+				},
+				button: true
+			})
+			tileControls.tools.push({
+				//tokenButton.tools.push({
+				name: "set-url-image",
+				title: 'Set url image',
+				icon: "fa fa-eye",
+				visible: true,
+				onClick: () => {
+					setUrlImageToShow();
+				},
+				button: true
+			});
 
-	}
+		}
+		//push the clear display button regardless of what setting is selected
+			tileControls.tools.push({
+				name: 'ClearDisplay',
+				title: 'ClearDisplay',
+				icon: 'fas fa-times-circle',
+				onClick: () => {
+					determineWhatToClear(); //clearDisplayTile();	
+				},
+				button: true
+			})
+		
+
+			
+		}
+
+	
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
+	// if (game.user.isGM) {
+	// 	//find all img and video tags in the html, and add the clickableImage class to all of them
+	// 	if (app.object != displayJournal) {
+	// 		//unless it's a display journal, as we don't want it clickable
+	// 		html.find('img').attr("class", "clickableImage");
+	// 		html.find('video').attr("class", "clickableImage");
+	// 		//find the lightbox images for the 'image' journal mode as well and do the same as above
+	// 		html.find(".lightbox-image").each((i, div) => {
+	// 			div.classList.add("clickableImage");
+	// 		})
+	// 	}
+	//this method will place buttons at the top of the sheet that you can toggle between
+	applySceneHeaderButtons(app, html, options)
+	applyClasses(app, html);
+
+	setEventListeners(html);
+	if (FindDisplayJournal() && app.object == displayJournal) {
+		//find the display journal
+		//the image that will be changed 
+		journalImage = html.find(".lightbox-image");
+	}
+	let journalEntry = app.entity;
+	journalEntry.setFlag("world", "displayLocation", game.settings.get("journal-to-canvas-slideshow", "displayLocation"))
+
+});
+Hooks.on("renderActorSheet", (app, html, options) => {
+	//here we need to find the image
+	applyClasses(app, html);
+
+
+});
+
+function applyClasses(app, html) {
 	if (game.user.isGM) {
 		//find all img and video tags in the html, and add the clickableImage class to all of them
-		if (app.object != displayJournal) {
-			//unless it's a display journal, as we don't want it clickable
-			html.find('img').attr("class", "clickableImage");
-			html.find('video').attr("class", "clickableImage");
+		if(app.actor != undefined){
+			//if not undefined, it means this is this is an actor sheet
+			html.find('img').addClass("rightClickableImage")
+			html.find("video").addClass("rightClickableImage")
+		}
+		else if (app.object != displayJournal) {
+			//if it's a journal
+			//unless it's a display journal, as we don't want that clickable
+			html.find('img').addClass("clickableImage");
+			html.find('video').addClass("clickableImage");
 			//find the lightbox images for the 'image' journal mode as well and do the same as above
 			html.find(".lightbox-image").each((i, div) => {
 				div.classList.add("clickableImage");
@@ -587,14 +892,8 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 		}
 
 		setEventListeners(html);
-		if (FindDisplayJournal() && app.object == displayJournal) {
-			//find the display journal
-			//the image that will be changed 
-			journalImage = html.find(".lightbox-image");
-		}
 	}
-
-});
+}
 
 Hooks.once('init', async function () {
 	console.log("Initializing Journal to Canvas Slideshow");
@@ -604,7 +903,7 @@ Hooks.once('ready', () => {
 	FindDisplayJournal();
 	DisplaySceneFound();
 
-	if(game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true && game.user.isGM){
+	if (game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true && game.user.isGM) {
 		//if we have it set to show the welcome message, and the user is the GM
 		ShowWelcomeMessage();
 	}
@@ -644,8 +943,9 @@ function setUrlImageToShow() {
 
 async function scaleToScene(displayTile, tex, url) {
 	var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, displayScene.data.width, displayScene.data.height);
-
-	//scane down factor is how big the tile will be in the scene
+	console.log("SCALING TO DISPLAY SCENE")
+	console.log(displayScene)
+	//scale down factor is how big the tile will be in the scene
 	//make this scale down factor configurable at some point
 	var scaleDownFactor = 200; //game.settings.get("journal-to-canvas-slideshow", "scaleDown");// 200;
 	dimensionObject.width -= scaleDownFactor;

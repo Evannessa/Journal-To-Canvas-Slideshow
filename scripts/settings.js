@@ -45,6 +45,15 @@ game.settings.register("journal-to-canvas-slideshow", "displayName", {
 	default: "Display"
 });
 
+game.settings.register("journal-to-canvas-slideshow", "useActorSheetImages",{
+	name: "Use Actor Sheet Images",
+	hint: "If this is enabled, you can RIGHT CLICK on an image in an actor sheet to display it to your players. This is set to right click so it doesn't conflict with the default behavior of clicking on an actor's image.",
+	scope: "client",
+	config: true,
+	type: Boolean,
+	default: false
+});
+
 game.settings.register("journal-to-canvas-slideshow", "displayWindowBehavior", {
 	name: "Display Window Behavior",
 	hint: "Would you like the display window to be a dedicated journal entry, or a new popout window that will appear each time you click on an image?",
@@ -60,6 +69,16 @@ game.settings.register("journal-to-canvas-slideshow", "displayWindowBehavior", {
 
 });
 
+game.settings.register("journal-to-canvas-slideshow", "hideTileButtons", {
+	name: "Hide Tile Buttons",
+	hint: "Would you like to only show this module's scene control buttons in a separate window rather than all listed under the tile controls? \n This is so fewer buttons appear under the Tile control buttons \n Please switch to a different scene control and switch back if you activate this option to refresh the controls.",
+	scope: "client",
+	config: true,
+	type: Boolean,
+	default: false
+});
+
+
 game.settings.register("journal-to-canvas-slideshow", "showWelcomeMessage", {
 	name: "Show Welcome Message",
 	scope: "client",
@@ -67,31 +86,6 @@ game.settings.register("journal-to-canvas-slideshow", "showWelcomeMessage", {
 	config: true,
 	default: true
 });
-// game.settings.register("journal-to-canvas-slideshow", "useDisplayScene", {
-// 	name: "Use Display Scene",
-// 	hint: "Would you like to user the display scene, or use a bounding tile in a different scene?",
-// 	scope: "client",
-// 	config: true,
-// 	type: Boolean,
-// 	default: true
-// });
-// // game.settings.register("journal-to-canvas-slideshow", "displayJournal", {
-// 	name: "Display Journal",
-// 	hint: "Which journal entry the display will show in",
-// 	scope: "client",
-// 	config: true,
-// 	type: String,
-// 	default: "",
-// });
 
-// game.settings.register("journal-to-canvas-slideshow", "displayScene", {
-// 	name: "Display Scene",
-// 	hint: "Which display scene will the images diaply in",
-// 	scope: "client",
-// 	config: true,
-// 	type: String,
-// 	default: "",
-
-// });
 
 }
