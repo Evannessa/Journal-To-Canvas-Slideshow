@@ -150,7 +150,7 @@ A toggleable option is also included in the module settings to automatically act
 
 # Changelog
 
-## **v0.1.5** - 2021-03-21
+## **v0.1.5** - 2021-05-23
 
 **ADDED**
 
