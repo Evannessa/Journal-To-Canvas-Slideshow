@@ -612,16 +612,7 @@ function toggleDisplayLocation(journalEntry, html, button) {
 }
 
 function createDialog(){
-// 	return new Promise(resolve => {
-//         const data = {
-// ...
-//         }
-//         const options = {
-//             width: 350,
-//             height: 200,
-//         }
-//         new Dialog(data, options).render(true)
-	//new SlideshowConfig('example').render(true);
+
 	const options = {
 		width: 600,
 		height: 250,
@@ -706,7 +697,7 @@ function createDialog(){
 }
 function createToggleDialog() {
 	let d = new Dialog({
-		title: "Toggle Display Location",
+		title: "Switch Display Location",
 		content: "Click which display location you'd like to use",
 		buttons: {
 			displayScene: {
@@ -716,7 +707,7 @@ function createToggleDialog() {
 				}
 			},
 			anyScene: {
-				label: "Any Scene",
+				label: "Any Scene With Bounding Tile",
 				callback: () => {
 					setDisplayLocationInSettings("anyScene")
 				}
@@ -778,7 +769,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 			})
 		} else {
 			tileControls.tools.push({
-				name: 'ToggleDisplayLocation',
+				name: 'SwitchDisplayLocation',
 				title: 'Switch Display Location',
 				icon: 'fas fa-exchange-alt',
 				onClick: () => {
