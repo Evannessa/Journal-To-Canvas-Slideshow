@@ -6,12 +6,15 @@
   * [Built With](#built-with)
 - [Installation and Getting Started](#installation-and-getting-started)
 - [How to Use](#how-to-use)
-  * [Full Video Tutorial (Walkthrough of New Features Included)](#full-video-tutorial)
+  * [Full Video Tutorial (Walkthrough of New Features Included)](#full-video-tutorial--walkthrough-of-new-features-included-)
   * [Written Tutorial with Gifs](#written-tutorial-with-gifs)
   * [Videos in Journal](#videos-in-journal)
   * [Display In Window and Module Settings](#display-in-window-and-module-settings)
     + [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
 - [Changelog](#changelog)
+  * [**v0.1.5** - 2021-03-21](#--v015-----2021-03-21)
+    + [Default Tile Control Tools](#default-tile-control-tools)
+    + [Tile Control Tools with Hide Tile Buttons Turned On](#tile-control-tools-with-hide-tile-buttons-turned-on)
   * [**v0.1.4** - 2021-03-19](#--v014-----2021-03-19)
   * [**v0.1.3** - 2021-01-22](#--v013-----2021-01-22)
   * [**v0.1.2** - 2021-01-03](#--v012-----2021-01-03)
@@ -26,10 +29,7 @@
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-
 ## WARNING 
-
-(NOTE: I'm keeping this warning here just in case, but I believe @p4535992's Display from URL feature can help alleviate this issue.)
 
 If your image's source is from somewhere online, there's a chance there will be a CORS issue, and clicking on the image in the journal won't change the tile due to this error. Take a look at the dev console (F12 on Windows) and see if there's an error like this:  https://i.imgur.com/SBHQPka.png
 
@@ -149,6 +149,59 @@ A toggleable option is also included in the module settings to automatically act
 (*Note*: A notification appears each time you click a journal image while having this setting turned on in conjunction with the "Window" option for the Display Location setting. This is because it uses the same functionality as the "Show Players" button at the top of a journal in image mode. I'll have to figure out how to change that if possible.)
 
 # Changelog
+
+## **v0.1.5** - 2021-03-21
+
+**ADDED**
+
+**Major**
+
+* NEW: Ability to *right click* on actor sheet character images to display them the same as journal images.
+
+* NEW: Ability to display Journal-to-Canvas-Slideshow tools within a dialog rather than as tile control tools. 
+
+See the settings for **Use Actor Sheet Images** and **Hide Tile Buttons** in the updated module settings below.
+!["New Settings"](https://i.imgur.com/AfHLPSG.png)
+
+### Default Tile Control Tools
+
+The default tile control tools with the Hide Tile Buttons setting disabled. 
+
+A new button is there called "Switch Display Location" that will display a dialog that allows you to switch display locations without needing to go into the module's settings.
+
+!["Switch Display Location Button"](https://i.imgur.com/3XLHTku.png)
+
+
+!["Switch Display Location Dialog"](https://i.imgur.com/CBSidW0.png)
+
+**Note**: Journal entries now have a button in the header that allows you to switch the display location as well.
+
+**Note**: You can switch away from the tile control tools and then back again to "refresh" if you enable or disable the Hide Tile Buttons setting.
+
+------
+
+
+### Tile Control Tools with Hide Tile Buttons Turned On
+
+With the Hide Tile Buttons setting enabled, all Journal-to-Canvas-Slideshow buttons will not be displayed except for the "Clear Display" button, and a new button that says "Show Slideshow Config". 
+
+
+To show the other functions, click on the button in the tile control tools that says "Show Slideshow Config".
+
+!["Hide Tile Buttons Setting Turned On"](https://i.imgur.com/6a7oxpt.png)
+
+The following dialog will appear with buttons with all the functionality, such as creating Display and Bounding Tiles, Setting a URL image, and switching between display locations.
+
+!["Hide Tile Buttons Dialog"](https://i.imgur.com/u5DWfMc.png)
+
+-----
+
+
+**CHANGED**:
+
+* Many features now work with VIEWED scene rather than ACTIVE scene, such as the bounding tiles. 
+
+-------
 
 ## **v0.1.4** - 2021-03-19
 
