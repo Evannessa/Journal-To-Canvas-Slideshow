@@ -618,7 +618,7 @@ function createDialog(){
 		height: 250,
 	} 
 	let myContent = function (val) {
-		return `<p>Create display and bounding tiles and/or select which display location you'd like to use</p>
+		return `<p>Create display and bounding tiles, set url image, and/or select which display location you'd like to use</p>
 		 <form>
 			<div class="form-group">
 			  <label>Set url image</label>
@@ -639,6 +639,8 @@ function createDialog(){
 					let result = html.find('input[name=\'inputField\']');
 					if (result.val() !== '') {
 						determineLocation(null, result.val());
+						d.data.content = myContent(result.val())
+						d.render(true)
 				}
 			}},
 			displayScene: {
