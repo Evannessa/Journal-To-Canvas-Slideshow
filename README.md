@@ -12,6 +12,7 @@
   * [Display In Window and Module Settings](#display-in-window-and-module-settings)
     + [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
 - [Changelog](#changelog)
+  * [**v0.1.6** - 2021-06-09](#--v016-----2021-06-09)
   * [**v0.1.5** - 2021-03-21](#--v015-----2021-03-21)
     + [Default Tile Control Tools](#default-tile-control-tools)
     + [Tile Control Tools with Hide Tile Buttons Turned On](#tile-control-tools-with-hide-tile-buttons-turned-on)
@@ -149,6 +150,10 @@ A toggleable option is also included in the module settings to automatically act
 (*Note*: A notification appears each time you click a journal image while having this setting turned on in conjunction with the "Window" option for the Display Location setting. This is because it uses the same functionality as the "Show Players" button at the top of a journal in image mode. I'll have to figure out how to change that if possible.)
 
 # Changelog
+
+## **v0.1.6** - 2021-06-09
+
+Updated module to work with Foundry v8.6
 
 ## **v0.1.5** - 2021-05-23
 
