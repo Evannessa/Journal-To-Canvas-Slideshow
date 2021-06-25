@@ -109,12 +109,12 @@ async function ChangePopoutImage(url) {
 		let update;
 
 		if (fileType == ".mp4" || fileType == ".webm") {
-			// if the file type is a video 
-			let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;"> 
+			// if the file type is a video
+			let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
 			<video width="100%" height="auto" autoplay loop>
   				<source src=${url} type="video/mp4">
   				<source src=${url} type="video/webm">
-			</video> 
+			</video>
 			</div>
 			`
 
@@ -155,7 +155,7 @@ function getImageSource(ev, myCallback) {
 		url = element.getElementsByTagName("source")[0].getAttribute("src");
 	} else if (type == "DIV" && element.classList.contains("lightbox-image")) {
 		//if it's a lightbox image on an image-mode journal
-		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript -- 
+		//https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript --
 		//used elements from the above StackOverflow to help me understand how to retrieve the background image url
 		let img = element.style;
 		url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
@@ -255,7 +255,7 @@ async function displayImageInScene(ev, externalURL) {
 	}
 
 	//keep track of the tile, which should be the first tile in the display scene
-	var displayTile = FindDisplayTile(ourScene); 
+	var displayTile = FindDisplayTile(ourScene);
 
 	if (!displayTile) {
 		ui.notifications.error("No display tile found -- make sure your scene has a display tile");
@@ -289,8 +289,8 @@ function FindDisplayTile(ourScene) {
 			ourTile = tile;
 		}
 	}
-	
-	return ourTile; 
+
+	return ourTile;
 }
 
 
@@ -318,7 +318,7 @@ function createSceneButton(app, html) {
 
 
 async function GenerateDisplayScene() {
-	//create a Display" scene 
+	//create a Display" scene
 	//set the scene to 2000 by 2000, and set the background color to a dark gray
 	if (!DisplaySceneFound()) {
 		displayScene = null;
@@ -327,7 +327,7 @@ async function GenerateDisplayScene() {
 		displayScene = await Scene.create({
 			name: game.settings.get("journal-to-canvas-slideshow", "displayName")
 		});
-		//activate the scene 
+		//activate the scene
 		await displayScene.activate();
 		//update the scene
 		await displayScene.update({
@@ -381,7 +381,7 @@ async function clearDisplayTile() {
 	//clear a tile for the scene
 	var displayTile = FindDisplayTile(game.scenes.viewed)
 	if (!DisplaySceneFound() && displayTile == undefined) {
-		//if we're not on the display scene and there's no display tile 
+		//if we're not on the display scene and there's no display tile
 		return;
 	}
 	var ourScene
@@ -512,11 +512,11 @@ function ShowWelcomeMessage() {
 			<h2>Journal To Canvas Slideshow Has Updated</h2>
 			<ol style="list-style-type:decimal">
 				<li><a href="https://youtu.be/t4NX55vs9gU">Watch the tutorial video here</a></li><br>
-				<li>Please check the module's settings and reselect your prefered options, as the settings have changed</li><br>	
+				<li>Please check the module's settings and reselect your prefered options, as the settings have changed</li><br>
 				<li>Please recreate your Display Scene, or replace the tile in your display scene with a "Display Tile" (see tutorial video for how-to)</li><br>
 				<li>Please create all Display Tiles from now on using the "Create Display Tile" button under the Tile controls.</li><br>
 				<li>Note that Display Tiles now are "flagged" by the script and no longer need to be the very first tile in the scene, so you can add it after other tiles</li><br>
-			</ol>	
+			</ol>
 		</p>
 		<p>The welcome message can be turned on and off in the module settings, but will be enabled after updates to inform you of important changes.</p>
 		</div> `,
@@ -561,17 +561,16 @@ function applySceneHeaderButtons(app, html, options) {
 		//if the user isn't the GM, return
 		return;
 	}
-	//create a button 
-	let button = $(`<a class="header-button toggle-display-location"><i class="far fa-image"></i>Toggle Display Location</a>`);
-	if (element.find("a.toggle-display-location").length == 0) {
-		//if you can't find a toggle display location button in the header, only then place it, as we don't want duplicates
-		button.click((event) => {
-			event.preventDefault();
-			toggleDisplayLocation(journalEntry, html, button)
-		});
-		let firstButton = element.find("a.header-button")[0];
-		firstButton.parentNode.insertBefore(button[0], firstButton)
-	}
+	//remove and a create a new button
+	html.closest('.app').find('a.toggle-display-location').remove();
+
+	let button = $(`<a class="toggle-display-location"><i class="far fa-image"></i>Toggle Display Location</a>`);
+	button.click((event) => {
+		event.preventDefault();
+		toggleDisplayLocation(journalEntry, html, button)
+	});
+	const titleElement = html.closest('.app').find('.window-title');
+	button.insertAfter(titleElement);
 }
 
 function toggleDisplayLocation(journalEntry, html, button) {
@@ -594,7 +593,7 @@ function createDialog(){
 	const options = {
 		width: 600,
 		height: 250,
-	} 
+	}
 	let myContent = function (val) {
 		return `<p>Create display and bounding tiles, set url image, and/or select which display location you'd like to use</p>
 		 <form>
@@ -603,9 +602,9 @@ function createDialog(){
 			  <input type='text' name='inputField' value=${val}></input>
 			</div>
 		  </form>`
-		
+
 	}
-	
+
 	let d = new Dialog({
 		title: "Slideshow Config",
 		content: myContent(''),
@@ -650,7 +649,7 @@ function createDialog(){
 					d.data.content = myContent(result.val())
 					d.render(true)
 				}
-			},	
+			},
 			createDisplayTile: {
 				label: "Create Display Tile",
 				icon: "<i class='far fa-image'></i>",
@@ -771,16 +770,16 @@ Hooks.on("getSceneControlButtons", (controls) => {
 				title: 'ClearDisplay',
 				icon: 'fas fa-times-circle',
 				onClick: () => {
-					determineWhatToClear(); 
+					determineWhatToClear();
 				},
 				button: true
 			})
-		
 
-			
+
+
 		}
 
-	
+
 });
 Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
@@ -804,7 +803,7 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	setEventListeners(html);
 	if (FindDisplayJournal() && app.object == displayJournal) {
 		//find the display journal
-		//the image that will be changed 
+		//the image that will be changed
 		journalImage = html.find(".lightbox-image");
 	}
 	let journalEntry = app.entity;
