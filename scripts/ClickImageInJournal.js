@@ -479,13 +479,15 @@ function execute(html) {
 		div.addEventListener("mouseup", liftImage, false);
 	});
 	//this one is for actor sheets. Right click to keep it from conflicting with the default behavior of selecting an image for the actor.
-	html.find('.rightClickableImage').each((i, div) => {
-		div.addEventListener("contextmenu", determineLocation, false)  ;
-		div.addEventListener("mouseover", highlight, false);
-		div.addEventListener("mouseout", dehighlight, false);
-		div.addEventListener("mousedown", depressImage, false);
-		div.addEventListener("mouseup", liftImage, false);
-	});
+	if (game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) {
+		html.find('.rightClickableImage').each((i, div) => {
+			div.addEventListener("contextmenu", determineLocation, false)  ;
+			div.addEventListener("mouseover", highlight, false);
+			div.addEventListener("mouseout", dehighlight, false);
+			div.addEventListener("mousedown", depressImage, false);
+			div.addEventListener("mouseup", liftImage, false);
+		});
+	}
 }
 
 async function createBoundingTile() {
@@ -811,6 +813,8 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 
 });
 Hooks.on("renderActorSheet", (app, html, options) => {
+	if (!game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) return;
+
 	//here we need to find the image
 	applyClasses(app, html);
 
