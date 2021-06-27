@@ -3,14 +3,15 @@
     "title": "Journal to Canvas Slideshow - Display Journal Art on the Canvas",
     "description": "Clicking an image in a journal entry will update a canvas tile to show that image, providing a slideshow effect for your players as you narrate or read notes.",
     "author": "Eva",
+    "socket": "true",
     "version": "0.1.6",
     "minimumCoreVersion": "0.8.6",
     "compatibleCoreVersion": "0.8.6",
     "esmodules": [
         "scripts/ClickImageInJournal.js",
         "classes/MultiMediaPopout.js"
-    ], 
+    ],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
     "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/master.zip" 
+    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/master.zip"
 }
