@@ -36,7 +36,7 @@ export default class ImageVideoPopout extends ImagePopout {
 	* Share the displayed image with other connected Users
 	*/
 	shareImage() {
-		game.socket.emit("module.token-hud-art-button", {
+		game.socket.emit("module.journal-to-canvas-slideshow", {
 			image: this.object,
 			title: this.options.title,
 			uuid: this.options.uuid
@@ -65,5 +65,5 @@ export default class ImageVideoPopout extends ImagePopout {
 
 
 Hooks.once("ready", () => {
-	game.socket.on("module.token-hud-art-button", ImageVideoPopout._handleShareMedia);
+	game.socket.on("module.journal-to-canvas-slideshow", ImageVideoPopout._handleShareMedia);
 });
