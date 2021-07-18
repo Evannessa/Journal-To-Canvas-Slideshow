@@ -11,8 +11,8 @@ function highlight(ev) {
 	let element = ev.target;
 	element.style.borderStyle = "solid";
 	element.style.borderColor = "white";
-	element.style.borderSize = "4px";
-	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
+	element.style.borderWidth = "5px";
+	element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
 	element.style.cursor = "pointer";
 }
 
@@ -27,13 +27,13 @@ function dehighlight(ev) {
 function depressImage(ev) {
 	//as click
 	let element = ev.target;
-	element.style.boxShadow = "2px 2px 2px rgba(50, 51, 59, 0.5)";
+	element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
 }
 
 function liftImage(ev) {
 	//after click
 	let element = ev.target;
-	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
+	element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
 
 
 }
