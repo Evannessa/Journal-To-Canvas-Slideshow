@@ -11,8 +11,8 @@ function highlight(ev) {
 	let element = ev.target;
 	element.style.borderStyle = "solid";
 	element.style.borderColor = "white";
-	element.style.borderSize = "4px";
-	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
+	element.style.borderWidth = "5px";
+	element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
 	element.style.cursor = "pointer";
 }
 
@@ -27,13 +27,13 @@ function dehighlight(ev) {
 function depressImage(ev) {
 	//as click
 	let element = ev.target;
-	element.style.boxShadow = "2px 2px 2px rgba(50, 51, 59, 0.5)";
+	element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
 }
 
 function liftImage(ev) {
 	//after click
 	let element = ev.target;
-	element.style.boxShadow = "10px 10px 10px rgba(50, 51, 59, 0.5)";
+	element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
 
 
 }
@@ -813,8 +813,6 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 
 });
 Hooks.on("renderActorSheet", (app, html, options) => {
-	if (!game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) return;
-
 	//here we need to find the image
 	applyClasses(app, html);
 
@@ -826,8 +824,13 @@ function applyClasses(app, html) {
 		//find all img and video tags in the html, and add the clickableImage class to all of them
 		if(app.actor != undefined){
 			//if not undefined, it means this is this is an actor sheet
-			html.find('img').addClass("rightClickableImage")
-			html.find("video").addClass("rightClickableImage")
+			if (game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) {
+				const imgs = html.find('img[data-edit]').addClass("rightClickableImage")
+				const videos = html.find("video[data-edit]").addClass("rightClickableImage")
+			}
+
+			const imgs = html.find('div.editor-content img:not([data-edit])').addClass("clickableImage")
+			const videos = html.find("div.editor-content video:not([data-edit])").addClass("clickableImage")
 		}
 		else if (app.object != displayJournal) {
 			//if it's a journal
