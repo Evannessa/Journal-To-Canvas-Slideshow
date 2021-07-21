@@ -787,6 +787,10 @@ Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
+	if (!game.user.isGM) {
+		//if the user isn't the GM, return
+		return;
+	}
 	// if (game.user.isGM) {
 	// 	//find all img and video tags in the html, and add the clickableImage class to all of them
 	// 	if (app.object != displayJournal) {
