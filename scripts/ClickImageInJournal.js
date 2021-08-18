@@ -816,25 +816,33 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
 	journalEntry.setFlag("world", "displayLocation", game.settings.get("journal-to-canvas-slideshow", "displayLocation"))
 
 });
+
 Hooks.on("renderActorSheet", (app, html, options) => {
 	//here we need to find the image
 	applyClasses(app, html);
+});
 
-
+Hooks.on("renderItemSheet", (app, html, options) => {
+	//here we need to find the image
+	applyClasses(app, html);
 });
 
 function applyClasses(app, html) {
 	if (game.user.isGM) {
 		//find all img and video tags in the html, and add the clickableImage class to all of them
-		if(app.actor != undefined){
+		if (app.actor != undefined) {
 			//if not undefined, it means this is this is an actor sheet
 			if (game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) {
-				const imgs = html.find('img[data-edit]').addClass("rightClickableImage")
-				const videos = html.find("video[data-edit]").addClass("rightClickableImage")
+				const imgs = html.find('img[data-edit]').addClass("rightClickableImage");
+				const videos = html.find("video[data-edit]").addClass("rightClickableImage");
 			}
 
-			const imgs = html.find('div.editor-content img:not([data-edit])').addClass("clickableImage")
-			const videos = html.find("div.editor-content video:not([data-edit])").addClass("clickableImage")
+			const imgs = html.find('div.editor-content img:not([data-edit])').addClass("clickableImage");
+			const videos = html.find("div.editor-content video:not([data-edit])").addClass("clickableImage");
+		}
+		else if (app.item != undefined) {
+			const imgs = html.find('div.editor-content img:not([data-edit])').addClass("clickableImage");
+			const videos = html.find("div.editor-content video:not([data-edit])").addClass("clickableImage");
 		}
 		else if (app.object != displayJournal) {
 			//if it's a journal
