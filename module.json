@@ -4,7 +4,7 @@
   "description": "Clicking an image in a journal entry will update a canvas tile to show that image, providing a slideshow effect for your players as you narrate or read notes.",
   "author": "Eva",
   "socket": "true",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "0.8.8",
   "esmodules": [
