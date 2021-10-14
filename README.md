@@ -1,34 +1,39 @@
 # Journal to Canvas Slideshow
 
-- [WARNING](#warning)
+-   [WARNING](#warning)
 
-* [About the Project](#about-the-project)
-  - [Built With](#built-with)
-* [Installation and Getting Started](#installation-and-getting-started)
-* [How to Use](#how-to-use)
-  - [Full Video Tutorial (Walkthrough of New Features Included)](#full-video-tutorial--walkthrough-of-new-features-included-)
-  - [Written Tutorial with Gifs](#written-tutorial-with-gifs)
-  - [Videos in Journal](#videos-in-journal)
-  - [Display In Window and Module Settings](#display-in-window-and-module-settings)
-    - [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
-* [Changelog](#changelog)
-  - [**v0.1.6** - 2021-06-09](#--v016-----2021-06-09)
-  - [**v0.1.5** - 2021-03-21](#--v015-----2021-03-21)
-    - [Default Tile Control Tools](#default-tile-control-tools)
-    - [Tile Control Tools with Hide Tile Buttons Turned On](#tile-control-tools-with-hide-tile-buttons-turned-on)
-  - [**v0.1.4** - 2021-03-19](#--v014-----2021-03-19)
-  - [**v0.1.3** - 2021-01-22](#--v013-----2021-01-22)
-  - [**v0.1.2** - 2021-01-03](#--v012-----2021-01-03)
-  - [**v0.1.1** - 2020-12-28](#--v011-----2020-12-28)
-    - [**Added**](#--added--)
-    - [**Changes**](#--changes--)
-* [Roadmap](#roadmap)
-* [Code Explanation](#code-explanation)
-* [Motivation](#motivation)
-* [Credits](#credits)
-* [Contact Me](#contact-me)
+*   [About the Project](#about-the-project)
+    -   [Built With](#built-with)
+*   [Installation and Getting Started](#installation-and-getting-started)
+*   [How to Use](#how-to-use)
+    -   [Full Video Tutorial (Walkthrough of New Features Included)](#full-video-tutorial--walkthrough-of-new-features-included-)
+    -   [Written Tutorial with Gifs](#written-tutorial-with-gifs)
+    -   [Videos in Journal](#videos-in-journal)
+    -   [Display In Window and Module Settings](#display-in-window-and-module-settings)
+        -   [Auto-Activate or Auto-Show Toggle](#auto-activate-or-auto-show-toggle)
+*   [Changelog](#changelog)
+    -   [**v0.1.6** - 2021-06-09](#--v016-----2021-06-09)
+    -   [**v0.1.5** - 2021-03-21](#--v015-----2021-03-21)
+        -   [Default Tile Control Tools](#default-tile-control-tools)
+        -   [Tile Control Tools with Hide Tile Buttons Turned On](#tile-control-tools-with-hide-tile-buttons-turned-on)
+    -   [**v0.1.4** - 2021-03-19](#--v014-----2021-03-19)
+    -   [**v0.1.3** - 2021-01-22](#--v013-----2021-01-22)
+    -   [**v0.1.2** - 2021-01-03](#--v012-----2021-01-03)
+    -   [**v0.1.1** - 2020-12-28](#--v011-----2020-12-28)
+        -   [**Added**](#--added--)
+        -   [**Changes**](#--changes--)
+*   [Roadmap](#roadmap)
+*   [Code Explanation](#code-explanation)
+*   [Motivation](#motivation)
+*   [Credits](#credits)
+*   [Contact Me](#contact-me)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+## Feature Requests & The Future of Journal to Canvas Slideshow 10-24-2021
+
+With my school workload, I unfortunately don't have time to implement any new features for this module going forward. I will try to fix any bugs that pop up, tweak any minor issues, and continue to keep it updated for major Foundry versions. If you want more/cooler/more flexible features, I would suggest checking out @DarKDinDoN 's amazing module Share Media, which was inspired by and improves upon this module :)
+https://github.com/DarKDinDoN/share-media
 
 ## WARNING
 
@@ -46,9 +51,9 @@ This is meant to make sharing art with your players while narrating or reading y
 
 ## Built With
 
-- JavaScript
-- JQuery
-- HTML
+-   JavaScript
+-   JQuery
+-   HTML
 
 # Installation and Getting Started
 
@@ -153,8 +158,8 @@ A toggleable option is also included in the module settings to automatically act
 
 **CHANGED**
 
-- Integrated features from pull requests, such as item images now being able to be clicked on and displayed. (Thanks, @DarKDinDoN !)
-- Added setting to hide or change how "Toggle Display Location" button in journal header displays.
+-   Integrated features from pull requests, such as item images now being able to be clicked on and displayed. (Thanks, @DarKDinDoN !)
+-   Added setting to hide or change how "Toggle Display Location" button in journal header displays.
 
 ## **v0.1.6** - 2021-06-09
 
@@ -166,9 +171,9 @@ Updated module to work with Foundry v8.6
 
 **Major**
 
-- NEW: Ability to _right click_ on actor sheet character images to display them the same as journal images.
+-   NEW: Ability to _right click_ on actor sheet character images to display them the same as journal images.
 
-- NEW: Ability to display Journal-to-Canvas-Slideshow tools within a dialog rather than as tile control tools.
+-   NEW: Ability to display Journal-to-Canvas-Slideshow tools within a dialog rather than as tile control tools.
 
 See the settings for **Use Actor Sheet Images** and **Hide Tile Buttons** in the updated module settings below.
 !["New Settings"](https://i.imgur.com/AfHLPSG.png)
@@ -205,7 +210,7 @@ The following dialog will appear with buttons with all the functionality, such a
 
 **CHANGED**:
 
-- Many features now work with VIEWED scene rather than ACTIVE scene, such as the bounding tiles.
+-   Many features now work with VIEWED scene rather than ACTIVE scene, such as the bounding tiles.
 
 ---
 
@@ -215,18 +220,18 @@ The following dialog will appear with buttons with all the functionality, such a
 
 **Major**:
 
-- NEW: Bounding Tiles implemented by @Occidio
-- NEW: Display Tiles that along with Bounding Tiles can be added to _any scene_.
-- NEW: Display images via copy-pasting URL feature implemented by @p4535992
-- NEW: Display in Window feature alternative implemented by @DarKDinDoN
-- NEW: Extra settings to accomodate the above new features -- please check the settings menu and reselect your prefered settings.
+-   NEW: Bounding Tiles implemented by @Occidio
+-   NEW: Display Tiles that along with Bounding Tiles can be added to _any scene_.
+-   NEW: Display images via copy-pasting URL feature implemented by @p4535992
+-   NEW: Display in Window feature alternative implemented by @DarKDinDoN
+-   NEW: Extra settings to accomodate the above new features -- please check the settings menu and reselect your prefered settings.
 
 **Changes**:
 
 **Major:**
 
-- Special "Display Tiles" now created via button in Tile controls menu. Flagged by script, so no longer have to be very first tile in scene.
-- **Warning**: Please replace regular tile in pre-made Display Scenes with new Display Tile, else the script will not detect them.
+-   Special "Display Tiles" now created via button in Tile controls menu. Flagged by script, so no longer have to be very first tile in scene.
+-   **Warning**: Please replace regular tile in pre-made Display Scenes with new Display Tile, else the script will not detect them.
 
 ## **v0.1.3** - 2021-01-22
 
@@ -234,15 +239,15 @@ The following dialog will appear with buttons with all the functionality, such a
 
 **Major**:
 
-- NEW: Added option to display journal images in a window rather than display scene
+-   NEW: Added option to display journal images in a window rather than display scene
 
-- NEW: Module settings
+-   NEW: Module settings
 
 ## **v0.1.2** - 2021-01-03
 
 **Major:**
 
-- Fixed an incompatability issue with the Call of Cthulhu 7e (CoC7) system.
+-   Fixed an incompatability issue with the Call of Cthulhu 7e (CoC7) system.
 
 ## **v0.1.1** - 2020-12-28
 
@@ -250,16 +255,16 @@ The following dialog will appear with buttons with all the functionality, such a
 
 **Major:**
 
-- Added "Clear Display" button in Tiles scene control buttons. Will set 'slideshow' tile to a transparent image.
+-   Added "Clear Display" button in Tiles scene control buttons. Will set 'slideshow' tile to a transparent image.
 
 **Minor:**
 
-- More visual effects when hovering over and clicking images in journal, for more user feedback
-- Changed cursor to pointer on hover of journal images
+-   More visual effects when hovering over and clicking images in journal, for more user feedback
+-   Changed cursor to pointer on hover of journal images
 
 ### **Changes**
 
-- Clicking on image in journal no longer activates the 'Display' scene if a different scene is active. Plan to add functionality later to toggle this behavior.
+-   Clicking on image in journal no longer activates the 'Display' scene if a different scene is active. Plan to add functionality later to toggle this behavior.
 
 (Red arrow pointing at new 'Clear Display' button')
 !["Location of clear button"](https://i.imgur.com/aPtU9QL.jpg)
@@ -268,9 +273,9 @@ The following dialog will appear with buttons with all the functionality, such a
 
 # Roadmap
 
-- I next intend to add a way to more easily toggle between the various different settings (Display in Window vs Display in Scene, etc.) without needing to go all the way to the settings menu.
+-   I next intend to add a way to more easily toggle between the various different settings (Display in Window vs Display in Scene, etc.) without needing to go all the way to the settings menu.
 
-- I may possibily implement a way to have multiple Display Tiles in a single scene, but I will need to think of the best way to implement this.
+-   I may possibily implement a way to have multiple Display Tiles in a single scene, but I will need to think of the best way to implement this.
 
 # Code Explanation
 
