@@ -30,7 +30,7 @@
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-## Feature Requests & The Future of Journal to Canvas Slideshow 10-24-2021
+## Feature Requests & The Future of Journal to Canvas Slideshow 01-16-2022
 
 With my school workload, I unfortunately don't have time to implement any new features for this module going forward. I will try to fix any bugs that pop up, tweak any minor issues, and continue to keep it updated for major Foundry versions. If you want more/cooler/more flexible features, I would suggest checking out @DarKDinDoN 's amazing module Share Media, which was inspired by and improves upon this module :)
 https://github.com/DarKDinDoN/share-media
@@ -153,6 +153,12 @@ A toggleable option is also included in the module settings to automatically act
 (_Note_: A notification appears each time you click a journal image while having this setting turned on in conjunction with the "Window" option for the Display Location setting. This is because it uses the same functionality as the "Show Players" button at the top of a journal in image mode. I'll have to figure out how to change that if possible.)
 
 # Changelog
+
+## **v0.1.9** - 2022-01-16
+
+**CHANGED**
+
+-   Updated for Foundry version 9. Check in "releases" for the version still compatible with version 8.
 
 ## **v0.1.7** - 2021-08-26
 
