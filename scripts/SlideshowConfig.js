@@ -1,34 +1,34 @@
+Hooks.on("renderApplication", (app) => {
+    // console.log(app);
+});
+
 export class SlideshowConfig extends FormApplication {
-    constructor(exampleOption){
+    constructor(data) {
         super();
-        this.exampleOption = exampleOption;
+        this.data = data;
     }
-    static get defaultOptions(){
+    static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            classes: ['form'],
+            classes: ["form"],
             popOut: true,
             template: "modules/journal-to-canvas-slideshow/templates/config.html",
-            id: 'slideshow-config',
-            title: 'Slideshow Config',
-           
+            id: "slideshow-config",
+            title: "Slideshow Config",
         });
     }
 
-    getData(){
+    getData() {
         //return data to template
         return {
-            msg: this.exampleOption,
-            color: 'red',
-        }
+            shouldActivateDisplayScene: this.shouldActivateDisplayScene,
+        };
     }
 
-    activateListeners(html){
+    activateListeners(html) {
         super.activateListeners(html);
     }
 
-    async _updateObject(event, formData){
-        console.log(formData.exampleInput);
-    }
+    async _updateObject(event, formData) {}
 }
 
-    window.SlideshowConfig = SlideshowConfig;
+window.SlideshowConfig = SlideshowConfig;

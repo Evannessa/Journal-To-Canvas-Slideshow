@@ -77,27 +77,19 @@ async function ChangePopoutImage(url) {
     //...
     // get the url from the image clicked in the journal
     //if popout doesn't exist
-    if (
-        game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") ==
-        "newWindow"
-    ) {
+    if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow") {
         //if we would like to display in a new popout window
         let popout = new ImageVideoPopout(url, {
             shareable: true,
         })
             .render(true)
             .shareImage();
-    } else if (
-        game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") ==
-        "journalEntry"
-    ) {
+    } else if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry") {
         //if we would like to display in a dedicated journal entry
         if (!FindDisplayJournal()) {
             //couldn't find display journal, so return
             ui.notifications.error(
-                "No journal entry named " +
-                    game.settings.get("journal-to-canvas-slideshow", "displayName") +
-                    " found"
+                "No journal entry named " + game.settings.get("journal-to-canvas-slideshow", "displayName") + " found"
             );
             return;
         } else {
@@ -172,15 +164,8 @@ function getImageSource(ev, myCallback) {
 }
 
 async function createDisplayTile(ourScene) {
-    const tex = await loadTexture(
-        "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png"
-    );
-    var dimensionObject = calculateAspectRatioFit(
-        tex.width,
-        tex.height,
-        ourScene.data.width,
-        ourScene.data.height
-    );
+    const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
+    var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
     var newTile;
     newTile = await ourScene.createEmbeddedDocuments("Tile", [
         {
@@ -210,10 +195,7 @@ async function displayImageInScene(ev, externalURL) {
     var ourScene;
     //* changing this to game.scenes.viewed.tiles rather than "getEmbbeddedCollection"
     var boundingTile = findBoundingTile(game.scenes.viewed.tiles);
-    if (
-        game.settings.get("journal-to-canvas-slideshow", "displayLocation") ==
-        "displayScene"
-    ) {
+    if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
         if (DisplaySceneFound()) {
             //set the scene we're using to be the display scene
             ourScene = displayScene;
@@ -241,9 +223,7 @@ async function displayImageInScene(ev, externalURL) {
                 );
                 ourScene = displayScene;
             } else {
-                ui.notifications.error(
-                    "Not viewing display scene, but no bounding tile present"
-                );
+                ui.notifications.error("Not viewing display scene, but no bounding tile present");
                 return;
             }
         }
@@ -270,9 +250,7 @@ async function displayImageInScene(ev, externalURL) {
     var displayTile = FindDisplayTile(ourScene);
 
     if (!displayTile) {
-        ui.notifications.error(
-            "No display tile found -- make sure your scene has a display tile"
-        );
+        ui.notifications.error("No display tile found -- make sure your scene has a display tile");
         return;
     }
 
@@ -386,23 +364,16 @@ async function clearDisplayTile() {
         return;
     }
     var ourScene;
-    if (
-        game.settings.get("journal-to-canvas-slideshow", "displayLocation") ==
-        "displayScene"
-    ) {
+    if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
         ourScene = displayScene;
     } else {
         ourScene = game.scenes.viewed;
     }
 
     if (!displayTile) {
-        ui.notifications.error(
-            "No display tile found -- make sure the display scene has a tile"
-        );
+        ui.notifications.error("No display tile found -- make sure the display scene has a tile");
     }
-    const tex = await loadTexture(
-        "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png"
-    );
+    const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png");
 
     var clearTileUpdate = {
         _id: displayTile.id,
@@ -491,15 +462,8 @@ function execute(html) {
 
 async function createBoundingTile() {
     var ourScene = game.scenes.viewed;
-    const tex = await loadTexture(
-        "/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png"
-    );
-    var dimensionObject = calculateAspectRatioFit(
-        tex.width,
-        tex.height,
-        ourScene.data.width,
-        ourScene.data.height
-    );
+    const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
+    var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
 
     let boundingTile = await ourScene.createEmbeddedDocuments("Tile", [
         {
@@ -572,41 +536,31 @@ function applySceneHeaderButtons(app, html, options) {
     if (game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "show") {
         html.closest(".app").find("a.toggle-display-location").remove();
 
-        let button = $(
-            `<a class="toggle-display-location"><i class="far fa-image"></i>Toggle Display Location</a>`
-        );
+        let button = $(`<a class="toggle-display-location"><i class="far fa-image"></i>Toggle Display Location</a>`);
         button.click((event) => {
             event.preventDefault();
             toggleDisplayLocation(journalEntry, html, button);
         });
         const titleElement = html.closest(".app").find(".window-title");
         button.insertAfter(titleElement);
-    } else if (
-        game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "iconOnly"
-    ) {
+    } else if (game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "iconOnly") {
         html.closest(".app").find("a.toggle-display-location").remove();
 
-        let button = $(
-            `<a class="toggle-display-location"><i class="far fa-image"></i></a>`
-        );
+        let button = $(`<a class="toggle-display-location"><i class="far fa-image"></i></a>`);
         button.click((event) => {
             event.preventDefault();
             toggleDisplayLocation(journalEntry, html, button);
         });
         const titleElement = html.closest(".app").find(".window-title");
         button.insertAfter(titleElement);
-    } else if (
-        game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "hide"
-    ) {
+    } else if (game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "hide") {
         html.closest(".app").find("a.toggle-display-location").remove();
     }
 }
 
 function toggleDisplayLocation(journalEntry, html, button) {
     let locations = ["displayScene", "window", "anyScene"];
-    let index = locations.indexOf(
-        game.settings.get("journal-to-canvas-slideshow", "displayLocation")
-    );
+    let index = locations.indexOf(game.settings.get("journal-to-canvas-slideshow", "displayLocation"));
     index += 1;
     if (index === 3) {
         index = 0;
@@ -841,24 +795,14 @@ function applyClasses(app, html) {
             //if not undefined, it means this is this is an actor sheet
             if (game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) {
                 const imgs = html.find("img[data-edit]").addClass("rightClickableImage");
-                const videos = html
-                    .find("video[data-edit]")
-                    .addClass("rightClickableImage");
+                const videos = html.find("video[data-edit]").addClass("rightClickableImage");
             }
 
-            const imgs = html
-                .find("div.editor-content img:not([data-edit])")
-                .addClass("clickableImage");
-            const videos = html
-                .find("div.editor-content video:not([data-edit])")
-                .addClass("clickableImage");
+            const imgs = html.find("div.editor-content img:not([data-edit])").addClass("clickableImage");
+            const videos = html.find("div.editor-content video:not([data-edit])").addClass("clickableImage");
         } else if (app.item != undefined) {
-            const imgs = html
-                .find("div.editor-content img:not([data-edit])")
-                .addClass("clickableImage");
-            const videos = html
-                .find("div.editor-content video:not([data-edit])")
-                .addClass("clickableImage");
+            const imgs = html.find("div.editor-content img:not([data-edit])").addClass("clickableImage");
+            const videos = html.find("div.editor-content video:not([data-edit])").addClass("clickableImage");
         } else if (app.object != displayJournal) {
             //if it's a journal
             //unless it's a display journal, as we don't want that clickable
@@ -882,10 +826,7 @@ Hooks.once("ready", () => {
     FindDisplayJournal();
     DisplaySceneFound();
 
-    if (
-        game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true &&
-        game.user.isGM
-    ) {
+    if (game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true && game.user.isGM) {
         //if we have it set to show the welcome message, and the user is the GM
         ShowWelcomeMessage();
     }

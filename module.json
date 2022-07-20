@@ -7,7 +7,12 @@
     "version": "0.1.9",
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9",
-    "esmodules": ["scripts/ClickImageInJournal.js", "classes/MultiMediaPopout.js"],
+    "esmodules": [
+        "scripts/ClickImageInJournal.js",
+        "classes/MultiMediaPopout.js",
+        "scripts/SlideshowConfig.js",
+        "scripts/HooksAndFlags.js"
+    ],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
     "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
     "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/master.zip"

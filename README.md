@@ -154,7 +154,7 @@ A toggleable option is also included in the module settings to automatically act
 
 # Changelog
 
-## **v0.1.9** - 2022-01-16
+## **v0.1.8 - v0.1.9** - 2022-01-16
 
 **CHANGED**
 
