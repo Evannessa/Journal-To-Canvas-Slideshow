@@ -1,0 +1,29 @@
+<form id="displayTileData">
+<div class="form-group">
+			<label for="displayName">Display Name</label>
+			<input type="text" name="displayName" id="displayName" placeholder="displayName" value="{{displayName}}"/>
+		</div>
+		<div class="form-group">
+			<label for="isBoundingTile">Is Bounding Tile?</label>
+			<input type="checkbox" name="isBoundingTile" id="isBoundingTile"{{#if isBoundingTile}}
+				checked
+			{{/if}}/>
+		</div>
+		<div class="form-group">
+			<label for="linkedBoundingTile">Select a Tile to Frame This One</label>
+			<p class="notes"> This will keep the display tile from getting no larger than the tile that frames it</p>
+			<select name="linkedBoundingTile" id="linkedBoundingTile" {{#if isBoundingTile}}
+				disabled	
+			{{/if}}>
+				<option value=""> -- none -- </option>
+				{{#each boundingTiles as |boundingTile|}}
+					{{log @root.linkedBoundingTile boundingTile boundingTile.id}}
+					<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" {{#if (eq @root.linkedBoundingTile boundingTile.id)}}
+						selected	
+					{{/if}}>
+						{{boundingTile.displayName}}
+					</option>
+				{{/each}}
+			</select>
+		</div>
+</form>

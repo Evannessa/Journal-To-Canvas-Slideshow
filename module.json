@@ -13,6 +13,7 @@
         "scripts/SlideshowConfig.js",
         "scripts/HooksAndFlags.js"
     ],
+    "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
     "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
     "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/master.zip"

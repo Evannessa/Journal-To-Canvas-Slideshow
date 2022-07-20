@@ -1,39 +1,10 @@
 import ImageVideoPopout from "../classes/MultiMediaPopout.js";
+import { SlideshowConfig } from "./SlideshowConfig.js";
 import { registerSettings } from "./settings.js";
 
 var displayScene;
 var displayJournal;
 var journalImage;
-
-function highlight(ev) {
-    //when hovering over an image, 'highlight' it by changing its shadow
-    let element = ev.target;
-    element.style.borderStyle = "solid";
-    element.style.borderColor = "white";
-    element.style.borderWidth = "5px";
-    element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
-    element.style.cursor = "pointer";
-}
-
-function dehighlight(ev) {
-    //when no longer hovering over an image, remove the 'highlight'
-    let element = ev.target;
-    element.style.cursor = "default";
-    element.style.boxShadow = "none";
-    element.style.borderStyle = "none";
-}
-
-function depressImage(ev) {
-    //as click
-    let element = ev.target;
-    element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
-}
-
-function liftImage(ev) {
-    //after click
-    let element = ev.target;
-    element.style.boxShadow = "0px 0px 2px rgba(50, 51, 59, 0.5)";
-}
 
 function FindDisplayJournal() {
     //*Changed from "entries" to "contents" for 8.0 update
@@ -68,12 +39,8 @@ async function CreateDisplayJournal() {
         }
     }
 }
-//borrowed this code from Foundry Discord
-async function sleep(millis) {
-    return new Promise((r) => setTimeout(r, millis));
-}
 
-async function ChangePopoutImage(url) {
+async function changePopoutImage(url) {
     //...
     // get the url from the image clicked in the journal
     //if popout doesn't exist
@@ -163,7 +130,7 @@ function getImageSource(ev, myCallback) {
     //load the texture from the source
 }
 
-async function createDisplayTile(ourScene) {
+export async function createDisplayTile(ourScene) {
     const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
     var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
     var newTile;
@@ -196,7 +163,7 @@ async function displayImageInScene(ev, externalURL) {
     //* changing this to game.scenes.viewed.tiles rather than "getEmbbeddedCollection"
     var boundingTile = findBoundingTile(game.scenes.viewed.tiles);
     if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
-        if (DisplaySceneFound()) {
+        if (displaySceneFound()) {
             //set the scene we're using to be the display scene
             ourScene = displayScene;
             //if we're using the display scene, search for a bounding tile in the display scene rather than the viewed scene
@@ -217,7 +184,7 @@ async function displayImageInScene(ev, externalURL) {
             ourScene = game.scenes.viewed;
         } else {
             //
-            if (DisplaySceneFound() && displayScene == game.scenes.viewed) {
+            if (displaySceneFound() && displayScene == game.scenes.viewed) {
                 ui.notifications.warn(
                     "'Any Scene' setting selected and Display Scene viewed, but no bounding tile present; reverting to showing image as default"
                 );
@@ -303,7 +270,7 @@ function createSceneButton(app, html) {
 async function GenerateDisplayScene() {
     //create a Display" scene
     //set the scene to 2000 by 2000, and set the background color to a dark gray
-    if (!DisplaySceneFound()) {
+    if (!displaySceneFound()) {
         displayScene = null;
 
         //create a new scene named display
@@ -359,7 +326,7 @@ async function clearDisplayWindow() {
 async function clearDisplayTile() {
     //clear a tile for the scene
     var displayTile = FindDisplayTile(game.scenes.viewed);
-    if (!DisplaySceneFound() && displayTile == undefined) {
+    if (!displaySceneFound() && displayTile == undefined) {
         //if we're not on the display scene and there's no display tile
         return;
     }
@@ -382,7 +349,7 @@ async function clearDisplayTile() {
     const updated = await ourScene.updateEmbeddedDocuments("Tile", [clearTileUpdate]);
 }
 
-function DisplaySceneFound() {
+function displaySceneFound() {
     // getting the scenes, we want to make sure the tile only happens on the particular display scene
     // so we want it to update on the specific scene and no others
     //* Changed from "game.scenes.entries" to "game.scenes.contents" for 8.0 update
@@ -431,10 +398,10 @@ function determineLocation(ev, url) {
         //if the setting is to display it in a popout, change it to display in a popout
         if (url != undefined) {
             //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
-            ChangePopoutImage(url);
+            changePopoutImage(url);
         } else {
             //if not, it happened because of an image click, so find the information of the clicked image
-            getImageSource(ev, ChangePopoutImage);
+            getImageSource(ev, changePopoutImage);
         }
     }
 }
@@ -443,24 +410,16 @@ function execute(html) {
     //default behavior, for journals
     html.find(".clickableImage").each((i, div) => {
         div.addEventListener("click", determineLocation, false);
-        div.addEventListener("mouseover", highlight, false);
-        div.addEventListener("mouseout", dehighlight, false);
-        div.addEventListener("mousedown", depressImage, false);
-        div.addEventListener("mouseup", liftImage, false);
     });
     //this one is for actor sheets. Right click to keep it from conflicting with the default behavior of selecting an image for the actor.
     if (game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) {
         html.find(".rightClickableImage").each((i, div) => {
             div.addEventListener("contextmenu", determineLocation, false);
-            div.addEventListener("mouseover", highlight, false);
-            div.addEventListener("mouseout", dehighlight, false);
-            div.addEventListener("mousedown", depressImage, false);
-            div.addEventListener("mouseup", liftImage, false);
         });
     }
 }
 
-async function createBoundingTile() {
+export async function createBoundingTile() {
     var ourScene = game.scenes.viewed;
     const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
     var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
@@ -511,7 +470,7 @@ function DisableWelcomeMessage() {
     game.settings.set("journal-to-canvas-slideshow", "showWelcomeMessage", false);
 }
 
-function setDisplayLocationInSettings(location) {
+export function setDisplayLocationInSettings(location) {
     game.settings.set("journal-to-canvas-slideshow", "displayLocation", location);
     var locationString;
     if (location == "displayScene") {
@@ -558,7 +517,7 @@ function applySceneHeaderButtons(app, html, options) {
     }
 }
 
-function toggleDisplayLocation(journalEntry, html, button) {
+export function toggleDisplayLocation(journalEntry, html, button) {
     let locations = ["displayScene", "window", "anyScene"];
     let index = locations.indexOf(game.settings.get("journal-to-canvas-slideshow", "displayLocation"));
     index += 1;
@@ -694,7 +653,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
                 title: "Show Slideshow Config",
                 icon: "far fa-image",
                 onClick: () => {
-                    createDialog();
+                    new SlideshowConfig().render(true);
                 },
                 button: true,
             });
@@ -824,7 +783,7 @@ Hooks.once("init", async function () {
 });
 Hooks.once("ready", () => {
     FindDisplayJournal();
-    DisplaySceneFound();
+    displaySceneFound();
 
     if (game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true && game.user.isGM) {
         //if we have it set to show the welcome message, and the user is the GM

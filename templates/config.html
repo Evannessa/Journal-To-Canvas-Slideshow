@@ -1,23 +1,27 @@
-<form>
+<form autocomplete="off" class="flexcol">
     <div class="form-group">
-        <label for="createDisplayTile"></label>
-        <button id="createDisplayTile" name="createDisplayTile"></button>
-
-        <label for="createBoundingTile"></label>
-        <button id="createBoundingTile" name="createBoundingTile"></button>
+        <button id="createDisplayTile" name="createDisplayTile">Create Display Tile</button>
     </div>
-    <div>
-        <label for="displayInScene">Display in Display Scene</label>
-
-        <input type="radio" id="displayInScene" name="displayLocation" value=1 data-dtype="radio">
+    <div class="form-group">
+        <button id="createBoundingTile" name="createBoundingTile">Create Bounding Tile</button>
+    </div>
+    <div class="form-group">
+        <label class="checkbox-label" for="displayInScene">Display in Display Scene</label>
+        <input class="checkbox" data-dtype="Boolean" data-dtype="radio" id="displayInScene" name="displayLocation" type="radio" value="displayInScene">
+    </div>
+    <div class="form-group">
         <label for="displayInPopout">Display in Image Journal Popout</label>
-        <input type="radio" id="displayInPopout" name="displayLocation" value=2 data-dtype="radio" checked> <!-- scene or journal toggle -->
+        <input checked data-dtype="radio" id="displayInPopout" name="displayLocation" type="radio" value="displayInPopout">
+        <!-- scene or journal toggle -->
+    </div>
+    <div class="form-group">
+        <label for="activateDisplayScene">
+            Activate Display Scene on Image Click
+        </label>
+        <input type="checkbox" name="activateDisplayScene" value="{{ shouldActivateDisplayScene }}" data-dtype="Boolean">
+        <!-- activate scene on image click toggle-->
     </div>
     <div>
-        <label for="activateDisplayScene"> Activate Display Scene on Image Click </label>
-        <input type="checkbox" name="activateDisplayScene" value="{{ shouldActivateDisplayScene }}" data-dtype="Boolean"> <!-- activate scene on image click toggle-->
-    </div>
-    <div>
-        <input type="submit" id="submit-btn">
+        <input id="submit-btn" type="submit">
     </div>
 </form>

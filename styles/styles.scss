@@ -1,0 +1,12 @@
+.clickableImage,
+.rightClickableImage {
+    border: 0px solid transparent;
+    box-shadow: inset 0px 0px 2px transparent;
+    transition: all 100ms ease-out;
+    &:hover {
+        border: 2px solid white;
+        box-shadow: inset 2px 2px 8px rgba(50, 51, 59, 0.5);
+        cursor: pointer;
+        transition: all 100ms ease-out;
+    }
+}
