@@ -1,5 +1,55 @@
 .clickableImageContainer {
     position: relative;
+    fieldset {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border: none;
+        border: 2px solid var(--color-accent-base);
+        color: white;
+        border-radius: 5px;
+        padding: 0rem 0rem;
+        min-width: 50%;
+        label:not(:first-of-type) {
+            border-left: 2px solid var(--color-accent-base);
+        }
+        input[type="radio"] {
+            transform: scale(0);
+            position: absolute;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            width: 1px;
+            margin: -1px;
+            padding: 0;
+            border: 0;
+
+            & + label {
+                padding: 0.25rem 0.5rem;
+                --hover-color: lavender;
+                overflow: visible;
+                width: fit-content;
+                width: max-content;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: background-color 150ms ease-out;
+                &:hover {
+                    cursor: pointer;
+                    background-color: var(--hover-color);
+                    color: #212121;
+                }
+            }
+            &:checked + label {
+                --hover-color: lavender;
+                color: #212121;
+                transition: background-color 250ms ease-out;
+                &:not(:hover) {
+                    background-color: cyan;
+                }
+            }
+        }
+    }
 }
 
 .clickableImage,

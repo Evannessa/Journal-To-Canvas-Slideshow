@@ -1,7 +1,15 @@
 <div class="clickableImageControls">
-  {{#each displayTiles as |tile|}}
-    <span>
-      {{tile.displayName}}
-    </span>
-  {{/each}}
+  <fieldset>
+    {{#each displayTiles as |tile|}}
+      <input
+        type="radio"
+        name="selectedDisplayTile"
+        id="{{tile.id}}"
+        value="{{tile.id}}"
+      />
+      <label for="{{tile.id}}">
+        {{tile.displayName}}
+      </label>
+    {{/each}}
+  </fieldset>
 </div>

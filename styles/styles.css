@@ -1,6 +1,59 @@
 .clickableImageContainer {
   position: relative;
 }
+.clickableImageContainer fieldset {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: none;
+  border: 2px solid var(--color-accent-base);
+  color: white;
+  border-radius: 5px;
+  padding: 0rem 0rem;
+  min-width: 50%;
+}
+.clickableImageContainer fieldset label:not(:first-of-type) {
+  border-left: 2px solid var(--color-accent-base);
+}
+.clickableImageContainer fieldset input[type=radio] {
+  transform: scale(0);
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}
+.clickableImageContainer fieldset input[type=radio] + label {
+  padding: 0.25rem 0.5rem;
+  --hover-color: lavender;
+  overflow: visible;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 150ms ease-out;
+}
+.clickableImageContainer fieldset input[type=radio] + label:hover {
+  cursor: pointer;
+  background-color: var(--hover-color);
+  color: #212121;
+}
+.clickableImageContainer fieldset input[type=radio]:checked + label {
+  --hover-color: lavender;
+  color: #212121;
+  transition: background-color 250ms ease-out;
+}
+.clickableImageContainer fieldset input[type=radio]:checked + label:not(:hover) {
+  background-color: cyan;
+}
 
 .clickableImage,
 .rightClickableImage {
