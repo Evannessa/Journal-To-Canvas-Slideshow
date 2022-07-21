@@ -1,3 +1,7 @@
+.clickableImageContainer {
+    position: relative;
+}
+
 .clickableImage,
 .rightClickableImage {
     border: 0px solid transparent;
@@ -8,5 +12,22 @@
         box-shadow: inset 2px 2px 8px rgba(50, 51, 59, 0.5);
         cursor: pointer;
         transition: all 100ms ease-out;
+        & ~ .clickableImageControls {
+            opacity: 100%;
+        }
+    }
+    &:active {
+        box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
+    }
+}
+.clickableImageControls {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 100ms ease-in;
+    &:hover {
+        opacity: 100%;
     }
 }

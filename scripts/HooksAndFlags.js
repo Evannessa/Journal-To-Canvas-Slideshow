@@ -48,7 +48,50 @@ Hooks.on("preDeleteTile", async (app, element) => {
     }
 });
 
-function getBoundingTiles(flaggedTiles) {
+export async function convertToNewSystem() {
+    let currentScene = game.scenes.viewed;
+    let sceneTiles = currentScene.tiles.contents;
+    let boundingTile;
+    let displayTile;
+    sceneTiles.forEach(async (tile) => {
+        let flag = await tile.getFlag("journal-to-canvas-slideshow", "name");
+        switch (flag.name) {
+            case "boundingTile":
+                boundingTile = tile;
+                break;
+            case "displayTile":
+                displayTile = tile;
+                break;
+            default:
+                break;
+        }
+    });
+    if (boundingTile) {
+        convertBoundingTile(boundingTile.data);
+        if (displayTile) {
+            convertDisplayTile(displayTile.data, boundingTile.id);
+        }
+    } else {
+        if (displayTile) {
+            convertDisplayTile(displayTile.data);
+        }
+    }
+}
+
+export async function convertBoundingTile(tileData) {
+    let defaultData = { displayName: "BoundingTile1", isBoundingTile: true, linkedBoundingTile: "" };
+    updateSceneTileFlags(defaultData, tileData.id);
+}
+export async function convertDisplayTile(tileData, linkedBoundingTileId = "") {
+    let defaultData = { displayName: "DisplayTile1", isBoundingTile: false, linkedBoundingTile: linkedBoundingTileId };
+    updateSceneTileFlags(defaultData, tileData.id);
+}
+export async function getSlideshowFlags() {
+    let currentScene = game.scenes.viewed;
+    let flaggedTiles = await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles");
+    return flaggedTiles;
+}
+export function getBoundingTiles(flaggedTiles) {
     return flaggedTiles.filter((tileData) => tileData.isBoundingTile);
 }
 

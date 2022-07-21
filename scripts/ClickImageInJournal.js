@@ -1,6 +1,8 @@
 import ImageVideoPopout from "../classes/MultiMediaPopout.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
 import { registerSettings } from "./settings.js";
+import { convertBoundingTile, convertDisplayTile, getBoundingTiles, getSlideshowFlags } from "./HooksAndFlags.js";
+import { injectImageControls } from "./ImageControls.js";
 
 var displayScene;
 var displayJournal;
@@ -132,8 +134,8 @@ function getImageSource(ev, myCallback) {
 
 export async function createDisplayTile(ourScene) {
     const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
-    var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
-    var newTile;
+    let dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
+    let newTile;
     newTile = await ourScene.createEmbeddedDocuments("Tile", [
         {
             img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
@@ -143,24 +145,14 @@ export async function createDisplayTile(ourScene) {
             y: ourScene.data.height / 2 - dimensionObject.height / 2,
         },
     ]);
+    convertDisplayTile(newTile.data);
 
-    newTile[0].setFlag("journal-to-canvas-slideshow", "name", "displayTile");
-}
-
-function findBoundingTile(sceneTiles) {
-    let tiles = Array.from(sceneTiles);
-    let boundingTile;
-    for (let element of tiles) {
-        if (element.getFlag("journal-to-canvas-slideshow", "name") == "boundingTile") {
-            boundingTile = element;
-        }
-    }
-    return boundingTile;
+    // newTile[0].setFlag("journal-to-canvas-slideshow", "name", "displayTile");
 }
 
 async function displayImageInScene(ev, externalURL) {
     var ourScene;
-    //* changing this to game.scenes.viewed.tiles rather than "getEmbbeddedCollection"
+    //* changing this to game.scenes.viewed.tiles rather than "getEmbeddedCollection"
     var boundingTile = findBoundingTile(game.scenes.viewed.tiles);
     if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
         if (displaySceneFound()) {
@@ -232,19 +224,6 @@ async function displayImageInScene(ev, externalURL) {
     }
 
     const updated = await ourScene.updateEmbeddedDocuments("Tile", [imageUpdate]);
-}
-
-function FindDisplayTile(ourScene) {
-    //find the display tile in the scene
-    var ourTile;
-    var tiles = ourScene.tiles;
-    for (let tile of tiles) {
-        if (tile.data.flags["journal-to-canvas-slideshow"]?.name == "displayTile") {
-            ourTile = tile;
-        }
-    }
-
-    return ourTile;
 }
 
 function createSceneButton(app, html) {
@@ -433,8 +412,7 @@ export async function createBoundingTile() {
             y: ourScene.data.height / 2 - dimensionObject.height / 2,
         },
     ]);
-
-    boundingTile[0].setFlag("journal-to-canvas-slideshow", "name", "boundingTile");
+    convertBoundingTile(boundingTile.data);
 }
 
 function ShowWelcomeMessage() {
@@ -719,6 +697,8 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
         return;
     }
 
+    // showImageControls(html);
+
     //this method will place buttons at the top of the sheet that you can toggle between
     applySceneHeaderButtons(app, html, options);
     applyClasses(app, html);
@@ -767,10 +747,13 @@ function applyClasses(app, html) {
             //unless it's a display journal, as we don't want that clickable
             html.find("img").addClass("clickableImage");
             html.find("video").addClass("clickableImage");
+
             //find the lightbox images for the 'image' journal mode as well and do the same as above
             html.find(".lightbox-image").each((i, div) => {
                 div.classList.add("clickableImage");
             });
+
+            Array.from(html[0].querySelectorAll(".clickableImage")).forEach((img) => injectImageControls(img));
         }
 
         setEventListeners(html);
