@@ -11,7 +11,19 @@ export async function injectImageControls(element) {
     });
     $(element).parent().addClass("clickableImageContainer");
     $(element).parent().append(renderHtml);
+    let radioButtons = element
+        .closest(".editor-content")
+        .querySelectorAll(`.clickableImageContainer input[type="radio"]`);
+    radioButtons.forEach((button) => {
+        button.addEventListener("change", (event) => {
+            let value = event.currentTarget.value;
+            console.log("Changed to: ", value);
+        });
+    });
 }
+
+export async function activateImageListeners(element) {}
+
 export async function removeImageControls(element) {
     // $(element).parent().
 }
