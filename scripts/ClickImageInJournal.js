@@ -1,15 +1,21 @@
 import ImageVideoPopout from "../classes/MultiMediaPopout.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
 import { registerSettings } from "./settings.js";
-import { convertBoundingTile, convertDisplayTile, getBoundingTiles, getSlideshowFlags } from "./HooksAndFlags.js";
+import {
+    convertBoundingTile,
+    convertDisplayTile,
+    getBoundingTiles,
+    getSlideshowFlags,
+    getTileDataFromFlag,
+} from "./HooksAndFlags.js";
 import { injectImageControls } from "./ImageControls.js";
+import { getJournalImageFlagData } from "./ImageControls.js";
 
 var displayScene;
 var displayJournal;
 var journalImage;
 
-function FindDisplayJournal() {
-    //*Changed from "entries" to "contents" for 8.0 update
+function findDisplayJournal() {
     let journalEntries = game.journal.contents;
     let foundDisplayJournal = false;
     journalEntries.forEach((element) => {
@@ -22,9 +28,9 @@ function FindDisplayJournal() {
     return foundDisplayJournal;
 }
 
-async function CreateDisplayJournal() {
+async function createDisplayJournal() {
     //create a display journal
-    if (!FindDisplayJournal()) {
+    if (!findDisplayJournal()) {
         displayJournal = await JournalEntry.create({
             name: "Display Journal",
         });
@@ -42,7 +48,7 @@ async function CreateDisplayJournal() {
     }
 }
 
-async function changePopoutImage(url) {
+export async function changePopoutImage(url) {
     //...
     // get the url from the image clicked in the journal
     //if popout doesn't exist
@@ -55,7 +61,7 @@ async function changePopoutImage(url) {
             .shareImage();
     } else if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry") {
         //if we would like to display in a dedicated journal entry
-        if (!FindDisplayJournal()) {
+        if (!findDisplayJournal()) {
             //couldn't find display journal, so return
             ui.notifications.error(
                 "No journal entry named " + game.settings.get("journal-to-canvas-slideshow", "displayName") + " found"
@@ -102,7 +108,7 @@ async function changePopoutImage(url) {
     }
 }
 
-function getImageSource(ev, myCallback) {
+export function getImageSource(ev, myCallback) {
     let element = ev.currentTarget;
     let type = element.nodeName;
     let url;
@@ -116,7 +122,6 @@ function getImageSource(ev, myCallback) {
     } else if (type == "DIV" && element.classList.contains("lightbox-image")) {
         //if it's a lightbox image on an image-mode journal
         //https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript --
-        //used elements from the above StackOverflow to help me understand how to retrieve the background image url
         let img = element.style;
         url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
     } else {
@@ -130,6 +135,13 @@ function getImageSource(ev, myCallback) {
     return url;
 
     //load the texture from the source
+}
+
+function checkSettingEquals(settingName, compareToValue) {
+    if (game.settings.get("journal-to-canvas-slideshow", settingName) == compareToValue) {
+        return true;
+    }
+    return false;
 }
 
 export async function createDisplayTile(ourScene) {
@@ -150,69 +162,78 @@ export async function createDisplayTile(ourScene) {
     // newTile[0].setFlag("journal-to-canvas-slideshow", "name", "displayTile");
 }
 
-async function displayImageInScene(ev, externalURL) {
-    var ourScene;
-    //* changing this to game.scenes.viewed.tiles rather than "getEmbeddedCollection"
-    var boundingTile = findBoundingTile(game.scenes.viewed.tiles);
-    if (game.settings.get("journal-to-canvas-slideshow", "displayLocation") == "displayScene") {
-        if (displaySceneFound()) {
-            //set the scene we're using to be the display scene
-            ourScene = displayScene;
-            //if we're using the display scene, search for a bounding tile in the display scene rather than the viewed scene
-            boundingTile = findBoundingTile(displayScene.tiles);
-        } else {
+function checkMeetsDisplayRequirements(source, displayTile, boundingTile) {
+    let doesMeetRequirements = true;
+
+    //get the name of the scene or journal
+    let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
+    if (!source) {
+        ui.notifications.warn("Type not supported");
+        doesMeetRequirements = false;
+    }
+    if (checkSettingEquals("displayLocation", "displayScene")) {
+        if (!displaySceneFound()) {
             //if there is no display scene, return
-            ui.notifications.error(
-                "No display scene found. Please make sure you have a scene named " +
-                    game.settings.get("journal-to-canvas-slideshow", "displayName")
-            );
-            return;
-        }
-    } else {
-        //if the display location setting is set to "Any Scene"
-        if (boundingTile) {
-            //if the scene isn't the display scene but has a bounding Tile
-            //the scene we're using is the currently viewed scene
-            ourScene = game.scenes.viewed;
-        } else {
-            //
-            if (displaySceneFound() && displayScene == game.scenes.viewed) {
-                ui.notifications.warn(
-                    "'Any Scene' setting selected and Display Scene viewed, but no bounding tile present; reverting to showing image as default"
-                );
-                ourScene = displayScene;
-            } else {
-                ui.notifications.error("Not viewing display scene, but no bounding tile present");
-                return;
-            }
+            ui.notifications.error(`No display scene found. Please make sure you have a scene named ${displayName}`);
+            doesMeetRequirements = false;
         }
     }
-    if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-        //if the settings have it set to automatically show the display, activate the scene
-        await ourScene.activate();
-    }
-    //get the element whose source we want to display as a tile, and what type it is (image or video)
-    let url;
-
-    if (externalURL) {
-        url = externalURL;
-    }
-    //check if element is an image or a video, and get the 'source' depending on which. Return if neither, but this shouldn't be the case.
-    else {
-        url = getImageSource(ev);
-        if (url == null) {
-            ui.notifications.error("Type not supported");
-        }
-    }
-
-    //keep track of the tile, which should be the first tile in the display scene
-    var displayTile = FindDisplayTile(ourScene);
-
     if (!displayTile) {
         ui.notifications.error("No display tile found -- make sure your scene has a display tile");
+        doesMeetRequirements = false;
+    }
+    if (!boundingTile) {
+        //if the scene isn't the display scene but has a bounding Tile
+        //the scene we're using is the currently viewed scene
+        ui.notifications.error(
+            "No bounding tile present in scene. Please use the display scene if you wish to display without a bounding tile"
+        );
+        doesMeetRequirements = false;
+    }
+
+    return doesMeetRequirements;
+}
+
+/**
+ * Display the image in a tile, either in a dedicated displayScene, or on a displayTile in any scene
+ * @param {event} event - the click event upon the image in the journal entry
+ * @param {app} journalSheet - the "journal sheet" application which holds our entry
+ * @param {String} externalURL - an external url, if we aren't getting the image source from a clicked image
+ * @returns
+ */
+export async function displayImageInScene(event, journalSheet, externalURL = "") {
+    //get the flaggedTiles in this particular scene
+    let flaggedTiles = await getSlideshowFlags();
+    //get the image source from the event, or return the url if it's a url
+    let url = externalURL ? externalURL : getImageSource(event);
+
+    //get the image data from the clicked image, and the journal entry itself
+    let imageData = await getJournalImageFlagData(journalSheet.object, event.currentTarget);
+    let selectedTileID = imageData.selectedTileID;
+    let displayTile = game.scenes.viewed.tiles.get(selectedTileID);
+
+    //get the tile data from the selected tile id;
+    let displayTileData = await getTileDataFromFlag(selectedTileID, flaggedTiles);
+    let boundingTileID =
+        displayTileData.linkedBoundingTile || flaggedTiles.filter((tileData) => tileData.isBoundingTile)[0].id;
+
+    let boundingTile = game.scenes.viewed.tiles.get(boundingTileID);
+
+    //if we're missing an image source, or any of the tiles, break out of this function
+    if (!checkMeetsDisplayRequirements(url, displayTile, boundingTile)) {
         return;
     }
 
+    await updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
+
+    //TODO: Rewrite auto-activate logic too
+    // if (checkSettingEquals("autoShowDisplay", true)) {
+    //     //if the settings have it set to automatically show the display, activate the scene
+    //     await ourScene.activate();
+    // }
+}
+
+async function updateTileInScene(displayTile, boundingTile, ourScene, url) {
     //load the texture from the source
     const tex = await loadTexture(url);
     var imageUpdate;
@@ -235,18 +256,18 @@ function createSceneButton(app, html) {
         //if we're on the scenes tab, create a button to activate or generate the display scene when clicked
         let button = $("<button>Create or Show Display Scene</button>");
         //if the display scene already exists, open and activate it; if not, create a new one
-        button.click(GenerateDisplayScene);
+        button.click(generateDisplayScene);
         html.find(".directory-footer").prepend(button);
     }
     if (app.options.id == "journal") {
         //create the journal button for generating a popout
         let button = $("<button>Create or Show Display Entry</button>");
-        button.click(CreateDisplayJournal);
+        button.click(createDisplayJournal);
         html.find(".directory-footer").prepend(button);
     }
 }
 
-async function GenerateDisplayScene() {
+async function generateDisplayScene() {
     //create a Display" scene
     //set the scene to 2000 by 2000, and set the background color to a dark gray
     if (!displaySceneFound()) {
@@ -289,7 +310,7 @@ async function determineWhatToClear() {
 }
 
 async function clearDisplayWindow() {
-    if (!FindDisplayJournal()) {
+    if (!findDisplayJournal()) {
         return;
     }
     let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
@@ -355,10 +376,11 @@ function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
     };
 }
 
-function setEventListeners(html) {
+function setEventListeners(html, app) {
     //look for the images and videos with the clickable image class, and add event listeners for being hovered over (to highlight and dehighlight),
     //and event listeners for the "displayImage" function when clicked
-    wait().then(execute.bind(null, html));
+    // execute(html, app);
+    wait().then(execute.bind(null, [html, app]));
 }
 
 function wait(callback) {
@@ -367,33 +389,40 @@ function wait(callback) {
     });
 }
 
-function determineLocation(ev, url) {
+export async function determineLocation(event, journalSheet, url) {
+    event.stopPropagation();
+    // event.stopImmediatePropagation();
+
     //on click, this method will determine if the image should open in a scene or in a display journal
     let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-    if (location == "displayScene" || location == "anyScene") {
-        //if the setting is to display it in a scene, proceed as normal
-        displayImageInScene(ev, url);
-    } else if (location == "window") {
-        //if the setting is to display it in a popout, change it to display in a popout
-        if (url != undefined) {
-            //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
-            changePopoutImage(url);
-        } else {
-            //if not, it happened because of an image click, so find the information of the clicked image
-            getImageSource(ev, changePopoutImage);
-        }
+    switch (location) {
+        case "displayScene":
+        case "anyScene":
+            //if the setting is to display it in a scene, proceed as normal
+            await displayImageInScene(event, journalSheet, url);
+            break;
+        case "window":
+            if (url != undefined) {
+                //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
+                changePopoutImage(url);
+            } else {
+                //if not, it happened because of an image click, so find the information of the clicked image
+                getImageSource(event, changePopoutImage);
+            }
+            break;
     }
 }
 
-function execute(html) {
+function execute(args) {
+    let [html, app] = args;
     //default behavior, for journals
-    html.find(".clickableImage").each((i, div) => {
-        div.addEventListener("click", determineLocation, false);
-    });
-    //this one is for actor sheets. Right click to keep it from conflicting with the default behavior of selecting an image for the actor.
-    if (game.settings.get("journal-to-canvas-slideshow", "useActorSheetImages")) {
-        html.find(".rightClickableImage").each((i, div) => {
-            div.addEventListener("contextmenu", determineLocation, false);
+    // html.find(".clickableImage").each((i, img) => {
+    //     img.addEventListener("click", (event) => determineLocation(event, app), false);
+    // });
+    // this one is for actor sheets. Right click to keep it from conflicting with the default behavior of selecting an image for the actor.
+    if (checkSettingEquals("useActorSheetImages", true)) {
+        html.find(".rightClickableImage").each((i, img) => {
+            img.addEventListener("contextmenu", (event) => determineLocation(event, app), false);
         });
     }
 }
@@ -696,25 +725,17 @@ Hooks.on("renderJournalSheet", (app, html, options) => {
         //if the user isn't the GM, return
         return;
     }
-
-    // showImageControls(html);
-
     //this method will place buttons at the top of the sheet that you can toggle between
-    applySceneHeaderButtons(app, html, options);
-    applyClasses(app, html);
+    applySceneHeaderButtons(app, html, options); //add buttons to the header of the journal
+    applyClasses(app, html); //add classes to all the images in the sheet
 
-    setEventListeners(html);
-    if (FindDisplayJournal() && app.object == displayJournal) {
+    setEventListeners(html, app); //add all the event listeners to the images in the sheet
+
+    if (findDisplayJournal() && app.object == displayJournal) {
         //find the display journal
         //the image that will be changed
         journalImage = html.find(".lightbox-image");
     }
-    let journalEntry = app.object;
-    journalEntry.setFlag(
-        "world",
-        "displayLocation",
-        game.settings.get("journal-to-canvas-slideshow", "displayLocation")
-    );
 });
 
 Hooks.on("renderActorSheet", (app, html, options) => {
@@ -755,8 +776,6 @@ function applyClasses(app, html) {
 
             Array.from(html[0].querySelectorAll(".clickableImage")).forEach((img) => injectImageControls(img, app));
         }
-
-        setEventListeners(html);
     }
 }
 
@@ -808,12 +827,12 @@ async function insertImageIntoJournal(file, editor) {
         );
     }
     console.log(response);
-    let contentToInsert = `<p className="clickableImageContainer"><img class="clickableImage" src="${response.path}" width="512" height="512" /></p>`;
+    let contentToInsert = `<p><img src="${response.path}" width="512" height="512" /></p>`;
     if (contentToInsert) editor.insertContent(contentToInsert);
 }
 
 Hooks.once("ready", () => {
-    FindDisplayJournal();
+    findDisplayJournal();
     displaySceneFound();
 
     if (game.settings.get("journal-to-canvas-slideshow", "showWelcomeMessage") == true && game.user.isGM) {

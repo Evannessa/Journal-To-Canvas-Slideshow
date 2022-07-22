@@ -1,4 +1,5 @@
 {
 	"gotoSymbolStack.currentStackPosition": 0,
-	"gotoSymbolStack.filePositionInfo": []
+	"gotoSymbolStack.filePositionInfo": [],
+	"gotoSymbolStack.maxStackPosition": 0
 }

@@ -1,14 +1,13 @@
 export const registerSettings = function () {
-    // game.settings.register("journal-to-canvas-slideshow", "scaleDown", {
-    // 	name: "Scale Down",
-    // 	hint: `How many pixels from the edges of the canvas to scale the canvas
-    // 	(This calculated from top/bottom or sides depending on if width or height of image is larger)"`,
-    // 	scope: "client",
-    // 	config: true,
-    // 	type: Number,
-    // 	default: 200,
+    game.settings.register("journal-to-canvas-slideshow", "automatic", {
+        name: "Automatic",
+        hint: "Should every journal entry",
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: true,
+    });
 
-    // });
     game.settings.register("journal-to-canvas-slideshow", "imageSaveLocation", {
         name: "Save Location",
         hint: "Set the default upload location for images dragged into a journal entry",

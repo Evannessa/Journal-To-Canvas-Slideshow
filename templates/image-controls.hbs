@@ -1,11 +1,25 @@
-<div class="clickableImageControls">
-  <fieldset>
+<div class="clickableImageControls" data-image="{{imgPath}}">
+	
+	<div class="displayLocations">
+		{{#each displayLocations as |location|}}
+		<button id="{{location.name}}" data-action="{{location.name}}" title="{{location.tooltip}}">
+		<i class="{{location.icon}}"></i>
+	  	</button>
+	  	{{/each}}
+	</div>
+  <fieldset class="displayTiles">
     {{#each displayTiles as |tileData|}}
       <input
         type="radio"
-        name="selectedDisplayTile"
+        name="{{concat "selectedDisplayTile" @root.imgPath}}"
+        data-display-name="{{tileData.tile.displayName}}"
         id="{{tileData.randomID}}"
         value="{{tileData.tile.id}}"
+		{{#if @root.selectedTileID}}
+			{{#if (eq @root.selectedTileID tileData.tile.id)}}
+				checked	
+			{{/if}}
+		{{/if}}
       />
       <label for="{{tileData.randomID}}">
         {{tileData.tile.displayName}}

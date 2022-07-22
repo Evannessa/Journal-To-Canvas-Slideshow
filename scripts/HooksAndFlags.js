@@ -116,7 +116,7 @@ export function getBoundingTiles(flaggedTiles) {
  * @param {Array} flaggedTiles - the flagged tiles
  * @returns the flag data
  */
-async function getTileDataFromFlag(tileId, flaggedTiles) {
+export async function getTileDataFromFlag(tileId, flaggedTiles) {
     let defaultData = { displayName: "", isBoundingTile: false, linkedBoundingTile: "" };
     if (!flaggedTiles) {
         return defaultData;
