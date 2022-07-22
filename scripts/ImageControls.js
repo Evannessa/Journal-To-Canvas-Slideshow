@@ -107,7 +107,7 @@ export async function injectImageControls(imgElement, journalSheet) {
                 });
             } else {
                 //otherwise, just launch to the clicked button's display location
-                determineLocation(event, location, journalSheet);
+                determineDisplayLocation(imgElement, location, journalSheet);
             }
         });
     });
@@ -124,16 +124,22 @@ export async function injectImageControls(imgElement, journalSheet) {
         });
     });
 }
-async function determineLocation(event, location, journalSheet, url) {
-    event.stopPropagation();
-    console.log(location);
+/**
+ * determine the location of the display
+ * @param {*} imageElement - the imageElement
+ * @param {*} location - the location we want to display our image in
+ * @param {*} journalSheet  - the journal sheet in which we're performing these actions
+ * @param {*} url
+ */
+async function determineDisplayLocation(imageElement, location, journalSheet, url) {
+    // event.stopPropagation();
 
     //on click, this method will determine if the image should open in a scene or in a display journal
     switch (location) {
         case "displayScene":
         case "anyScene":
             //if the setting is to display it in a scene, proceed as normal
-            await displayImageInScene(event, journalSheet, url);
+            await displayImageInScene(imageElement, journalSheet, url);
             break;
         case "window":
             if (url != undefined) {

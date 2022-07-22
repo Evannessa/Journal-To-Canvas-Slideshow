@@ -108,22 +108,21 @@ export async function changePopoutImage(url) {
     }
 }
 
-export function getImageSource(ev, myCallback) {
-    let element = ev.currentTarget;
-    let type = element.nodeName;
+export function getImageSource(imageElement, myCallback) {
+    let type = imageElement.nodeName;
     let url;
 
     if (type == "IMG") {
         //if it's an image element
-        url = element.getAttribute("src");
+        url = imageElement.getAttribute("src");
     } else if (type == "VIDEO") {
         //if it's a video element
-        url = element.getElementsByTagName("source")[0].getAttribute("src");
-    } else if (type == "DIV" && element.classList.contains("lightbox-image")) {
+        url = imageElement.getElementsByTagName("source")[0].getAttribute("src");
+    } else if (type == "DIV" && imageElement.classList.contains("lightbox-image")) {
         //if it's a lightbox image on an image-mode journal
         //https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript --
-        let img = element.style;
-        url = img.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+        let imgStyle = imageElement.style;
+        url = imgStyle.backgroundImage.slice(4, -1).replace(/['"]/g, "");
     } else {
         ui.notifications.error("Type not supported");
         url = null;
@@ -196,19 +195,19 @@ function checkMeetsDisplayRequirements(source, displayTile, boundingTile) {
 
 /**
  * Display the image in a tile, either in a dedicated displayScene, or on a displayTile in any scene
- * @param {event} event - the click event upon the image in the journal entry
+ * @param {HTML element} imageElement - the image element in the journal entry
  * @param {app} journalSheet - the "journal sheet" application which holds our entry
  * @param {String} externalURL - an external url, if we aren't getting the image source from a clicked image
  * @returns
  */
-export async function displayImageInScene(event, journalSheet, externalURL = "") {
+export async function displayImageInScene(imageElement, journalSheet, externalURL = "") {
     //get the flaggedTiles in this particular scene
     let flaggedTiles = await getSlideshowFlags();
     //get the image source from the event, or return the url if it's a url
-    let url = externalURL ? externalURL : getImageSource(event);
+    let url = externalURL ? externalURL : getImageSource(imageElement);
 
     //get the image data from the clicked image, and the journal entry itself
-    let imageData = await getJournalImageFlagData(journalSheet.object, event.currentTarget);
+    let imageData = await getJournalImageFlagData(journalSheet.object, imageElement);
     let selectedTileID = imageData.selectedTileID;
     let displayTile = game.scenes.viewed.tiles.get(selectedTileID);
 
@@ -350,20 +349,8 @@ async function clearDisplayTile() {
 }
 
 function displaySceneFound() {
-    // getting the scenes, we want to make sure the tile only happens on the particular display scene
-    // so we want it to update on the specific scene and no others
-    //* Changed from "game.scenes.entries" to "game.scenes.contents" for 8.0 update
-    var scenes = game.scenes.contents;
-    var displaySceneFound = false;
-    for (var scn of scenes) {
-        if (scn.name == game.settings.get("journal-to-canvas-slideshow", "displayName")) {
-            //if we found the scene, make the display scene variable equal this scene
-            displayScene = scn;
-            displaySceneFound = true;
-        }
-    }
-    //return whether or not we've found a scene named 'Display'
-    return displaySceneFound;
+    let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
+    return game.scenes.contents.find((scene) => scene.name === displayName);
 }
 
 // V Used snippet from the below stackOverflow answer to help me with proportionally resizing the images
