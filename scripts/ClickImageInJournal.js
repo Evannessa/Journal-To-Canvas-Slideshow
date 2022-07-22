@@ -753,7 +753,7 @@ function applyClasses(app, html) {
                 div.classList.add("clickableImage");
             });
 
-            Array.from(html[0].querySelectorAll(".clickableImage")).forEach((img) => injectImageControls(img));
+            Array.from(html[0].querySelectorAll(".clickableImage")).forEach((img) => injectImageControls(img, app));
         }
 
         setEventListeners(html);
@@ -763,7 +763,55 @@ function applyClasses(app, html) {
 Hooks.once("init", async function () {
     console.log("Initializing Journal to Canvas Slideshow");
     registerSettings();
+    libWrapper.register(
+        "journal-to-canvas-slideshow",
+        "TextEditor._onDropEditorData",
+        function (wrapped, ...args) {
+            let event = args[0];
+            let editor = args[1];
+            var files = event.dataTransfer.files;
+            let containsImage = false;
+            for (let f of files) {
+                let type = f["type"].split("/")[0];
+                if (type === "image") {
+                    containsImage = true;
+                    insertImageIntoJournal(f, editor);
+                }
+            }
+            if (!containsImage) {
+                console.log("TextEditor._onDropEditorData called");
+                return wrapped(...args);
+            }
+        },
+        "MIXED"
+    );
 });
+
+async function insertImageIntoJournal(file, editor) {
+    if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
+        source = "forgevtt";
+    } else {
+        var source = "data";
+    }
+    let response;
+    if (file.isExternalUrl) {
+        response = {
+            path: file.url,
+        };
+    } else {
+        response = await FilePicker.upload(
+            source,
+            "/upload",
+            // game.settings.get("journal-to-canvas-slideshow", "imageSaveLocation"),
+            file,
+            {}
+        );
+    }
+    console.log(response);
+    let contentToInsert = `<p className="clickableImageContainer"><img class="clickableImage" src="${response.path}" width="512" height="512" /></p>`;
+    if (contentToInsert) editor.insertContent(contentToInsert);
+}
+
 Hooks.once("ready", () => {
     FindDisplayJournal();
     displaySceneFound();

@@ -8,10 +8,13 @@
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9",
     "esmodules": [
+        "scripts/shim.js",
         "scripts/ClickImageInJournal.js",
         "classes/MultiMediaPopout.js",
         "scripts/SlideshowConfig.js",
-        "scripts/HooksAndFlags.js"
+        "scripts/HooksAndFlags.js",
+        "scripts/DragDropIntoJournal.js",
+        "scripts/CustomDragDrop.js"
     ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",

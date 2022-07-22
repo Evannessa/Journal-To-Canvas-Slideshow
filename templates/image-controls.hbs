@@ -1,14 +1,14 @@
 <div class="clickableImageControls">
   <fieldset>
-    {{#each displayTiles as |tile|}}
+    {{#each displayTiles as |tileData|}}
       <input
         type="radio"
         name="selectedDisplayTile"
-        id="{{tile.id}}"
-        value="{{tile.id}}"
+        id="{{tileData.randomID}}"
+        value="{{tileData.tile.id}}"
       />
-      <label for="{{tile.id}}">
-        {{tile.displayName}}
+      <label for="{{tileData.randomID}}">
+        {{tileData.tile.displayName}}
       </label>
     {{/each}}
   </fieldset>
