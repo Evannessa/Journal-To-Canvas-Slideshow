@@ -1,5 +1,34 @@
 import { getSlideshowFlags } from "./HooksAndFlags.js";
 import { displayImageInScene, changePopoutImage, getImageSource } from "./ClickImageInJournal.js";
+
+/**
+ * Implement this factory function to clean things up
+ * @param {*} imageElement
+ * @param {*} sceneID
+ * @param {*} selectedTileID
+ * @param {*} displayLocation
+ * @returns
+ */
+function createJournalImageData(imageElement, sceneID, selectedTileID, displayLocation) {
+    return {
+        name: convertImageSourceToID(imageElement),
+    };
+}
+
+//changed, options, userId
+// changed	object
+// The differential data that was changed relative to the documents prior values
+
+// options	object
+// Additional options which modify the update request
+
+// userId	string
+// The id of the User requesting the document update
+Hooks.on("updateJournalEntry", (app, changed, options, userId) => {
+    console.log(changed, options, userId);
+    //TODO: If the images are changed; update
+});
+
 Hooks.once("init", () => {
     loadTemplates([`modules/journal-to-canvas-slideshow/templates/image-controls.hbs`]);
 });
@@ -63,6 +92,10 @@ export async function injectImageControls(imgElement, journalSheet) {
     imgElement.dataset.name = imageName;
 
     let imageFlagData = await getJournalImageFlagData(journalSheet.object, imgElement);
+    if (imageFlagData) {
+        imageFlagData = imageFlagData.scenesData?.find((obj) => obj.sceneID === game.scenes.viewed.data._id); //want to get the specific data for the current scene
+        console.log(imageFlagData);
+    }
 
     let displayTiles = flaggedTiles.filter((item) => !item.isBoundingTile);
     displayTiles = displayTiles.map((tile) => {
@@ -81,11 +114,17 @@ export async function injectImageControls(imgElement, journalSheet) {
     $(imgElement).parent().addClass("clickableImageContainer");
     $(imgElement).parent().append(renderHtml);
 
-    imgElement.addEventListener("click", (event) => {
+    imgElement.addEventListener("click", async (event) => {
         event.stopPropagation();
         event.stopImmediatePropagation();
-
-        //TODO: Add location logic here
+        //get location data
+        let imageData = await getJournalImageFlagData(journalSheet.object, imgElement);
+        if (imageData.displayLocation) {
+            determineDisplayLocation(imgElement, imageData.displayLocation, journalSheet);
+        } else {
+            determineDisplayLocation(imgElement, "displayScene", journalSheet);
+            //TODO: Add default location
+        }
     });
     //for each display location button
     let locationButtons = imgElement
@@ -120,10 +159,29 @@ export async function injectImageControls(imgElement, journalSheet) {
             event.stopPropagation();
             event.stopImmediatePropagation();
             let value = event.currentTarget.value;
-            assignImageFlags(journalSheet, imgElement, { selectedTileID: value });
+            let updateData = {
+                scenesData: [
+                    {
+                        sceneID: game.scenes.viewed.data._id,
+                        selectedTileID: value,
+                    },
+                ],
+            };
+            assignImageFlags(journalSheet, imgElement, updateData);
         });
     });
 }
+
+/**
+ * Return data specific to the current viewed scene for the particular image in the journal entry, which should change when the scene does
+ * @param {Object} imageFlagData - the data from the flag for this particular image in the journal entry
+ * @returns the data specific to the current viewed scene
+ */
+export async function getSceneSpecificImageData(imageFlagData) {
+    let currentSceneID = game.scenes.viewed.data._id;
+    return imageFlagData.scenesData?.find((obj) => obj.sceneID === currentSceneID); //want to get the specific data for the current scene
+}
+
 /**
  * determine the location of the display
  * @param {*} imageElement - the imageElement
@@ -131,7 +189,7 @@ export async function injectImageControls(imgElement, journalSheet) {
  * @param {*} journalSheet  - the journal sheet in which we're performing these actions
  * @param {*} url
  */
-async function determineDisplayLocation(imageElement, location, journalSheet, url) {
+async function determineDisplayLocation(imageElement, location, journalSheet, url = "") {
     // event.stopPropagation();
 
     //on click, this method will determine if the image should open in a scene or in a display journal

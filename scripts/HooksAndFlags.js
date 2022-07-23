@@ -2,20 +2,6 @@ Hooks.once("init", () => {
     loadTemplates([`modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs`]);
 });
 
-//changed, options, userId
-// changed	object
-// The differential data that was changed relative to the documents prior values
-
-// options	object
-// Additional options which modify the update request
-
-// userId	string
-// The id of the User requesting the document update
-Hooks.on("updateJournalEntry", (app, changed, options, userId) => {
-    console.log(changed, options, userId);
-    //! The selectedDisplayTile will be noted in the "changed" when you click save
-});
-
 Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;
     let flaggedTiles = await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles");

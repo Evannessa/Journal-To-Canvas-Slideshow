@@ -8,8 +8,7 @@ import {
     getSlideshowFlags,
     getTileDataFromFlag,
 } from "./HooksAndFlags.js";
-import { injectImageControls } from "./ImageControls.js";
-import { getJournalImageFlagData } from "./ImageControls.js";
+import { injectImageControls, getJournalImageFlagData, getSceneSpecificImageData } from "./ImageControls.js";
 
 var displayScene;
 var displayJournal;
@@ -208,8 +207,11 @@ export async function displayImageInScene(imageElement, journalSheet, externalUR
 
     //get the image data from the clicked image, and the journal entry itself
     let imageData = await getJournalImageFlagData(journalSheet.object, imageElement);
-    let selectedTileID = imageData.selectedTileID;
+    let sceneSpecificData = await getSceneSpecificImageData(imageData);
+    let selectedTileID = sceneSpecificData.selectedTileID;
     let displayTile = game.scenes.viewed.tiles.get(selectedTileID);
+
+    console.log("Our display tile is", displayTile, flaggedTiles, imageData);
 
     //get the tile data from the selected tile id;
     let displayTileData = await getTileDataFromFlag(selectedTileID, flaggedTiles);
