@@ -14,6 +14,15 @@ function createJournalImageData(imageElement, sceneID, selectedTileID, displayLo
         name: convertImageSourceToID(imageElement),
     };
 }
+Hooks.on("canvasReady", (canvas) => {
+    console.log(canvas.scene);
+    //TODO: have this be a setting toggle
+    //! This should ONLY re-render if the editor is not actively being edited
+    let renderedJournalSheets = Object.values(window.ui.windows).filter(
+        (obj) => obj.document?.documentName === "JournalEntry" && obj.editors?.content.active === false //editors.content.active === false ensures the editor is not being actively edited before re-rendering the entry
+    );
+    renderedJournalSheets.forEach((sheet) => sheet.render(true));
+});
 
 //changed, options, userId
 // changed	object
