@@ -47,30 +47,31 @@ async function createDisplayJournal() {
     }
 }
 
-export async function changePopoutImage(url) {
+export async function displayImageInWindow(method, url) {
+    let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
     //...
     // get the url from the image clicked in the journal
     //if popout doesn't exist
-    if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "newWindow") {
+    if (method == "window") {
         //if we would like to display in a new popout window
         let popout = new ImageVideoPopout(url, {
             shareable: true,
         })
             .render(true)
             .shareImage();
-    } else if (game.settings.get("journal-to-canvas-slideshow", "displayWindowBehavior") == "journalEntry") {
+    } else if (method == "journalEntry") {
         //if we would like to display in a dedicated journal entry
+
         if (!findDisplayJournal()) {
             //couldn't find display journal, so return
-            ui.notifications.error(
-                "No journal entry named " + game.settings.get("journal-to-canvas-slideshow", "displayName") + " found"
-            );
+            ui.notifications.error(`No journal entry named ${displayName} found`);
             return;
         } else {
-            if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
-                //if we have the auto show display settings on, automatically show the journal after the button is clicked
-                displayJournal.render(false, {});
-            }
+            displayJournal.render(true);
+            // if (game.settings.get("journal-to-canvas-slideshow", "autoShowDisplay")) {
+            //     //if we have the auto show display settings on, automatically show the journal after the button is clicked
+            //     displayJournal.render(false, {});
+            // }
         }
         var fileTypePattern = /\.[0-9a-z]+$/i;
         var fileType = url.match(fileTypePattern);
@@ -393,10 +394,10 @@ export async function determineLocation(event, journalSheet, url) {
         case "window":
             if (url != undefined) {
                 //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
-                changePopoutImage(url);
+                displayImageInWindow(url);
             } else {
                 //if not, it happened because of an image click, so find the information of the clicked image
-                getImageSource(event, changePopoutImage);
+                getImageSource(event, displayImageInWindow);
             }
             break;
     }

@@ -1,5 +1,5 @@
 import { getSlideshowFlags } from "./HooksAndFlags.js";
-import { displayImageInScene, changePopoutImage, getImageSource } from "./ClickImageInJournal.js";
+import { displayImageInScene, displayImageInWindow, getImageSource } from "./ClickImageInJournal.js";
 
 /**
  * Implement this factory function to clean things up
@@ -19,7 +19,7 @@ Hooks.on("canvasReady", (canvas) => {
     //TODO: have this be a setting toggle
     //! This should ONLY re-render if the editor is not actively being edited
     let renderedJournalSheets = Object.values(window.ui.windows).filter(
-        (obj) => obj.document?.documentName === "JournalEntry" && obj.editors?.content.active === false //editors.content.active === false ensures the editor is not being actively edited before re-rendering the entry
+        (obj) => obj.document?.documentName === "JournalEntry" && obj.editors?.content.active === false //?editors.content.active === false ensures the editor is not being actively edited before re-rendering the entry
     );
     renderedJournalSheets.forEach((sheet) => sheet.render(true));
 });
@@ -115,6 +115,7 @@ export async function injectImageControls(imgElement, journalSheet) {
     });
 
     let renderHtml = await renderTemplate(template, {
+        currentSceneName: game.scenes.viewed.name,
         displayLocations: displayLocations,
         displayTiles: displayTiles,
         imgPath: imageName,
@@ -208,13 +209,16 @@ async function determineDisplayLocation(imageElement, location, journalSheet, ur
             //if the setting is to display it in a scene, proceed as normal
             await displayImageInScene(imageElement, journalSheet, url);
             break;
+        case "journalEntry":
+            displayImageInWindow("journalEntry", getImageSource(imageElement));
+            break;
         case "window":
+            displayImageInWindow("window", getImageSource(imageElement));
             if (url != undefined) {
                 //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
-                changePopoutImage(url);
             } else {
                 //if not, it happened because of an image click, so find the information of the clicked image
-                getImageSource(event, changePopoutImage);
+                getImageSource(imageElement, displayImageInWindow);
             }
             break;
     }

@@ -89,7 +89,7 @@ export async function convertDisplayTile(tileData, linkedBoundingTileId = "") {
 }
 export async function getSlideshowFlags() {
     let currentScene = game.scenes.viewed;
-    let flaggedTiles = await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles");
+    let flaggedTiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
     return flaggedTiles;
 }
 export function getBoundingTiles(flaggedTiles) {
@@ -110,7 +110,6 @@ export async function getTileDataFromFlag(tileId, flaggedTiles) {
 
     let flaggedTile = flaggedTiles.find((tileData) => tileData.id === tileId);
 
-    console.log("Our flagged tile is", flaggedTile);
     //if we find a tile
     if (flaggedTile) {
         return flaggedTile;
