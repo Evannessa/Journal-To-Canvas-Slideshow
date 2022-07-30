@@ -17,10 +17,6 @@
   --clr-dark-light: hsl(252, 37%, 05%);
 }
 
-.accent {
-  color: var(--clr-pink-base);
-}
-
 .clickableImageContainer {
   position: relative;
 }
@@ -62,12 +58,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--clr-blue-light);
+  transition: color 150ms ease-out background-color 150ms ease-out;
+  border: 1px solid var(--clr-dark-base);
+  gap: 0.25rem;
 }
 .clickableImageContainer .displayLocations button:hover {
-  background-color: var(--color-accent-base);
+  background-color: var(--clr-blue-dark);
   color: #212121;
 }
 .clickableImageContainer fieldset {
+  transform: translateY(-50%);
   pointer-events: auto;
   grid-row: 1/2;
   grid-column: 2/4;
@@ -160,4 +161,8 @@
 .clickableImage:active,
 .rightClickableImage:active {
   box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
+}
+
+.accent {
+  color: var(--clr-pink-base);
 }/*# sourceMappingURL=styles.css.map */

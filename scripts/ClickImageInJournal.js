@@ -209,6 +209,7 @@ export async function displayImageInScene(imageElement, journalSheet, externalUR
     //get the image data from the clicked image, and the journal entry itself
     let imageData = await getJournalImageFlagData(journalSheet.object, imageElement);
     let sceneSpecificData = await getSceneSpecificImageData(imageData);
+    console.log(sceneSpecificData);
     let selectedTileID = sceneSpecificData.selectedTileID;
     let displayTile = game.scenes.viewed.tiles.get(selectedTileID);
 

@@ -119,6 +119,9 @@ export async function getTileDataFromFlag(tileId, flaggedTiles) {
 }
 
 async function updateSceneTileFlags(displayData, tileId) {
+    if (!tileId) {
+        return;
+    }
     let currentScene = game.scenes.viewed;
     let tiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
 

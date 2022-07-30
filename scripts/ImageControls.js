@@ -15,7 +15,6 @@ function createJournalImageData(imageElement, sceneID, selectedTileID, displayLo
     };
 }
 Hooks.on("canvasReady", (canvas) => {
-    console.log(canvas.scene);
     //TODO: have this be a setting toggle
     //! This should ONLY re-render if the editor is not actively being edited
     let renderedJournalSheets = Object.values(window.ui.windows).filter(

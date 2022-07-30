@@ -21,9 +21,7 @@
     --clr-dark-base: hsl(252, 27%, 15%);
     --clr-dark-light: hsl(252, 37%, 05%);
 }
-.accent {
-    color: var(--clr-pink-base);
-}
+
 .clickableImageContainer {
     position: relative;
     .clickableImageControls {
@@ -61,14 +59,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            // max-width: fit-content;
+            background-color: var(--clr-blue-light);
+            transition: color 150ms ease-out background-color 150ms ease-out;
+            border: 1px solid var(--clr-dark-base);
+            gap: 0.25rem;
             &:hover {
-                background-color: var(--color-accent-base);
+                background-color: var(--clr-blue-dark);
                 color: #212121;
             }
         }
     }
     fieldset {
+        transform: translateY(-50%);
         pointer-events: auto;
         * {
             pointer-events: auto;
@@ -161,4 +163,7 @@
     &:active {
         box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
     }
+}
+.accent {
+    color: var(--clr-pink-base);
 }
