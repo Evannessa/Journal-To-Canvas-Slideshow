@@ -1,10 +1,12 @@
 <form autocomplete="off" class="flexcol">
-    {% if shouldPromptConversion %}
+    {{#if shouldPromptConversion }}
         <div class="form-group">
             <p class="notes">Convert display and bounding tiles to the new system that allows multiple display tiles per scene</p>
             <button data-action="convert" id="convertTiles" name="convertTiles">Convert Display and Bounding Tiles</button>
         </div>
-    {% endif %}
+    {{/if}}
+    <button data-action="createDisplayTile">Create Display Tile</button>
+    <button data-action="createFrameTile">Create Frame Tile</button>
     <div class="form-group">
         <label class="checkbox-label" for="displayInScene">Display in Display Scene</label>
         <input class="checkbox" data-dtype="Boolean" data-dtype="radio" id="displayInScene" name="displayLocation" type="radio" value="displayInScene">

@@ -4,20 +4,26 @@ Hooks.once("init", () => {
 
 Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;
+
+    //get tiles with flags
     let flaggedTiles = await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles");
 
     let defaultData = { displayName: "", isBoundingTile: false, linkedBoundingTile: "" };
+
+    //get data from tiles
     if (flaggedTiles) {
         defaultData = await getTileDataFromFlag(app.object.data._id, flaggedTiles);
         defaultData = { ...defaultData };
         defaultData.boundingTiles = getBoundingTiles(flaggedTiles);
     }
 
-    let template = "modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs";
-
-    let renderHtml = await renderTemplate(template, defaultData);
-    const target = $(element).find(`[name="tint"]`).parent().parent();
-    target.after(renderHtml);
+    if (!element.querySelector("#displayTileData")) {
+        //if we don't have this data
+        let renderHtml = await renderTemplate(template, defaultData);
+        let template = "modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs";
+        const target = $(element).find(`[name="tint"]`).parent().parent();
+        target.after(renderHtml);
+    }
 });
 
 //when the tile config is closed, check to see if the name has changed

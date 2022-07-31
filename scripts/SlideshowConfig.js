@@ -20,9 +20,10 @@ export class SlideshowConfig extends FormApplication {
 
     async getData() {
         //return data to template
+        let ourScene = game.scenes.viewed;
         let shouldPromptConversion = false;
-        let oldBoundingTile = await findBoundingTile();
-        let oldDisplayTile = await findDisplayTile();
+        let oldBoundingTile = await findBoundingTile(ourScene);
+        let oldDisplayTile = await findDisplayTile(ourScene);
         if (oldBoundingTile || oldDisplayTile) {
             shouldPromptConversion = true;
         }
@@ -41,6 +42,10 @@ export class SlideshowConfig extends FormApplication {
         switch (action) {
             case "convert":
                 convertToNewSystem();
+                break;
+            case "createDisplayTile":
+                break;
+            case "createFrameTile":
                 break;
         }
     }

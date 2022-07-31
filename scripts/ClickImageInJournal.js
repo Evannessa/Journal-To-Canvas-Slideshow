@@ -157,8 +157,6 @@ export async function createDisplayTile(ourScene) {
         },
     ]);
     convertDisplayTile(newTile.data);
-
-    // newTile[0].setFlag("journal-to-canvas-slideshow", "name", "displayTile");
 }
 
 function checkMeetsDisplayRequirements(source, displayTile, boundingTile) {
