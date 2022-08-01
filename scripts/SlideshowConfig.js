@@ -44,8 +44,10 @@ export class SlideshowConfig extends FormApplication {
                 convertToNewSystem();
                 break;
             case "createDisplayTile":
+                game.modules.get("journal-to-canvas-slideshow")?.api?.createDisplayTile();
                 break;
             case "createFrameTile":
+                game.modules.get("journal-to-canvas-slideshow")?.api?.createFrameTile();
                 break;
         }
     }

@@ -1,6 +1,8 @@
 import { getSlideshowFlags } from "./HooksAndFlags.js";
 import { displayImageInScene, displayImageInWindow, getImageSource } from "./ClickImageInJournal.js";
 
+class JournalImageControls {}
+
 /**
  * Implement this factory function to clean things up
  * @param {*} imageElement
@@ -15,7 +17,6 @@ function createJournalImageData(imageElement, sceneID, selectedTileID, displayLo
     };
 }
 Hooks.on("canvasReady", (canvas) => {
-    //TODO: have this be a setting toggle
     //! This should ONLY re-render if the editor is not actively being edited
     let renderedJournalSheets = Object.values(window.ui.windows).filter(
         (obj) => obj.document?.documentName === "JournalEntry" && obj.editors?.content.active === false //?editors.content.active === false ensures the editor is not being actively edited before re-rendering the entry
@@ -33,7 +34,7 @@ Hooks.on("canvasReady", (canvas) => {
 // userId	string
 // The id of the User requesting the document update
 Hooks.on("updateJournalEntry", (app, changed, options, userId) => {
-    console.log(changed, options, userId);
+    // console.log(changed, options, userId);
     //TODO: If the images are changed; update
 });
 
@@ -65,8 +66,8 @@ let displayLocations = [
 ];
 /**
  * Store image data in flags
- * @param {App} journalSheet - the journal sheet whose images we're stor
- * @param {HTMLElement} imgElement - the image element
+ * @param {App} journalSheet - the journal sheet whose images we're storing in the flag
+ * @param {HTMLElement} imgElement - the image HTML element
  * @param {Obj} newImgData - the data being stored
  */
 async function assignImageFlags(journalSheet, imgElement, newImgData) {
@@ -99,10 +100,11 @@ export async function injectImageControls(imgElement, journalSheet) {
     let imageName = convertImageSourceToID(imgElement);
     imgElement.dataset.name = imageName;
 
+    //get the flags for this particular journal entry
     let imageFlagData = await getJournalImageFlagData(journalSheet.object, imgElement);
+    //
     if (imageFlagData) {
         imageFlagData = imageFlagData.scenesData?.find((obj) => obj.sceneID === game.scenes.viewed.data._id); //want to get the specific data for the current scene
-        console.log(imageFlagData);
     }
 
     let displayTiles = flaggedTiles.filter((item) => !item.isBoundingTile);
@@ -122,63 +124,103 @@ export async function injectImageControls(imgElement, journalSheet) {
     });
     $(imgElement).parent().addClass("clickableImageContainer");
     $(imgElement).parent().append(renderHtml);
+    activateEventListeners({ journalSheet: journalSheet, imgElement: imgElement });
+}
 
-    imgElement.addEventListener("click", async (event) => {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        //get location data
-        let imageData = await getJournalImageFlagData(journalSheet.object, imgElement);
-        if (imageData.displayLocation) {
-            determineDisplayLocation(imgElement, imageData.displayLocation, journalSheet);
-        } else {
-            determineDisplayLocation(imgElement, "displayScene", journalSheet);
-            //TODO: Add default location
-        }
-    });
-    //for each display location button
+/**
+ *
+ * @param data - the data object
+ */
+function activateEventListeners(data) {
+    let { journalSheet, imgElement } = data;
+
     let locationButtons = imgElement
         .closest(".editor-content")
         .querySelectorAll(`.clickableImageContainer .displayLocations button`);
-    locationButtons.forEach((button) => {
-        //add a click event listener
-        button.addEventListener("click", (event) => {
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-
-            //get the action
-            let location = event.currentTarget.dataset.action;
-            //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
-            if (event.ctrlKey) {
-                //if the control key was also pressed
-                assignImageFlags(journalSheet, imgElement, {
-                    displayLocation: location,
-                });
-            } else {
-                //otherwise, just launch to the clicked button's display location
-                determineDisplayLocation(imgElement, location, journalSheet);
-            }
-        });
-    });
 
     let tileRadioButtons = imgElement
         .closest(".editor-content")
         .querySelectorAll(`.clickableImageContainer .displayTiles input[type="radio"]`);
-    tileRadioButtons.forEach((button) => {
-        button.addEventListener("change", (event) => {
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            let value = event.currentTarget.value;
-            let updateData = {
-                scenesData: [
-                    {
-                        sceneID: game.scenes.viewed.data._id,
-                        selectedTileID: value,
-                    },
-                ],
-            };
-            assignImageFlags(journalSheet, imgElement, updateData);
-        });
+
+    imgElement.addEventListener("click", (event) => onImageClick(event, data));
+
+    //for each display location button
+    //add a click event listener
+    locationButtons.forEach((button) => {
+        button.addEventListener("click", (event) => onLocationButtonClick(event, data));
     });
+
+    //for each radio button, which shows the display tiles in scene
+    //add change and hover event listeners
+    tileRadioButtons.forEach((button) => {
+        button.addEventListener("change", (event) => onTileRadioButtonChange(event, data));
+        button.nextElementSibling.addEventListener("mouseenter", (event) => onTileButtonLabelHover(event, data));
+        button.nextElementSibling.addEventListener("mouseleave", (event) => onTileButtonLabelHover(event, data, true));
+    });
+}
+
+async function onImageClick(event, data) {
+    let { journalSheet, imgElement } = data;
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    //get location data
+    let imageData = await getJournalImageFlagData(journalSheet.object, imgElement);
+    if (imageData.displayLocation) {
+        determineDisplayLocation(imgElement, imageData.displayLocation, journalSheet);
+    } else {
+        determineDisplayLocation(imgElement, "displayScene", journalSheet);
+    }
+}
+
+function onLocationButtonClick(event, data) {
+    let { journalSheet, imgElement } = data;
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    //get the action
+    let location = event.currentTarget.dataset.action;
+    //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
+    if (event.ctrlKey) {
+        //if the control key was also pressed
+        assignImageFlags(journalSheet, imgElement, {
+            displayLocation: location,
+        });
+    } else {
+        //otherwise, just launch to the clicked button's display location
+        determineDisplayLocation(imgElement, location, journalSheet);
+    }
+}
+
+async function onTileButtonLabelHover(event, data, isLeave = false) {
+    let scene = game.scenes.viewed;
+    let { journalSheet, imgElement } = data;
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    let tileId = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
+    addFilterToTile(tileId, isLeave ? 0 : 10);
+}
+
+function addFilterToTile(tileId, strength = 10) {
+    let ourTile = game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
+    let filterBlur = new PIXI.filters.BlurFilter();
+    filterBlur.blur = strength;
+    ourTile._object.filters = [filterBlur];
+}
+
+function onTileRadioButtonChange(event, data) {
+    let { journalSheet, imgElement } = data;
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    let value = event.currentTarget.value;
+    let updateData = {
+        scenesData: [
+            {
+                sceneID: game.scenes.viewed.data._id,
+                selectedTileID: value,
+            },
+        ],
+    };
+    assignImageFlags(journalSheet, imgElement, updateData);
 }
 
 /**
