@@ -1,0 +1,65 @@
+<form autocomplete="off" class="flexcol">
+    <div class="tilesInScene">
+        <h3>Current Scene is: {{currentSceneName}}</h3>
+        <ul>
+            <h3>Art Tiles</h3>
+            {{#each artTiles as |tile|}}
+				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="art"}}
+            {{/each}}
+        </ul>
+        <ul>
+            <h3>Frame Tiles</h3>
+            {{#each frameTiles as |tile|}}
+				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame"}}
+            {{/each}}
+        </ul>
+    </div>
+    {{#if shouldPromptConversion}}
+        <div class="form-group">
+            <p class="notes">Convert display and bounding tiles to the new system that allows multiple display tiles per
+                scene</p>
+            <button data-action="convert" id="convertTiles" name="convertTiles">Convert Display and Bounding Tiles</button>
+        </div>
+    {{/if}}
+    <button data-action="createDisplayTile">Create Display Tile</button>
+    <button data-action="createFrameTile">Create Frame Tile</button>
+    <div class="form-group">
+        <label class="checkbox-label" for="displayInScene">Display in Display Scene</label>
+        <input
+            class="checkbox"
+            data-dtype="Boolean"
+            data-dtype="radio"
+            id="displayInScene"
+            name="displayLocation"
+            type="radio"
+            value="displayInScene"
+        />
+    </div>
+    <div class="form-group">
+        <label for="displayInPopout">Display in Image Journal Popout</label>
+        <input
+            checked
+            data-dtype="radio"
+            id="displayInPopout"
+            name="displayLocation"
+            type="radio"
+            value="displayInPopout"
+        />
+        <!-- scene or journal toggle -->
+    </div>
+    <div class="form-group">
+        <label for="activateDisplayScene">
+            Activate Display Scene on Image Click
+        </label>
+        <input
+            type="checkbox"
+            name="activateDisplayScene"
+            value="{{shouldActivateDisplayScene}}"
+            data-dtype="Boolean"
+        />
+        <!-- activate scene on image click toggle-->
+    </div>
+    <div>
+        <input id="submit-btn" type="submit" />
+    </div>
+</form>

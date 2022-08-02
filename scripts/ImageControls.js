@@ -1,8 +1,6 @@
 import { getSlideshowFlags } from "./HooksAndFlags.js";
 import { displayImageInScene, displayImageInWindow, getImageSource } from "./ClickImageInJournal.js";
 
-class JournalImageControls {}
-
 /**
  * Implement this factory function to clean things up
  * @param {*} imageElement

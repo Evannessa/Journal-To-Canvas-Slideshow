@@ -157,9 +157,14 @@ class DisplayTileCreator {
      * get tiles that have been stored by this module in a flag on this scene
      * @returns array of display tile data stored in "slideshowTiles" tag
      */
-    static async getSceneSlideshowTiles() {
+    static async getSceneSlideshowTiles(type = "") {
         let currentScene = game.scenes.viewed;
         let flaggedTiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
+        if (type === "frame") {
+            return DisplayTileCreator.getFrameTiles(flaggedTiles);
+        } else if (type === "art") {
+            return DisplayTileCreator.getDisplayTiles(flaggedTiles);
+        }
         return flaggedTiles;
     }
 
@@ -179,11 +184,35 @@ class DisplayTileCreator {
     static getDisplayTiles(flaggedTiles) {
         return flaggedTiles.filter((tileData) => !tileData.isBoundingTile);
     }
-    static filterTile(tileId, strength = 10) {
-        let ourTile = game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
-        let filterBlur = new PIXI.filters.BlurFilter();
-        filterBlur.blur = strength;
-        ourTile._object.filters = [filterBlur];
+    static async renderTileConfig(tileID, sceneID = "") {
+        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
+        if (tile) {
+            await tile.sheet.render(true);
+        } else {
+            DisplayTileCreator.displayTileNotFoundError(tileID);
+            ui.notifications.error("JTCS can't find tile in scene with ID " + tileID);
+        }
+    }
+
+    static showTileBorder(tileID, strength = 10, sceneID = "") {
+        let tile = game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
+        if (tile) {
+            let filterBlur = new PIXI.filters.BlurFilter();
+            filterBlur.blur = strength;
+            tile._object.filters = [filterBlur];
+        } else {
+            DisplayTileCreator.displayTileNotFoundError(tileID);
+        }
+    }
+    static selectTile(tileID, sceneID = "") {
+        let tile = game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
+        if (tile) {
+            tile.object.control({
+                releaseOthers: false,
+            });
+        } else {
+            DisplayTileCreator.displayTileNotFoundError(tileID);
+        }
     }
 
     /**
@@ -208,9 +237,16 @@ class DisplayTileCreator {
             return defaultData;
         }
     }
-    static getTileById(tileId) {
-        let tile = game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
+    static async getTileById(tileId, sceneID = "") {
+        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
+        if (!tile) {
+            DisplayTileCreator.displayTileNotFoundError(tileID);
+        }
         return tile;
+    }
+
+    static displayTileNotFoundError(tileID, sceneID = "") {
+        ui.notifications.error("JTCS can't find tile in scene with ID " + tileID);
     }
 
     /**
@@ -251,7 +287,9 @@ Hooks.on("init", () => {
         getFrameTiles: DisplayTileCreator.getFrameTiles,
         getDisplayTiles: DisplayTileCreator.getDisplayTiles,
         getTileById: DisplayTileCreator.getTileById,
-        filterTile: DisplayTileCreator.filterTile,
+        showTileBorder: DisplayTileCreator.showTileBorder,
+        selectTile: DisplayTileCreator.selectTile,
+        renderTileConfig: DisplayTileCreator.renderTileConfig,
     };
 
     // now that we've created our API, inform other modules we are ready

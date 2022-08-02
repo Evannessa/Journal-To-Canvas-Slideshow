@@ -17,7 +17,6 @@
 			{{/if}}>
 				<option value=""> -- none -- </option>
 				{{#each boundingTiles as |boundingTile|}}
-					{{log @root.linkedBoundingTile boundingTile boundingTile.id}}
 					<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" {{#if (eq @root.linkedBoundingTile boundingTile.id)}}
 						selected	
 					{{/if}}>
