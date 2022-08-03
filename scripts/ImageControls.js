@@ -141,6 +141,7 @@ function activateEventListeners(data) {
         .querySelectorAll(`.clickableImageContainer .displayTiles input[type="radio"]`);
 
     imgElement.addEventListener("click", (event) => onImageClick(event, data));
+    $(imgElement).on("mouseenter mouseleave", (event) => onImageHover(event, data));
 
     //for each display location button
     //add a click event listener
@@ -155,6 +156,31 @@ function activateEventListeners(data) {
         button.nextElementSibling.addEventListener("mouseenter", (event) => onTileButtonLabelHover(event, data));
         button.nextElementSibling.addEventListener("mouseleave", (event) => onTileButtonLabelHover(event, data, true));
     });
+}
+
+async function onImageHover(event, data) {
+    // event.stopPropagation();
+    // event.stopImmediatePropagation();
+    let { journalSheet, imgElement } = data;
+    let imageData = await getJournalImageFlagData(journalSheet.object, imgElement);
+    // do not continue this if we find no image data
+    if (!imageData) {
+        console.log("No image data found; Returning!");
+        return;
+    }
+    //we need to get the data for the tile
+    let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
+    let sceneID = game.scenes.viewed.id;
+
+    let tileID = imageData.scenesData.find((sceneData) => sceneData.sceneID === sceneID).selectedTileID;
+    let tile = await game.JTCS.getTileByID(tileID);
+    if (isLeave) {
+        console.log("Mouse leaving");
+        game.JTCS.hideTileIndicator(tile);
+    } else {
+        console.log("Mouse entering");
+        game.JTCS.showTileIndicator(tile);
+    }
 }
 
 async function onImageClick(event, data) {
@@ -192,7 +218,6 @@ function onLocationButtonClick(event, data) {
 async function onTileButtonLabelHover(event, data, isLeave = false) {
     let ourAPI = game.modules.get("journal-to-canvas-slideshow").api;
     let scene = game.scenes.viewed;
-    let { journalSheet, imgElement } = data;
     event.stopPropagation();
     event.stopImmediatePropagation();
     let tileID = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
@@ -203,13 +228,6 @@ async function onTileButtonLabelHover(event, data, isLeave = false) {
         ourAPI.showTileIndicator(tile);
     }
     // addFilterToTile(tileId, isLeave ? 0 : 10);
-}
-
-function addFilterToTile(tileId, strength = 10) {
-    let ourTile = game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
-    let filterBlur = new PIXI.filters.BlurFilter();
-    filterBlur.blur = strength;
-    ourTile._object.filters = [filterBlur];
 }
 
 function onTileRadioButtonChange(event, data) {

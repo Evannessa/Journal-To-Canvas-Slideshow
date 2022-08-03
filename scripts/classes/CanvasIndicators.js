@@ -20,15 +20,17 @@ export class CanvasIndicators {
         }
 
         let color = type === "frame" ? 0xff3300 : 0x2f2190;
+        let fillAlpha = type === "frame" ? 0.25 : 0.25;
+        let lineWidth = type === "frame" ? 5 : 15;
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
         let overlayGraphic = new PIXI.Graphics();
-        overlayGraphic.beginFill(color, 0.8);
-        overlayGraphic.lineStyle(5, color, 1);
+        overlayGraphic.beginFill(color, fillAlpha);
+        overlayGraphic.lineStyle(lineWidth, color, 1);
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
         tileObject.overlayContainer.addChild(overlayGraphic);
         overlayGraphic.zIndex = 2000;
-        overlayGraphic.alpha = 0.25;
+        // overlayGraphic.alpha = alpha;
     }
 
     static showTileIndicator(tileDocument) {

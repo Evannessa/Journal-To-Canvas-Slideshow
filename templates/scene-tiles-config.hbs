@@ -1,14 +1,19 @@
 <form autocomplete="off" class="flexcol">
     <div class="tilesInScene">
         <h3>Current Scene is: {{currentSceneName}}</h3>
+		{{! prettier-ignore }}
         <ul>
             <h3>Art Tiles</h3>
+			{{! prettier-ignore }}
             {{#each artTiles as |tile|}}
 				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="art" currentSceneName=@root.currentSceneName}}
+
             {{/each}}
         </ul>
+		{{! prettier-ignore }}
         <ul>
             <h3>Frame Tiles</h3>
+			{{! prettier-ignore }}
             {{#each frameTiles as |tile|}}
 				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame" currentSceneName=@root.currentSceneName}}
             {{/each}}
@@ -21,8 +26,10 @@
             <button data-action="convert" id="convertTiles" name="convertTiles">Convert Display and Bounding Tiles</button>
         </div>
     {{/if}}
-    <button data-action="createDisplayTile">Create Display Tile</button>
-    <button data-action="createFrameTile">Create Frame Tile</button>
+	<div class="form-group">
+    	<button data-action="createDisplayTile">Create Display Tile</button>
+    	<button data-action="createFrameTile">Create Frame Tile</button>
+	</div>
     <div class="form-group">
         <label class="checkbox-label" for="displayInScene">Display in Display Scene</label>
         <input

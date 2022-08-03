@@ -1,0 +1,58 @@
+$colors: (
+    secondary: (
+        darkest: hsl(221, 98%, 20%),
+        800: hsl(215, 98%, 30%),
+        700: hsl(210, 98%, 40%),
+        600: hsl(205, 98%, 52%),
+        base: hsl(199, 98%, 63%),
+        400: hsl(190, 99%, 70%),
+        300: hsl(185, 100%, 80%),
+        lightest: hsl(175, 100%, 90%),
+    ),
+    primary: (
+        darkest: hsl(240, 58%, 28%),
+        800: hsl(240, 58%, 30%),
+        700: hsl(240, 58%, 40%),
+        600: hsl(240, 60%, 50%),
+        base: hsl(240, 60%, 60%),
+        400: hsl(240, 60%, 68%),
+        300: hsl(240, 65%, 75%),
+        200: hsl(240, 75%, 85%),
+        lightest: hsl(240, 86%, 92%),
+    ),
+    neutral: (
+        darkest: hsl(240, 17%, 20%),
+        700: hsl(240, 17%, 30%),
+        base: hsl(240, 12%, 50%),
+        300: hsl(240, 17%, 70%),
+        lightest: hsl(240, 17%, 90%),
+    ),
+    glass: (
+        no-blur: hsla(0, 0%, 44%, 0.478),
+        blur: hsla(0, 0%, 44%, 0.267),
+        border: hsla(0, 0%, 100%, 0.198),
+        no-blur-dark: hsla(240, 11%, 14%, 0.769),
+        blur-dark: hsla(240, 11%, 14%, 0.161),
+        border-dark: hsla(240, 10%, 40%, 0.568),
+    ),
+    danger: (
+        dark: hsl(0, 89%, 20%),
+        base: hsl(0, 59%, 50%),
+        light: hsl(0, 99%, 70%),
+    ),
+    warning: (
+        dark: hsl(35, 100%, 30%),
+        base: hsl(35, 80%, 50%),
+        light: hsl(35, 100%, 65%),
+    ),
+    success: (
+        dark: hsl(100, 100%, 30%),
+        base: hsl(100, 100%, 50%),
+        light: hsl(100, 100%, 70%),
+    ),
+    info: (
+        dark: hsl(200, 100%, 25%),
+        base: hsl(200, 60%, 40%),
+        light: hsl(200, 80%, 60%),
+    ),
+);

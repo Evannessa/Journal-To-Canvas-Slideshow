@@ -7,12 +7,20 @@ Hooks.on("renderSlideshowConfig", (app) => {
     game.JTCSlideshowConfig = app;
     // console.log(app);
 });
+Hooks.on("journalToCanvasSlideshowReady", async (api) => {
+    game.JTCS = api;
+});
 
 Hooks.on("init", () => {
     loadTemplates(templates);
 });
 
 Hooks.on("canvasReady", async (canvas) => {
+    //re-render the tile config
+    if (game.JTCSlideshowConfig) {
+        game.JTCSlideshowConfig.render(true);
+    }
+
     //get tile data from scene flags
     let ourAPI = game.modules.get("journal-to-canvas-slideshow")?.api;
 
@@ -113,8 +121,8 @@ export class SlideshowConfig extends FormApplication {
         let ourScene = game.scenes.viewed;
         let shouldPromptConversion = false;
 
-        let artTileDataArray = await this.DTC.getSceneSlideshowTiles("art", true);
-        let frameTileDataArray = await this.DTC.getSceneSlideshowTiles("frame", true);
+        let artTileDataArray = await game.JTCS.getSceneSlideshowTiles("art", true);
+        let frameTileDataArray = await game.JTCS.getSceneSlideshowTiles("frame", true);
 
         let oldBoundingTile = await findBoundingTile(ourScene);
         let oldDisplayTile = await findDisplayTile(ourScene);
@@ -145,18 +153,19 @@ export class SlideshowConfig extends FormApplication {
                 convertToNewSystem();
                 break;
             case "createDisplayTile":
-                game.modules.get("journal-to-canvas-slideshow")?.api?.createDisplayTile();
+                game.JTCS.createDisplayTile();
                 break;
             case "createFrameTile":
-                game.modules.get("journal-to-canvas-slideshow")?.api?.createFrameTile();
+                game.JTCS.createFrameTile();
                 break;
             case "renderTileConfig":
-                await game.modules.get("journal-to-canvas-slideshow")?.api?.renderTileConfig(tileID);
+                await game.JTCS.renderTileConfig(tileID);
                 break;
             case "selectTile":
-                await game.modules.get("journal-to-canvas-slideshow")?.api?.selectTile(tileID);
+                await game.JTCS.selectTile(tileID);
                 break;
-            case "delete":
+            case "deleteTileData":
+                await game.JTCS.selectTile(tileID);
                 break;
         }
     }

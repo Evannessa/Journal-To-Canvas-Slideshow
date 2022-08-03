@@ -1,5 +1,6 @@
 {
-	"gotoSymbolStack.currentStackPosition": 0,
-	"gotoSymbolStack.filePositionInfo": [],
-	"gotoSymbolStack.maxStackPosition": 0
+    "gotoSymbolStack.currentStackPosition": 0,
+    "gotoSymbolStack.filePositionInfo": [],
+    "gotoSymbolStack.maxStackPosition": 0,
+    "cSpell.words": ["PIXI"]
 }

@@ -81,9 +81,9 @@ class ArtTileManager {
         }
         let newTile = await ArtTileManager.createTileInScene(false);
         if (newTile) {
-            let tileId = newTile[0].id;
+            let tileID = newTile[0].id;
             let defaultData = await ArtTileManager.getDefaultData(false, linkedFrameTileId);
-            await ArtTileManager.updateSceneTileFlags(defaultData, tileId);
+            await ArtTileManager.updateSceneTileFlags(defaultData, tileID);
         } else {
             ui.notifications.error("New display tile couldn't be created");
         }
@@ -91,10 +91,10 @@ class ArtTileManager {
     static async createFrameTile() {
         let newTile = await ArtTileManager.createTileInScene(true);
         if (newTile) {
-            let tileId = newTile[0].id;
-            if (tileId) {
+            let tileID = newTile[0].id;
+            if (tileID) {
                 let defaultData = await ArtTileManager.getDefaultData(true, "");
-                await ArtTileManager.updateSceneTileFlags(defaultData, tileId);
+                await ArtTileManager.updateSceneTileFlags(defaultData, tileID);
             }
         } else {
             ui.notifications.error("New frame tile couldn't be created");
@@ -231,18 +231,18 @@ class ArtTileManager {
 
     /**
      * Get the DisplayTile data
-     * @param {string} tileId - the id of the tile in scene we're looking to filter
+     * @param {string} tileID - the id of the tile in scene we're looking to filter
      * @param {Array} flaggedTiles - the flagged tiles
      * @returns the flag data
      */
-    static async getTileDataFromFlag(tileId, flaggedTiles) {
+    static async getTileDataFromFlag(tileID, flaggedTiles) {
         let defaultData = ArtTileManager.getDefaultData(false, "");
 
         if (!flaggedTiles) {
             return defaultData;
         }
 
-        let flaggedTile = flaggedTiles.find((tileData) => tileData.id === tileId);
+        let flaggedTile = flaggedTiles.find((tileData) => tileData.id === tileID);
 
         //if we find a tile
         if (flaggedTile) {
@@ -251,8 +251,8 @@ class ArtTileManager {
             return defaultData;
         }
     }
-    static async getTileByID(tileId, sceneID = "") {
-        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
+    static async getTileByID(tileID, sceneID = "") {
+        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (!tile) {
             ArtTileManager.displayTileNotFoundError(tileID);
         }
@@ -266,22 +266,22 @@ class ArtTileManager {
     /**
      * Update a tile in this scene with new data, or create a new one
      * @param {Object} displayData - the data we want to update with
-     * @param {String} tileId - the id of the tile we want to update
+     * @param {String} tileID - the id of the tile we want to update
      */
-    static async updateSceneTileFlags(displayData, tileId) {
-        if (!tileId) {
+    static async updateSceneTileFlags(displayData, tileID) {
+        if (!tileID) {
             return;
         }
         let currentScene = game.scenes.viewed;
         let tiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
 
-        if (tiles.find((tile) => tile.id === tileId)) {
+        if (tiles.find((tile) => tile.id === tileID)) {
             tiles = tiles.map((tileData) => {
                 // if the ids match, update the matching one with the new displayName
-                return tileData.id === tileId ? { ...tileData, ...displayData } : tileData; //else just return the original
+                return tileData.id === tileID ? { ...tileData, ...displayData } : tileData; //else just return the original
             });
         } else {
-            tiles.push({ id: tileId, ...displayData });
+            tiles.push({ id: tileID, ...displayData });
         }
 
         await ArtTileManager.updateAllSceneTileFlags(tiles);
