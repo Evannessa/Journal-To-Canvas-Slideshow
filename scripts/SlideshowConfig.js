@@ -12,6 +12,26 @@ Hooks.on("init", () => {
     loadTemplates(templates);
 });
 
+Hooks.on("canvasReady", async (canvas) => {
+    //get tile data from scene flags
+    let ourAPI = game.modules.get("journal-to-canvas-slideshow")?.api;
+
+    let artTileDataArray = await ourAPI.getSceneSlideshowTiles("", true);
+
+    //get the ids
+    let artTileIDs = artTileDataArray.map((tileData) => tileData.id);
+
+    game.scenes.viewed.tiles.forEach((tileDoc) => {
+        //get tile data that matches the tiledocument in the scene
+        let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+        if (foundTileData) {
+            let type = foundTileData.isBoundingTile ? "frame" : "art";
+            ourAPI.createTileIndicator(tileDoc, type);
+            ourAPI.hideTileIndicator(tileDoc, type);
+        }
+    });
+});
+
 export class SlideshowConfig extends FormApplication {
     constructor(data) {
         super();
@@ -30,6 +50,7 @@ export class SlideshowConfig extends FormApplication {
 
     async _handleHover(event) {
         let isLeave = event.type === "mouseleave" ? true : false;
+        let ourAPI = game.modules.get("journal-to-canvas-slideshow")?.api;
         // we want every hover over a tile to highlight the tiles it is linked to
         let hoveredElement = $(event.currentTarget);
         let type = hoveredElement.data().type;
@@ -54,14 +75,15 @@ export class SlideshowConfig extends FormApplication {
             return match;
         });
 
+        let tile = await ourAPI.getTileByID(id);
         if (isLeave) {
             hoveredElement.removeClass("accent");
             $(otherListItems).removeClass("accent");
-            await game.JTCSlideshowConfig.DTC.showTileBorder(id, 0);
+            ourAPI.hideTileIndicator(tile);
         } else {
             hoveredElement.addClass("accent");
             $(otherListItems).addClass("accent");
-            await game.JTCSlideshowConfig.DTC.showTileBorder(id, 10);
+            ourAPI.showTileIndicator(tile);
         }
     }
 
@@ -78,10 +100,12 @@ export class SlideshowConfig extends FormApplication {
             });
         });
     }
-    async checkIfTileExistsInScene(tileID) {
-        let tile = await game.modules.get("journal-to-canvas-slideshow")?.api.getTileById(tileID);
+    async checkIfTileExistsInScene(tileID, tileData) {
+        let tile = await game.modules.get("journal-to-canvas-slideshow")?.api.getTileByID(tileID);
         if (!tile) {
+            tileData.missing = true;
         }
+        return tileData;
     }
 
     async getData() {
@@ -89,8 +113,8 @@ export class SlideshowConfig extends FormApplication {
         let ourScene = game.scenes.viewed;
         let shouldPromptConversion = false;
 
-        let artTileDataArray = await this.DTC.getSceneSlideshowTiles("art");
-        let frameTileDataArray = await this.DTC.getSceneSlideshowTiles("frame");
+        let artTileDataArray = await this.DTC.getSceneSlideshowTiles("art", true);
+        let frameTileDataArray = await this.DTC.getSceneSlideshowTiles("frame", true);
 
         let oldBoundingTile = await findBoundingTile(ourScene);
         let oldDisplayTile = await findDisplayTile(ourScene);
@@ -131,15 +155,15 @@ export class SlideshowConfig extends FormApplication {
                 break;
             case "selectTile":
                 await game.modules.get("journal-to-canvas-slideshow")?.api?.selectTile(tileID);
-                // await game.JTCSlideshowConfig.DTC.selectTile(tileID);
+                break;
+            case "delete":
                 break;
         }
     }
     activateListeners(html) {
         super.activateListeners(html);
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
-        html.on("mouseenter", "li", this._handleHover.bind(this));
-        html.on("mouseleave", "li", this._handleHover.bind(this));
+        html.on("mouseenter mouseleave", `li:not([data-missing='true'])`, this._handleHover.bind(this));
     }
 
     async _updateObject(event, formData) {}

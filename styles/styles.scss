@@ -167,3 +167,33 @@
 .accent {
     color: var(--clr-pink-base);
 }
+
+.error {
+    &::before {
+        content: "⚠";
+        color: red;
+    }
+}
+
+[data-missing="true"] {
+    &:hover {
+        cursor: not-allowed;
+    }
+    color: red;
+    p:not(.error) {
+        opacity: 50%;
+        text-decoration: line-through;
+        &::before {
+            content: "⚠";
+            text-decoration: none;
+            color: red;
+            margin-right: 1rem;
+        }
+    }
+    button:disabled {
+        opacity: 50%;
+        &:hover {
+            cursor: not-allowed;
+        }
+    }
+}

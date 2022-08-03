@@ -28,7 +28,8 @@
         "scripts/SlideshowConfig.js",
         "scripts/HooksAndFlags.js",
         "scripts/DragDropIntoJournal.js",
-        "scripts/classes/DisplayTileCreator.js"
+        "scripts/classes/ArtTileManager.js",
+        "scripts/classes/CanvasIndicators.js"
     ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",

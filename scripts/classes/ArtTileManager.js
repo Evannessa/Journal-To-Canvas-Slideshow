@@ -1,4 +1,5 @@
-class DisplayTileCreator {
+import { CanvasIndicators } from "./CanvasIndicators.js";
+class ArtTileManager {
     static displayTileTexture = "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.webp";
     static frameTileTexture = "/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.webp";
 
@@ -8,7 +9,7 @@ class DisplayTileCreator {
     static async getDefaultData(isBoundingTile, linkedBoundingTile = "") {
         //determine its default name based on whether it's a bounding or display tile
         let displayName = isBoundingTile ? "frameTile" : "displayTile";
-        displayName = await DisplayTileCreator.incrementTileDisplayName(displayName);
+        displayName = await ArtTileManager.incrementTileDisplayName(displayName);
         //increment it if one already exists with that name
         return {
             displayName: `${displayName}`,
@@ -19,7 +20,7 @@ class DisplayTileCreator {
 
     static async incrementTileDisplayName(name) {
         let finalName = name;
-        let tileDataArray = await DisplayTileCreator.getSceneSlideshowTiles();
+        let tileDataArray = await ArtTileManager.getSceneSlideshowTiles();
         let conflictingTile = tileDataArray.find((tileData) => {
             return tileData.displayName.includes(name);
         });
@@ -38,9 +39,9 @@ class DisplayTileCreator {
 
     static async createTileInScene(isFrameTile) {
         let ourScene = game.scenes.viewed;
-        let imgPath = isFrameTile ? DisplayTileCreator.frameTileTexture : DisplayTileCreator.displayTileTexture;
+        let imgPath = isFrameTile ? ArtTileManager.frameTileTexture : ArtTileManager.displayTileTexture;
         const tex = await loadTexture(imgPath);
-        let dimensionObject = DisplayTileCreator.calculateAspectRatioFit(
+        let dimensionObject = ArtTileManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
             ourScene.data.width,
@@ -60,10 +61,10 @@ class DisplayTileCreator {
 
     static async createOrFindDefaultFrameTile() {
         let frameTile;
-        let tileDataArray = (await DisplayTileCreator.getSceneSlideshowTiles()) || [];
+        let tileDataArray = (await ArtTileManager.getSceneSlideshowTiles()) || [];
         if (tileDataArray.length === 0) {
             ui.notifications.warn("No frame tile detected in scene. Creating new frame tile alongside display tile");
-            frameTile = await DisplayTileCreator.createFrameTile();
+            frameTile = await ArtTileManager.createFrameTile();
         } else {
             ui.notifications.warn(
                 "No frame tile provided to when creating display tile. Linking display tile to first frame tile in scene"
@@ -76,24 +77,24 @@ class DisplayTileCreator {
     static async createDisplayTile(_linkedFrameTileId) {
         let linkedFrameTileId = _linkedFrameTileId;
         if (!linkedFrameTileId) {
-            linkedFrameTileId = await DisplayTileCreator.createOrFindDefaultFrameTile();
+            linkedFrameTileId = await ArtTileManager.createOrFindDefaultFrameTile();
         }
-        let newTile = await DisplayTileCreator.createTileInScene(false);
+        let newTile = await ArtTileManager.createTileInScene(false);
         if (newTile) {
             let tileId = newTile[0].id;
-            let defaultData = await DisplayTileCreator.getDefaultData(false, linkedFrameTileId);
-            await DisplayTileCreator.updateSceneTileFlags(defaultData, tileId);
+            let defaultData = await ArtTileManager.getDefaultData(false, linkedFrameTileId);
+            await ArtTileManager.updateSceneTileFlags(defaultData, tileId);
         } else {
             ui.notifications.error("New display tile couldn't be created");
         }
     }
     static async createFrameTile() {
-        let newTile = await DisplayTileCreator.createTileInScene(true);
+        let newTile = await ArtTileManager.createTileInScene(true);
         if (newTile) {
             let tileId = newTile[0].id;
             if (tileId) {
-                let defaultData = await DisplayTileCreator.getDefaultData(true, "");
-                await DisplayTileCreator.updateSceneTileFlags(defaultData, tileId);
+                let defaultData = await ArtTileManager.getDefaultData(true, "");
+                await ArtTileManager.updateSceneTileFlags(defaultData, tileId);
             }
         } else {
             ui.notifications.error("New frame tile couldn't be created");
@@ -157,14 +158,27 @@ class DisplayTileCreator {
      * get tiles that have been stored by this module in a flag on this scene
      * @returns array of display tile data stored in "slideshowTiles" tag
      */
-    static async getSceneSlideshowTiles(type = "") {
+    static async getSceneSlideshowTiles(type = "", shouldCheckIfExists = false) {
         let currentScene = game.scenes.viewed;
         let flaggedTiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
-        if (type === "frame") {
-            return DisplayTileCreator.getFrameTiles(flaggedTiles);
-        } else if (type === "art") {
-            return DisplayTileCreator.getDisplayTiles(flaggedTiles);
+
+        //check if the tile exists in the scene, and add a "missing" element if it does
+        if (shouldCheckIfExists) {
+            //get the ids of all the tiles in the scene
+            let sceneTileIDs = currentScene.tiles.map((tile) => tile.id);
+
+            // if our tile data's id isn't included in the ids of tiles in the scene, add a missing property
+            flaggedTiles = flaggedTiles.map((tileData) =>
+                !sceneTileIDs.includes(tileData.id) ? { ...tileData, missing: true } : tileData
+            );
         }
+
+        if (type === "frame") {
+            return ArtTileManager.getFrameTiles(flaggedTiles);
+        } else if (type === "art") {
+            return ArtTileManager.getDisplayTiles(flaggedTiles);
+        }
+
         return flaggedTiles;
     }
 
@@ -189,7 +203,7 @@ class DisplayTileCreator {
         if (tile) {
             await tile.sheet.render(true);
         } else {
-            DisplayTileCreator.displayTileNotFoundError(tileID);
+            ArtTileManager.displayTileNotFoundError(tileID);
             ui.notifications.error("JTCS can't find tile in scene with ID " + tileID);
         }
     }
@@ -201,7 +215,7 @@ class DisplayTileCreator {
             filterBlur.blur = strength;
             tile._object.filters = [filterBlur];
         } else {
-            DisplayTileCreator.displayTileNotFoundError(tileID);
+            ArtTileManager.displayTileNotFoundError(tileID);
         }
     }
     static selectTile(tileID, sceneID = "") {
@@ -211,7 +225,7 @@ class DisplayTileCreator {
                 releaseOthers: false,
             });
         } else {
-            DisplayTileCreator.displayTileNotFoundError(tileID);
+            ArtTileManager.displayTileNotFoundError(tileID);
         }
     }
 
@@ -222,7 +236,7 @@ class DisplayTileCreator {
      * @returns the flag data
      */
     static async getTileDataFromFlag(tileId, flaggedTiles) {
-        let defaultData = DisplayTileCreator.getDefaultData(false, "");
+        let defaultData = ArtTileManager.getDefaultData(false, "");
 
         if (!flaggedTiles) {
             return defaultData;
@@ -237,10 +251,10 @@ class DisplayTileCreator {
             return defaultData;
         }
     }
-    static async getTileById(tileId, sceneID = "") {
+    static async getTileByID(tileId, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileId);
         if (!tile) {
-            DisplayTileCreator.displayTileNotFoundError(tileID);
+            ArtTileManager.displayTileNotFoundError(tileID);
         }
         return tile;
     }
@@ -255,7 +269,6 @@ class DisplayTileCreator {
      * @param {String} tileId - the id of the tile we want to update
      */
     static async updateSceneTileFlags(displayData, tileId) {
-        console.log(displayData, tileId);
         if (!tileId) {
             return;
         }
@@ -270,7 +283,20 @@ class DisplayTileCreator {
         } else {
             tiles.push({ id: tileId, ...displayData });
         }
+
+        await ArtTileManager.updateAllSceneTileFlags(tiles);
+        // await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
+    }
+
+    static async updateAllSceneTileFlags(tiles) {
+        let currentScene = game.scenes.viewed;
         await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
+    }
+    static async deleteSceneTileData(tileID) {
+        let tiles = await ArtTileManager.getSceneSlideshowTiles();
+        //filter out the tile that matches this
+        tiles = tiles.filter((tileData) => tileData.id !== tileID);
+        await ArtTileManager.updateAllSceneTileFlags(tiles);
     }
 }
 
@@ -280,16 +306,22 @@ Hooks.on("init", () => {
 
     // once set up, we create our API object
     game.modules.get("journal-to-canvas-slideshow").api = {
-        createDisplayTile: DisplayTileCreator.createDisplayTile,
-        createFrameTile: DisplayTileCreator.createFrameTile,
-        getSceneSlideshowTiles: DisplayTileCreator.getSceneSlideshowTiles,
-        getDefaultData: DisplayTileCreator.getDefaultData,
-        getFrameTiles: DisplayTileCreator.getFrameTiles,
-        getDisplayTiles: DisplayTileCreator.getDisplayTiles,
-        getTileById: DisplayTileCreator.getTileById,
-        showTileBorder: DisplayTileCreator.showTileBorder,
-        selectTile: DisplayTileCreator.selectTile,
-        renderTileConfig: DisplayTileCreator.renderTileConfig,
+        createDisplayTile: ArtTileManager.createDisplayTile,
+        createFrameTile: ArtTileManager.createFrameTile,
+        getSceneSlideshowTiles: ArtTileManager.getSceneSlideshowTiles,
+        getDefaultData: ArtTileManager.getDefaultData,
+        getFrameTiles: ArtTileManager.getFrameTiles,
+        getDisplayTiles: ArtTileManager.getDisplayTiles,
+        getTileByID: ArtTileManager.getTileByID,
+        showTileBorder: ArtTileManager.showTileBorder,
+        selectTile: ArtTileManager.selectTile,
+        renderTileConfig: ArtTileManager.renderTileConfig,
+        updateSceneTileFlags: ArtTileManager.updateSceneTileFlags,
+        deleteSceneTileData: ArtTileManager.deleteSceneTileData,
+        createTileIndicator: CanvasIndicators.createTileIndicator,
+        deleteTileIndicator: CanvasIndicators.deleteTileIndicator,
+        hideTileIndicator: CanvasIndicators.hideTileIndicator,
+        showTileIndicator: CanvasIndicators.showTileIndicator,
     };
 
     // now that we've created our API, inform other modules we are ready

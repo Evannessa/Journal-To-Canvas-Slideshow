@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --clr-purple-dark: hsl(268, 61%, 29%);
   --clr-purple-base: #7831ca;
@@ -165,4 +166,32 @@
 
 .accent {
   color: var(--clr-pink-base);
+}
+
+.error::before {
+  content: "⚠";
+  color: red;
+}
+
+[data-missing=true] {
+  color: red;
+}
+[data-missing=true]:hover {
+  cursor: not-allowed;
+}
+[data-missing=true] p:not(.error) {
+  opacity: 50%;
+  text-decoration: line-through;
+}
+[data-missing=true] p:not(.error)::before {
+  content: "⚠";
+  text-decoration: none;
+  color: red;
+  margin-right: 1rem;
+}
+[data-missing=true] button:disabled {
+  opacity: 50%;
+}
+[data-missing=true] button:disabled:hover {
+  cursor: not-allowed;
 }/*# sourceMappingURL=styles.css.map */

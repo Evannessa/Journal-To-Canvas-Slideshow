@@ -4,13 +4,13 @@
         <ul>
             <h3>Art Tiles</h3>
             {{#each artTiles as |tile|}}
-				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="art"}}
+				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="art" currentSceneName=@root.currentSceneName}}
             {{/each}}
         </ul>
         <ul>
             <h3>Frame Tiles</h3>
             {{#each frameTiles as |tile|}}
-				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame"}}
+				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame" currentSceneName=@root.currentSceneName}}
             {{/each}}
         </ul>
     </div>

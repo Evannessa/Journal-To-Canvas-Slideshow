@@ -190,12 +190,19 @@ function onLocationButtonClick(event, data) {
 }
 
 async function onTileButtonLabelHover(event, data, isLeave = false) {
+    let ourAPI = game.modules.get("journal-to-canvas-slideshow").api;
     let scene = game.scenes.viewed;
     let { journalSheet, imgElement } = data;
     event.stopPropagation();
     event.stopImmediatePropagation();
-    let tileId = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
-    addFilterToTile(tileId, isLeave ? 0 : 10);
+    let tileID = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
+    let tile = await ourAPI.getTileByID(tileID);
+    if (isLeave) {
+        ourAPI.hideTileIndicator(tile);
+    } else {
+        ourAPI.showTileIndicator(tile);
+    }
+    // addFilterToTile(tileId, isLeave ? 0 : 10);
 }
 
 function addFilterToTile(tileId, strength = 10) {
