@@ -1,17 +1,29 @@
 <div class="clickableImageControls" data-image="{{imgPath}}">
 	
-	<div class="displayLocations">
+	<ul class="displayLocations | flex-column gap-small">
 		{{#each displayLocations as |location|}}
-		<button id="{{location.name}}" data-action="{{location.name}}" title="{{location.tooltip}}">
-		<i class="{{location.icon}}"></i>
-	  	</button>
+		<li class="button-container {{location.additionalParentClass}}">
+			<button class="floating-control square {{additionalClass}}" id="{{location.name}}" data-action="{{location.name}}" title="{{location.tooltip}}">
+				<i class="{{location.icon}}"></i>
+	  		</button>
+		{{#if location.multi}}
+			<div class="nested-buttons hover-reveal-right-child">
+			{{#each location.childButtons}}
+				<button class="floating-control" data-action="{{this.name}}" title="{{this.tooltip}}">
+					<i class="{{this.icon}}"></i>
+				</button>
+			{{/each}}
+		</div>
+		{{/if}}
+		</li>
 	  	{{/each}}
-	</div>
-  <fieldset class="displayTiles">
-	<legend>Display tiles in scene <span class="accent">"{{currentSceneName}}"</span></legend>
+	</ul>
+	<div class="flex-column">
+  <fieldset class="displayTiles | flex-row rounded">
     {{#each displayTiles as |tileData|}}
       <input
         type="radio"
+		class="hidden-input"
         name="{{concat "selectedDisplayTile" @root.imgPath}}"
         data-display-name="{{tileData.tile.displayName}}"
 		data-hover-action="highlight-tile"
@@ -23,9 +35,11 @@
 			{{/if}}
 		{{/if}}
       />
-      <label for="{{tileData.randomID}}">
+      <label class="flex-row" for="{{tileData.randomID}}" data-title="">
         {{tileData.tile.displayName}}
+		{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString (ternary (eq @root.selectedTileID tileData.tile.id) "This image will be displayed on the selected tile" "Click to display this image on tile") "<span>" tileData.tile.displayName "</span>" "in scene" "<span>" @root.currentSceneName "</span>")}}
       </label>
     {{/each}}
   </fieldset>
+</div>
 </div>

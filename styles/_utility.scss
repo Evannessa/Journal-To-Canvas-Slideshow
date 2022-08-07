@@ -1,7 +1,25 @@
-button i {
-    display: grid;
-    place-content: center;
-    margin: 0;
+@use "variables" as *;
+:root {
+    //foundry colors
+
+    --bg-color-hover: var(--color-border-dark-primary);
+    --bg-color: hsla(0, 0%, 20%, 0.9);
+    --bg-color-toggle: var(--foundry-purple-background);
+    --bg-color-toggle-hover: var(--foundry-purple-background-hover);
+    --border-color-toggle: var(--foundry-purple-border);
+    --shadow-color-toggle-hover: var(--foundry-purple-shadow-hover);
+    --color-text-dark: var(--color-text-dark-primary);
+    --color-text-light: var(--color-text-light-0);
+    --color-text-light-hover: var(--color-text-light-highlight);
+    --shadow-color: var(--color-shadow-dark);
+    --shadow-color-hover: var(--color-shadow-highlight);
+    --border-color: var(--color-border-dark);
+    --border-color-hover: var(--color-border-highlight);
+    --border-color-hover-alt: var(--color-border-highlight-alt);
+    --accent-color-1: var(--foundry-purple-shadow-hover, #9b8dff);
+    --accent-color-2: var(--color-border-highlight);
+    &.JTCS {
+    }
 }
 
 .img-button {
@@ -27,6 +45,98 @@ button i {
             height: 100%;
             background-image: url("/modules/hud-and-trackers/images/Button Badges/Frames & Borders/circle-frame.webp");
         }
+    }
+}
+.toggle,
+.toggle.active {
+    --bg-color: var(--bg-color-toggle);
+    --shadow-color-hover: var(--shadow-color-toggle-hover);
+    --border-color-hover: var(--border-color-toggle);
+    &:focus {
+        --color-shadow-primary: #3a00ae;
+    }
+}
+
+.button-container {
+    position: relative;
+    list-style-type: none;
+    .nested-buttons {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        button {
+            white-space: nowrap;
+        }
+    }
+}
+
+.floating-control {
+    color: var(--color-text-light);
+    background-color: var(--bg-color);
+    box-shadow: 0 0 10px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    i {
+        margin: 0;
+    }
+    &:hover,
+    &.active {
+        cursor: pointer;
+        box-shadow: 0 0 10px var(--shadow-color-hover);
+        border: 1px solid var(--border-color-hover);
+        color: var(--color-text-light-hover);
+    }
+}
+
+input[type="radio"].hidden-input {
+    transform: scale(0);
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    & + label {
+        transform: scale(1);
+        color: var(--color-text-light);
+        background-color: var(--bg-color);
+        box-shadow: 0 0 10px transparent;
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 0.5rem;
+        overflow: visible;
+        width: fit-content;
+        width: max-content;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 150ms ease-out transform 150ms ease-out;
+        &:hover {
+            cursor: pointer;
+            border: 1px solid var(--border-color-hover);
+            color: var(--color-text-light-hover);
+            box-shadow: 0 0 10px var(--shadow-color-hover);
+        }
+    }
+    &:checked + label {
+        transform: scale(1.04);
+        z-index: 1;
+        // --bg-color-hover: var(--color-deep-purple-600);
+        color: var(--color-text-light-hover);
+        box-shadow: 0px 0px 10px var(--shadow-color-hover);
+        border: 1px solid var(--color-border-highlight-alt);
+        transition: background-color 250ms ease-out;
+        &:hover {
+            color: var(--shadow-color-hover);
+        }
+        .tooltip {
+            box-shadow: 0px 0px 10px var(--shadow-color-hover);
+            border: 1px solid var(--color-border-highlight-alt);
+        }
+        // &:not(:hover) {
+        //     // background-color: var(--color-deep-purple-700);
+        // }
     }
 }
 
@@ -78,9 +188,62 @@ button i {
         // transition: transform 150ms ease-out;
     }
 }
+fieldset.toggle-button-group {
+    box-shadow: var(--box-shadow);
+    pointer-events: auto;
+    * {
+        pointer-events: auto;
+    }
+    legend {
+        background-color: inherit;
+        padding: 0.5rem;
+    }
+    display: flex;
+    flex-direction: row;
+    border: none;
+    color: currentColor;
+    padding: 0rem 0rem;
+    min-width: 50%;
+    label:first-of-type {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    label:last-of-type {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+}
+
 .interactive {
     cursor: pointer;
 }
+
+.fade {
+    background: rgba(255, 255, 255, var(--journal-fade, 50%)) !important;
+}
+.fade-all {
+    opacity: var(--journal-fade, 50%);
+}
+.padding-small {
+    padding: 0.25rem 0.5rem;
+}
+
+.bg-dark {
+    background-color: var(--bg-color);
+    color: var(--color-text-light);
+}
+
+.bg-primary {
+    background-color: var(--bg-color);
+}
+
+.bg-hover {
+    background-color: var(--bg-color-hover);
+}
+.bg-hover-toggle {
+    background-color: var(--bg-color-toggle-hover);
+}
+
 .bg-none {
     background: none;
     background-color: transparent;
@@ -267,6 +430,38 @@ button i {
         list-style-type: none;
     }
 }
+[data-title] {
+    position: relative;
+    .tooltip {
+        font-size: var(--font-size-12);
+        transition: opacity 320ms ease-out;
+        transition-delay: 500ms;
+        pointer-events: none;
+        opacity: 0%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: calc(100% + 10ch);
+        max-width: 210%;
+        span {
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        span:first-of-type {
+            color: var(--accent-color-1);
+        }
+        span:last-of-type {
+            color: var(--accent-color-2);
+        }
+
+        // max-width: 200%;
+    }
+    &:hover {
+        .tooltip {
+            opacity: 100%;
+        }
+    }
+}
 
 .header {
     display: flex;
@@ -277,7 +472,6 @@ button i {
 
 .config-wrapper {
     display: flex;
-    background-color: $jet-5;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -324,6 +518,17 @@ button i {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.gap-small {
+    gap: 0.25rem;
+}
+
+.gap-medium {
+    gap: 0.5rem;
+}
+.gap-large {
+    gap: 1rem;
 }
 
 .chip-span {
@@ -420,6 +625,9 @@ button i {
 
 .cap-rounded {
     border-radius: 999px;
+}
+.single-sharp-corner {
+    border-top-left-radius: 0;
 }
 
 // #region Colors

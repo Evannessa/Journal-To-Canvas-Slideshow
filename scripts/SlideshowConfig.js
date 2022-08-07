@@ -1,7 +1,11 @@
 "use strict";
 import { convertToNewSystem } from "./HooksAndFlags.js";
 
-const templates = [`modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs`];
+const templates = [
+    `modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs`,
+    "modules/journal-to-canvas-slideshow/templates/tooltip.hbs",
+    "modules/journal-to-canvas-slideshow/templates/control-button.hbs",
+];
 
 Hooks.on("renderSlideshowConfig", (app) => {
     game.JTCSlideshowConfig = app;
@@ -13,6 +17,20 @@ Hooks.on("journalToCanvasSlideshowReady", async (api) => {
 
 Hooks.on("init", () => {
     loadTemplates(templates);
+});
+Hooks.on("createTile", async (tile) => {
+    console.log("Tile was created", tile, tile.data);
+    let tileID = tile.id;
+    let sceneTiles = await game.JTCS.getSceneSlideshowTiles("", true);
+    let foundTileData = await game.JTCS.getTileDataFromFlag(tileID, sceneTiles);
+
+    if (foundTileData) {
+        let type = foundTileData.isBoundingTile ? "frame" : "art";
+        game.JTCS.createTileIndicator(tile, type);
+        game.JTCS.hideTileIndicator(tile, type);
+    } else {
+        console.log("Couldn't find tile");
+    }
 });
 
 Hooks.on("canvasReady", async (canvas) => {
@@ -165,7 +183,7 @@ export class SlideshowConfig extends FormApplication {
                 await game.JTCS.selectTile(tileID);
                 break;
             case "deleteTileData":
-                await game.JTCS.selectTile(tileID);
+                await game.JTCS.deleteSceneTileData(tileID);
                 break;
         }
     }

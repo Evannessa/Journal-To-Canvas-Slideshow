@@ -13,5 +13,5 @@
 	</p>
 	{{/if}}
     <button data-action="renderTileConfig" {{#if this.missing}}disabled{{/if}} title="render this tile's config"><i class="fas fa-cog"></i></button>
-   <button class="danger" data-action="deleteTileData" title="delete this tile's data"><i class="fas fa-cog"></i></button>
+   <button class="danger" data-action="deleteTileData" title="delete this {{this.type}} tile's data? (will not delete the tile object itself)"><i class="fas fa-trash"></i></button>
 </li>

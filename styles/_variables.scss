@@ -1,1 +1,16 @@
 @use "colors" as *;
+:root {
+    --foundry-dark-gray: rgba(52, 52, 52, 0.85);
+    --foundry-purple-background-hover: rgba(60, 0, 120, 0.5);
+    --foundry-purple-shadow-hover: #9b8dff;
+
+    --foundry-purple-border: #3b1893;
+    --foundry-purple-background: rgba(30, 0, 60, 0.5);
+    --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
+
+    @each $color, $shades in $colors {
+        @each $shade, $value in $shades {
+            --color-#{$color}-#{$shade}: #{$value};
+        }
+    }
+}

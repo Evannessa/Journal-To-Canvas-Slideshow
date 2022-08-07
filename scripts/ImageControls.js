@@ -1,5 +1,24 @@
 import { getSlideshowFlags } from "./HooksAndFlags.js";
 import { displayImageInScene, displayImageInWindow, getImageSource } from "./ClickImageInJournal.js";
+import { log } from "./debug-mode.js";
+
+// const normalizedPosts = posts.reduce((data, item) => {
+//   data[item.id] = item
+//   return data
+// }, {})
+
+// const postIds = posts.map(post => post.id)
+
+// const state = { posts: { byId: normalizedPosts, allIds: postIds } }
+
+Handlebars.registerHelper("combineToString", function (...args) {
+    console.log(args.pop());
+    let sentence = args.join(" ");
+    return new Handlebars.SafeString(sentence);
+});
+Handlebars.registerHelper("ternary", function (test, yes, no) {
+    return test ? yes : no;
+});
 
 /**
  * Implement this factory function to clean things up
@@ -19,7 +38,13 @@ Hooks.on("canvasReady", (canvas) => {
     let renderedJournalSheets = Object.values(window.ui.windows).filter(
         (obj) => obj.document?.documentName === "JournalEntry" && obj.editors?.content.active === false //?editors.content.active === false ensures the editor is not being actively edited before re-rendering the entry
     );
-    renderedJournalSheets.forEach((sheet) => sheet.render(true));
+    renderedJournalSheets.forEach((sheet) => {
+        let windowContent = sheet.element[0].querySelector(".window-content");
+        if (windowContent.classList.contains("fade")) {
+            windowContent.classList.remove("fade");
+        }
+        sheet.render(true);
+    });
 });
 
 //changed, options, userId
@@ -38,6 +63,7 @@ Hooks.on("updateJournalEntry", (app, changed, options, userId) => {
 
 Hooks.once("init", () => {
     loadTemplates([`modules/journal-to-canvas-slideshow/templates/image-controls.hbs`]);
+    // displayLocations["showToAll"].childButtons = game.users?.contents;
 });
 
 let displayLocations = [
@@ -45,6 +71,11 @@ let displayLocations = [
         name: "window",
         icon: "fas fa-external-link-alt",
         tooltip: "display image in pop-out window",
+    },
+    {
+        name: "journalEntry",
+        icon: "fas fa-book-open",
+        tooltip: "display image in a dedicated journal entry",
     },
     {
         name: "displayScene",
@@ -56,12 +87,32 @@ let displayLocations = [
         icon: "fas fa-vector-square",
         tooltip: "display image in any scene with a frame tile and display tile",
     },
+    // {
+    //     name: "showToAll",
+    //     icon: "fas fa-users",
+    //     tooltip: "show to all users",
+    //     additionalClass: "toggle push-down",
+    //     additionalParentClass: "hover-reveal-right",
+    //     multi: true,
+    // },
     {
-        name: "journalEntry",
-        icon: "fas fa-book-open",
-        tooltip: "display image in a dedicated journal entry",
+        name: "fadeJournal",
+        icon: "fas fa-eye-slash",
+        tooltip: "Fade journal background to see canvas",
+        additionalClass: "toggle push-down",
+        additionalParentClass: "hover-reveal-right",
+        multi: true,
+        childButtons: [
+            {
+                name: "fadeContent",
+                icon: "far fa-print-slash",
+                tooltip: "Fade journal AND all its content",
+                additionalClass: "toggle",
+            },
+        ],
     },
 ];
+
 /**
  * Store image data in flags
  * @param {App} journalSheet - the journal sheet whose images we're storing in the flag
@@ -86,6 +137,11 @@ async function assignImageFlags(journalSheet, imgElement, newImgData) {
     await journalEntry.setFlag("journal-to-canvas-slideshow", "clickableImages", clickableImages);
 }
 
+function setJournalFadeOpacity(journalSheet) {
+    let opacityValue = game.settings.get("journal-to-canvas-slideshow", "journalFadeOpacity");
+    journalSheet.element[0].style.setProperty("--journal-fade", opacityValue + "%");
+}
+
 /**
  *  When the journal sheet renders, we're going to add controls over each image
  * @param {HTMLElement} imgElement - the image HTML element
@@ -93,6 +149,8 @@ async function assignImageFlags(journalSheet, imgElement, newImgData) {
  */
 export async function injectImageControls(imgElement, journalSheet) {
     let flaggedTiles = await getSlideshowFlags();
+    setJournalFadeOpacity(journalSheet);
+
     let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
 
     let imageName = convertImageSourceToID(imgElement);
@@ -113,11 +171,16 @@ export async function injectImageControls(imgElement, journalSheet) {
         };
     });
 
+    let users = game.users.contents;
+
+    // displayLocations["showToAll"].childButtons = users;
+
     let renderHtml = await renderTemplate(template, {
         currentSceneName: game.scenes.viewed.name,
         displayLocations: displayLocations,
         displayTiles: displayTiles,
         imgPath: imageName,
+        users: users,
         ...imageFlagData,
     });
     $(imgElement).parent().addClass("clickableImageContainer");
@@ -165,20 +228,22 @@ async function onImageHover(event, data) {
     let imageData = await getJournalImageFlagData(journalSheet.object, imgElement);
     // do not continue this if we find no image data
     if (!imageData) {
-        console.log("No image data found; Returning!");
+        log(false, "No image data found; Returning!");
         return;
     }
     //we need to get the data for the tile
     let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
     let sceneID = game.scenes.viewed.id;
 
-    let tileID = imageData.scenesData.find((sceneData) => sceneData.sceneID === sceneID).selectedTileID;
+    let tileID = imageData.scenesData.find((sceneData) => sceneData.sceneID === sceneID)?.selectedTileID;
+    if (!tileID) {
+        log(false, "No scene data found; Returning!");
+        return;
+    }
     let tile = await game.JTCS.getTileByID(tileID);
     if (isLeave) {
-        console.log("Mouse leaving");
         game.JTCS.hideTileIndicator(tile);
     } else {
-        console.log("Mouse entering");
         game.JTCS.showTileIndicator(tile);
     }
 }
@@ -196,6 +261,8 @@ async function onImageClick(event, data) {
     }
 }
 
+function checkHasFadeClass(element) {}
+
 function onLocationButtonClick(event, data) {
     let { journalSheet, imgElement } = data;
     event.stopPropagation();
@@ -203,6 +270,28 @@ function onLocationButtonClick(event, data) {
 
     //get the action
     let location = event.currentTarget.dataset.action;
+
+    if (location === "fadeJournal" || location === "fadeContent") {
+        event.preventDefault();
+        let windowContent = event.currentTarget.closest(".window-content");
+        let fadeButtons = windowContent.querySelectorAll(`[data-action="fadeJournal"]`, `[data-action="fadeContent"]`);
+        console.log(Array.from(fadeButtons));
+        // let className = location === "fadeContent" ? "fadeAll" : "fade";
+        let classNames = ["fade"];
+        if (location === "fadeContent") {
+            classNames.push("fade-all");
+        }
+
+        if (windowContent.classList.contains("fade")) {
+            windowContent.classList.remove("fade", "fade-all");
+            fadeButtons.forEach((btn) => btn.classList.remove("active"));
+        } else {
+            windowContent.classList.add(...classNames);
+            fadeButtons.forEach((btn) => btn.classList.add("active"));
+        }
+        return;
+    }
+
     //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
     if (event.ctrlKey) {
         //if the control key was also pressed

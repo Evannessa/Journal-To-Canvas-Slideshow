@@ -1,4 +1,5 @@
 export const registerSettings = function () {
+    // function register(moduleName="journal-to-canvas-slideshow", settingName, )
     game.settings.register("journal-to-canvas-slideshow", "automatic", {
         name: "Automatic",
         hint: "Should every journal entry",
@@ -6,6 +7,36 @@ export const registerSettings = function () {
         config: true,
         type: Boolean,
         default: true,
+    });
+    game.settings.register("journal-to-canvas-slideshow", "frameIndicatorColor", {
+        name: "canvasIndicatorColor",
+    });
+    game.settings.register("journal-to-canvas-slideshow", "journalFadeOpacity", {
+        name: "Journal Fade Opacity",
+        hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
+        scope: "client",
+        config: true,
+        type: Number,
+        default: 50,
+        range: {
+            // range turns the UI input into a slider input
+            min: 0,
+            max: 100,
+            step: 10,
+        },
+    });
+    game.settings.register("journal-to-canvas-slideshow", "colorScheme", {
+        name: "Color Scheme",
+        hint: "Which color scheme would you like to use?",
+        scope: "client",
+        config: true,
+        type: String,
+        choices: {
+            foundryDefault: "Default Foundry Color Scheme",
+            jtcsDefault: "A Bluish Dark Theme",
+            // custom: "Pick your own colors",
+        },
+        default: "foundryDefault",
     });
 
     game.settings.register("journal-to-canvas-slideshow", "imageSaveLocation", {

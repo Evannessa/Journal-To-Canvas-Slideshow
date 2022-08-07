@@ -1,6 +1,20 @@
 Hooks.once("init", () => {
     loadTemplates([`modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs`]);
 });
+Hooks.on("createTile", () => {
+    console.log("tile created");
+
+    if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+        console.log("Shoud re-render");
+        game.JTCSlideshowConfig.render(false);
+    }
+});
+
+Hooks.on("deleteTile", () => {
+    if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+        game.JTCSlideshowConfig.render(true);
+    }
+});
 
 Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;

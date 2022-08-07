@@ -1,6 +1,7 @@
 export class CanvasIndicators {
     static createTileIndicator(tileDocument, type = "art") {
         if (!tileDocument) {
+            ui.notifications.warn("Tile document not supplied.");
             return;
         }
         let tileDimensions = {
@@ -35,17 +36,28 @@ export class CanvasIndicators {
 
     static showTileIndicator(tileDocument) {
         if (!tileDocument) {
+            console.warn("Tile document not supplied.");
             return;
         }
         let tileObject = tileDocument.object;
-        tileObject.overlayContainer.alpha = 1;
+        if (tileObject.overlayContainer) {
+            tileObject.overlayContainer.alpha = 1;
+        } else {
+            console.error("No overlay container found");
+        }
     }
     static hideTileIndicator(tileDocument) {
         if (!tileDocument) {
+            console.error("No tile document supplied");
             return;
         }
         let tileObject = tileDocument.object;
-        tileObject.overlayContainer.alpha = 0;
+
+        if (tileObject.overlayContainer) {
+            tileObject.overlayContainer.alpha = 0;
+        } else {
+            console.error("No overlay container found");
+        }
     }
     static deleteTileIndicator(tileDocument) {}
 }

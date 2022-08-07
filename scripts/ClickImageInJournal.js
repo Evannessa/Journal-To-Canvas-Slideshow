@@ -144,19 +144,20 @@ function checkSettingEquals(settingName, compareToValue) {
 }
 
 export async function createDisplayTile(ourScene) {
-    const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
-    let dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
-    let newTile;
-    newTile = await ourScene.createEmbeddedDocuments("Tile", [
-        {
-            img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
-            width: dimensionObject.width,
-            height: dimensionObject.height,
-            x: 0,
-            y: ourScene.data.height / 2 - dimensionObject.height / 2,
-        },
-    ]);
-    convertDisplayTile(newTile.data);
+    game.JTCS.createDisplayTile();
+    // const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png");
+    // let dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
+    // let newTile;
+    // newTile = await ourScene.createEmbeddedDocuments("Tile", [
+    //     {
+    //         img: "/modules/journal-to-canvas-slideshow/artwork/DarkBackground.png",
+    //         width: dimensionObject.width,
+    //         height: dimensionObject.height,
+    //         x: 0,
+    //         y: ourScene.data.height / 2 - dimensionObject.height / 2,
+    //     },
+    // ]);
+    // convertDisplayTile(newTile.data);
 }
 
 function checkMeetsDisplayRequirements(source, displayTile, boundingTile) {
@@ -226,6 +227,8 @@ export async function displayImageInScene(imageElement, journalSheet, externalUR
     }
 
     await updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
+
+    game.JTCS.createTileIndicator(displayTile);
 
     //TODO: Rewrite auto-activate logic too
     // if (checkSettingEquals("autoShowDisplay", true)) {
@@ -416,22 +419,22 @@ function execute(args) {
     }
 }
 
-export async function createBoundingTile() {
-    var ourScene = game.scenes.viewed;
-    const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
-    var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
+// export async function createBoundingTile() {
+//     var ourScene = game.scenes.viewed;
+//     const tex = await loadTexture("/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png");
+//     var dimensionObject = calculateAspectRatioFit(tex.width, tex.height, ourScene.data.width, ourScene.data.height);
 
-    let boundingTile = await ourScene.createEmbeddedDocuments("Tile", [
-        {
-            img: "/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png",
-            width: dimensionObject.width,
-            height: dimensionObject.height,
-            x: 0,
-            y: ourScene.data.height / 2 - dimensionObject.height / 2,
-        },
-    ]);
-    convertBoundingTile(boundingTile.data);
-}
+//     let boundingTile = await ourScene.createEmbeddedDocuments("Tile", [
+//         {
+//             img: "/modules/journal-to-canvas-slideshow/artwork/Bounding_Tile.png",
+//             width: dimensionObject.width,
+//             height: dimensionObject.height,
+//             x: 0,
+//             y: ourScene.data.height / 2 - dimensionObject.height / 2,
+//         },
+//     ]);
+//     convertBoundingTile(boundingTile.data);
+// }
 
 function ShowWelcomeMessage() {
     let d = new Dialog({
@@ -487,6 +490,7 @@ function applySceneHeaderButtons(app, html, options) {
         //if the user isn't the GM, return
         return;
     }
+
     //remove and a create a new button
     if (game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "show") {
         html.closest(".app").find("a.toggle-display-location").remove();
@@ -511,16 +515,6 @@ function applySceneHeaderButtons(app, html, options) {
     } else if (game.settings.get("journal-to-canvas-slideshow", "hideHeaderToggle") == "hide") {
         html.closest(".app").find("a.toggle-display-location").remove();
     }
-}
-
-export function toggleDisplayLocation(journalEntry, html, button) {
-    let locations = ["displayScene", "window", "anyScene"];
-    let index = locations.indexOf(game.settings.get("journal-to-canvas-slideshow", "displayLocation"));
-    index += 1;
-    if (index === 3) {
-        index = 0;
-    }
-    setDisplayLocationInSettings(locations[index]);
 }
 
 function createDialog() {
@@ -642,59 +636,15 @@ Hooks.on("getSceneControlButtons", (controls) => {
     const tileControls = controls.find((control) => control?.name === "tiles");
 
     if (game.user.isGM) {
-        if (game.settings.get("journal-to-canvas-slideshow", "hideTileButtons") == true) {
-            //if the user wants to hide the tile buttons in the settings, only push the button to show the slideshow dialog to the scene controls
-            tileControls.tools.push({
-                name: "ShowJTCSConfig",
-                title: "Show Slideshow Config",
-                icon: "far fa-image",
-                onClick: () => {
-                    new SlideshowConfig().render(true);
-                },
-                button: true,
-            });
-        } else {
-            tileControls.tools.push({
-                name: "SwitchDisplayLocation",
-                title: "Switch Display Location",
-                icon: "fas fa-exchange-alt",
-                onClick: () => {
-                    createToggleDialog();
-                },
-                button: true,
-            });
-            tileControls.tools.push({
-                name: "Create-Bounding-Tile",
-                title: "Create bounding tile",
-                icon: "far fa-square",
-                visible: true,
-                onClick: () => {
-                    createBoundingTile();
-                },
-                button: true,
-            });
-            tileControls.tools.push({
-                name: "Create-Display-Tile",
-                title: "Create Display tile",
-                icon: "far fa-image",
-                visible: true,
-                onClick: () => {
-                    createDisplayTile(game.scenes.viewed);
-                },
-                button: true,
-            });
-            tileControls.tools.push({
-                //tokenButton.tools.push({
-                name: "set-url-image",
-                title: "Set url image",
-                icon: "fa fa-eye",
-                visible: true,
-                onClick: () => {
-                    setUrlImageToShow();
-                },
-                button: true,
-            });
-        }
+        tileControls.tools.push({
+            name: "ShowJTCSConfig",
+            title: "Show Slideshow Config",
+            icon: "far fa-image",
+            onClick: () => {
+                new SlideshowConfig().render(true);
+            },
+            button: true,
+        });
         //push the clear display button regardless of what setting is selected
         tileControls.tools.push({
             name: "ClearDisplay",
@@ -707,7 +657,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
         });
     }
 });
-Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
+// Hooks.on("renderSidebarTab", createSceneButton); //for sidebar stuff on left
 
 Hooks.on("renderJournalSheet", (app, html, options) => {
     if (!game.user.isGM) {
