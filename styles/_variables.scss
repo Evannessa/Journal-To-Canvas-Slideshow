@@ -7,7 +7,19 @@
     --foundry-purple-border: #3b1893;
     --foundry-purple-background: rgba(30, 0, 60, 0.5);
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
+    $themeColours: (
+        "pink": #dc51ac,
+        "red": #d64651,
+        "orange": #e55937,
+    );
 
+    @each $themeColour, $i in $themeColours {
+        body {
+            &.#{$themeColour} {
+                background-color: $i;
+            }
+        }
+    }
     @each $color, $shades in $colors {
         @each $shade, $value in $shades {
             --color-#{$color}-#{$shade}: #{$value};

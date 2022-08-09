@@ -2,8 +2,6 @@ Hooks.once("init", () => {
     loadTemplates([`modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs`]);
 });
 Hooks.on("createTile", () => {
-    console.log("tile created");
-
     if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
         console.log("Shoud re-render");
         game.JTCSlideshowConfig.render(false);
@@ -23,23 +21,29 @@ Hooks.on("renderTileConfig", async (app, element) => {
     //get tiles with flags
     let flaggedTiles = await ourAPI.getSceneSlideshowTiles();
     let defaultData = await ourAPI.getDefaultData();
-    // let flaggedTiles = await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles");
 
     // let defaultData = { displayName: "", isBoundingTile: false, linkedBoundingTile: "" };
 
     //get data from tiles
     if (flaggedTiles) {
-        defaultData = await getTileDataFromFlag(app.object.data._id, flaggedTiles);
+        defaultData = await ourAPI.getTileDataFromFlag(app.object.data._id, flaggedTiles);
         defaultData = { ...defaultData };
-        defaultData.boundingTiles = getBoundingTiles(flaggedTiles);
+        defaultData.boundingTiles = await ourAPI.getFrameTiles(flaggedTiles);
     }
 
     if (element[0] && !element[0]?.querySelector("#displayTileData")) {
         //if we don't have this data
-        let template = "modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs";
-        let renderHtml = await renderTemplate(template, defaultData);
+        // let template = "modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs";
+        let showConfigButton = document.createElement("button");
+        showConfigButton.setAttribute("id", defaultData.id);
+        showConfigButton.on("click", (event) => {
+            let btn = event.currentTarget;
+            game.JTCSlideshowConfig.render(true);
+            // if(game.JTCSlideshowConfig.rendered)
+        });
         const target = $(element).find(`[name="tint"]`).parent().parent();
-        target.after(renderHtml);
+        target.after(showConfigButton);
+        // let renderHtml = await renderTemplate(template, defaultData);
     }
 });
 

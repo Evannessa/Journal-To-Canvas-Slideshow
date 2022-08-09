@@ -8,9 +8,9 @@
     --bg-color-toggle-hover: var(--foundry-purple-background-hover);
     --border-color-toggle: var(--foundry-purple-border);
     --shadow-color-toggle-hover: var(--foundry-purple-shadow-hover);
-    --color-text-dark: var(--color-text-dark-primary);
-    --color-text-light: var(--color-text-light-0);
-    --color-text-light-hover: var(--color-text-light-highlight);
+    --color-text-primary: var(--color-text-dark-primary);
+    --color-text-secondary: var(--color-text-light-0);
+    --color-text-secondary-hover: var(--color-text-light-highlight);
     --shadow-color: var(--color-shadow-dark);
     --shadow-color-hover: var(--color-shadow-highlight);
     --border-color: var(--color-border-dark);
@@ -18,8 +18,13 @@
     --border-color-hover-alt: var(--color-border-highlight-alt);
     --accent-color-1: var(--foundry-purple-shadow-hover, #9b8dff);
     --accent-color-2: var(--color-border-highlight);
+    --color-accent: var(--foundry-purple-background);
     &.JTCS {
     }
+}
+
+.flow > * + * {
+    margin-top: var(--flow-space, 1em);
 }
 
 .img-button {
@@ -47,6 +52,14 @@
         }
     }
 }
+.danger {
+    background-color: var(--color-danger-light);
+    color: white;
+}
+.danger-text {
+    color: var(--color-danger-light);
+}
+
 .toggle,
 .toggle.active {
     --bg-color: var(--bg-color-toggle);
@@ -72,7 +85,7 @@
 }
 
 .floating-control {
-    color: var(--color-text-light);
+    color: var(--color-text-secondary);
     background-color: var(--bg-color);
     box-shadow: 0 0 10px var(--shadow-color);
     border: 1px solid var(--border-color);
@@ -84,7 +97,7 @@
         cursor: pointer;
         box-shadow: 0 0 10px var(--shadow-color-hover);
         border: 1px solid var(--border-color-hover);
-        color: var(--color-text-light-hover);
+        color: var(--color-text-secondary-hover);
     }
 }
 
@@ -100,7 +113,7 @@ input[type="radio"].hidden-input {
     border: 0;
     & + label {
         transform: scale(1);
-        color: var(--color-text-light);
+        color: var(--color-text-secondary);
         background-color: var(--bg-color);
         box-shadow: 0 0 10px transparent;
         border: 1px solid var(--border-color);
@@ -115,7 +128,7 @@ input[type="radio"].hidden-input {
         &:hover {
             cursor: pointer;
             border: 1px solid var(--border-color-hover);
-            color: var(--color-text-light-hover);
+            color: var(--color-text-secondary-hover);
             box-shadow: 0 0 10px var(--shadow-color-hover);
         }
     }
@@ -123,7 +136,7 @@ input[type="radio"].hidden-input {
         transform: scale(1.04);
         z-index: 1;
         // --bg-color-hover: var(--color-deep-purple-600);
-        color: var(--color-text-light-hover);
+        color: var(--color-text-secondary-hover);
         box-shadow: 0px 0px 10px var(--shadow-color-hover);
         border: 1px solid var(--color-border-highlight-alt);
         transition: background-color 250ms ease-out;
@@ -189,6 +202,7 @@ input[type="radio"].hidden-input {
     }
 }
 fieldset.toggle-button-group {
+    max-width: fit-content;
     box-shadow: var(--box-shadow);
     pointer-events: auto;
     * {
@@ -227,10 +241,20 @@ fieldset.toggle-button-group {
 .padding-small {
     padding: 0.25rem 0.5rem;
 }
+.padding-medium {
+    padding: 0.5rem 1rem;
+}
+button.icon-button {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    background-color: transparent;
+}
 
 .bg-dark {
     background-color: var(--bg-color);
-    color: var(--color-text-light);
+    color: var(--color-text-secondary);
 }
 
 .bg-primary {
@@ -304,6 +328,22 @@ fieldset.toggle-button-group {
         background-color: var(--bg-color);
     }
 }
+.hover-border {
+    border: 2px solid transparent;
+    transition: border-color 150ms ease-in;
+    &:hover {
+        border-color: var(--accent-color);
+    }
+}
+.focus-border {
+    outline: 3px solid transparent;
+    transition: outline-color 150ms ease-in;
+    &:focus,
+    &:focus-within {
+        outline-color: var(--accent-color);
+    }
+}
+
 .focus-bg-none {
     &:focus {
         background: none;
@@ -430,6 +470,11 @@ fieldset.toggle-button-group {
         list-style-type: none;
     }
 }
+.sub-section {
+    background-color: var(--bg-color);
+    border-radius: 10px;
+}
+
 [data-title] {
     position: relative;
     .tooltip {
@@ -649,7 +694,10 @@ fieldset.toggle-button-group {
 }
 
 .text-accent {
-    color: var(--color-secondary-base);
+    color: var(--color-accent);
+}
+.text-heavy {
+    font-weight: bold;
 }
 
 .border-primary {

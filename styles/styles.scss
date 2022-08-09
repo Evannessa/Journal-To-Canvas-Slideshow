@@ -6,6 +6,34 @@
     // --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
+#slideshow-config {
+    --flow-space: 1.25rem;
+    .window-content {
+        color: var(--color-text-primary);
+        li {
+            background: hsla(0, 0%, 100%, 0.3);
+        }
+        li .actions {
+            display: flex;
+            align-items: center;
+            border-left: 1px solid rgba(0, 0, 0, 0.15);
+            flex: 0 0 50px;
+            // height: 100%;
+            justify-content: center;
+            * + * {
+                border-left: 1px solid rgba(0, 0, 0, 0.15);
+            }
+        }
+        h1,
+        h2,
+        h3 {
+            font-weight: bold;
+        }
+        input {
+        }
+    }
+    // --color-text-primary: ;
+}
 
 .clickableImageContainer {
     &.JTCS {
@@ -108,8 +136,19 @@
         box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
     }
 }
-.accent {
-    color: var(--color-pink-base);
+
+[data-type="art"] {
+    --accent-color-hue: 240;
+    --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+}
+
+[data-type="frame"] {
+    --accent-color-hue: 0;
+    --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+}
+
+[data-type].accent {
+    color: var(--accent-color);
 }
 
 .error {

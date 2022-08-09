@@ -1,22 +1,37 @@
-<form autocomplete="off" class="flexcol">
-    <div class="tilesInScene">
-        <h3>Current Scene is: {{currentSceneName}}</h3>
+<form autocomplete="off" class="flexcol flow">
+    <div class="tilesInScene flow">
+        <p>Current Scene is: <span class="text-accent text-heavy">{{currentSceneName}}</span></p>
 		{{! prettier-ignore }}
-        <ul>
+        <ul class="flow border-hover">
             <h3>Art Tiles</h3>
 			{{! prettier-ignore }}
             {{#each artTiles as |tile|}}
-				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="art" currentSceneName=@root.currentSceneName}}
-
+				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" tile type="art" currentSceneName=@root.currentSceneName allFrameTiles=@root.frameTiles}}
             {{/each}}
+			<li data-flag="ignore-hover" data-type="createNew" class="interactive flexrow">
+				<input type="text" value="Create new art tile" data-action="add" data-type="art"/>
+			</li>
         </ul>
 		{{! prettier-ignore }}
-        <ul>
+        <ul class="flow border-hover">
             <h3>Frame Tiles</h3>
-			{{! prettier-ignore }}
             {{#each frameTiles as |tile|}}
 				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame" currentSceneName=@root.currentSceneName}}
             {{/each}}
+			<li data-flag="ignore-hover" class="interactive flexrow">
+				<input type="text" name="newTileName" value="Create new frame tile"  data-type="frame"/>
+				<select name="unlinkedTiles" id="unlinkedTiles">
+					<option value=""> -- none -- </option>
+					{{#each this.unlinkedTiles as |unlinkedTileID|}}
+						<option 
+							data-id="{{unlinkedTileID}}" 
+							value="{{unlinkedTileID}}" 
+						>
+							Tile: {{unlinkedTileID}}
+						</option>
+					{{/each}}
+				</select>
+			</li>
         </ul>
     </div>
     {{#if shouldPromptConversion}}
@@ -49,7 +64,7 @@
             value="displayInJournal"
       />
       <label class="flex-row" for="displayInPopout" data-title="">
-        Display In Scene
+        Display In Popout
       </label>
   </fieldset>
     <div class="form-group">
@@ -64,7 +79,5 @@
         />
         <!-- activate scene on image click toggle-->
     </div>
-    <div>
-        <input id="submit-btn" type="submit" />
-    </div>
+
 </form>

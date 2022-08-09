@@ -1,17 +1,36 @@
 <li
-    class="interactive flexrow"
+    class="interactive | flexrow flex-centered padding-small | slight-rounded hover-border focus-border"
     data-id="{{this.id}}"
     data-type="{{this.type}}"
     data-frame-id="{{this.linkedBoundingTile}}"
+	data-display-name="{{this.displayName}}"
     data-action="selectTile"
     data-missing="{{this.missing}}"
+	data-title=""
 >
-    <p>{{this.displayName}}</p>
+	{{#unless (eq this.missing true)}}
+		<input class="flex3" name="displayName" type="text" value="{{this.displayName}}">
+	{{/unless}}
 	{{#if (eq this.missing true)}}
-	<p class="error | fs-small">
+		<p class="error | fs-small">
 		A tile with this id " {{this.id}} " doesn't exist in scene " <strong>{{this.currentSceneName}} " </strong>.
-	</p>
+		</p>
 	{{/if}}
-    <button data-action="renderTileConfig" {{#if this.missing}}disabled{{/if}} title="render this tile's config"><i class="fas fa-cog"></i></button>
-   <button class="danger" data-action="deleteTileData" title="delete this {{this.type}} tile's data? (will not delete the tile object itself)"><i class="fas fa-trash"></i></button>
+ 	{{#if (eq this.type "art")}}
+	<select name="linkedBoundingTile" id="linkedBoundingTile">
+			<option value=""> -- none -- </option>
+				{{#each this.allFrameTiles as |boundingTile|}}
+					<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" {{#if (eq ../linkedBoundingTile boundingTile.id)}}
+						selected	
+					{{/if}}>
+						{{boundingTile.displayName}}
+					</option>
+				{{/each}}
+		</select>
+   {{/if}}
+{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString "this is linked to" "<span>" "Tile:" this.id "</span>" "in scene" @root.currentSceneName)}}
+<div class="actions flex0">
+    <button class="flex0 icon-button" data-action="renderTileConfig" {{#if this.missing}}disabled{{/if}} title="render tile {{this.id}}'s config"><i class="fas fa-cog"></i></button>
+   <button class="text-danger flex0 icon-button" data-action="deleteTileData" title="delete this {{this.type}} tile's data? (will not delete the tile object itself)"><i class="fas fa-trash"></i></button>
+</div>
 </li>

@@ -11,13 +11,10 @@ class ArtTileManager {
 
         //get the tile data from the selected tile id;
 
-        console.log(boundingTileID);
         let boundingTile = game.scenes.viewed.tiles.get(boundingTileID);
         if (!boundingTile) {
             await ArtTileManager.getTileByID(boundingTileID, game.scenes.viewed.id);
         }
-
-        console.log("Our bounding tile is", boundingTile);
 
         await ArtTileManager.updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
     }
@@ -185,7 +182,6 @@ class ArtTileManager {
         if (tileDataArray.length === 0) {
             ui.notifications.warn("No frame tile detected in scene. Creating new frame tile alongside display tile");
             frameTile = await ArtTileManager.createFrameTile();
-            console.log("Our frame tile is", frameTile);
             return frameTile[0].id;
         } else {
             ui.notifications.warn(
@@ -196,12 +192,36 @@ class ArtTileManager {
         }
     }
 
+    /**
+     * Return any tiles that have data, but their id doesn't match any tile in the scene
+     * @param {Array} flaggedTiles - array of tiles with Slideshow data
+     * @returns array of tiles that have data but aren't connected to a tile in the scene
+     */
+    static async getMissingTiles(flaggedTiles) {
+        let currentScene = game.scenes.viewed;
+        let sceneTileIDs = currentScene.tiles.map((tile) => tile.id);
+        let missingTiles = flaggedTiles.filter((tileData) => !sceneTileIDs.includes(tileData.id));
+        return missingTiles;
+    }
+
+    /**
+     * Get tiles that aren't linked to any slideshow data
+     * @param {Array} flaggedTiles - array of tiles with Slideshow data
+     * @returns array of IDs of tiles that aren't linked to any slideshow data
+     */
+    static async getUnlinkedTileIDs(flaggedTiles) {
+        let currentScene = game.scenes.viewed;
+        let flaggedTileIDs = flaggedTiles.map((tileData) => tileData.id);
+        let sceneTileIDs = currentScene.tiles.map((tile) => tile.id);
+        let unlinkedTiles = sceneTileIDs.filter((tileID) => !flaggedTileIDs.includes(tileID));
+        return unlinkedTiles;
+    }
+
     static async createDisplayTile(_linkedFrameTileId) {
         let linkedFrameTileId = _linkedFrameTileId;
         if (!linkedFrameTileId) {
             linkedFrameTileId = await ArtTileManager.createOrFindDefaultFrameTile();
         }
-        console.log("linked frame tile", linkedFrameTileId);
         let newTile = await ArtTileManager.createTileInScene(false);
         if (newTile) {
             let tileID = newTile[0].id;
@@ -398,7 +418,8 @@ class ArtTileManager {
             return;
         }
         let currentScene = game.scenes.viewed;
-        let tiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
+        let tiles = (await ArtTileManager.getSceneSlideshowTiles()) || [];
+        // let tiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
 
         if (tiles.find((tile) => tile.id === tileID)) {
             tiles = tiles.map((tileData) => {
@@ -442,16 +463,20 @@ Hooks.on("init", () => {
         getFrameTiles: ArtTileManager.getFrameTiles,
         getDisplayTiles: ArtTileManager.getDisplayTiles,
         getTileByID: ArtTileManager.getTileByID,
-        showTileBorder: ArtTileManager.showTileBorder,
         selectTile: ArtTileManager.selectTile,
         renderTileConfig: ArtTileManager.renderTileConfig,
         updateSceneTileFlags: ArtTileManager.updateSceneTileFlags,
         getTileDataFromFlag: ArtTileManager.getTileDataFromFlag,
+        getUnlinkedTileIDs: ArtTileManager.getUnlinkedTileIDs,
+        getMissingTiles: ArtTileManager.getMissingTiles,
         deleteSceneTileData: ArtTileManager.deleteSceneTileData,
         createTileIndicator: CanvasIndicators.createTileIndicator,
         deleteTileIndicator: CanvasIndicators.deleteTileIndicator,
         hideTileIndicator: CanvasIndicators.hideTileIndicator,
         showTileIndicator: CanvasIndicators.showTileIndicator,
+        setUpIndicators: CanvasIndicators.setUpIndicators,
+        updateSceneIndicatorColors: CanvasIndicators.updateSceneColors,
+        updateUserIndicatorColors: CanvasIndicators.updateUserColors,
     };
 
     // now that we've created our API, inform other modules we are ready

@@ -8,8 +8,18 @@ export const registerSettings = function () {
         type: Boolean,
         default: true,
     });
-    game.settings.register("journal-to-canvas-slideshow", "frameIndicatorColor", {
-        name: "canvasIndicatorColor",
+
+    game.settings.register("journal-to-canvas-slideshow", "tileIndicatorColors", {
+        name: "Tile Indicator Colors",
+        hint: "Choose colors for the tile indicators",
+        scope: "client",
+        config: true,
+        type: Object,
+        default: {
+            frameTileColor: 0xff3300,
+            artTileColor: 0x2f2190,
+            unlinkedTileColor: 0xff33,
+        },
     });
     game.settings.register("journal-to-canvas-slideshow", "journalFadeOpacity", {
         name: "Journal Fade Opacity",

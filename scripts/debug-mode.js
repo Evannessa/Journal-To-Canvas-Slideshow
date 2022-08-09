@@ -1,8 +1,11 @@
-const MODULE_ID = "journal-to-canvas-slideshow";
+export const MODULE_ID = "journal-to-canvas-slideshow";
+import { SlideshowConfig } from "./SlideshowConfig.js";
+
 Hooks.once("devModeReady", ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag("journal-to-canvas-slideshow");
 });
 Hooks.on("canvasReady", () => {
+    game.JTCSlideshowConfig = new SlideshowConfig().render(true);
     autoRender(true, { type: "journal", name: "Art" });
 });
 export function autoRender(force, ...args) {
