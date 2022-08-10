@@ -8,9 +8,7 @@
             {{#each artTiles as |tile|}}
 				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" tile type="art" currentSceneName=@root.currentSceneName allFrameTiles=@root.frameTiles}}
             {{/each}}
-			<li data-flag="ignore-hover" data-type="createNew" class="interactive flexrow">
-				<input type="text" value="Create new art tile" data-action="add" data-type="art"/>
-			</li>
+		{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs" type="art" allBoundingTiles=artTiles}}	
         </ul>
 		{{! prettier-ignore }}
         <ul class="flow border-hover">
@@ -18,20 +16,7 @@
             {{#each frameTiles as |tile|}}
 				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame" currentSceneName=@root.currentSceneName}}
             {{/each}}
-			<li data-flag="ignore-hover" class="interactive flexrow">
-				<input type="text" name="newTileName" value="Create new frame tile"  data-type="frame"/>
-				<select name="unlinkedTiles" id="unlinkedTiles">
-					<option value=""> -- none -- </option>
-					{{#each this.unlinkedTiles as |unlinkedTileID|}}
-						<option 
-							data-id="{{unlinkedTileID}}" 
-							value="{{unlinkedTileID}}" 
-						>
-							Tile: {{unlinkedTileID}}
-						</option>
-					{{/each}}
-				</select>
-			</li>
+		{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs" type="frame" allBoundingTiles=frameTiles}}	
         </ul>
     </div>
     {{#if shouldPromptConversion}}

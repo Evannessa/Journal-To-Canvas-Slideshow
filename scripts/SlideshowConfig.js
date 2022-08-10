@@ -1,11 +1,13 @@
 "use strict";
 import { convertToNewSystem } from "./HooksAndFlags.js";
 import { log, MODULE_ID } from "./debug-mode.js";
+const baseTemplatePath = `modules/${MODULE_ID}/templates/`;
 
 const templates = [
     `modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs`,
     "modules/journal-to-canvas-slideshow/templates/tooltip.hbs",
     "modules/journal-to-canvas-slideshow/templates/control-button.hbs",
+    `${baseTemplatePath}new-tile-list-item.hbs`,
 ];
 
 Hooks.on("renderSlideshowConfig", (app) => {
@@ -42,21 +44,6 @@ Hooks.on("canvasReady", async (canvas) => {
         let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
 
         game.JTCS.setUpIndicators(foundTileData, tileDoc);
-        // let type = "unlinked";
-        // if(foundTileData){
-        // 	type = foundTileData.isBoundingTile ? "frame" : "art"
-        // }
-        // //get tile data that matches the TileDocument in the scene
-        // setUpIndicators(tileDoc, type)
-        // if (foundTileData) {
-        //     let type = foundTileData.isBoundingTile ? "frame" : "art";
-        //     ourAPI.createTileIndicator(tileDoc, type);
-        //     ourAPI.hideTileIndicator(tileDoc, type);
-        // } else {
-        //     let type = "unlinked";
-        //     ourAPI.createTileIndicator(tileDoc, type);
-        //     ourAPI.hideTileIndicator(tileDoc, type);
-        // }
     });
 });
 
@@ -70,6 +57,7 @@ export class SlideshowConfig extends FormApplication {
         return mergeObject(super.defaultOptions, {
             classes: ["form"],
             popOut: true,
+            resizeable: true,
             template: "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
             id: "slideshow-config",
             title: "Slideshow Config",
@@ -247,6 +235,8 @@ export class SlideshowConfig extends FormApplication {
             async function (event) {
                 let { value, name, checked, type } = event.currentTarget;
                 let clickedElement = $(event.currentTarget);
+                let tileType = clickedElement[0].closest("li").dataset.type;
+                let isNewTile = false;
 
                 if (value === "") {
                     //don't submit the input if there's no value
@@ -254,14 +244,14 @@ export class SlideshowConfig extends FormApplication {
 
                     return;
                 }
-                // we're creating a new tile
-                //get id of selected tile
+
                 let tileID = "";
+                let isBoundingTile = tileType === "frame" ? true : false;
                 if (name === "newTileName") {
+                    isNewTile = true;
                     let selectedUnlinkedTileID = clickedElement[0].nextElementSibling.value;
                     let foundInScene = await game.JTCS.getTileByID(selectedUnlinkedTileID);
 
-                    //this will return the tile document if it exists in the scene
                     if (foundInScene) {
                         name = "displayName"; //set the name here to the display name so we can use the already-created updateData object
 
@@ -276,6 +266,7 @@ export class SlideshowConfig extends FormApplication {
                     let updateData = {
                         id: tileID,
                         [name]: value,
+                        ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
                     };
                     await game.JTCS.updateSceneTileFlags(updateData, tileID);
                     game.JTCSlideshowConfig.render(true);

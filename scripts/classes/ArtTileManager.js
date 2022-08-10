@@ -217,11 +217,12 @@ class ArtTileManager {
         return unlinkedTiles;
     }
 
-    static async createDisplayTile(_linkedFrameTileId) {
+    static async createDisplayTile(_linkedFrameTileId = "") {
         let linkedFrameTileId = _linkedFrameTileId;
-        if (!linkedFrameTileId) {
-            linkedFrameTileId = await ArtTileManager.createOrFindDefaultFrameTile();
-        }
+        // if (!linkedFrameTileId) {
+
+        //     // linkedFrameTileId = await ArtTileManager.createOrFindDefaultFrameTile();
+        // }
         let newTile = await ArtTileManager.createTileInScene(false);
         if (newTile) {
             let tileID = newTile[0].id;
@@ -233,7 +234,6 @@ class ArtTileManager {
     }
     static async createFrameTile() {
         let newTile = await ArtTileManager.createTileInScene(true);
-        console.log("New tile is", newTile);
         if (newTile) {
             let tileID = newTile[0].id;
             if (tileID) {

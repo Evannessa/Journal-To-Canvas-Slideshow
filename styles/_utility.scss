@@ -564,6 +564,9 @@ button.icon-button {
     justify-content: center;
     align-items: center;
 }
+.flex-justify-stretch {
+    justify-content: stretch;
+}
 
 .gap-small {
     gap: 0.25rem;
@@ -574,6 +577,20 @@ button.icon-button {
 }
 .gap-large {
     gap: 1rem;
+}
+
+.focus-reveal {
+    &--child {
+        opacity: 0;
+        transform: scale(0);
+    }
+    &:focus,
+    &:focus-within {
+        .focus-reveal--child {
+            opacity: 100%;
+            transform: scale(1);
+        }
+    }
 }
 
 .chip-span {
