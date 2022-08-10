@@ -175,9 +175,10 @@ export class SlideshowConfig extends FormApplication {
     }
 
     async _handleButtonClick(event) {
+        let clickedElement = $(event.currentTarget);
+        console.log("Clicked element", clickedElement);
         event.stopPropagation();
         event.preventDefault();
-        let clickedElement = $(event.currentTarget);
         let action = clickedElement.data().action;
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
@@ -221,6 +222,17 @@ export class SlideshowConfig extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html);
+        let details = html.find("details");
+        details.each((index, element) => {
+            element.addEventListener("toggle", (event) => {
+                if ($(element).attr("open")) {
+                    $(element).find(".toggle-icon i").removeClass("fa-plus-square").addClass("fa-minus-square");
+                } else {
+                    $(element).find(".toggle-icon i").removeClass("fa-minus-square").addClass("fa-plus-square");
+                }
+            });
+        });
+
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.on(
             "mouseenter mouseleave",

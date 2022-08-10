@@ -559,15 +559,38 @@ button.icon-button {
     flex-direction: column;
 }
 
+.flex {
+    &-wrap {
+        flex-wrap: wrap;
+    }
+    &-nowrap {
+        flex-wrap: nowrap;
+    }
+}
+
 .flex-centered {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.flex-justify-stretch {
-    justify-content: stretch;
-}
+.flex-justify {
+    &-stretch {
+        justify-content: stretch;
+    }
 
+    &-space-between {
+        justify-content: space-between;
+    }
+    &-space-evenly {
+        justify-content: space-evenly;
+    }
+    &-start {
+        justify-content: flex-start;
+    }
+    &-end {
+        justify-content: flex-end;
+    }
+}
 .gap-small {
     gap: 0.25rem;
 }
@@ -577,6 +600,18 @@ button.icon-button {
 }
 .gap-large {
     gap: 1rem;
+}
+.hover-reveal {
+    &--child {
+        opacity: 0;
+        transform: scale(0);
+    }
+    &:hover {
+        .focus-reveal--child {
+            opacity: 100%;
+            transform: scale(1);
+        }
+    }
 }
 
 .focus-reveal {

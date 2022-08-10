@@ -10,15 +10,11 @@
     --flow-space: 1.25rem;
     .window-content {
         color: var(--color-text-primary);
-        max-width: min(600px, 45vw);
+        // max-width: min(600px, 45vw);
         max-height: calc(100vh - 200px);
         .tile-list-item {
-            > div {
-                display: grid;
-                grid-template-rows: repeat(3, 1fr);
-                select {
-                    height: var(--form-field-height);
-                }
+            select {
+                height: var(--form-field-height);
             }
             &.new {
                 > label {

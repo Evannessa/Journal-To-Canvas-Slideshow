@@ -123,6 +123,30 @@ class ArtTileManager {
     }
     static async setNewDisplayTileTexture() {}
     static async createFlagInScene() {}
+
+    /**
+     *
+     * @param {String} oldTileID - the id of a tile that's now missing
+     * @param {String newTileID  - the id of a new tile we're linking it to
+     */
+    static async updateTileDataID(oldTileID, newTileID) {
+        //this is an array of objects
+        let flaggedTiles = await ArtTileManager.getSceneSlideshowTiles("", false);
+        //find object with id
+        console.log("Flagged tiles before", [...flaggedTiles]);
+        let tileObject = flaggedTiles.find((tileData) => tileData.id === oldTileID);
+        let index = flaggedTiles.indexOf(tileObject);
+        tileObject = { ...tileObject, id: newTileID };
+        //replace the object at its original index with the object w/ the new id
+        if (tileObject && index) {
+            flaggedTiles.splice(index, 1);
+            console.log("Flagged tiles after", [...flaggedTiles]);
+        }
+        //we're replacing the old key with the new key
+        // delete Object.assign(tileObject, {[newKey]: o[oldKey] })[oldKey];
+
+        // ArtTileManager.updateSceneTileFlags();
+    }
     static async getDefaultData(isBoundingTile, linkedBoundingTile = "") {
         //determine its default name based on whether it's a bounding or display tile
         let displayName = isBoundingTile ? "frameTile" : "displayTile";
@@ -465,6 +489,7 @@ Hooks.on("init", () => {
         getTileByID: ArtTileManager.getTileByID,
         selectTile: ArtTileManager.selectTile,
         renderTileConfig: ArtTileManager.renderTileConfig,
+        updateTileDataID: ArtTileManager.updateTileDataID,
         updateSceneTileFlags: ArtTileManager.updateSceneTileFlags,
         getTileDataFromFlag: ArtTileManager.getTileDataFromFlag,
         getUnlinkedTileIDs: ArtTileManager.getUnlinkedTileIDs,

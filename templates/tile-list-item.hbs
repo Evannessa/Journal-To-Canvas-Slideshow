@@ -1,28 +1,70 @@
 <li
-    class="tile-list-item interactive | flexrow flex-justify-stretch padding-small | slight-rounded hover-border focus-border"
+    class="tile-list-item | interactive flexcol flex-justify-stretch padding-small | slight-rounded hover-border focus-border focus-reveal hover-reveal"
     data-id="{{this.id}}"
     data-type="{{this.type}}"
     data-frame-id="{{this.linkedBoundingTile}}"
 	data-display-name="{{this.displayName}}"
-    data-action="selectTile"
     data-missing="{{this.missing}}"
-	data-title=""
 >
-	<div class="">
-		<label>
-			Display Name
-		</label>
-			<p class="notes">A name to help identify this tile</p>
+<details>
+	<summary class="flex-row flex-nowrap flex-justify-space-between">
+		<div class="form-group-stacked">
+			<label>
+				<span class="toggle-icon">
+					<i class="fas fa-plus-square"></i>
+				</span>
+				Display Name
+			</label>
 			{{#unless (eq this.missing true)}}
-					<input class="flex3" name="displayName" type="text" value="{{this.displayName}}">
+				<input class="flex3" name="displayName" type="text" value="{{this.displayName}}">
 			{{/unless}}
 			{{#if (eq this.missing true)}}
+				<span class="error">
+					<i class="fas fa-unlink"></i>
+				</span>
 				<p class="error | fs-small">
-				A tile with this id " {{this.id}} " doesn't exist in scene " <strong>{{this.currentSceneName}} " </strong>.
+					A {{this.type}} tile with this id " {{this.id}} " doesn't exist in scene " <span class="accent">{{this.currentSceneName}} " </span>.
 				</p>
+				<label class="focus-reveal--child">
+					Link to Tile In Scene
+					<p class="notes">Choose a tile object in this scene to link this {{this.type}} data to, or create a new tile with this data.</p>
+						<select name="unlinkedTiles" id="unlinkedTiles"> 
+							<option value=""> Create New Tile </option>
+							{{#each this.unlinkedTiles as |unlinkedTileID|}}
+								<option data-id="{{unlinkedTileID}}" value="{{unlinkedTileID}}">
+									Tile:
+									{{unlinkedTileID}}
+								</option>
+							{{/each}}
+						</select>
+				</label>
 			{{/if}}
-	</div>
- 	{{#if (eq this.type "art")}}
+			<p class="notes">A name to help identify this tile</p>
+		</div>
+		<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]" data-title="">
+			<button class="flex0 icon-button" data-action="selectTile" 
+				title="select tile {{this.id}} in scene {{@root.currentSceneName}}"
+			>
+				<i class="fas fa-vector-square"></i>
+			</button>
+
+			<button class="flex0 icon-button" data-action="renderTileConfig" 
+				{{#if this.missing}}disabled{{/if}} 
+				title="render tile {{this.id}}'s config"
+			>
+				<i class="fas fa-cog"></i>
+			</button>
+			<button class="text-danger flex0 icon-button" 
+				data-action="deleteTileData" 
+				title="delete this {{this.type}} tile's data? (will not delete the tile object itself)"
+			>
+				<i class="fas fa-trash"></i>
+			</button>
+			{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString "this is linked to" "<span>" "Tile:" this.id "</span>" "in scene" @root.currentSceneName)}}
+		</div>
+	</summary>	
+	<hr>
+	{{#if (eq this.type "art")}}
 		<div class="">
 			<label>Link this Tile to a Frame</label> 
 			<p class="notes"> Choose a tile to frame this tile's art, or let it scale to the scene's canvas.</p>
@@ -38,19 +80,6 @@
 				</select>
 		</div>
    {{/if}}
-	{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString "this is linked to" "<span>" "Tile:" this.id "</span>" "in scene" @root.currentSceneName)}}
-	<div class="actions flex0">
-		<button class="flex0 icon-button" data-action="renderTileConfig" 
-			{{#if this.missing}}disabled{{/if}} 
-			title="render tile {{this.id}}'s config"
-		>
-			<i class="fas fa-cog"></i>
-		</button>
-		<button class="text-danger flex0 icon-button" 
-			data-action="deleteTileData" 
-			title="delete this {{this.type}} tile's data? (will not delete the tile object itself)"
-		>
-			<i class="fas fa-trash"></i>
-		</button>
-	</div>
+</details>
+
 </li>
