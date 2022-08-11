@@ -13,6 +13,11 @@ Hooks.on("deleteTile", () => {
         game.JTCSlideshowConfig.render(true);
     }
 });
+Hooks.on("updateTile", () => {
+    if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+        game.JTCSlideshowConfig.render(false);
+    }
+});
 
 Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;

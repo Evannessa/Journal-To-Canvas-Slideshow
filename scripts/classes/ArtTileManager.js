@@ -139,7 +139,7 @@ class ArtTileManager {
         tileObject = { ...tileObject, id: newTileID };
         //replace the object at its original index with the object w/ the new id
         if (tileObject && index) {
-            flaggedTiles.splice(index, 1);
+            flaggedTiles.splice(index, 1, tileObject);
             console.log("Flagged tiles after", [...flaggedTiles]);
         }
         //we're replacing the old key with the new key
@@ -241,7 +241,11 @@ class ArtTileManager {
         return unlinkedTiles;
     }
 
-    static async createDisplayTile(_linkedFrameTileId = "") {
+    static async createTileData(linkedFrameTileId, tileObjectID, isBoundingTile = false) {
+        let defaultData = await ArtTileManager.getDefaultData(isBoundingTile, linkedFrameTileId);
+        await ArtTileManager.updateSceneTileFlags(defaultData, tileObjectID);
+    }
+    static async createDisplayTile(_linkedFrameTileId = "", unlinkedDataID = "") {
         let linkedFrameTileId = _linkedFrameTileId;
         // if (!linkedFrameTileId) {
 
@@ -249,20 +253,25 @@ class ArtTileManager {
         // }
         let newTile = await ArtTileManager.createTileInScene(false);
         if (newTile) {
-            let tileID = newTile[0].id;
-            let defaultData = await ArtTileManager.getDefaultData(false, linkedFrameTileId);
-            await ArtTileManager.updateSceneTileFlags(defaultData, tileID);
+            let tileObjectID = newTile[0].id;
+            if (!unlinkedDataID) {
+                await ArtTileManager.createTileData(linkedFrameTileId, tileObjectID, false);
+            } else {
+                await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
+            }
         } else {
             ui.notifications.error("New display tile couldn't be created");
         }
+        return newTile;
     }
-    static async createFrameTile() {
+    static async createFrameTile(unlinkedDataID = "") {
         let newTile = await ArtTileManager.createTileInScene(true);
         if (newTile) {
-            let tileID = newTile[0].id;
-            if (tileID) {
-                let defaultData = await ArtTileManager.getDefaultData(true, "");
-                await ArtTileManager.updateSceneTileFlags(defaultData, tileID);
+            let tileObjectID = newTile[0].id;
+            if (!unlinkedDataID) {
+                await ArtTileManager.createTileData("", tileObjectID, true);
+            } else {
+                await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
             }
         } else {
             ui.notifications.error("New frame tile couldn't be created");
@@ -373,7 +382,6 @@ class ArtTileManager {
             await tile.sheet.render(true);
         } else {
             ArtTileManager.displayTileNotFoundError(tileID);
-            ui.notifications.error("JTCS can't find tile in scene with ID " + tileID);
         }
     }
 
@@ -422,8 +430,12 @@ class ArtTileManager {
     }
     static async getTileByID(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
-        if (!tile) {
-            ArtTileManager.displayTileNotFoundError(tileID);
+        if (tileID.includes === "new") {
+            console.log("New tile created");
+        } else {
+            if (!tile) {
+                ArtTileManager.displayTileNotFoundError(tileID);
+            }
         }
         return tile;
     }
@@ -458,6 +470,10 @@ class ArtTileManager {
         // await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
     }
 
+    /**
+     * Replace the slideshow tileData array stored in scene flags with the array passed in
+     * @param {Array} tiles - the tiles array we want to update our flag with
+     */
     static async updateAllSceneTileFlags(tiles) {
         let currentScene = game.scenes.viewed;
         await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);

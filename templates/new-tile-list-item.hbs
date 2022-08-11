@@ -1,39 +1,11 @@
-<li data-flag="ignore-hover" class="new tile-list-item | interactive flexcol flex-justify-stretch focus-reveal rounded padding-small" data-type="{{this.type}}">
-
-	<label for="focus-reveal--child">
-		Display Name
-		<p class="notes">Choose a name to help identify this {{this.type}} tile</p>
-    	<input type="text" name="newTileName" placeholder="Create new {{this.type}} tile" />
-	</label>
-	<div class="form-group">
-		<label class="focus-reveal--child">
-			Link to Tile In Scene
-			<p class="notes">Choose a tile object in this scene to link this {{this.type}} data to, or create a new tile with this data.</p>
-			<select name="unlinkedTiles" id="unlinkedTiles"> 
-				<option value=""> Create New Tile </option>
-				{{#each this.unlinkedTiles as |unlinkedTileID|}}
-					<option data-id="{{unlinkedTileID}}" value="{{unlinkedTileID}}">
-						Tile:
-						{{unlinkedTileID}}
-					</option>
-				{{/each}}
-			</select>
-		</label>
-		{{#if (eq this.type "art")}}
-			<label class="focus-reveal--child">
-				Select Frame Tile
-				<p class="notes">Choose a "frame" tile to frame this tile's art, or let it scale to the scene's canvas.</p>
-				<select name="linkedBoundingTile">
-						<option value=""> Canvas As Frame </option>
-							{{#each this.allFrameTiles as |boundingTile|}}
-								<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" {{#if (eq ../linkedBoundingTile boundingTile.id)}}
-									selected	
-								{{/if}}>
-									{{boundingTile.displayName}}
-								</option>
-							{{/each}}
-					</select>
-			</label>
-		{{/if}}
-	</div>
+<li
+    data-flag="ignore-hover"
+    class="new tile-list-item | interactive flexcol flex-justify-stretch focus-reveal rounded padding-small"
+    data-type="{{this.type}}"
+>
+    <label for="new{{this.type}}0" class="focus-reveal--child">
+        Display Name
+    </label>
+    <input id="new{{this.type}}0" type="text" name="newTileName" placeholder="Create new {{this.type}} tile" />
+    <p class="notes focus-reveal--child">Press <code>Enter</code> or click away to save</p>
 </li>

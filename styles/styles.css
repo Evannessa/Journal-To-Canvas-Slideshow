@@ -674,12 +674,10 @@ button.icon-button {
 }
 .hover-reveal:hover .focus-reveal--child {
   opacity: 100%;
-  transform: scale(1);
 }
 
 .focus-reveal--child {
   opacity: 0;
-  transform: scale(0);
 }
 .focus-reveal:focus .focus-reveal--child, .focus-reveal:focus-within .focus-reveal--child {
   opacity: 100%;
@@ -929,10 +927,6 @@ button.icon-button {
 }
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);
-}
-#slideshow-config .window-content .tile-list-item.new > label {
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
 }
 #slideshow-config .window-content li {
   background: hsla(0deg, 0%, 100%, 0.3);

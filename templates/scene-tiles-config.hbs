@@ -2,7 +2,7 @@
     <div class="tilesInScene flow">
         <p>Current Scene is: <span class="text-accent text-heavy">{{currentSceneName}}</span></p>
 		{{! prettier-ignore }}
-        <ul class="flow border-hover">
+        <ul class="flow border-hover scroll-y">
             <h3>Art Tiles</h3>
 			{{! prettier-ignore }}
             {{#each artTiles as |tile|}}
@@ -11,7 +11,7 @@
 		{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs" type="art" allBoundingTiles=artTiles}}	
         </ul>
 		{{! prettier-ignore }}
-        <ul class="flow border-hover">
+        <ul class="flow border-hover scroll-y">
             <h3>Frame Tiles</h3>
             {{#each frameTiles as |tile|}}
 				{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" type="frame" currentSceneName=@root.currentSceneName}}

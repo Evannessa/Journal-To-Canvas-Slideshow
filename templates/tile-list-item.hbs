@@ -15,17 +15,16 @@
 				</span>
 				Display Name
 			</label>
-			{{#unless (eq this.missing true)}}
 				<input class="flex3" name="displayName" type="text" value="{{this.displayName}}">
-			{{/unless}}
+			{{log this.missing}}
 			{{#if (eq this.missing true)}}
-				<span class="error">
-					<i class="fas fa-unlink"></i>
-				</span>
 				<p class="error | fs-small">
+					<span>
+						<i class="fas fa-unlink"></i>
+					</span>
 					A {{this.type}} tile with this id " {{this.id}} " doesn't exist in scene " <span class="accent">{{this.currentSceneName}} " </span>.
 				</p>
-				<label class="focus-reveal--child">
+				<label>
 					Link to Tile In Scene
 					<p class="notes">Choose a tile object in this scene to link this {{this.type}} data to, or create a new tile with this data.</p>
 						<select name="unlinkedTiles" id="unlinkedTiles"> 
@@ -36,31 +35,57 @@
 									{{unlinkedTileID}}
 								</option>
 							{{/each}}
+							
 						</select>
 				</label>
+			{{else}}
+				<p class="hover-reveal--child focus-reveal--child">
+					{{combineToString "this is linked to" "<span>" "Tile:" this.id "</span>" "in scene" @root.currentSceneName}} 
+				</p>
 			{{/if}}
-			<p class="notes">A name to help identify this tile</p>
 		</div>
-		<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]" data-title="">
-			<button class="flex0 icon-button" data-action="selectTile" 
-				title="select tile {{this.id}} in scene {{@root.currentSceneName}}"
-			>
-				<i class="fas fa-vector-square"></i>
-			</button>
+		{{#if (eq this.missing true)}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="createSlideshowTile" 
+				icon="fas fa-plus" 
+				displayName=this.displayName
+				tooltipText=(combineToString "Create a new" "<span>" this.type 
+							"</span>" "tile on the canvas in scene" "<span>" @root.currentSceneName "</span>" 
+							)
+			}}
+		{{else}}
+		<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]">
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="selectTile" 
+				icon="fas fa-vector-square" 
+				tooltipText=(combineToString "select tile " "<span>" this.id 
+							"</span>" "in scene" "<span>" @root.currentSceneName "</span>" 
+							)
+			}}
+			{{/if}}
 
-			<button class="flex0 icon-button" data-action="renderTileConfig" 
-				{{#if this.missing}}disabled{{/if}} 
-				title="render tile {{this.id}}'s config"
-			>
-				<i class="fas fa-cog"></i>
-			</button>
+		{{#if (eq this.missing true)}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="linkTile" 
+				icon="fas fa-link" 
+				tooltipText="link this tile to tile in scene"
+			}}
+		{{else}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="renderTileConfig" 
+				icon="fas fa-cog" 
+				tooltipText=(combineToString 
+							"link this data to a tile in scene" 
+							"<span class='accent'>" @root.currentSceneName "</span>"
+							)
+			}}
+		{{/if}}
 			<button class="text-danger flex0 icon-button" 
 				data-action="deleteTileData" 
 				title="delete this {{this.type}} tile's data? (will not delete the tile object itself)"
 			>
 				<i class="fas fa-trash"></i>
 			</button>
-			{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString "this is linked to" "<span>" "Tile:" this.id "</span>" "in scene" @root.currentSceneName)}}
 		</div>
 	</summary>	
 	<hr>

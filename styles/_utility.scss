@@ -609,7 +609,7 @@ button.icon-button {
     &:hover {
         .focus-reveal--child {
             opacity: 100%;
-            transform: scale(1);
+            // transform: scale(1);
         }
     }
 }
@@ -617,7 +617,7 @@ button.icon-button {
 .focus-reveal {
     &--child {
         opacity: 0;
-        transform: scale(0);
+        // transform: scale(0);
     }
     &:focus,
     &:focus-within {
