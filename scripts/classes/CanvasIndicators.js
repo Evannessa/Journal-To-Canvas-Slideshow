@@ -13,8 +13,8 @@ export class CanvasIndicators {
         if (foundTileData) {
             type = foundTileData.isBoundingTile ? "frame" : "art";
         }
-        await game.JTCS.createTileIndicator(tileDoc, type);
-        await game.JTCS.hideTileIndicator(tileDoc, type);
+        await game.JTCS.indicatorUtils.createTileIndicator(tileDoc, type);
+        await game.JTCS.indicatorUtils.hideTileIndicator(tileDoc, type);
     }
 
     static getColors() {

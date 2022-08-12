@@ -167,6 +167,18 @@ input[type="radio"].hidden-input {
 .fit-content-width {
     width: fit-content;
 }
+.hover-reveal {
+    position: relative;
+    &--child {
+        opacity: 0;
+        transition: opacity 250ms ease-in;
+    }
+    &:hover {
+        .hover-reveal--child {
+            opacity: 100%;
+        }
+    }
+}
 .hover-reveal-right {
     position: relative;
     &:hover {
@@ -399,6 +411,10 @@ button.icon-button {
     transition: filter 150ms ease-in;
 }
 
+.shadow-inset {
+    box-shadow: var(--box-shadow-inset);
+}
+
 .scroll-y {
     overflow-y: scroll;
 }
@@ -412,6 +428,17 @@ button.icon-button {
 }
 .hidden-overflow-x {
     overflow-x: hidden;
+}
+
+.border-color-shadow {
+    --border-color: rgba(0, 0, 0, 0.25);
+}
+
+.border-block {
+    border-block: 2px solid var(--border-color);
+}
+.border-inline {
+    border-block: 2px solid var(--border-color);
 }
 
 .square {
@@ -479,8 +506,8 @@ button.icon-button {
     position: relative;
     .tooltip {
         font-size: var(--font-size-12);
-        transition: opacity 320ms ease-out;
-        transition-delay: 500ms;
+        transition-delay: 0ms;
+        transition: opacity 170ms ease-out;
         pointer-events: none;
         opacity: 0%;
         position: absolute;
@@ -504,6 +531,9 @@ button.icon-button {
     &:hover {
         .tooltip {
             opacity: 100%;
+
+            transition: opacity 320ms ease-out;
+            transition-delay: 500ms;
         }
     }
 }
@@ -604,10 +634,10 @@ button.icon-button {
 .hover-reveal {
     &--child {
         opacity: 0;
-        transform: scale(0);
+        // transform: scale(0);
     }
     &:hover {
-        .focus-reveal--child {
+        .hover-reveal--child {
             opacity: 100%;
             // transform: scale(1);
         }
@@ -623,7 +653,7 @@ button.icon-button {
     &:focus-within {
         .focus-reveal--child {
             opacity: 100%;
-            transform: scale(1);
+            // transform: scale(1);
         }
     }
 }
@@ -751,6 +781,9 @@ button.icon-button {
 .text-heavy {
     font-weight: bold;
 }
+.border-styled {
+    border: 2px solid var(--border-color);
+}
 
 .border-primary {
     border-color: var(--color-primary-base);
@@ -758,6 +791,10 @@ button.icon-button {
 
 .border-accent {
     border-color: var(--color-secondary-base);
+}
+
+.max-height-50 {
+    max-height: 50%;
 }
 
 // #endregion

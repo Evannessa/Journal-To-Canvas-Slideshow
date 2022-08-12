@@ -236,6 +236,17 @@ input[type=radio].hidden-input:checked + label .tooltip {
   width: fit-content;
 }
 
+.hover-reveal {
+  position: relative;
+}
+.hover-reveal--child {
+  opacity: 0;
+  transition: opacity 250ms ease-in;
+}
+.hover-reveal:hover .hover-reveal--child {
+  opacity: 100%;
+}
+
 .hover-reveal-right {
   position: relative;
 }
@@ -474,6 +485,10 @@ button.icon-button {
   transition: filter 150ms ease-in;
 }
 
+.shadow-inset {
+  box-shadow: var(--box-shadow-inset);
+}
+
 .scroll-y {
   overflow-y: scroll;
 }
@@ -488,6 +503,18 @@ button.icon-button {
 
 .hidden-overflow-x {
   overflow-x: hidden;
+}
+
+.border-color-shadow {
+  --border-color: rgba(0, 0, 0, 0.25);
+}
+
+.border-block {
+  border-block: 2px solid var(--border-color);
+}
+
+.border-inline {
+  border-block: 2px solid var(--border-color);
 }
 
 .square {
@@ -552,8 +579,8 @@ button.icon-button {
 }
 [data-title] .tooltip {
   font-size: var(--font-size-12);
-  transition: opacity 320ms ease-out;
-  transition-delay: 500ms;
+  transition-delay: 0ms;
+  transition: opacity 170ms ease-out;
   pointer-events: none;
   opacity: 0%;
   position: absolute;
@@ -574,6 +601,8 @@ button.icon-button {
 }
 [data-title]:hover .tooltip {
   opacity: 100%;
+  transition: opacity 320ms ease-out;
+  transition-delay: 500ms;
 }
 
 .header {
@@ -670,9 +699,8 @@ button.icon-button {
 
 .hover-reveal--child {
   opacity: 0;
-  transform: scale(0);
 }
-.hover-reveal:hover .focus-reveal--child {
+.hover-reveal:hover .hover-reveal--child {
   opacity: 100%;
 }
 
@@ -681,7 +709,6 @@ button.icon-button {
 }
 .focus-reveal:focus .focus-reveal--child, .focus-reveal:focus-within .focus-reveal--child {
   opacity: 100%;
-  transform: scale(1);
 }
 
 .chip-span {
@@ -792,12 +819,20 @@ button.icon-button {
   font-weight: bold;
 }
 
+.border-styled {
+  border: 2px solid var(--border-color);
+}
+
 .border-primary {
   border-color: var(--color-primary-base);
 }
 
 .border-accent {
   border-color: var(--color-secondary-base);
+}
+
+.max-height-50 {
+  max-height: 50%;
 }
 
 .hover-shadow:before {
@@ -915,15 +950,30 @@ button.icon-button {
 }
 
 :root {
+  --box-shadow-inset: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
 
 #slideshow-config {
   --flow-space: 1.25rem;
+  width: min(600px, 45vw);
+  max-width: min(600px, 45vw);
 }
 #slideshow-config .window-content {
   color: var(--color-text-primary);
+  width: min(600px, 45vw);
   max-height: calc(100vh - 200px);
+}
+#slideshow-config .window-content form {
+  max-height: 80vh;
+}
+#slideshow-config .window-content .tilesInScene {
+  min-height: 50vh;
+  max-height: 80vh;
+}
+#slideshow-config .window-content ul,
+#slideshow-config .window-content ol {
+  max-height: 50%;
 }
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);
@@ -946,6 +996,7 @@ button.icon-button {
 #slideshow-config .window-content h3 {
   font-weight: bold;
 }
+
 .clickableImageContainer {
   position: relative;
 }

@@ -1,129 +1,8 @@
-import { CanvasIndicators } from "./CanvasIndicators.js";
-class ArtTileManager {
-    static displayTileTexture = "/modules/journal-to-canvas-slideshow/assets/DarkBackground.webp";
-    static frameTileTexture = "/modules/journal-to-canvas-slideshow/assets/Bounding_Tile.webp";
-
-    // ...
-    static async displayImageInScene(imageElement, selectedTileID, boundingTileID) {
-        let url = imageElement.getAttribute("src");
-
-        let displayTile = game.scenes.viewed.tiles.get(selectedTileID);
-
-        //get the tile data from the selected tile id;
-
-        let boundingTile = game.scenes.viewed.tiles.get(boundingTileID);
-        if (!boundingTile) {
-            await ArtTileManager.getTileByID(boundingTileID, game.scenes.viewed.id);
-        }
-
-        await ArtTileManager.updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
-    }
-
-    static async updateTileInScene(displayTile, boundingTile, ourScene, url) {
-        //load the texture from the source
-        const tex = await loadTexture(url);
-        var imageUpdate;
-
-        if (!boundingTile) {
-            imageUpdate = await ArtTileManager.scaleToScene(displayTile, tex, url);
-        } else {
-            imageUpdate = await ArtTileManager.scaleToBoundingTile(displayTile, boundingTile, tex, url);
-        }
-
-        const updated = await ourScene.updateEmbeddedDocuments("Tile", [imageUpdate]);
-    }
-
-    static async scaleToScene(displayTile, tex, url) {
-        let displayScene = game.scenes.viewed;
-        var dimensionObject = ArtTileManager.calculateAspectRatioFit(
-            tex.width,
-            tex.height,
-            displayScene.data.width,
-            displayScene.data.height
-        );
-        //scale down factor is how big the tile will be in the scene
-        //make this scale down factor configurable at some point
-        var scaleDownFactor = 200;
-        dimensionObject.width -= scaleDownFactor;
-        dimensionObject.height -= scaleDownFactor;
-        //half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
-
-        //separate objects depending on the texture's dimensions --
-        //create an 'update' object for if the image is wide (width is bigger than height)
-        var wideImageUpdate = {
-            _id: displayTile.id,
-            width: dimensionObject.width,
-            height: dimensionObject.height,
-            img: url,
-            x: scaleDownFactor / 2,
-            y: displayScene.data.height / 2 - dimensionObject.height / 2,
-        };
-        //create an 'update' object for if the image is tall (height is bigger than width)
-        var tallImageUpdate = {
-            _id: displayTile.id,
-            width: dimensionObject.width,
-            height: dimensionObject.height,
-            img: url, // tex.baseTexture.resource.url,
-            y: scaleDownFactor / 2,
-            x: displayScene.data.width / 2 - dimensionObject.width / 2,
-        };
-        //https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
-        //^used the above StackOverflow post to help me figure that out
-
-        //Determine if the image or video is wide, tall, or same dimensions and update depending on that
-        let testArray = [tallImageUpdate, wideImageUpdate];
-
-        if (dimensionObject.height > dimensionObject.width) {
-            //if the height is longer than the width, use the tall image object
-            return tallImageUpdate;
-            // return await displayScene.updateEmbeddedDocuments("Tile", [tallImageUpdate]);
-        } else if (dimensionObject.width > dimensionObject.height) {
-            //if the width is longer than the height, use the wide image object
-            return wideImageUpdate;
-            // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
-        }
-
-        //if the image length and width are pretty much the same, just default to the wide image update object
-        return wideImageUpdate;
-        // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
-    }
-
-    static async scaleToBoundingTile(displayTile, boundingTile, tex, url) {
-        var dimensionObject = ArtTileManager.calculateAspectRatioFit(
-            tex.width,
-            tex.height,
-            boundingTile.data.width,
-            boundingTile.data.height
-        );
-
-        var imageUpdate = {
-            _id: displayTile.id,
-            width: dimensionObject.width,
-            height: dimensionObject.height,
-            img: url,
-            y: boundingTile.data.y,
-            x: boundingTile.data.x,
-        };
-        //Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
-        var boundingMiddle = {
-            x: boundingTile.data.x + boundingTile.data.width / 2,
-            y: boundingTile.data.y + boundingTile.data.height / 2,
-        };
-
-        var imageMiddle = {
-            x: imageUpdate.x + imageUpdate.width / 2,
-            y: imageUpdate.y + imageUpdate.height / 2,
-        };
-
-        imageUpdate.x += boundingMiddle.x - imageMiddle.x;
-        imageUpdate.y += boundingMiddle.y - imageMiddle.y;
-        // var updateArray = [];
-        // updateArray.push(imageUpdate);
-        return imageUpdate;
-    }
-    static async setNewDisplayTileTexture() {}
-    static async createFlagInScene() {}
-
+/**
+ * This class manages the Art and Bounding Tiles, creating them, showing them in the Config, and
+ * getting and setting their values
+ */
+export class ArtTileManager {
     /**
      *
      * @param {String} oldTileID - the id of a tile that's now missing
@@ -131,21 +10,19 @@ class ArtTileManager {
      */
     static async updateTileDataID(oldTileID, newTileID) {
         //this is an array of objects
-        let flaggedTiles = await ArtTileManager.getSceneSlideshowTiles("", false);
+        let tileDataArray = await ArtTileManager.getSceneSlideshowTiles("", false);
+
         //find object with id
-        console.log("Flagged tiles before", [...flaggedTiles]);
-        let tileObject = flaggedTiles.find((tileData) => tileData.id === oldTileID);
-        let index = flaggedTiles.indexOf(tileObject);
+        let tileObject = tileDataArray.find((tileData) => tileData.id === oldTileID);
+        let index = tileDataArray.indexOf(tileObject);
         tileObject = { ...tileObject, id: newTileID };
+
         //replace the object at its original index with the object w/ the new id
         if (tileObject && index) {
-            flaggedTiles.splice(index, 1, tileObject);
-            console.log("Flagged tiles after", [...flaggedTiles]);
+            tileDataArray.splice(index, 1, tileObject);
         }
-        //we're replacing the old key with the new key
-        // delete Object.assign(tileObject, {[newKey]: o[oldKey] })[oldKey];
 
-        // ArtTileManager.updateSceneTileFlags();
+        await ArtTileManager.updateAllSceneTileFlags(tileDataArray);
     }
     static async getDefaultData(isBoundingTile, linkedBoundingTile = "") {
         //determine its default name based on whether it's a bounding or display tile
@@ -241,16 +118,25 @@ class ArtTileManager {
         return unlinkedTiles;
     }
 
+    /**
+     *
+     * @param {String} linkedFrameTileId - the frame tile linked to this art tile, if it is one
+     * @param {String} tileObjectID - the ID of the tile being created
+     * @param {Boolean} isBoundingTile - whether or not its a frame tile instead of an art tile
+     */
     static async createTileData(linkedFrameTileId, tileObjectID, isBoundingTile = false) {
         let defaultData = await ArtTileManager.getDefaultData(isBoundingTile, linkedFrameTileId);
         await ArtTileManager.updateSceneTileFlags(defaultData, tileObjectID);
     }
-    static async createDisplayTile(_linkedFrameTileId = "", unlinkedDataID = "") {
+    /**
+     *
+     * @param {String} linkedFrameTileId - the frame tile linked to this art tile, if it is one
+     * @param {*} unlinkedDataID - if we're creating a new tile from the config rather than from the tile itself, it may have an unlinkedId
+     * @returns  - the created art tile
+     */
+    static async createArtTile(_linkedFrameTileId = "", unlinkedDataID = "") {
         let linkedFrameTileId = _linkedFrameTileId;
-        // if (!linkedFrameTileId) {
 
-        //     // linkedFrameTileId = await ArtTileManager.createOrFindDefaultFrameTile();
-        // }
         let newTile = await ArtTileManager.createTileInScene(false);
         if (newTile) {
             let tileObjectID = newTile[0].id;
@@ -264,6 +150,12 @@ class ArtTileManager {
         }
         return newTile;
     }
+
+    /**
+     * @param {String} linkedFrameTileId - the frame tile linked to this art tile, if it is one
+     * @param {*} unlinkedDataID - if we're creating a new tile from the config rather than from the tile itself, it may have an unlinkedId
+     * @returns  - the created frame tile
+     * */
     static async createFrameTile(unlinkedDataID = "") {
         let newTile = await ArtTileManager.createTileInScene(true);
         if (newTile) {
@@ -277,16 +169,6 @@ class ArtTileManager {
             ui.notifications.error("New frame tile couldn't be created");
         }
         return newTile;
-    }
-
-    //  Used snippet from the below stackOverflow answer to help me with proportionally resizing the images
-    /*https://stackoverflow.com/questions/3971841/how-to-resize-images-proportionally-keeping-the-aspect-ratio*/
-    static calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
-        var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-        return {
-            width: srcWidth * ratio,
-            height: srcHeight * ratio,
-        };
     }
 
     static async convertToNewSystem() {
@@ -395,9 +277,10 @@ class ArtTileManager {
             ArtTileManager.displayTileNotFoundError(tileID);
         }
     }
-    static selectTile(tileID, sceneID = "") {
-        let tile = game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
+    static async selectTile(tileID, sceneID = "") {
+        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tile) {
+            await game.JTCS.utils.swapTools();
             tile.object.control({
                 releaseOthers: false,
             });
@@ -485,42 +368,3 @@ class ArtTileManager {
         await ArtTileManager.updateAllSceneTileFlags(tiles);
     }
 }
-
-Hooks.on("init", () => {
-    // my module needs to do something to set itself up (e.g. register settings)
-    // ...
-
-    // once set up, we create our API object
-    game.modules.get("journal-to-canvas-slideshow").api = {
-        displayImageInScene: ArtTileManager.displayImageInScene,
-        updateTileInScene: ArtTileManager.updateTileInScene,
-        scaleToScene: ArtTileManager.scaleToScene,
-        scaleToBoundingTile: ArtTileManager.scaleToBoundingTile,
-        createDisplayTile: ArtTileManager.createDisplayTile,
-        createFrameTile: ArtTileManager.createFrameTile,
-        getSceneSlideshowTiles: ArtTileManager.getSceneSlideshowTiles,
-        getDefaultData: ArtTileManager.getDefaultData,
-        getFrameTiles: ArtTileManager.getFrameTiles,
-        getDisplayTiles: ArtTileManager.getDisplayTiles,
-        getTileByID: ArtTileManager.getTileByID,
-        selectTile: ArtTileManager.selectTile,
-        renderTileConfig: ArtTileManager.renderTileConfig,
-        updateTileDataID: ArtTileManager.updateTileDataID,
-        updateSceneTileFlags: ArtTileManager.updateSceneTileFlags,
-        getTileDataFromFlag: ArtTileManager.getTileDataFromFlag,
-        getUnlinkedTileIDs: ArtTileManager.getUnlinkedTileIDs,
-        getMissingTiles: ArtTileManager.getMissingTiles,
-        deleteSceneTileData: ArtTileManager.deleteSceneTileData,
-        createTileIndicator: CanvasIndicators.createTileIndicator,
-        deleteTileIndicator: CanvasIndicators.deleteTileIndicator,
-        hideTileIndicator: CanvasIndicators.hideTileIndicator,
-        showTileIndicator: CanvasIndicators.showTileIndicator,
-        setUpIndicators: CanvasIndicators.setUpIndicators,
-        updateSceneIndicatorColors: CanvasIndicators.updateSceneColors,
-        updateUserIndicatorColors: CanvasIndicators.updateUserColors,
-    };
-
-    // now that we've created our API, inform other modules we are ready
-    // provide a reference to the module api as the hook arguments for good measure
-    Hooks.callAll("journalToCanvasSlideshowReady", game.modules.get("journal-to-canvas-slideshow").api);
-});

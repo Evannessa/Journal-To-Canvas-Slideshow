@@ -1,76 +1,16 @@
 "use strict";
-import { convertToNewSystem } from "./HooksAndFlags.js";
 import { log, MODULE_ID } from "./debug-mode.js";
-const baseTemplatePath = `modules/${MODULE_ID}/templates/`;
-const templateBaseNames = [
-    `tile-list-item.hbs`,
-    "tooltip.hbs",
-    "control-button.hbs",
-    `new-tile-list-item.hbs`,
-    `icon-button.hbs`,
-];
-const templates = [
-    `modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs`,
-    "modules/journal-to-canvas-slideshow/templates/tooltip.hbs",
-    "modules/journal-to-canvas-slideshow/templates/control-button.hbs",
-    `${baseTemplatePath}new-tile-list-item.hbs`,
-    `${baseTemplatePath}icon-button.hbs`,
-];
-function generateTemplates(templateBaseNameArray) {
-    let templates = templateBaseNameArray.map((baseName) => `${baseTemplatePath}${baseName}`);
-
-    return templates;
-}
-
-Hooks.on("renderSlideshowConfig", (app) => {
-    game.JTCSlideshowConfig = app;
-    // console.log(app);
-});
-Hooks.on("journalToCanvasSlideshowReady", async (api) => {
-    game.JTCS = api;
-});
-
-Hooks.on("init", () => {
-    let templates = generateTemplates(templateBaseNames);
-    loadTemplates(templates);
-});
-Hooks.on("createTile", async (tileDoc) => {
-    let tileID = tileDoc.id;
-    let sceneTiles = await game.JTCS.getSceneSlideshowTiles("", true);
-    let foundTileData = await game.JTCS.getTileDataFromFlag(tileID, sceneTiles);
-    await game.JTCS.setUpIndicators(foundTileData, tileDoc);
-});
-
-Hooks.on("canvasReady", async (canvas) => {
-    const isDebugging = game.modules.get("_dev-mode")?.api?.getPackageDebugValue(MODULE_ID);
-    //re-render the tile config
-    if (game.JTCSlideshowConfig && game.user.isGM && isDebugging) {
-        game.JTCSlideshowConfig.render(true);
-    }
-
-    //get tile data from scene flags
-    let ourAPI = game.modules.get("journal-to-canvas-slideshow")?.api;
-
-    let artTileDataArray = await ourAPI.getSceneSlideshowTiles("", true);
-
-    game.scenes.viewed.tiles.forEach((tileDoc) => {
-        let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
-
-        game.JTCS.setUpIndicators(foundTileData, tileDoc);
-    });
-});
 
 export class SlideshowConfig extends FormApplication {
     constructor(data) {
         super();
         this.data = data;
-        this.DTC = game.modules.get("journal-to-canvas-slideshow")?.api;
     }
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["form"],
             popOut: true,
-            resizeable: true,
+            resizable: true,
             template: "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
             id: "slideshow-config",
             title: "Slideshow Config",
@@ -79,7 +19,6 @@ export class SlideshowConfig extends FormApplication {
 
     async _handleHover(event) {
         let isLeave = event.type === "mouseleave" ? true : false;
-        let ourAPI = game.modules.get("journal-to-canvas-slideshow")?.api;
         // we want every hover over a tile to highlight the tiles it is linked to
         let hoveredElement = $(event.currentTarget);
         let type = hoveredElement.data().type;
@@ -113,15 +52,15 @@ export class SlideshowConfig extends FormApplication {
             return match;
         });
 
-        let tile = await ourAPI.getTileByID(id);
+        let tile = await game.JTCS.tileUtils.getTileByID(id);
         if (isLeave) {
             hoveredElement.removeClass("accent");
             $(otherListItems).removeClass("accent");
-            ourAPI.hideTileIndicator(tile);
+            game.JTCS.indicatorUtils.hideTileIndicator(tile);
         } else {
             hoveredElement.addClass("accent");
             $(otherListItems).addClass("accent");
-            ourAPI.showTileIndicator(tile);
+            game.JTCS.indicatorUtils.showTileIndicator(tile);
         }
     }
 
@@ -136,6 +75,32 @@ export class SlideshowConfig extends FormApplication {
             });
         });
     }
+    async showURLImage() {
+        new Dialog({
+            title: "Set url image",
+            content: `
+		  <form>
+			<div class="form-group">
+			  <label>Set url image</label>
+			  <input type='text' name='inputField'></input>
+			</div>
+		  </form>`,
+            buttons: {
+                yes: {
+                    icon: "<i class='fas fa-check'></i>",
+                    label: `Show Image to Players`,
+                },
+            },
+            default: "yes",
+            close: (html) => {
+                let result = html.find("input[name='inputField']");
+                if (result.val() !== "") {
+                    game.JTCS.dis;
+                    determineLocation(null, result.val());
+                }
+            },
+        }).render(true);
+    }
     async checkIfTileExistsInScene(tileID, tileData) {
         let tile = await game.modules.get("journal-to-canvas-slideshow")?.api.getTileByID(tileID);
         if (!tile) {
@@ -149,10 +114,13 @@ export class SlideshowConfig extends FormApplication {
         let ourScene = game.scenes.viewed;
         let shouldPromptConversion = false;
 
-        let artTileDataArray = await game.JTCS.getSceneSlideshowTiles("art", true);
-        let frameTileDataArray = await game.JTCS.getSceneSlideshowTiles("frame", true);
+        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true);
+        let frameTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true);
 
-        let unlinkedTileIDs = await game.JTCS.getUnlinkedTileIDs([...artTileDataArray, ...frameTileDataArray]);
+        let unlinkedTileIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs([
+            ...artTileDataArray,
+            ...frameTileDataArray,
+        ]);
 
         let oldBoundingTile = await findBoundingTile(ourScene);
         let oldDisplayTile = await findDisplayTile(ourScene);
@@ -203,25 +171,25 @@ export class SlideshowConfig extends FormApplication {
             case "createSlideshowTile":
                 if (type === "frame") {
                     //TODO: Link it to this data specifically
-                    await await game.JTCS.createFrameTile(tileID);
+                    await await game.JTCS.tileUtils.createFrameTile(tileID);
                 } else {
-                    await game.JTCS.createDisplayTile("", tileID);
+                    await game.JTCS.tileUtils.createDisplayTile("", tileID);
                 }
                 this.render(true);
                 break;
             case "renderTileConfig":
-                await game.JTCS.renderTileConfig(tileID);
+                await game.JTCS.tileUtils.renderTileConfig(tileID);
                 break;
             case "selectTile":
-                await game.JTCS.selectTile(tileID);
+                await game.JTCS.tileUtils.selectTile(tileID);
                 break;
             case "deleteTileData":
-                await game.JTCS.deleteSceneTileData(tileID);
+                await game.JTCS.tileUtils.deleteSceneTileData(tileID);
                 this.render(true);
                 break;
             case "add":
                 //we can create a new tile, or connect it to a tile that already exists
-                // await game.JTCS.deleteSceneTileData(tileID);
+                // await game.JTCS.tileUtils.deleteSceneTileData(tileID);
                 // this.render(true);
                 break;
         }
@@ -240,7 +208,7 @@ export class SlideshowConfig extends FormApplication {
         //     console.log("Key press", event);
         //     let value = event.currentTarget.value;
         //     // if (event.code === "Enter" && value) {
-        //     //     await game.JTCS.updateSceneTileFlags({
+        //     //     await game.JTCS.tileUtils.updateSceneTileFlags({
         //     //         id: `unlinked${foundry.utils.randomID()}`,
         //     //         displayName: value,
         //     //     });
@@ -289,7 +257,7 @@ export class SlideshowConfig extends FormApplication {
                     let selectedUnlinkedTileID = clickedElement[0].nextElementSibling.value;
                     tileID = `unlinked${foundry.utils.randomID()}`;
                     name = "displayName";
-                    // let foundInScene = await game.JTCS.getTileByID(selectedUnlinkedTileID);
+                    // let foundInScene = await game.JTCS.tileUtils.getTileByID(selectedUnlinkedTileID);
 
                     // if (foundInScene) {
                     //     name = "displayName"; //set the name here to the display name so we can use the already-created updateData object
@@ -307,7 +275,7 @@ export class SlideshowConfig extends FormApplication {
                         [name]: value,
                         ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
                     };
-                    await game.JTCS.updateSceneTileFlags(updateData, tileID);
+                    await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
                     game.JTCSlideshowConfig.render(true);
                 } else {
                     //tile is unlinked
