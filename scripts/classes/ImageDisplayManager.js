@@ -1,37 +1,58 @@
+import ImageVideoPopout from "./MultiMediaPopout.js";
 /**
  * This class manages the images specifically, setting and clearing the tiles' images
  */
 export class ImageDisplayManager {
-    static displayTileTexture = "/modules/journal-to-canvas-slideshow/assets/DarkBackground.webp";
-    static frameTileTexture = "/modules/journal-to-canvas-slideshow/assets/Bounding_Tile.webp";
-    static async displayImageInScene(imageElement, selectedTileID, boundingTileID) {
-        let url = imageElement.getAttribute("src");
+    static artTileDefaultTexture = "/modules/journal-to-canvas-slideshow/assets/DarkBackground.webp";
+    static frameTileDefaultTexture = "/modules/journal-to-canvas-slideshow/assets/Bounding_Tile.webp";
 
-        let displayTile = game.scenes.viewed.tiles.get(selectedTileID);
-
-        let boundingTile = game.scenes.viewed.tiles.get(boundingTileID);
-        if (!boundingTile) {
-            await game.JTCS.tileUtils.getTileByID(boundingTileID, game.scenes.viewed.id);
-        }
-
-        await game.JTCS.tileUtils.updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
+    static async setDefaultArtTileTexture(path) {
+        await game.JTCS.utils.setSettingValue("artTileDefaultTexture", path);
     }
 
-    static async updateTileInScene(displayTile, boundingTile, ourScene, url) {
+    static async getDefaultArtTileTexture() {
+        let texture = await game.JTCS.utils.getSettingValue("artTileDefaultTexture");
+        return texture;
+    }
+
+    static async setDefaultFrameTileTexture(path) {
+        await game.JTCS.utils.setSettingValue("frameTileDefaultTexture", path);
+    }
+    static async getDefaultFrameTileTexture() {
+        let texture = await game.JTCS.utils.getSettingValue("frameTileDefaultTexture");
+        return texture;
+    }
+
+    static async setArtJournal(journalEntryID) {
+        game.JTCS.artJournalID = journalEntryID;
+    }
+    static async setArtScene(sceneID) {
+        game.JTCS.artSceneID = sceneID;
+    }
+    // static async displayImageInScene(imageElement, selectedTileID, boundingTileID) {
+    //     await game.JTCS.tileUtils.updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
+    // }
+
+    static async updateTileObjectTexture(artTileID, frameTileID, imageElement) {
+        let ourScene = game.scenes.viewed;
+        let url = imageElement.getAttribute("src");
+        let artTile = game.scenes.viewed.tiles.get(artTileID);
+        let frameTile = game.scenes.viewed.tiles.get(frameTileID);
+
         //load the texture from the source
         const tex = await loadTexture(url);
         var imageUpdate;
 
-        if (!boundingTile) {
-            imageUpdate = await game.JTCS.tileUtils.scaleToScene(displayTile, tex, url);
+        if (!frameTile) {
+            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(artTile, tex, url);
         } else {
-            imageUpdate = await game.JTCS.tileUtils.scaleToBoundingTile(displayTile, boundingTile, tex, url);
+            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url);
         }
 
         const updated = await ourScene.updateEmbeddedDocuments("Tile", [imageUpdate]);
     }
 
-    static async scaleToScene(displayTile, tex, url) {
+    static async scaleArtTileToScene(displayTile, tex, url) {
         let displayScene = game.scenes.viewed;
         var dimensionObject = game.JTCS.tileUtils.calculateAspectRatioFit(
             tex.width,
@@ -84,7 +105,7 @@ export class ImageDisplayManager {
         // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
     }
 
-    static async scaleToBoundingTile(displayTile, boundingTile, tex, url) {
+    static async scaleArtTileToFrameTile(displayTile, boundingTile, tex, url) {
         var dimensionObject = game.JTCS.tileUtils.calculateAspectRatioFit(
             tex.width,
             tex.height,
@@ -129,7 +150,6 @@ export class ImageDisplayManager {
     static async displayImageInWindow(method, url) {
         let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
         // get the url from the image clicked in the journal
-        //if popout doesn't exist
         if (method == "window") {
             //if we would like to display in a new popout window
             let popout = new ImageVideoPopout(url, {

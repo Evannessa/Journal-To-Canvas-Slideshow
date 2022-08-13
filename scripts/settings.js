@@ -1,26 +1,39 @@
-export const registerSettings = function () {
-    // function register(moduleName="journal-to-canvas-slideshow", settingName, )
-    game.settings.register("journal-to-canvas-slideshow", "automatic", {
-        name: "Automatic",
-        hint: "Should every journal entry",
-        scope: "client",
-        config: true,
-        type: Boolean,
-        default: true,
+"use strict";
+import { MODULE_ID } from "./debug-mode.js";
+import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
+
+export const registerSettings = async function () {
+    await game.settings.registerMenu(MODULE_ID, "JTCSSettingsMenu", {
+        name: "JTCS Art Gallery Settings",
+        label: "Open JTCS Art Gallery Settings",
+        hint: "Configure extra Journal to Canvas Slideshow settings",
+        icon: "fas fa-bars",
+        type: JTCSSettingsApplication,
+        restricted: true,
     });
 
-    game.settings.register("journal-to-canvas-slideshow", "tileIndicatorColors", {
-        name: "Tile Indicator Colors",
-        hint: "Choose colors for the tile indicators",
-        scope: "client",
-        config: true,
+    await game.settings.register(MODULE_ID, "artGallerySettings", {
+        scope: "world", // "world" = sync to db, "client" = local storage
+        config: false, // we will use the menu above to edit this setting
         type: Object,
         default: {
-            frameTileColor: 0xff3300,
-            artTileColor: 0x2f2190,
-            unlinkedTileColor: 0xff33,
-        },
+            journalFadeOpacityData: {
+                name: "Journal Fade Opacity",
+                hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
+                value: 0.5,
+            },
+            indicatorColorData: {
+                name: "Tile Indicator Colors",
+                hint: "Choose colors for the tile indicators",
+                indicatorColors: {
+                    frameTileColor: 0xff3300,
+                    artTileColor: 0x2f2190,
+                    unlinkedTileColor: 0xff33,
+                },
+            },
+        }, // can be used to set up the default structure
     });
+
     game.settings.register("journal-to-canvas-slideshow", "journalFadeOpacity", {
         name: "Journal Fade Opacity",
         hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
@@ -93,28 +106,6 @@ export const registerSettings = function () {
     game.settings.register("journal-to-canvas-slideshow", "useActorSheetImages", {
         name: "Use Actor Sheet Images",
         hint: "If this is enabled, you can RIGHT CLICK on an image in an actor sheet to display it to your players. This is set to right click so it doesn't conflict with the default behavior of clicking on an actor's image.",
-        scope: "client",
-        config: true,
-        type: Boolean,
-        default: false,
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "displayWindowBehavior", {
-        name: "Display Window Behavior",
-        hint: "Would you like the display window to be a dedicated journal entry, or a new popout window that will appear each time you click on an image?",
-        scope: "client",
-        config: true,
-        type: String,
-        choices: {
-            journalEntry: "Dedicated Journal Entry",
-            newWindow: "New Window",
-        },
-        default: "journalEntry",
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "hideTileButtons", {
-        name: "Hide Tile Buttons",
-        hint: "Would you like to only show this module's scene control buttons in a separate window rather than all listed under the tile controls? \n This is so fewer buttons appear under the Tile control buttons \n Please switch to a different scene control and switch back if you activate this option to refresh the controls.",
         scope: "client",
         config: true,
         type: Boolean,

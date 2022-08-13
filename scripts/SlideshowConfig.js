@@ -122,18 +122,14 @@ export class SlideshowConfig extends FormApplication {
             ...frameTileDataArray,
         ]);
 
-        let oldBoundingTile = await findBoundingTile(ourScene);
-        let oldDisplayTile = await findDisplayTile(ourScene);
-        if (oldBoundingTile || oldDisplayTile) {
-            shouldPromptConversion = true;
-        }
         return {
             shouldActivateDisplayScene: this.shouldActivateDisplayScene,
-            promptConversion: shouldPromptConversion,
             artTiles: artTileDataArray,
             frameTiles: frameTileDataArray,
             unlinkedTiles: unlinkedTileIDs,
             currentSceneName: game.scenes.viewed.name,
+            allScenes: game.scenes.contents,
+            allJournals: game.journal.contents,
         };
     }
 
@@ -289,27 +285,3 @@ export class SlideshowConfig extends FormApplication {
 }
 
 window.SlideshowConfig = SlideshowConfig;
-export function findBoundingTile(ourScene) {
-    let tiles = ourScene.tiles.contents;
-    let boundingTile;
-    for (let tile of tiles) {
-        let hasFlag = tile.getFlag("journal-to-canvas-slideshow", "name") == "boundingTile";
-        if (hasFlag) {
-            boundingTile = tile;
-        }
-    }
-
-    return boundingTile;
-}
-function findDisplayTile(ourScene) {
-    //find the display tile in the scene
-    var ourTile;
-    var tiles = ourScene.tiles;
-    for (let tile of tiles) {
-        if (tile.data.flags["journal-to-canvas-slideshow"]?.name == "displayTile") {
-            ourTile = tile;
-        }
-    }
-
-    return ourTile;
-}

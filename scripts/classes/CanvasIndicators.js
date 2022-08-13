@@ -18,10 +18,11 @@ export class CanvasIndicators {
     }
 
     static getColors() {
-        let colors = { ...game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors") };
-        // colors.artTileColor = game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors").artTileColor || 0xff3300
-        // colors.frameTileColor = game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors").frameTileColor || 0x2f2190
-        // colors.unlinkedTileColor = game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors").unlinkedTileColor || 0xff33;
+        let colors = {};
+        // let colors = { ...game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors") };
+        colors.artTileColor = 0xff3300;
+        colors.frameTileColor = 0x2f2190;
+        colors.unlinkedTileColor = 0xff33;
         return colors;
     }
     static createTileIndicator(tileDocument, type = "art") {
@@ -45,6 +46,8 @@ export class CanvasIndicators {
             delete tileObject.overlayContainer;
         }
         let colors = CanvasIndicators.getColors();
+        if (!colors) {
+        }
         let color;
         let fillAlpha;
         let lineWidth;

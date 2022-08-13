@@ -5,7 +5,7 @@ import { ImageDisplayManager } from "./classes/ImageDisplayManager.js";
 import { CanvasIndicators } from "./classes/CanvasIndicators.js";
 import { registerSettings } from "./settings.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
-import ImageVideoPopout from "../classes/MultiMediaPopout.js";
+import ImageVideoPopout from "./classes/MultiMediaPopout.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
 import { SheetImageControls } from "./SheetImageControls.js";
 
@@ -54,10 +54,11 @@ Hooks.on("init", async () => {
     // once settings are set up, create our API object
     game.modules.get("journal-to-canvas-slideshow").api = {
         imageUtils: {
+            manager: ImageDisplayManager,
             displayImageInScene: ImageDisplayManager.displayImageInScene,
-            updateTileInScene: ImageDisplayManager.updateTileInScene,
-            scaleToScene: ImageDisplayManager.scaleToScene,
-            scaleToBoundingTile: ImageDisplayManager.scaleToBoundingTile,
+            updateTileInScene: ImageDisplayManager.updateTileObjectTexture,
+            scaleToScene: ImageDisplayManager.scaleArtTileToScene,
+            scaleToBoundingTile: ImageDisplayManager.scaleArtTileToFrameTile,
         },
         tileUtils: {
             createDisplayTile: ArtTileManager.createArtTile,

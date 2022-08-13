@@ -53,17 +53,6 @@ export class SheetImageControls {
      *
      * @param {Object} journalEntry - set a dedicated journal entry
      */
-    static async setDisplayJournal(journalEntry) {
-        game.JTCS.displayJournal = journalEntry;
-    }
-
-    /**
-     *
-     * @param {Object} displayScene - set a dedicated display
-     */
-    static async setDisplayScene(scene) {
-        game.JTCS.displayScene = scene;
-    }
 
     static async applyImageClasses(app, html) {
         if (game.user.isGM) {
@@ -352,21 +341,21 @@ export class SheetImageControls {
                 await game.JTCS.imageUtils.displayImageInScene(imageElement, journalSheet, url);
                 break;
             case "journalEntry":
-                await game.JTCS.imageUtils.displayImageInWindow(
+                await game.JTCS.imageUtils.manager.displayImageInWindow(
                     "journalEntry",
-                    game.JTCS.imageUtils.getImageSource(imageElement)
+                    game.JTCS.imageUtils.manager.getImageSource(imageElement)
                 );
                 break;
             case "window":
-                await game.JTCS.imageUtils.displayImageInWindow(
+                await game.JTCS.imageUtils.manager.displayImageInWindow(
                     "window",
-                    game.JTCS.imageUtils.getImageSource(imageElement)
+                    game.JTCS.imageUtils.manager.getImageSource(imageElement)
                 );
                 if (url != undefined) {
                     //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
                 } else {
                     //if not, it happened because of an image click, so find the information of the clicked image
-                    game.JTCS.imageUtils.getImageSource(imageElement, displayImageInWindow);
+                    game.JTCS.imageUtils.manager.getImageSource(imageElement, displayImageInWindow);
                 }
                 break;
         }
