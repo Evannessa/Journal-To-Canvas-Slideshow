@@ -76,6 +76,7 @@ Hooks.on("init", async () => {
             getUnlinkedTileIDs: ArtTileManager.getUnlinkedTileIDs,
             getMissingTiles: ArtTileManager.getMissingTiles,
             deleteSceneTileData: ArtTileManager.deleteSceneTileData,
+            getAllScenesWithSlideshowData: ArtTileManager.getAllScenesWithSlideshowData,
         },
         indicatorUtils: {
             createTileIndicator: CanvasIndicators.createTileIndicator,

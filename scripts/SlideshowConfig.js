@@ -101,13 +101,6 @@ export class SlideshowConfig extends FormApplication {
             },
         }).render(true);
     }
-    async checkIfTileExistsInScene(tileID, tileData) {
-        let tile = await game.modules.get("journal-to-canvas-slideshow")?.api.getTileByID(tileID);
-        if (!tile) {
-            tileData.missing = true;
-        }
-        return tileData;
-    }
 
     async getData() {
         //return data to template
@@ -122,14 +115,34 @@ export class SlideshowConfig extends FormApplication {
             ...frameTileDataArray,
         ]);
 
+        let allJournals = game.journal.contents;
+        let artJournal = await game.JTCS.utils.getSettingValue(
+            "artGallerySettings",
+            "dedicatedDisplayData.journal.value"
+        );
+
+        let artJournalData = {
+            options: allJournals,
+            value: artJournal,
+        };
+
+        let allScenes = await game.JTCS.tileUtils.getAllScenesWithSlideshowData();
+        let artScene = await game.JTCS.utils.getSettingValue("artGallerySettings", "dedicatedDisplayData.scene.value");
+        // let artScene = await game.JTCS.utils.getSettingValue("artScene");
+
+        let artSceneData = {
+            options: allScenes,
+            value: artScene,
+        };
+
         return {
             shouldActivateDisplayScene: this.shouldActivateDisplayScene,
             artTiles: artTileDataArray,
             frameTiles: frameTileDataArray,
             unlinkedTiles: unlinkedTileIDs,
             currentSceneName: game.scenes.viewed.name,
-            allScenes: game.scenes.contents,
-            allJournals: game.journal.contents,
+            artSceneData: artSceneData,
+            allJournals: artJournalData,
         };
     }
 
@@ -158,6 +171,7 @@ export class SlideshowConfig extends FormApplication {
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
         let tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
+
         // let tileID = elementType === "BUTTON" ? clickedElement[0].parentNode.dataset.id : clickedElement[0].dataset.id;
 
         switch (action) {
@@ -230,52 +244,76 @@ export class SlideshowConfig extends FormApplication {
         );
         this.handleChange();
     }
-    handleChange() {
+    async handleChange() {
+        async function handleTileItem(event, action) {
+            console.error("Tile item handled");
+            let { value, name, checked, type } = event.currentTarget;
+            let clickedElement = $(event.currentTarget);
+
+            if (value === "") {
+                //don't submit the input if there's no value
+                //TODO: Put an error message here
+                return;
+            }
+            let tileType = clickedElement[0].closest("li").dataset.type;
+            let isNewTile = false;
+
+            let tileID;
+            let isBoundingTile = tileType === "frame" ? true : false;
+            if (name === "newTileName") {
+                isNewTile = true;
+                tileID = `unlinked${foundry.utils.randomID()}`;
+                name = "displayName";
+            } else {
+                // if we're already a Slideshow tile, use this data
+                tileID = game.JTCSlideshowConfig.getIDFromListItem(clickedElement, ["INPUT", "SELECT"]);
+            }
+            console.log(tileID, name, "creatingNewTile");
+
+            if (tileID) {
+                let updateData = {
+                    id: tileID,
+                    [name]: value,
+                    ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
+                };
+                await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
+                game.JTCSlideshowConfig.render(true);
+            } else {
+                //tile is unlinked
+                // await game.JTCS.getTile;
+            }
+        }
         $("select, input[type='checkbox'], input[type='radio'], input[type='text']").on(
             "change",
             async function (event) {
-                let { value, name, checked, type } = event.currentTarget;
                 let clickedElement = $(event.currentTarget);
-                let tileType = clickedElement[0].closest("li").dataset.type;
-                let isNewTile = false;
+                // let hoverAction = clickedElement.data().hoverAction;
+                let action = clickedElement.data().action;
+                let value = clickedElement.val();
 
-                if (value === "") {
-                    //don't submit the input if there's no value
-                    //TODO: Put an error message here
-
-                    return;
-                }
-
-                let tileID;
-                let isBoundingTile = tileType === "frame" ? true : false;
-                if (name === "newTileName") {
-                    isNewTile = true;
-                    let selectedUnlinkedTileID = clickedElement[0].nextElementSibling.value;
-                    tileID = `unlinked${foundry.utils.randomID()}`;
-                    name = "displayName";
-                    // let foundInScene = await game.JTCS.tileUtils.getTileByID(selectedUnlinkedTileID);
-
-                    // if (foundInScene) {
-                    //     name = "displayName"; //set the name here to the display name so we can use the already-created updateData object
-                    //     tileID = `${unlinked}${foundry.utils.randomID()}`;
-                    //     // tileID = selectedUnlinkedTileID; // set the tile id to the selected ID value from the unlinked tiles
-                    // }
-                } else {
-                    // if we're already a Slideshow tile, use this data
-                    tileID = game.JTCSlideshowConfig.getIDFromListItem(clickedElement, ["INPUT", "SELECT"]);
-                }
-
-                if (tileID) {
-                    let updateData = {
-                        id: tileID,
-                        [name]: value,
-                        ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
-                    };
-                    await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
-                    game.JTCSlideshowConfig.render(true);
-                } else {
-                    //tile is unlinked
-                    // await game.JTCS.getTile;
+                switch (action) {
+                    case "setArtScene":
+                        await game.JTCS.utils.setSettingValue(
+                            "artGallerySettings",
+                            value,
+                            "dedicatedDisplayData.scene.value"
+                        );
+                        game.JTCSlideshowConfig.render(true);
+                        break;
+                    case "setArtJournal":
+                        await game.JTCS.utils.setSettingValue(
+                            "artGallerySettings",
+                            value,
+                            "dedicatedDisplayData.journal.value"
+                        );
+                        // await game.JTCS.utils.setSettingValue("artJournal", value);
+                        game.JTCSlideshowConfig.render(true);
+                        break;
+                    case "setFrameTile":
+                    case "setLinkedTileObject":
+                    case "createNewTileData":
+                        handleTileItem(event, action);
+                        break;
                 }
             }
         );

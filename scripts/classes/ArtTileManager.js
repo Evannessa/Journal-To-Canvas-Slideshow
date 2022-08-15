@@ -1,3 +1,4 @@
+import { MODULE_ID } from "../debug-mode.js";
 /**
  * This class manages the Art and Bounding Tiles, creating them, showing them in the Config, and
  * getting and setting their values
@@ -366,5 +367,11 @@ export class ArtTileManager {
         //filter out the tile that matches this
         tiles = tiles.filter((tileData) => tileData.id !== tileID);
         await ArtTileManager.updateAllSceneTileFlags(tiles);
+    }
+
+    static async getAllScenesWithSlideshowData() {
+        let slideshowScenes =
+            game.scenes.contents.filter((scene) => scene.data.flags[`${MODULE_ID}`]?.slideshowTiles) || [];
+        return slideshowScenes;
     }
 }

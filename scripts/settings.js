@@ -17,6 +17,26 @@ export const registerSettings = async function () {
         config: false, // we will use the menu above to edit this setting
         type: Object,
         default: {
+            colorSchemeData: {
+                name: "Color Scheme",
+                hint: "Which color scheme would you like to use?",
+                choices: {
+                    foundryDefault: "Default Foundry Color Scheme",
+                    jtcsDefault: "A Bluish Dark Theme",
+                },
+            },
+            dedicatedDisplayData: {
+                journal: {
+                    name: "Art Journal",
+                    value: "Art",
+                    hint: "Art Journal",
+                },
+                scene: {
+                    name: "Art Scene",
+                    value: "Art",
+                    hint: "Art Journal",
+                },
+            },
             journalFadeOpacityData: {
                 name: "Journal Fade Opacity",
                 hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
@@ -25,10 +45,10 @@ export const registerSettings = async function () {
             indicatorColorData: {
                 name: "Tile Indicator Colors",
                 hint: "Choose colors for the tile indicators",
-                indicatorColors: {
-                    frameTileColor: 0xff3300,
-                    artTileColor: 0x2f2190,
-                    unlinkedTileColor: 0xff33,
+                colors: {
+                    frameTileColor: "#cf4040",
+                    artTileColor: "#5e97ff",
+                    unlinkedTileColor: "#aaf3a2",
                 },
             },
         }, // can be used to set up the default structure
@@ -48,19 +68,6 @@ export const registerSettings = async function () {
             step: 10,
         },
     });
-    game.settings.register("journal-to-canvas-slideshow", "colorScheme", {
-        name: "Color Scheme",
-        hint: "Which color scheme would you like to use?",
-        scope: "client",
-        config: true,
-        type: String,
-        choices: {
-            foundryDefault: "Default Foundry Color Scheme",
-            jtcsDefault: "A Bluish Dark Theme",
-            // custom: "Pick your own colors",
-        },
-        default: "foundryDefault",
-    });
 
     game.settings.register("journal-to-canvas-slideshow", "imageSaveLocation", {
         name: "Save Location",
@@ -70,38 +77,6 @@ export const registerSettings = async function () {
         type: String,
         default: "displayScene",
     });
-    game.settings.register("journal-to-canvas-slideshow", "displayLocation", {
-        name: "Display Location",
-        hint: "Display clicked journal images in a dedicated display scene (default), in a separate window, or in any scene using a bounding tile.",
-        scope: "client",
-        config: true,
-        type: String,
-        choices: {
-            displayScene: "Display Scene",
-            window: "Window",
-            anyScene: "Any Scene",
-        },
-        default: "displayScene",
-        //	onChange: swapDisplayModes
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "autoShowDisplay", {
-        name: "Automatically Show Display",
-        hint: "Automatically activate the 'Display' scene or show the Display Journal/Window to players after clicking on a journal image",
-        scope: "client",
-        config: true,
-        type: Boolean,
-        default: false,
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "displayName", {
-        name: "Display Name",
-        hint: "What would you like to name the display scene, journal, or window?",
-        scope: "client",
-        config: true,
-        type: String,
-        default: "Display",
-    });
 
     game.settings.register("journal-to-canvas-slideshow", "useActorSheetImages", {
         name: "Use Actor Sheet Images",
@@ -110,19 +85,6 @@ export const registerSettings = async function () {
         config: true,
         type: Boolean,
         default: false,
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "hideHeaderToggle", {
-        name: "Hide Journal Header Toggle Button",
-        hint: "Would you like to show a button at the top of the journal that allows you to easily toggle, abbreviate it to an icon with no text, or hide it? \n Note that you'll have to close and reopen any journal entries for this to take effect.",
-        scope: "client",
-        config: true,
-        type: String,
-        choices: {
-            hide: "Hide Display Toggle Button",
-            show: "Show Toggle Button With Name",
-            iconOnly: "Show Button Icon Only",
-        },
     });
 
     game.settings.register("journal-to-canvas-slideshow", "showWelcomeMessage", {

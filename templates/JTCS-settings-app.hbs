@@ -1,0 +1,35 @@
+<form class="flexcol flow">
+    <div class="form-group-stacked">
+        <label for="artTileColor">Color for Art Tile Indicator</label>
+        <input
+            id="artTileColor"
+            type="text"
+            name="indicatorColorData.colors.artTileColor"
+            is="colorpicker-input"
+            data-responsive-color
+            value={{indicatorColorData.colors.artTileColor}}
+        />
+
+        <label for="frameTileColor">Color for Frame Tile Indicator</label>
+        <input
+            id="frameTileColor"
+            type="text"
+            name="indicatorColorData.colors.frameTileColor"
+            is="colorpicker-input"
+            data-responsive-color
+            value={{indicatorColorData.colors.frameTileColor}}
+        />
+
+        <label for="unlinkedTileColor">Color for Unlinked Tile Indicator</label>
+        <input
+            id="unlinkedTileColor"
+            type="text"
+            name="indicatorColorData.colors.unlinkedTileColor"
+            is="colorpicker-input"
+            value="{{indicatorColorData.colors.unlinkedTileColor}}"
+            data-responsive-color
+        />
+    </div>
+    {{! <button name="colored" is="colorpicker-button" data-responsive-color> }}
+    <input type="submit" />
+</form>

@@ -20,8 +20,8 @@ export class CanvasIndicators {
     static getColors() {
         let colors = {};
         // let colors = { ...game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors") };
-        colors.artTileColor = 0xff3300;
-        colors.frameTileColor = 0x2f2190;
+        colors.frameTileColor = 0xff3300;
+        colors.artTileColor = 0x2f2190;
         colors.unlinkedTileColor = 0xff33;
         return colors;
     }

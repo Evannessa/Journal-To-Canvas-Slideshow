@@ -34,7 +34,7 @@
 							to link this {{this.type}} data to, 
 							or create a new tile with this data.
 						</p>
-							<select name="unlinkedTiles" id="unlinkedTiles"> 
+							<select name="unlinkedTiles" id="unlinkedTiles" action="setLinkedTileObject"> 
 								<option value=""> Create New Tile </option>
 								{{#each this.unlinkedTiles as |unlinkedTileID|}}
 									<option data-id="{{unlinkedTileID}}" 
@@ -107,7 +107,7 @@
 				<label>Link this Tile to a Frame</label> 
 				<p class="notes"> Choose a tile to frame this tile's art, 
 					or let it scale to the scene's canvas.</p>
-				<select name="linkedBoundingTile" id="linkedBoundingTile">
+				<select name="linkedBoundingTile" id="linkedBoundingTile" action="setFrameTile">
 						<option value=""> Canvas As Frame </option>
 							{{#each this.allFrameTiles as |boundingTile|}}
 								<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" 

@@ -4,12 +4,20 @@
         <p class="flex0">Current Scene is:
             <span class="text-accent text-heavy">{{currentSceneName}}</span>
         </p>
-        <select name="artScene" id="artScene">
-            {{#each allScenes as |scene|}}
-                <option value="{{scene.id}}">{{scene.name}}</option>
+        <label for="artScene">Art Scene</label>
+        <select name="artScene" id="artScene" data-action="setArtScene">
+            {{#each artSceneData.options as |scene|}}
+                <option value="{{scene.id}}"
+                    {{#if (eq @root.artSceneData.value scene.id)}}
+                        selected 
+                    {{/if}}
+                >
+                    {{scene.name}}
+                </option>
             {{/each}}
         </select>
-        <select name="artJournal" id="artJournal">
+        <label for="artScene">Art Journal</label>
+        <select name="artJournal" id="artJournal" data-action="setArtJournal">
             {{#each allJournals as |journal|}}
                 <option value="{{journal.id}}">{{journal.name}}</option>
             {{/each}}
@@ -58,7 +66,7 @@
         </details>
 
     </div>
-    <footer>
+    {{!-- <footer>
         <fieldset class="toggle-button-group | flex-row rounded">
         
             <input
@@ -85,5 +93,5 @@
         
         </fieldset>
 
-    </footer>
+    </footer> --}}
 </form>

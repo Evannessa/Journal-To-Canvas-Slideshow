@@ -3,9 +3,10 @@ import { MODULE_ID } from "../debug-mode.js";
  * Form app to handle JTCS settings
  */
 export class JTCSSettingsApplication extends FormApplication {
-    constructor(data) {
+    constructor(data = {}) {
         super();
-        this.data = data;
+        // this.data = data;
+        this.data = game.JTCS.utils.getSettingValue("artGallerySettings");
     }
 
     static get defaultOptions() {
@@ -13,8 +14,11 @@ export class JTCSSettingsApplication extends FormApplication {
             classes: ["form"],
             popOut: true,
             resizable: true,
-            minimizeable: true,
-            template: `modules/${MODULE_ID}/templates/JTCSSettingsApplication.hbs`,
+            minimizable: true,
+            submitOnClose: true,
+            closeOnSubmit: false,
+            submitOnChange: true,
+            template: `modules/${MODULE_ID}/templates/JTCS-settings-app.hbs`,
             id: "JTCSSettingsApplication",
             title: " JTCSSettings Application",
         });
@@ -22,14 +26,14 @@ export class JTCSSettingsApplication extends FormApplication {
 
     getData() {
         // Send data to the template
-        let transformedData = {};
+        // let data = game.JTCS.utils.getSettingValue("artGallerySettings");
+        let data = this.data;
         return data;
     }
 
     activateListeners(html) {
         super.activateListeners(html);
-        this._handleButtonClick();
-        html.off(click).on(click, [data - action], this._handleButtonClick.bind(this));
+        html.off("click").on("click", ["data-action"], this._handleButtonClick.bind(this));
         this._handleChange();
     }
 
@@ -68,7 +72,9 @@ export class JTCSSettingsApplication extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        console.log(formData);
+        let expanded = expandObject(formData);
+        console.log(formData, expanded);
+        // game.JTCS.utils.setSettingValue("artGallerySettings", formData);
     }
 }
 

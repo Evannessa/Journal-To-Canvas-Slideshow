@@ -961,7 +961,6 @@ button.icon-button {
 }
 #slideshow-config .window-content {
   color: var(--color-text-primary);
-  width: min(600px, 45vw);
   max-height: calc(100vh - 200px);
 }
 #slideshow-config .window-content form {

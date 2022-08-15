@@ -14,13 +14,25 @@ export class HelperFunctions {
             console.error("Can't find that layer", ourLayer);
         }
     }
-    static async setSettingValue(settingName, settingValue) {
-        await game.settings.set(HelperFunctions.MODULE_ID, settingName, settingValue);
+    static async setSettingValue(settingName, settingValue, nestedKey = "") {
+        if (nestedKey) {
+            let prevValue = game.settings.get(HelperFunctions.MODULE_ID, settingName);
+            prevValue = flattenObject(prevValue); //flatten the nested keys into dot notation
+            prevValue[nestedKey] = settingValue;
+            prevValue = expandObject(prevValue);
+            await game.settings.set(HelperFunctions.MODULE_ID, settingName, prevValue);
+        } else {
+            await game.settings.set(HelperFunctions.MODULE_ID, settingName, settingValue);
+        }
     }
 
-    static async getSettingValue(settingName) {
+    static async getSettingValue(settingName, nestedKey = "") {
         let settingValue = game.settings.get(HelperFunctions.MODULE_ID, settingName);
         if (settingValue) {
+            if (nestedKey) {
+                settingValue = flattenObject(settingValue); //flatten the nested keys into dot notation
+                return settingValue[nestedKey];
+            }
             return settingValue;
         } else {
             console.error("Cannot find setting with name " + settingName);
