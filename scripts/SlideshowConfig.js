@@ -1,11 +1,48 @@
 "use strict";
 import { log, MODULE_ID } from "./debug-mode.js";
 
-export class SlideshowConfig extends FormApplication {
-    constructor(data) {
-        super();
+export class SlideshowConfig extends Application {
+    constructor(data = {}) {
+        // super({ renderData: { ...data } });
+        super(data);
         this.data = data;
+        console.error("Rendering with data", this.data, data);
     }
+    // 	async setupActionObjects(){
+    // 		this.data.actions = {
+    // 	click: [
+    // 		game.JTCS.utils.createEventActionObject("createSlideshowTile", async (data)=> {
+    // 			let {type} = data;
+    //   			if (type === "frame") {
+    //                     await game.JTCS.tileUtils.createFrameTile(tileID);
+    //                 } else {
+    //                     await game.JTCS.tileUtils.createDisplayTile("", tileID);
+    //                 }
+    // 		}, true),
+    // 		game.JTCS.utils.createEventActionObject("linkTile", async (data)=> {
+    // 				let {tileID} = data;
+    //                 await this.createTileLinkDialogue(tileID);
+    // 		}, false),
+    // 		game.JTCS.utils.createEventActionObject("renderTileConfig", (data)=> {
+
+    // 				let {tileID} = data;
+    // 			await this.renderTileConfig(tileID);
+    // 		}, false),
+    // 		game.JTCS.utils.createEventActionObject("selectTile", (data)=> {
+    // 				let {tileID} = data;
+    //                 await game.JTCS.tileUtils.selectTile(tileID);
+    // 		}, false),
+    // 		game.JTCS.utils.createEventActionObject("deleteTileData", (data)=> {
+    // 				let {tileID} = data;
+    // 				await game.JTCS.tileUtils.deleteSceneTileData(tileID);
+    // 		}, true)
+    // 	],
+    // 	onHover: [],
+    // 	onChange: [],
+    // 	onToggle: []
+    // }
+    // }
+
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["form"],
@@ -14,9 +51,44 @@ export class SlideshowConfig extends FormApplication {
             template: "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
             id: "slideshow-config",
             title: "Slideshow Config",
+            scrollY: ["details > ul"],
         });
     }
 
+    //for saving tab layouts and such
+    renderWithData() {
+        console.log(this.data);
+        this.render(true, this.data);
+        // this.render(true, { renderData: this.data });
+    }
+
+    async createTileLinkDialogue(tileID) {
+        //create a dialog to link to the tile, and use this as a callback
+        let onSubmitCallback = async (html) => {
+            let selectedID = html[0].querySelector("select").value;
+            await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
+            if (game.JTCSlideshowConfig?.rendered) {
+                await game.JTCSlideshowConfig.renderWithData();
+            }
+        };
+        let buttons = {
+            submit: {
+                label: "Link Tile",
+                icon: '<i class="fas fa-plus"></i>',
+                callback: onSubmitCallback,
+            },
+            cancel: {
+                label: "Cancel",
+            },
+        };
+        let linkedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+        let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(linkedTiles);
+        let templatePath = game.JTCS.utils.createTemplatePathString("tile-link-partial.hbs");
+        await game.JTCS.utils.createDialog("Tile Link Config", templatePath, {
+            buttons: buttons,
+            unlinkedTilesIDs: unlinkedTilesIDs,
+        });
+    }
     async _handleHover(event) {
         let isLeave = event.type === "mouseleave" ? true : false;
         // we want every hover over a tile to highlight the tiles it is linked to
@@ -102,6 +174,47 @@ export class SlideshowConfig extends FormApplication {
         }).render(true);
     }
 
+    async setToggleButtonState(buttonElement, isActive = true) {
+        buttonElement.classList.toggle("active");
+    }
+
+    async handleToggle(html) {
+        let details = html.find("details");
+        let toggleClassListener = (event, element) => {
+            if ($(element).attr("open")) {
+                $(element).find(".toggle-icon i").removeClass("fa-plus-square").addClass("fa-minus-square");
+            } else {
+                $(element).find(".toggle-icon i").removeClass("fa-minus-square").addClass("fa-plus-square");
+            }
+        };
+        let saveOpenState = (event) => {
+            let element = event.currentTarget;
+            console.log(element);
+            console.log(element.open);
+            let isOpen = element.open;
+            let elementData = game.JTCSlideshowConfig.data[element.id];
+            if (isOpen === undefined || isOpen === null) {
+                return;
+            }
+            if (elementData) {
+                elementData = { ...elementData, isOpen: isOpen };
+            } else {
+                game.JTCSlideshowConfig.data[element.id] = { isOpen: isOpen };
+            }
+        };
+
+        details.each((index, element) => {
+            element.addEventListener("toggle", (event) => {
+                toggleClassListener(event, element);
+            });
+            if (element.classList.contains("collapsible-wrapper")) {
+                element.addEventListener("toggle", (event) => {
+                    saveOpenState(event, element);
+                });
+            }
+        });
+    }
+
     async getData() {
         //return data to template
         let ourScene = game.scenes.viewed;
@@ -143,6 +256,7 @@ export class SlideshowConfig extends FormApplication {
             currentSceneName: game.scenes.viewed.name,
             artSceneData: artSceneData,
             allJournals: artJournalData,
+            ...this.data,
         };
     }
 
@@ -162,7 +276,6 @@ export class SlideshowConfig extends FormApplication {
 
     async _handleButtonClick(event) {
         let clickedElement = $(event.currentTarget);
-        console.log("Clicked element", clickedElement);
         event.stopPropagation();
         event.preventDefault();
         let action = clickedElement.data().action;
@@ -172,20 +285,33 @@ export class SlideshowConfig extends FormApplication {
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
         let tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
 
-        // let tileID = elementType === "BUTTON" ? clickedElement[0].parentNode.dataset.id : clickedElement[0].dataset.id;
+        // let data = { clickedElement: clickedElement, action: action, type: type, name: name, tileID: tileID };
+
+        // for (let actionObj of actions.click) {
+        //     if (actionObj.name === action) {
+        //         await actionObj.callback();
+        //     }
+        // }
+        // if (actionObj.shouldRenderAppOnAction) {
+        //     await this.renderWithData();
+        // }
 
         switch (action) {
             case "convert":
-                convertToNewSystem();
+                this.convertToNewSystem();
                 break;
             case "createSlideshowTile":
                 if (type === "frame") {
-                    //TODO: Link it to this data specifically
-                    await await game.JTCS.tileUtils.createFrameTile(tileID);
+                    await game.JTCS.tileUtils.createFrameTile(tileID);
                 } else {
                     await game.JTCS.tileUtils.createDisplayTile("", tileID);
                 }
-                this.render(true);
+                await this.renderWithData();
+                // this.render(true, { renderData: this.data });
+                break;
+            case "linkTile":
+                //link this data to an unlinked tile in the scene
+                await this.createTileLinkDialogue(tileID);
                 break;
             case "renderTileConfig":
                 await game.JTCS.tileUtils.renderTileConfig(tileID);
@@ -195,46 +321,16 @@ export class SlideshowConfig extends FormApplication {
                 break;
             case "deleteTileData":
                 await game.JTCS.tileUtils.deleteSceneTileData(tileID);
-                this.render(true);
-                break;
-            case "add":
-                //we can create a new tile, or connect it to a tile that already exists
-                // await game.JTCS.tileUtils.deleteSceneTileData(tileID);
-                // this.render(true);
+                await this.renderWithData();
+                // this.render(true, { renderData: this.data });
                 break;
         }
     }
 
-    /**
-     * display a mini form in place of the add button
-     */
-    async displayMiniConfigForm() {}
-
-    activateListeners(html) {
+    async activateListeners(html) {
         super.activateListeners(html);
-        let details = html.find("details");
-
-        // html.on("keyup", "input[type='text']", async (event) => {
-        //     console.log("Key press", event);
-        //     let value = event.currentTarget.value;
-        //     // if (event.code === "Enter" && value) {
-        //     //     await game.JTCS.tileUtils.updateSceneTileFlags({
-        //     //         id: `unlinked${foundry.utils.randomID()}`,
-        //     //         displayName: value,
-        //     //     });
-        //     //     console.log(value);
-        //     // }
-        // });
-
-        details.each((index, element) => {
-            element.addEventListener("toggle", (event) => {
-                if ($(element).attr("open")) {
-                    $(element).find(".toggle-icon i").removeClass("fa-plus-square").addClass("fa-minus-square");
-                } else {
-                    $(element).find(".toggle-icon i").removeClass("fa-minus-square").addClass("fa-plus-square");
-                }
-            });
-        });
+        // this.setupActionObjects();
+        this.handleToggle(html);
 
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.on(
@@ -277,7 +373,8 @@ export class SlideshowConfig extends FormApplication {
                     ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
                 };
                 await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
-                game.JTCSlideshowConfig.render(true);
+                await game.JTCSlideshowConfig.renderWithData();
+                // game.JTCSlideshowConfig.render(true, { renderData: this.data });
             } else {
                 //tile is unlinked
                 // await game.JTCS.getTile;
@@ -298,7 +395,7 @@ export class SlideshowConfig extends FormApplication {
                             value,
                             "dedicatedDisplayData.scene.value"
                         );
-                        game.JTCSlideshowConfig.render(true);
+                        await game.JTCSlideshowConfig.renderWithData();
                         break;
                     case "setArtJournal":
                         await game.JTCS.utils.setSettingValue(
@@ -307,7 +404,7 @@ export class SlideshowConfig extends FormApplication {
                             "dedicatedDisplayData.journal.value"
                         );
                         // await game.JTCS.utils.setSettingValue("artJournal", value);
-                        game.JTCSlideshowConfig.render(true);
+                        await game.JTCSlideshowConfig.renderWithData();
                         break;
                     case "setFrameTile":
                     case "setLinkedTileObject":
@@ -318,8 +415,6 @@ export class SlideshowConfig extends FormApplication {
             }
         );
     }
-
-    async _updateObject(event, formData) {}
 }
 
 window.SlideshowConfig = SlideshowConfig;

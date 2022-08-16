@@ -21,6 +21,7 @@ const templateBaseNames = [
     `icon-button.hbs`,
     `display-tile-config.hbs`,
     `image-controls.hbs`,
+    `tile-link-partial.hbs`,
 ];
 
 Hooks.on("init", async () => {
@@ -88,9 +89,12 @@ Hooks.on("init", async () => {
             updateUserIndicatorColors: CanvasIndicators.updateUserColors,
         },
         utils: {
+            createDialog: HelperFunctions.createDialog,
             swapTools: HelperFunctions.swapTools,
             setSettingValue: HelperFunctions.setSettingValue,
             getSettingValue: HelperFunctions.getSettingValue,
+            createTemplatePathString: createTemplatePathString,
+            createEventActionObject: HelperFunctions.createEventActionObject,
         },
     };
 
@@ -324,6 +328,9 @@ Hooks.on("preDeleteTile", async (app, element) => {
  * @returns
  */
 function generateTemplates(templateBaseNameArray) {
-    let templates = templateBaseNameArray.map((baseName) => `${baseTemplatePath}${baseName}`);
+    let templates = templateBaseNameArray.map((baseName) => createTemplatePathString(baseName));
     return templates;
+}
+export function createTemplatePathString(templateBaseName) {
+    return `${baseTemplatePath}${templateBaseName}`;
 }

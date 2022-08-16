@@ -26,7 +26,7 @@
         "scripts/ClickImageInJournal.js",
         "scripts/classes/MultiMediaPopout.js",
         "scripts/SlideshowConfig.js",
-        "scripts/HooksAndFlags.js",
+        "scripts/init.js",
         "scripts/DragDropIntoJournal.js",
         "scripts/classes/ArtTileManager.js",
         "scripts/classes/CanvasIndicators.js",

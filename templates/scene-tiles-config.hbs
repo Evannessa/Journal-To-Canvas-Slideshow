@@ -1,6 +1,6 @@
 <form autocomplete="off" class="flexcol flow">
 
-    <header>
+    <header class="flex0">
         <p class="flex0">Current Scene is:
             <span class="text-accent text-heavy">{{currentSceneName}}</span>
         </p>
@@ -28,10 +28,16 @@
 
     <div class="tilesInScene flow scroll-y 
                 hidden-overflow-x padding-medium 
-                border-block border-color-shadow"
+                border-block border-color-shadow
+				flexrow	
+				"
     >
 
-        <details>
+        <details class="collapsible-wrapper" id="artTileDetails"
+			{{#if (eq artDetails.open true)}}
+				open
+			{{/if}}
+		>
             <summary>
                 <h3>Art Tiles</h3>
             </summary>
@@ -51,7 +57,11 @@
             </ul>
         </details>
 
-        <details>
+        <details class="collapsible-wrapper" id="frameTileDetails" 
+			{{#if (eq frameDetails.open true)}}
+				open
+			{{/if}}
+		>
             <summary>
                 <h3>Frame Tiles</h3>
             </summary>
@@ -62,6 +72,10 @@
                         currentSceneName=@root.currentSceneName
                     }}
                 {{/each}}
+				{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
+                    type="frame"
+                }}
+
             </ul>
         </details>
 

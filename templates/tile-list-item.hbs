@@ -28,24 +28,7 @@
 						doesn't exist in scene " 
 						<span class="accent">{{this.currentSceneName}} " </span>.
 					</p>
-					<label>
-						Link to Tile In Scene
-						<p class="notes">Choose a tile object in this scene 
-							to link this {{this.type}} data to, 
-							or create a new tile with this data.
-						</p>
-							<select name="unlinkedTiles" id="unlinkedTiles" action="setLinkedTileObject"> 
-								<option value=""> Create New Tile </option>
-								{{#each this.unlinkedTiles as |unlinkedTileID|}}
-									<option data-id="{{unlinkedTileID}}" 
-										value="{{unlinkedTileID}}">
-										Tile:
-										{{unlinkedTileID}}
-									</option>
-								{{/each}}
-								
-							</select>
-					</label>
+				
 				{{else}}
 					<p class="hover-reveal--child focus-reveal--child">
 						{{combineToString "this is linked to" "<span>" 

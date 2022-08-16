@@ -79,92 +79,27 @@ export class HelperFunctions {
         await HelperFunctions.setSettingValue("showWelcomeMessage", false);
     }
 
-    static async createDialog() {
+    static async createDialog(title, content, data) {
         const options = {
             width: 600,
             height: 250,
         };
-        let myContent = function (val) {
-            return `<p>Create display and bounding tiles, set url image, and/or select which display location you'd like to use</p>
-		 <form>
-			<div class="form-group">
-			  <label>Set url image</label>
-			  <input type='text' name='inputField' value=${val}></input>
-			</div>
-		  </form>`;
-        };
-
+        let renderedHTML = await renderTemplate(content, data);
         let d = new Dialog(
             {
-                title: "Slideshow Config",
-                content: myContent(""),
-                buttons: {
-                    applyURLImage: {
-                        label: "Set URL Image",
-                        icon: "<i class='fa fa-eye'></i>",
-                        callback: (html) => {
-                            let result = html.find("input[name='inputField']");
-                            if (result.val() !== "") {
-                                determineLocation(null, result.val());
-                                d.data.content = myContent(result.val());
-                                d.render(true);
-                            }
-                        },
-                    },
-                    displayScene: {
-                        label: "Use Display Scene",
-                        icon: '<i class="fas fa-exchange-alt"></i>',
-                        callback: (html) => {
-                            setDisplayLocationInSettings("displayScene");
-                            let result = html.find("input[name='inputField']");
-                            d.data.content = myContent(result.val());
-                            d.render(true);
-                        },
-                    },
-                    anyScene: {
-                        label: "Use Any Scene With Bounding Tile",
-                        icon: '<i class="fas fa-exchange-alt"></i>',
-                        callback: (html) => {
-                            setDisplayLocationInSettings("anyScene");
-                            let result = html.find("input[name='inputField']");
-                            d.data.content = myContent(result.val());
-                            d.render(true);
-                        },
-                    },
-                    window: {
-                        label: "Use Window",
-                        icon: '<i class="fas fa-exchange-alt"></i>',
-                        callback: (html) => {
-                            setDisplayLocationInSettings("window");
-                            let result = html.find("input[name='inputField']");
-                            d.data.content = myContent(result.val());
-                            d.render(true);
-                        },
-                    },
-                    createDisplayTile: {
-                        label: "Create Display Tile",
-                        icon: "<i class='far fa-image'></i>",
-                        callback: (html) => {
-                            createDisplayTile(game.scenes.viewed);
-                            let result = html.find("input[name='inputField']");
-                            d.data.content = myContent(result.val());
-                            d.render(true);
-                        },
-                    },
-                    createBoundingTile: {
-                        label: "Create Bounding Tile",
-                        icon: "<i class='far fa-square'></i>",
-                        callback: (html) => {
-                            createBoundingTile();
-                            let result = html.find("input[name='inputField']");
-                            d.data.content = myContent(result.val());
-                            d.render(true);
-                        },
-                    },
-                },
+                title: title,
+                content: renderedHTML,
+                buttons: data.buttons,
             },
             options
         ).render(true);
+    }
+    static async createEventActionObject(name, callback, shouldRenderAppOnAction = false) {
+        return {
+            name: name,
+            callback: callback,
+            shouldRenderAppOnAction: shouldRenderAppOnAction,
+        };
     }
 }
 Handlebars.registerHelper("combineToString", function (...args) {

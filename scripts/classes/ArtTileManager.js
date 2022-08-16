@@ -58,9 +58,10 @@ export class ArtTileManager {
 
     static async createTileInScene(isFrameTile) {
         let ourScene = game.scenes.viewed;
-        let imgPath = isFrameTile ? ArtTileManager.frameTileTexture : ArtTileManager.displayTileTexture;
+        let imageManager = game.JTCS.imageUtils.manager;
+        let imgPath = isFrameTile ? imageManager.frameTileDefaultTexture : imageManager.artTileDefaultTexture;
         const tex = await loadTexture(imgPath);
-        let dimensionObject = ArtTileManager.calculateAspectRatioFit(
+        let dimensionObject = imageManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
             ourScene.data.width,
