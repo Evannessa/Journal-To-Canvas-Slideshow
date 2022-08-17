@@ -83,6 +83,28 @@
   --accent-color-2: var(--color-border-highlight);
   --color-accent: var(--foundry-purple-background);
 }
+.blank-button {
+  border: none;
+  background: transparent;
+}
+
+.fill-parent {
+  width: 100%;
+  height: 100%;
+}
+
+.reset-margin {
+  margin: 0;
+}
+
+.reset-padding {
+  padding: 0;
+}
+
+.full-parent-height {
+  height: 100%;
+}
+
 .flow > * + * {
   margin-top: var(--flow-space, 1em);
 }
@@ -460,6 +482,16 @@ button.icon-button {
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.35));
 }
 
+.item-wrapper {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 90% 10%;
+}
+
+.max-height-full-parent {
+  max-height: 100%;
+}
+
 .text-shadow {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -588,6 +620,17 @@ button.icon-button {
   left: 0;
   min-width: calc(100% + 10ch);
   max-width: 210%;
+}
+[data-title] .tooltip.tooltip-right {
+  left: unset;
+  top: 100%;
+  right: 100%;
+}
+[data-title] .tooltip.tooltip-wide {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: unset;
 }
 [data-title] .tooltip span {
   pointer-events: none;
@@ -969,10 +1012,6 @@ button.icon-button {
 #slideshow-config .window-content .tilesInScene {
   min-height: 50vh;
   max-height: 80vh;
-}
-#slideshow-config .window-content ul,
-#slideshow-config .window-content ol {
-  max-height: 50%;
 }
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);

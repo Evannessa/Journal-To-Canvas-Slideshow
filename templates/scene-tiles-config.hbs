@@ -25,60 +25,59 @@
 
 
     </header>
-
-    <div class="tilesInScene flow scroll-y 
-                hidden-overflow-x padding-medium 
-                border-block border-color-shadow
-				flexrow	
-				"
+    <section class="tilesInScene 
+                hidden-overflow-x hidden-overflow-y 
+				padding-medium border-block border-color-shadow
+				flexrow"
     >
-
-        <details class="collapsible-wrapper" id="artTileDetails"
-			{{#if (eq artDetails.open true)}}
-				open
-			{{/if}}
-		>
-            <summary>
-                <h3>Art Tiles</h3>
-            </summary>
-            <ul class="[ flow ] [ border-styled border-hover slight-rounded ]">
-                {{#each artTiles as |tile|}}
-                    {{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
-                        tile type="art"
-                        currentSceneName=@root.currentSceneName
-                        allFrameTiles=@root.frameTiles
-                    }}
-                {{/each}}
-                {{!-- "Add New List Item" --}}
-                {{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
+		<div class="wrapper max-height-full-parent flexcol">
+            <h3 class="flex0">Art Tiles</h3>
+			<div class="item-wrapper 
+			    [ border-styled border-hover 
+				slight-rounded ] "
+				>
+			
+            	<ul class="[ scroll-y 
+							hidden-overflow-x reset-padding ]">
+					{{#each artTiles as |tile|}}
+						{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
+							tile type="art"
+							currentSceneName=@root.currentSceneName
+							allFrameTiles=@root.frameTiles
+						}}
+					{{/each}}
+					{{!-- "Add New List Item" --}}
+				
+				</ul>
+				{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
                     type="art"
                     allBoundingTiles=artTiles
                 }}
-            </ul>
-        </details>
-
-        <details class="collapsible-wrapper" id="frameTileDetails" 
-			{{#if (eq frameDetails.open true)}}
-				open
-			{{/if}}
-		>
-            <summary>
-                <h3>Frame Tiles</h3>
-            </summary>
-            <ul class="[ flow ] [ border-styled border-hover slight-rounded ]">
-                {{#each frameTiles as |tile|}}
-                    {{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs" 
-                        type="frame" 
-                        currentSceneName=@root.currentSceneName
-                    }}
-                {{/each}}
+			</div>
+		</div>
+		<div class="wrapper max-height-full-parent flexcol">
+			<h3 class="flex0">Frame Tiles</h3>
+			<div class="item-wrapper
+						[ border-styled border-hover 
+						slight-rounded ]"
+			>
+			
+				<ul class="[ scroll-y ]
+						   [ hidden-overflow-x reset-padding ]"
+					>
+					{{#each frameTiles as |tile|}}
+						{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
+							type="frame"
+							currentSceneName=@root.currentSceneName
+						}}
+					{{/each}}
+				
+				</ul>
 				{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
-                    type="frame"
-                }}
-
-            </ul>
-        </details>
-
+						type="frame"
+				}}
+			</div>
+		</div>
     </div>
     {{!-- <footer>
         <fieldset class="toggle-button-group | flex-row rounded">

@@ -22,10 +22,7 @@
             min-height: 50vh;
             max-height: 80vh;
         }
-        ul,
-        ol {
-            max-height: 50%;
-        }
+
         .tile-list-item {
             select {
                 height: var(--form-field-height);
@@ -50,6 +47,11 @@
         h3 {
             font-weight: bold;
         }
+        // .new-tile-list-item {
+        //     position: absolute;
+        //     top: 0;
+        //     left: 0;
+        // }
     }
     // --color-text-primary: ;
 }

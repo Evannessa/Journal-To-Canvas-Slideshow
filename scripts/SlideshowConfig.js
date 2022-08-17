@@ -273,6 +273,44 @@ export class SlideshowConfig extends Application {
             : clickedElement[0].dataset.id;
         return tileID;
     }
+    async handleTileItem(event, action) {
+        let { value, name, checked, type } = event.currentTarget;
+        let clickedElement = $(event.currentTarget);
+
+        if (value === "") {
+            //don't submit the input if there's no value
+            //TODO: Put an error message here
+            return;
+        }
+        let tileType = clickedElement[0].closest("li").dataset.type;
+        let isNewTile = false;
+
+        let tileID;
+        let isBoundingTile = tileType === "frame" ? true : false;
+        if (name === "newTileName") {
+            isNewTile = true;
+            tileID = `unlinked${foundry.utils.randomID()}`;
+            name = "displayName";
+        } else {
+            // if we're already a Slideshow tile, use this data
+            tileID = game.JTCSlideshowConfig.getIDFromListItem(clickedElement, ["INPUT", "SELECT"]);
+        }
+        console.log(tileID, name, "creatingNewTile");
+
+        if (tileID) {
+            let updateData = {
+                id: tileID,
+                [name]: value,
+                ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
+            };
+            await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
+            await game.JTCSlideshowConfig.renderWithData();
+            // game.JTCSlideshowConfig.render(true, { renderData: this.data });
+        } else {
+            //tile is unlinked
+            // await game.JTCS.getTile;
+        }
+    }
 
     async _handleButtonClick(event) {
         let clickedElement = $(event.currentTarget);
@@ -324,6 +362,10 @@ export class SlideshowConfig extends Application {
                 await this.renderWithData();
                 // this.render(true, { renderData: this.data });
                 break;
+            case "createNewTileData":
+                await this.handleTileItem(event, action);
+                await this.renderWithData();
+                break;
         }
     }
 
@@ -341,45 +383,6 @@ export class SlideshowConfig extends Application {
         this.handleChange();
     }
     async handleChange() {
-        async function handleTileItem(event, action) {
-            console.error("Tile item handled");
-            let { value, name, checked, type } = event.currentTarget;
-            let clickedElement = $(event.currentTarget);
-
-            if (value === "") {
-                //don't submit the input if there's no value
-                //TODO: Put an error message here
-                return;
-            }
-            let tileType = clickedElement[0].closest("li").dataset.type;
-            let isNewTile = false;
-
-            let tileID;
-            let isBoundingTile = tileType === "frame" ? true : false;
-            if (name === "newTileName") {
-                isNewTile = true;
-                tileID = `unlinked${foundry.utils.randomID()}`;
-                name = "displayName";
-            } else {
-                // if we're already a Slideshow tile, use this data
-                tileID = game.JTCSlideshowConfig.getIDFromListItem(clickedElement, ["INPUT", "SELECT"]);
-            }
-            console.log(tileID, name, "creatingNewTile");
-
-            if (tileID) {
-                let updateData = {
-                    id: tileID,
-                    [name]: value,
-                    ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
-                };
-                await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
-                await game.JTCSlideshowConfig.renderWithData();
-                // game.JTCSlideshowConfig.render(true, { renderData: this.data });
-            } else {
-                //tile is unlinked
-                // await game.JTCS.getTile;
-            }
-        }
         $("select, input[type='checkbox'], input[type='radio'], input[type='text']").on(
             "change",
             async function (event) {
@@ -409,7 +412,7 @@ export class SlideshowConfig extends Application {
                     case "setFrameTile":
                     case "setLinkedTileObject":
                     case "createNewTileData":
-                        handleTileItem(event, action);
+                        this.handleTileItem(event, action);
                         break;
                 }
             }
