@@ -1,9 +1,4 @@
 export class CanvasIndicators {
-    //add flag to update indicator colors in scene
-    static async updateSceneColors() {}
-
-    //add flag to update indicator colors for user
-    static async updateUserColors() {}
     static async setUpIndicators(foundTileData, tileDoc) {
         if (!tileDoc) {
             ui.notifications.error("No tile doc was provided.");
@@ -13,19 +8,20 @@ export class CanvasIndicators {
         if (foundTileData) {
             type = foundTileData.isBoundingTile ? "frame" : "art";
         }
-        await game.JTCS.indicatorUtils.createTileIndicator(tileDoc, type);
-        await game.JTCS.indicatorUtils.hideTileIndicator(tileDoc, type);
+        await CanvasIndicators.createTileIndicator(tileDoc, type);
+        await CanvasIndicators.hideTileIndicator(tileDoc);
     }
 
-    static getColors() {
+    static async getColors() {
         let colors = {};
+        let settingsColors = await game.JTCS.utils.getSettingValue("artGallerySettings", "indicatorColorData.colors");
         // let colors = { ...game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors") };
-        colors.frameTileColor = 0xff3300;
-        colors.artTileColor = 0x2f2190;
-        colors.unlinkedTileColor = 0xff33;
+        colors.frameTileColor = settingsColors.frameTileColor || "#ff3300";
+        colors.artTileColor = settingsColors.artTileColor || "#2f2190";
+        colors.unlinkedTileColor = settingsColors.unlinkedTileColor || "#a2ff00";
         return colors;
     }
-    static createTileIndicator(tileDocument, type = "art") {
+    static async createTileIndicator(tileDocument, type = "art") {
         if (!tileDocument) {
             ui.notifications.warn("Tile document not supplied.");
             return;
@@ -45,11 +41,9 @@ export class CanvasIndicators {
             //delete the property itself that was storing it
             delete tileObject.overlayContainer;
         }
-        let colors = CanvasIndicators.getColors();
-        if (!colors) {
-        }
+        let colors = await CanvasIndicators.getColors();
         let color;
-        let fillAlpha;
+        let fillAlpha = 0.5;
         let lineWidth;
         switch (type) {
             case "frame":
@@ -69,6 +63,11 @@ export class CanvasIndicators {
             case "default":
                 break;
         }
+        // console.warn("Our color is ", colors);
+        // color = 0xff0000;
+        // color =
+        fillAlpha = 0.2;
+        color = PIXI.utils.string2hex(color); //convert string hex format
 
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
         let overlayGraphic = new PIXI.Graphics();
@@ -77,12 +76,10 @@ export class CanvasIndicators {
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
         tileObject.overlayContainer.addChild(overlayGraphic);
-        overlayGraphic.zIndex = 2000;
-        if (type === "art") overlayGraphic.zIndex = 2100;
-        // overlayGraphic.alpha = alpha;
+        // tileObject.overlayContainer.alpha = 0;
     }
 
-    static showTileIndicator(tileDocument, alpha = 1) {
+    static async showTileIndicator(tileDocument, alpha = 1) {
         if (!tileDocument) {
             console.warn("Tile document not supplied.");
             return;
@@ -94,9 +91,9 @@ export class CanvasIndicators {
             console.error("No overlay container found");
         }
     }
-    static hideTileIndicator(tileDocument) {
+    static async hideTileIndicator(tileDocument) {
         if (!tileDocument) {
-            console.error("No tile document supplied");
+            console.warn("No tile document supplied");
             return;
         }
         let tileObject = tileDocument.object;

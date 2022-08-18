@@ -1,12 +1,11 @@
-"use strict";
 import { log, MODULE_ID } from "./debug-mode.js";
+import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 
 export class SlideshowConfig extends Application {
     constructor(data = {}) {
         // super({ renderData: { ...data } });
         super(data);
         this.data = data;
-        console.error("Rendering with data", this.data, data);
     }
     // 	async setupActionObjects(){
     // 		this.data.actions = {
@@ -51,7 +50,7 @@ export class SlideshowConfig extends Application {
             template: "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
             id: "slideshow-config",
             title: "Slideshow Config",
-            scrollY: ["details > ul"],
+            scrollY: ["ul"],
         });
     }
 
@@ -140,7 +139,9 @@ export class SlideshowConfig extends Application {
         //get ids
         artTileDataArray.forEach((artTileData) => {
             //if we have a linked bounding tile
+
             let linkedFrameID = artTileData.linkedBoundingTile;
+
             frameTileDataArray.forEach((frameTileData) => {
                 if (frameTileData.id === linkedFrameID) {
                 }
@@ -180,6 +181,7 @@ export class SlideshowConfig extends Application {
 
     async handleToggle(html) {
         let details = html.find("details");
+
         let toggleClassListener = (event, element) => {
             if ($(element).attr("open")) {
                 $(element).find(".toggle-icon i").removeClass("fa-plus-square").addClass("fa-minus-square");
@@ -187,6 +189,7 @@ export class SlideshowConfig extends Application {
                 $(element).find(".toggle-icon i").removeClass("fa-minus-square").addClass("fa-plus-square");
             }
         };
+
         let saveOpenState = (event) => {
             let element = event.currentTarget;
             console.log(element);
@@ -207,6 +210,7 @@ export class SlideshowConfig extends Application {
             element.addEventListener("toggle", (event) => {
                 toggleClassListener(event, element);
             });
+
             if (element.classList.contains("collapsible-wrapper")) {
                 element.addEventListener("toggle", (event) => {
                     saveOpenState(event, element);
@@ -256,6 +260,7 @@ export class SlideshowConfig extends Application {
             currentSceneName: game.scenes.viewed.name,
             artSceneData: artSceneData,
             allJournals: artJournalData,
+            partials: game.JTCS.templates,
             ...this.data,
         };
     }
@@ -321,7 +326,10 @@ export class SlideshowConfig extends Application {
         let name = clickedElement.data().displayName;
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
-        let tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
+        let tileID;
+        if (clickedElement[0].parentNode.type === "LI") {
+            tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
+        }
 
         // let data = { clickedElement: clickedElement, action: action, type: type, name: name, tileID: tileID };
 
@@ -365,6 +373,9 @@ export class SlideshowConfig extends Application {
             case "createNewTileData":
                 await this.handleTileItem(event, action);
                 await this.renderWithData();
+                break;
+            case "showModuleSettings":
+                let settingsApp = new JTCSSettingsApplication().render(true);
                 break;
         }
     }

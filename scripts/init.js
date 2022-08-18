@@ -8,10 +8,13 @@ import { HelperFunctions } from "./classes/HelperFunctions.js";
 import ImageVideoPopout from "./classes/MultiMediaPopout.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
 import { SheetImageControls } from "./SheetImageControls.js";
+import { registerHelpers } from "./handlebars/register-helpers.js";
 
 const baseTemplatePath = `modules/${MODULE_ID}/templates/`;
 
 const renderSheetHooks = ["renderItemSheet", "renderActorSheet", "renderJournalSheet"];
+const createTileHooks = ["createTile", "updateTile", "deleteTile"];
+const indicatorSetupHooks = [...createTileHooks, "canvasReady"];
 
 const templateBaseNames = [
     `tile-list-item.hbs`,
@@ -24,11 +27,119 @@ const templateBaseNames = [
     `tile-link-partial.hbs`,
 ];
 
+/**
+ * This sets up most hooks we want to respond to in our code,
+ * grouping hooks with identical
+ * callbacks into arrays on an object
+ * @returns object containing registerHooks function
+ */
+const setupHookHandlers = async () => {
+    async function renderSlideshowConfig() {
+        if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+            game.JTCSlideshowConfig.render(false);
+        }
+    }
+    async function renderImageControls(args) {
+        let { app, html } = args;
+        if (!game.user.isGM) {
+            return;
+        }
+        await SheetImageControls.applyImageClasses(app, html);
+    }
+
+    async function updateCanvasIndicators(tileDoc) {
+        let tileID = tileDoc.id;
+        let sceneTiles = await ArtTileManager.getSceneSlideshowTiles("", true);
+        let foundTileData = await ArtTileManager.getTileDataFromFlag(tileID, sceneTiles);
+        await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+    }
+
+    async function addJTCSControls(controls) {
+        if (!game.user.isGM) {
+            return;
+        }
+        const tileControls = controls.find((control) => control?.name === "tiles");
+
+        tileControls.tools.push({
+            name: "ShowJTCSConfig",
+            title: "Show Slideshow Config",
+            icon: "far fa-image",
+            onClick: () => {
+                new SlideshowConfig().render(true);
+            },
+            button: true,
+        });
+        //push the clear display button regardless of what setting is selected
+        tileControls.tools.push({
+            name: "ClearDisplay",
+            title: "ClearDisplay",
+            icon: "fas fa-times-circle",
+            onClick: () => {
+                determineWhatToClear();
+            },
+            button: true,
+        });
+    }
+
+    const hookHandlers = {
+        renderImageControls: {
+            hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
+            handlerFunction: renderImageControls,
+        },
+        renderSlideshowConfig: {
+            hooks: ["createTile", "updateTile", "deleteTile", "canvasReady"],
+            handlerFunction: renderSlideshowConfig,
+        },
+        updateCanvasIndicators: {
+            hooks: ["createTile", "updateTile", "deleteTile"],
+            handlerFunction: updateCanvasIndicators,
+            specialHooks: [
+                {
+                    hookName: "canvasReady",
+                    handlerFunction: async (canvas) => {
+                        let tiles = canvas.scene.tiles;
+                        console.warn(tiles);
+                        let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
+                        tiles.forEach(async (tileDoc) => {
+                            let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+                            await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+                        });
+                    },
+                },
+            ],
+        },
+        addJTCSControls: {
+            hooks: ["getSceneControlButtons"],
+            handlerFunction: addJTCSControls,
+        },
+    };
+
+    async function registerHooks() {
+        for (let handlerKey in hookHandlers) {
+            let handler = hookHandlers[handlerKey];
+            if (handler.specialHooks) {
+                handler.specialHooks.forEach((specialHookData) => {
+                    let { hookName, callback: handlerFunction } = specialHookData;
+                    Hooks.on(hookName, callback);
+                });
+            }
+            for (let hookName of handler.hooks) {
+                Hooks.on(hookName, handler.handlerFunction);
+            }
+        }
+    }
+    return {
+        registerHooks: registerHooks,
+    };
+};
+
 Hooks.on("init", async () => {
     console.log("Initializing Journal to Canvas Slideshow");
 
     //register settings
     registerSettings();
+    registerHelpers();
+
     libWrapper.register(
         "journal-to-canvas-slideshow",
         "TextEditor._onDropEditorData",
@@ -52,8 +163,20 @@ Hooks.on("init", async () => {
         "MIXED"
     );
 
+    let templates = generateTemplates(templateBaseNames);
     // once settings are set up, create our API object
+
+    //map of template names w/ short keys
+
+    let mappedTemplates = {};
+
+    templates.forEach((path) => {
+        let baseName = path.split("/").pop().split(".").shift();
+        mappedTemplates[baseName] = path;
+    });
+
     game.modules.get("journal-to-canvas-slideshow").api = {
+        templates: mappedTemplates,
         imageUtils: {
             manager: ImageDisplayManager,
             displayImageInScene: ImageDisplayManager.displayImageInScene,
@@ -85,8 +208,6 @@ Hooks.on("init", async () => {
             hideTileIndicator: CanvasIndicators.hideTileIndicator,
             showTileIndicator: CanvasIndicators.showTileIndicator,
             setUpIndicators: CanvasIndicators.setUpIndicators,
-            updateSceneIndicatorColors: CanvasIndicators.updateSceneColors,
-            updateUserIndicatorColors: CanvasIndicators.updateUserColors,
         },
         utils: {
             createDialog: HelperFunctions.createDialog,
@@ -99,7 +220,6 @@ Hooks.on("init", async () => {
     };
 
     //load templates
-    let templates = generateTemplates(templateBaseNames);
     loadTemplates(templates);
 
     // now that we've created our API, inform other modules we are ready
@@ -109,7 +229,10 @@ Hooks.on("init", async () => {
 
 Hooks.on("journalToCanvasSlideshowReady", async (api) => {
     game.JTCS = api;
-    setUpSheetRenderHooks();
+    await (await setupHookHandlers()).registerHooks();
+    // await setupHookHandlers.registerHooks();
+    // setUpSheetRenderHooks();
+    // setUpIndicatorHooks();
 });
 
 Hooks.once("renderSlideshowConfig", (app) => {
@@ -124,12 +247,12 @@ Hooks.on("canvasReady", async (canvas) => {
     }
     //get tile data from scene flags
 
-    let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+    let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
 
     game.scenes.viewed.tiles.forEach(async (tileDoc) => {
         let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
 
-        await game.JTCS.indicatorUtils.setUpIndicators(foundTileData, tileDoc);
+        await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     });
 });
 
@@ -158,6 +281,16 @@ function setUpSheetRenderHooks() {
                 return;
             }
             await SheetImageControls.applyImageClasses(app, html);
+        });
+    });
+}
+function setUpIndicatorHooks() {
+    indicatorSetupHooks.forEach((hookName) => {
+        Hooks.on(hookName, async (app, html) => {
+            if (!game.user.isGM) {
+                return;
+            }
+            await CanvasIndicators.setUpIndicators();
         });
     });
 }
@@ -198,29 +331,6 @@ Hooks.on("createTile", async (tileDoc) => {
 
 Hooks.on("getSceneControlButtons", (controls) => {
     //controls refers to all of the controls
-    const tileControls = controls.find((control) => control?.name === "tiles");
-
-    if (game.user.isGM) {
-        tileControls.tools.push({
-            name: "ShowJTCSConfig",
-            title: "Show Slideshow Config",
-            icon: "far fa-image",
-            onClick: () => {
-                new SlideshowConfig().render(true);
-            },
-            button: true,
-        });
-        //push the clear display button regardless of what setting is selected
-        tileControls.tools.push({
-            name: "ClearDisplay",
-            title: "ClearDisplay",
-            icon: "fas fa-times-circle",
-            onClick: () => {
-                determineWhatToClear();
-            },
-            button: true,
-        });
-    }
 });
 
 async function insertImageIntoJournal(file, editor) {
@@ -265,23 +375,23 @@ Hooks.on("canvasReady", async (canvas) => {
     });
 });
 
-Hooks.on("createTile", () => {
-    if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
-        console.log("Shoud re-render");
-        game.JTCSlideshowConfig.render(false);
-    }
-});
+// Hooks.on("createTile", () => {
+//     if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+//         console.log("Shoud re-render");
+//         game.JTCSlideshowConfig.render(false);
+//     }
+// });
 
-Hooks.on("deleteTile", () => {
-    if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
-        game.JTCSlideshowConfig.render(true);
-    }
-});
-Hooks.on("updateTile", () => {
-    if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
-        game.JTCSlideshowConfig.render(false);
-    }
-});
+// Hooks.on("deleteTile", () => {
+//     if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+//         game.JTCSlideshowConfig.render(true);
+//     }
+// });
+// Hooks.on("updateTile", () => {
+//     if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+//         game.JTCSlideshowConfig.render(false);
+//     }
+// });
 
 Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;
@@ -289,8 +399,6 @@ Hooks.on("renderTileConfig", async (app, element) => {
     //get tiles with flags
     let flaggedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles();
     let defaultData = await game.JTCS.tileUtils.getDefaultData();
-
-    // let defaultData = { displayName: "", isBoundingTile: false, linkedBoundingTile: "" };
 
     //get data from tiles
     if (flaggedTiles) {
@@ -315,13 +423,13 @@ Hooks.on("renderTileConfig", async (app, element) => {
     }
 });
 
-/**
- * filter out the tile to be deleted
- */
-Hooks.on("preDeleteTile", async (app, element) => {
-    let tileID = app.object.data._id;
-    await game.JTCS.tileUtils.deleteSceneTileData(tileID);
-});
+// /**
+//  * filter out the tile to be deleted
+//  */
+// Hooks.on("preDeleteTile", async (app, element) => {
+//     let tileID = app.object.data._id;
+//     await game.JTCS.tileUtils.deleteSceneTileData(tileID);
+// });
 /**
  * TODO: Maybe place this in the helper functions?
  * @param {*} templateBaseNameArray

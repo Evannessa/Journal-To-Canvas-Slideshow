@@ -22,8 +22,13 @@
                 <option value="{{journal.id}}">{{journal.name}}</option>
             {{/each}}
         </select>
-
-
+		<div class="actions">
+			{{> (dynamicPartial "icon-button" partials)
+				action="showModuleSettings" 
+				icon="fas fa-cog" 
+				tooltipText="Open Journal-to-Canvas Slideshow Settings"
+			}}
+		</div>
     </header>
     <section class="tilesInScene 
                 hidden-overflow-x hidden-overflow-y 

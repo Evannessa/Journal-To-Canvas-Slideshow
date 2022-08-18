@@ -16,7 +16,7 @@ export class JTCSSettingsApplication extends FormApplication {
             resizable: true,
             minimizable: true,
             submitOnClose: true,
-            closeOnSubmit: false,
+            closeOnSubmit: true,
             submitOnChange: true,
             template: `modules/${MODULE_ID}/templates/JTCS-settings-app.hbs`,
             id: "JTCSSettingsApplication",
@@ -33,7 +33,7 @@ export class JTCSSettingsApplication extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html);
-        html.off("click").on("click", ["data-action"], this._handleButtonClick.bind(this));
+        html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         this._handleChange();
     }
 
@@ -49,6 +49,11 @@ export class JTCSSettingsApplication extends FormApplication {
 
     async _handleButtonClick(event) {
         let clickedElement = $(event.currentTarget);
+        if (clickedElement[0].type === "submit") {
+            return;
+        } else {
+            console.log(clickedElement[0]);
+        }
         event.stopPropagation();
         event.preventDefault();
         let action = clickedElement.data().action;
@@ -72,9 +77,8 @@ export class JTCSSettingsApplication extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        let expanded = expandObject(formData);
-        console.log(formData, expanded);
-        // game.JTCS.utils.setSettingValue("artGallerySettings", formData);
+        //right now, setting key for colors is like --- indicatorColorData.colors.artTileColor
+        await game.JTCS.utils.setSettingValue("artGallerySettings", formData, "", true);
     }
 }
 

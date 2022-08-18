@@ -14,26 +14,54 @@ export class HelperFunctions {
             console.error("Can't find that layer", ourLayer);
         }
     }
-    static async setSettingValue(settingName, settingValue, nestedKey = "") {
+
+    /**
+     *  Sets a value, using the "flattenObject" and "expandObject" utilities to reach a nested property
+     * @param {String} settingName - the name of the setting
+     * @param {*} updateData - the value you want to set a property to
+     * @param {String} nestedKey - a string of dot-separated values to refer to a nested property
+     */
+    static async setSettingValue(settingName, updateData, nestedKey = "", isFormData = false) {
+        if (isFormData) {
+            let currentSettingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
+            updateData = expandObject(updateData); //get expanded object version of formdata keys, which were strings in dot notation previously
+            updateData = mergeObject(currentSettingData, updateData);
+        }
         if (nestedKey) {
             let prevValue = game.settings.get(HelperFunctions.MODULE_ID, settingName);
             prevValue = flattenObject(prevValue); //flatten the nested keys into dot notation
-            prevValue[nestedKey] = settingValue;
+
+            //the nested key parameter will also be in dot notation, to directly set the nested value
+            prevValue[nestedKey] = updateData;
+
             prevValue = expandObject(prevValue);
             await game.settings.set(HelperFunctions.MODULE_ID, settingName, prevValue);
         } else {
-            await game.settings.set(HelperFunctions.MODULE_ID, settingName, settingValue);
+            await game.settings.set(HelperFunctions.MODULE_ID, settingName, updateData);
         }
     }
 
     static async getSettingValue(settingName, nestedKey = "") {
-        let settingValue = game.settings.get(HelperFunctions.MODULE_ID, settingName);
-        if (settingValue) {
+        let settingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
+        if (settingData) {
             if (nestedKey) {
-                settingValue = flattenObject(settingValue); //flatten the nested keys into dot notation
-                return settingValue[nestedKey];
+                let nestedSettingData = flattenObject(settingData); //flatten the nested keys into dot notation
+
+                //Object.entires returns an array of arrays of key-value pairs [['key-a'],['value-a'], ['key-b'], ['value-b']]
+                // filter that array by the key that matches the "nestedKey" parameter, then convert back into an Object using fromEntries
+
+                // prettier-ignore
+                nestedSettingData = expandObject(
+                		Object.fromEntries(
+							Object.entries(nestedSettingData).filter(([key]) => 
+								key.includes(nestedKey)
+							)
+						)
+                	);
+
+                return nestedSettingData;
             }
-            return settingValue;
+            return settingData;
         } else {
             console.error("Cannot find setting with name " + settingName);
         }
@@ -102,12 +130,3 @@ export class HelperFunctions {
         };
     }
 }
-Handlebars.registerHelper("combineToString", function (...args) {
-    args.pop();
-    let sentence = args.join(" ");
-    return new Handlebars.SafeString(sentence);
-});
-
-Handlebars.registerHelper("ternary", function (test, yes, no) {
-    return test ? yes : no;
-});
