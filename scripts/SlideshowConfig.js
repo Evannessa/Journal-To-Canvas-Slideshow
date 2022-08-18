@@ -56,7 +56,6 @@ export class SlideshowConfig extends Application {
 
     //for saving tab layouts and such
     renderWithData() {
-        console.log(this.data);
         this.render(true, this.data);
         // this.render(true, { renderData: this.data });
     }
@@ -123,7 +122,7 @@ export class SlideshowConfig extends Application {
             return match;
         });
 
-        let tile = await game.JTCS.tileUtils.getTileByID(id);
+        let tile = await game.JTCS.tileUtils.getTileObjectByID(id);
         if (isLeave) {
             hoveredElement.removeClass("accent");
             $(otherListItems).removeClass("accent");
@@ -245,7 +244,6 @@ export class SlideshowConfig extends Application {
 
         let allScenes = await game.JTCS.tileUtils.getAllScenesWithSlideshowData();
         let artScene = await game.JTCS.utils.getSettingValue("artGallerySettings", "dedicatedDisplayData.scene.value");
-        // let artScene = await game.JTCS.utils.getSettingValue("artScene");
 
         let artSceneData = {
             options: allScenes,
@@ -259,7 +257,7 @@ export class SlideshowConfig extends Application {
             unlinkedTiles: unlinkedTileIDs,
             currentSceneName: game.scenes.viewed.name,
             artSceneData: artSceneData,
-            allJournals: artJournalData,
+            artJournalData: artJournalData,
             partials: game.JTCS.templates,
             ...this.data,
         };
@@ -417,7 +415,6 @@ export class SlideshowConfig extends Application {
                             value,
                             "dedicatedDisplayData.journal.value"
                         );
-                        // await game.JTCS.utils.setSettingValue("artJournal", value);
                         await game.JTCSlideshowConfig.renderWithData();
                         break;
                     case "setFrameTile":

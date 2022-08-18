@@ -76,7 +76,7 @@ export class CanvasIndicators {
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
         tileObject.overlayContainer.addChild(overlayGraphic);
-        // tileObject.overlayContainer.alpha = 0;
+        tileObject.overlayContainer.alpha = 0;
     }
 
     static async showTileIndicator(tileDocument, alpha = 1) {

@@ -1,3 +1,4 @@
+import { ArtTileManager } from "./ArtTileManager.js";
 import ImageVideoPopout from "./MultiMediaPopout.js";
 /**
  * This class manages the images specifically, setting and clearing the tiles' images
@@ -29,9 +30,6 @@ export class ImageDisplayManager {
     static async setArtScene(sceneID) {
         game.JTCS.artSceneID = sceneID;
     }
-    // static async displayImageInScene(imageElement, selectedTileID, boundingTileID) {
-    //     await game.JTCS.tileUtils.updateTileInScene(displayTile, boundingTile, game.scenes.viewed, url);
-    // }
 
     static async updateTileObjectTexture(artTileID, frameTileID, imageElement) {
         let ourScene = game.scenes.viewed;
@@ -40,6 +38,11 @@ export class ImageDisplayManager {
         let frameTile = game.scenes.viewed.tiles.get(frameTileID);
 
         //load the texture from the source
+        if (!artTile || !url) {
+            ui.notifications.error("Tile  or image not found");
+            console.error(url, artTile, artTileID);
+            return;
+        }
         const tex = await loadTexture(url);
         var imageUpdate;
 
@@ -54,7 +57,7 @@ export class ImageDisplayManager {
 
     static async scaleArtTileToScene(displayTile, tex, url) {
         let displayScene = game.scenes.viewed;
-        var dimensionObject = game.JTCS.tileUtils.calculateAspectRatioFit(
+        var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
             displayScene.data.width,
@@ -106,7 +109,7 @@ export class ImageDisplayManager {
     }
 
     static async scaleArtTileToFrameTile(displayTile, boundingTile, tex, url) {
-        var dimensionObject = game.JTCS.tileUtils.calculateAspectRatioFit(
+        var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
             boundingTile.data.width,
@@ -148,30 +151,34 @@ export class ImageDisplayManager {
         };
     }
     static async displayImageInWindow(method, url) {
-        let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
+        // let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
         // get the url from the image clicked in the journal
-        if (method == "window") {
-            //if we would like to display in a new popout window
-            let popout = new ImageVideoPopout(url, {
-                shareable: true,
-            })
-                .render(true)
-                .shareImage();
-        } else if (method == "journalEntry") {
+        if (method === "journalEntry") {
+            let dedicatedDisplayData = await game.JTCS.utils.getSettingValue(
+                "artGallerySettings",
+                "dedicatedDisplayData"
+            );
+            let displayJournal = dedicatedDisplayData.journal;
             //if we would like to display in a dedicated journal entry
-            if (!findDisplayJournal()) {
+            if (!displayJournal) {
                 //couldn't find display journal, so return
-                ui.notifications.error(`No journal entry named ${displayName} found`);
+                ui.notifications.error(
+                    `No Art Journal entry set! Please set your art journal in the module settings or Art Gallery Config`
+                );
                 return;
             } else {
                 displayJournal.render(true);
             }
+
+            //get the file type of the image url via regex match
             var fileTypePattern = /\.[0-9a-z]+$/i;
             var fileType = url.match(fileTypePattern);
+
+            let journalMode = "image";
             let update;
 
             if (fileType == ".mp4" || fileType == ".webm") {
-                // if the file type is a video
+                // if the file type is a video, we have to do a bit of a wonky workaround
                 let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
 			<video width="100%" height="auto" autoplay loop>
   				<source src=${url} type="video/mp4">
@@ -185,9 +192,7 @@ export class ImageDisplayManager {
                     content: videoHTML,
                     img: "",
                 };
-
-                const updated = await displayJournal.update(update, {});
-                displayJournal.show("text", true);
+                imageMode = "text";
             } else {
                 //change the background image to be the clicked image in the journal
                 update = {
@@ -195,9 +200,17 @@ export class ImageDisplayManager {
                     content: "",
                     img: url,
                 };
-                const updated = await displayJournal.update(update, {});
-                displayJournal.show("image", true);
             }
+            const updated = await displayJournal.update(update, {});
+            displayJournal.show(journalMode, true);
+        } else if (method === "window") {
+            //if we would like to display in a new popout window
+            let popout = new ImageVideoPopout(url, {
+                shareable: true,
+            })
+                .render(true)
+                .shareImage();
+        } else if (method === "journalEntry") {
         }
     }
 

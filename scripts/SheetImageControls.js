@@ -220,7 +220,7 @@ export class SheetImageControls {
             log(false, ["No tile with this id ", tileID, "found in scene", sceneID]);
             return;
         }
-        let tile = await game.JTCS.tileUtils.getTileByID(tileID);
+        let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
         if (isLeave) {
             await game.JTCS.indicatorUtils.hideTileIndicator(tile);
         } else {
@@ -235,9 +235,9 @@ export class SheetImageControls {
         //get location data
         let imageData = await SheetImageControls.getJournalImageFlagData(journalSheet.object, imgElement);
         if (imageData.displayLocation) {
-            determineDisplayLocation(imgElement, imageData.displayLocation, journalSheet);
+            await SheetImageControls.determineDisplayLocation(imgElement, imageData.displayLocation, journalSheet);
         } else {
-            determineDisplayLocation(imgElement, "displayScene", journalSheet);
+            await SheetImageControls.determineDisplayLocation(imgElement, "displayScene", journalSheet);
         }
     }
 
@@ -287,7 +287,7 @@ export class SheetImageControls {
     static async onTileButtonLabelHover(event, data = {}) {
         let isLeave = event.type === "mouseout" || event.type === "mouseleave";
         let tileID = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
-        let tile = await game.JTCS.tileUtils.getTileByID(tileID);
+        let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
 
         if (isLeave) {
             await game.JTCS.indicatorUtils.hideTileIndicator(tile);
@@ -323,6 +323,25 @@ export class SheetImageControls {
         return imageFlagData.scenesData?.find((obj) => obj.sceneID === currentSceneID); //want to get the specific data for the current scene
     }
 
+    static async getGalleryTileIDsFromImage(imageElement, journalSheet) {
+        let imageData = await SheetImageControls.getJournalImageFlagData(journalSheet.object, imageElement);
+        if (!imageData) {
+            console.error("could not get data from that sheet and element");
+            return;
+        }
+        imageData = await SheetImageControls.getSceneSpecificImageData(imageData);
+        let artTileID = imageData.selectedTileID;
+        let frameTileID = game.JTCS.tileUtils.getLinkedFrameID;
+        if (!artTileID) {
+            console.error("Image data has no tile ID");
+            return;
+        }
+        return {
+            artTileID: artTileID,
+            frameTileID: frameTileID,
+        };
+    }
+
     /**
      * determine the location of the display
      * @param {*} imageElement - the imageElement
@@ -331,14 +350,22 @@ export class SheetImageControls {
      * @param {*} url
      */
     static async determineDisplayLocation(imageElement, location, journalSheet, url = "") {
-        // event.stopPropagation();
+        let galleryTileIDs = await SheetImageControls.getGalleryTileIDsFromImage(imageElement, journalSheet);
 
+        // let tileID = imageElement.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
+        // let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
         //on click, this method will determine if the image should open in a scene or in a display journal
         switch (location) {
             case "displayScene":
             case "anyScene":
                 //if the setting is to display it in a scene, proceed as normal
-                await game.JTCS.imageUtils.displayImageInScene(imageElement, journalSheet, url);
+                if (!galleryTileIDs) {
+                    ui.notifications.error("No gallery tile found");
+                    return;
+                }
+                let { artTileID, frameTileID } = galleryTileIDs;
+                await game.JTCS.imageUtils.updateTileObjectTexture(artTileID, frameTileID, imageElement);
+                // await game.JTCS.imageUtils.displayImageInScene(imageElement, journalSheet, url);
                 break;
             case "journalEntry":
                 await game.JTCS.imageUtils.manager.displayImageInWindow(

@@ -269,16 +269,6 @@ export class ArtTileManager {
         }
     }
 
-    static showTileBorder(tileID, strength = 10, sceneID = "") {
-        let tile = game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
-        if (tile) {
-            let filterBlur = new PIXI.filters.BlurFilter();
-            filterBlur.blur = strength;
-            tile._object.filters = [filterBlur];
-        } else {
-            ArtTileManager.displayTileNotFoundError(tileID);
-        }
-    }
     static async selectTile(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tile) {
@@ -291,6 +281,13 @@ export class ArtTileManager {
         }
     }
 
+    static async getLinkedFrameID(tileID, flaggedTiles) {
+        let tileData = await ArtTileManager.getTileDataFromFlag(tileID, flaggedTiles);
+        if (!tileData) {
+            console.error("Could not find tile data with that ID");
+        }
+        return tileData.linkedBoundingTile;
+    }
     /**
      * Get the DisplayTile data
      * @param {string} tileID - the id of the tile in scene we're looking to filter
@@ -313,7 +310,7 @@ export class ArtTileManager {
             return defaultData;
         }
     }
-    static async getTileByID(tileID, sceneID = "") {
+    static async getTileObjectByID(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tileID.includes === "new") {
             console.log("New tile created");

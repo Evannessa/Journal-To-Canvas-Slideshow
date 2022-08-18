@@ -18,8 +18,14 @@
         </select>
         <label for="artScene">Art Journal</label>
         <select name="artJournal" id="artJournal" data-action="setArtJournal">
-            {{#each allJournals as |journal|}}
-                <option value="{{journal.id}}">{{journal.name}}</option>
+            {{#each artJournalData.options as |journal|}}
+                <option value="{{journal.id}}"
+					{{#if (eq @root.artJournalData.value journal.id)}}	
+						selected
+					{{/if}}
+				>
+					{{journal.name}}
+				</option>
             {{/each}}
         </select>
 		<div class="actions">

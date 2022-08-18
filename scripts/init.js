@@ -39,11 +39,11 @@ const setupHookHandlers = async () => {
             game.JTCSlideshowConfig.render(false);
         }
     }
-    async function renderImageControls(args) {
-        let { app, html } = args;
+    async function renderImageControls(app, html) {
         if (!game.user.isGM) {
             return;
         }
+        // console.error(app, html, args);
         await SheetImageControls.applyImageClasses(app, html);
     }
 
@@ -87,7 +87,15 @@ const setupHookHandlers = async () => {
             handlerFunction: renderImageControls,
         },
         renderSlideshowConfig: {
-            hooks: ["createTile", "updateTile", "deleteTile", "canvasReady"],
+            hooks: [
+                "createTile",
+                "updateTile",
+                "deleteTile",
+                "canvasReady",
+                "createJournalEntry",
+                "updateJournalEntry",
+                "deleteJournalEntry",
+            ],
             handlerFunction: renderSlideshowConfig,
         },
         updateCanvasIndicators: {
@@ -98,7 +106,6 @@ const setupHookHandlers = async () => {
                     hookName: "canvasReady",
                     handlerFunction: async (canvas) => {
                         let tiles = canvas.scene.tiles;
-                        console.warn(tiles);
                         let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
                         tiles.forEach(async (tileDoc) => {
                             let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
@@ -119,7 +126,7 @@ const setupHookHandlers = async () => {
             let handler = hookHandlers[handlerKey];
             if (handler.specialHooks) {
                 handler.specialHooks.forEach((specialHookData) => {
-                    let { hookName, callback: handlerFunction } = specialHookData;
+                    let { hookName, handlerFunction: callback } = specialHookData;
                     Hooks.on(hookName, callback);
                 });
             }
@@ -180,7 +187,7 @@ Hooks.on("init", async () => {
         imageUtils: {
             manager: ImageDisplayManager,
             displayImageInScene: ImageDisplayManager.displayImageInScene,
-            updateTileInScene: ImageDisplayManager.updateTileObjectTexture,
+            updateTileObjectTexture: ImageDisplayManager.updateTileObjectTexture,
             scaleToScene: ImageDisplayManager.scaleArtTileToScene,
             scaleToBoundingTile: ImageDisplayManager.scaleArtTileToFrameTile,
         },
@@ -191,7 +198,7 @@ Hooks.on("init", async () => {
             getDefaultData: ArtTileManager.getDefaultData,
             getFrameTiles: ArtTileManager.getFrameTiles,
             getDisplayTiles: ArtTileManager.getDisplayTiles,
-            getTileByID: ArtTileManager.getTileByID,
+            getTileObjectByID: ArtTileManager.getTileObjectByID,
             selectTile: ArtTileManager.selectTile,
             renderTileConfig: ArtTileManager.renderTileConfig,
             updateTileDataID: ArtTileManager.updateTileDataID,
