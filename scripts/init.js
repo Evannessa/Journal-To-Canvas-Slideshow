@@ -47,11 +47,20 @@ const setupHookHandlers = async () => {
         await SheetImageControls.applyImageClasses(app, html);
     }
 
-    async function updateCanvasIndicators(tileDoc) {
+    async function updateGalleryTileIndicator(tileDoc) {
         let tileID = tileDoc.id;
         let sceneTiles = await ArtTileManager.getSceneSlideshowTiles("", true);
         let foundTileData = await ArtTileManager.getTileDataFromFlag(tileID, sceneTiles);
         await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+    }
+
+    async function updateAllGalleryIndicators(scene) {
+        let tiles = scene.tiles;
+        let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
+        tiles.forEach(async (tileDoc) => {
+            let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+            await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+        });
     }
 
     async function addJTCSControls(controls) {
@@ -95,22 +104,37 @@ const setupHookHandlers = async () => {
                 "createJournalEntry",
                 "updateJournalEntry",
                 "deleteJournalEntry",
+                "updateJTCSSettings",
             ],
             handlerFunction: renderSlideshowConfig,
         },
         updateCanvasIndicators: {
             hooks: ["createTile", "updateTile", "deleteTile"],
-            handlerFunction: updateCanvasIndicators,
+            handlerFunction: updateGalleryTileIndicator,
             specialHooks: [
                 {
                     hookName: "canvasReady",
                     handlerFunction: async (canvas) => {
-                        let tiles = canvas.scene.tiles;
-                        let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
-                        tiles.forEach(async (tileDoc) => {
-                            let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
-                            await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-                        });
+                        updateAllGalleryIndicators(canvas.scene);
+                        // let tiles = canvas.scene.tiles;
+                        // let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
+                        // tiles.forEach(async (tileDoc) => {
+                        //     let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+                        //     await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+                        // });
+                    },
+                },
+                {
+                    hookName: "updateJTCSSettings",
+                    handlerFunction: async () => {
+                        let scene = game.scenes.viewed;
+                        updateAllGalleryIndicators(scene);
+                        // let tiles = canvas.scene.tiles;
+                        // let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
+                        // tiles.forEach(async (tileDoc) => {
+                        //     let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+                        //     await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+                        // });
                     },
                 },
             ],

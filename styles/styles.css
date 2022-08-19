@@ -261,7 +261,7 @@ input[type=radio].hidden-input:checked + label .tooltip {
 .hover-reveal {
   position: relative;
 }
-.hover-reveal--child {
+.hover-reveal > .hover-reveal--child {
   opacity: 0;
   transition: opacity 250ms ease-in;
 }
@@ -743,18 +743,25 @@ button.icon-button {
   gap: 1rem;
 }
 
-.hover-reveal--child {
-  opacity: 0;
+.has-absolute-child {
+  position: relative;
 }
-.hover-reveal:hover .hover-reveal--child {
-  opacity: 100%;
+.has-absolute-child .absolute--child {
+  position: absolute;
 }
 
-.focus-reveal--child {
+.focus-reveal > .focus-reveal--child {
   opacity: 0;
 }
-.focus-reveal:focus .focus-reveal--child, .focus-reveal:focus-within .focus-reveal--child {
+.focus-reveal > .focus-reveal--child[data-variant=scale] {
+  transform: scale(0);
+  transition: transform scale 150ms;
+}
+.focus-reveal:focus > .focus-reveal--child, .focus-reveal:focus-within > .focus-reveal--child {
   opacity: 100%;
+}
+.focus-reveal:focus > .focus-reveal--child[data-variant=scale], .focus-reveal:focus-within > .focus-reveal--child[data-variant=scale] {
+  transform: scale(1);
 }
 
 .chip-span {
@@ -1021,6 +1028,7 @@ button.icon-button {
 }
 #slideshow-config .window-content li {
   background: hsla(0deg, 0%, 100%, 0.3);
+  --flow-space: 0.25em;
 }
 #slideshow-config .window-content li .actions {
   display: flex;
@@ -1126,13 +1134,15 @@ button.icon-button {
 }
 
 [data-type=art] {
-  --accent-color-hue: 240;
-  --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+  --accent-color: var(--data-art-color);
 }
 
 [data-type=frame] {
-  --accent-color-hue: 0;
-  --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+  --accent-color: var(--data-frame-color);
+}
+
+[data-type=unlinked] {
+  --accent-color: var(--data-unlinked-color);
 }
 
 [data-type].accent {

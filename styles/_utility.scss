@@ -188,7 +188,7 @@ input[type="radio"].hidden-input {
 }
 .hover-reveal {
     position: relative;
-    &--child {
+    & > &--child {
         opacity: 0;
         transition: opacity 250ms ease-in;
     }
@@ -673,29 +673,41 @@ button.icon-button {
 .gap-large {
     gap: 1rem;
 }
-.hover-reveal {
-    &--child {
-        opacity: 0;
-        // transform: scale(0);
-    }
-    &:hover {
-        .hover-reveal--child {
-            opacity: 100%;
-            // transform: scale(1);
-        }
+// .hover-reveal {
+//     > &--child {
+//         opacity: 0;
+//         // transform: scale(0);
+//     }
+//     &:hover {
+//         > .hover-reveal--child {
+//             opacity: 100%;
+//             // transform: scale(1);
+//         }
+//     }
+// }
+
+.has-absolute-child {
+    position: relative;
+    .absolute--child {
+        position: absolute;
     }
 }
 
 .focus-reveal {
-    &--child {
+    & > &--child {
         opacity: 0;
-        // transform: scale(0);
+        &[data-variant="scale"] {
+            transform: scale(0);
+            transition: transform scale 150ms;
+        }
     }
     &:focus,
     &:focus-within {
-        .focus-reveal--child {
+        > .focus-reveal--child {
             opacity: 100%;
-            // transform: scale(1);
+            &[data-variant="scale"] {
+                transform: scale(1);
+            }
         }
     }
 }

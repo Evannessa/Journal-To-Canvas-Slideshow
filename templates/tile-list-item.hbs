@@ -1,113 +1,109 @@
 <li
     class="tile-list-item | 
 	interactive flexcol flex-justify-stretch padding-small slight-rounded | 
-	hover-border focus-border focus-reveal hover-reveal"
+	hover-border focus-border focus-reveal hover-reveal flow"
     data-id="{{this.id}}"
     data-type="{{this.type}}"
     data-frame-id="{{this.linkedBoundingTile}}"
 	data-display-name="{{this.displayName}}"
     data-missing="{{this.missing}}"
 >
-	<details
-	{{#if (eq this.type "frame")}}
-		open
-	{{/if}}
-	>
-		<summary class="flex-row flex-nowrap flex-justify-space-between">
-			<div class="form-group-stacked">
-				<label>
-					{{#unless (eq this.type "frame")}}
-						<span class="toggle-icon">
-							<i class="fas fa-plus-square"></i>
-						</span>
-					{{/unless}}
-					Display Name
-				</label>
-					<input class="flex3" name="displayName" type="text" 
-						value="{{this.displayName}}">
-				{{#if (eq this.missing true)}}
-					<p class="error | fs-small">
-						<span>
-							<i class="fas fa-unlink"></i>
-						</span>
-						A {{this.type}} tile with this id " {{this.id}} " 
-						doesn't exist in scene " 
-						<span class="accent">{{this.currentSceneName}} " </span>.
-					</p>
-				
-				{{!-- {{else}}
-					<p class="hover-reveal--child focus-reveal--child">
-						{{combineToString "this is linked to" "<span>" 
-							"Tile:" this.id "</span>" " in scene " 
-							@root.currentSceneName}} 
-					</p> --}}
-				{{/if}}
-			</div>
-			<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]">
-				{{#if (eq this.missing true)}}
-				{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-					action="createSlideshowTile" 
-					icon="fas fa-plus" 
-					displayName=this.displayName
-					tooltipText=(combineToString "Create a new" "<span>" this.type 
-									"</span>" "tile on the canvas in scene" 
-									"<span>" @root.currentSceneName "</span>" 
-								)
-				}}
-				{{else}}
-				{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-					action="selectTile" 
-					icon="fas fa-vector-square" 
-					tooltipText=(combineToString "select tile " "<span>" this.id 
-									"</span>" "in scene" "<span>" 
-									@root.currentSceneName "</span>" 
-								)
-				}}
-				{{/if}}
-				{{#if (eq this.missing true)}}
-				{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-					action="linkTile" 
-					icon="fas fa-link" 
-					tooltipText="link this tile to tile in scene"
-				}}
-				{{else}}
-				{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-					action="renderTileConfig" 
-					icon="fas fa-cog" 
-					tooltipText=(combineToString 
-								"link this data to a tile in scene" 
-								"<span class='accent'>" @root.currentSceneName "</span>"
-								)
-				}}
-				{{/if}}
-				{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs"
-					action="deleteTileData"	
-					icon="fas fa-trash"
-					tooltipText=(combineToString
-							"delete this" this.type "tile data?" "<br/>"
-							"(this will not delete the tile object in the scene itself)"
-						)
-				}}
-			</div>
-		</summary>	
-		<hr/>
+	<header class="flex-row flex-nowrap flex-justify-space-between">
+		<div class="form-group-stacked">
+			<label>
+				{{#unless (eq this.type "frame")}}
+					<span class="toggle-icon">
+						<i class="fas fa-plus-square"></i>
+					</span>
+				{{/unless}}
+				Display Name
+			</label>
+			<input class="flex3" name="displayName" type="text" 
+				value="{{this.displayName}}"/>
+			{{#if (eq this.missing true)}}
+				<p class="error | fs-small">
+				<span>
+					<i class="fas fa-unlink"></i>
+				</span>
+				A {{this.type}} tile with this id " {{this.id}} " 
+				doesn't exist in scene " 
+				<span class="accent">{{this.currentSceneName}} " </span>.
+				</p>
+			{{/if}}
+		</div>
+		<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]">
+			{{#if (eq this.missing true)}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="createSlideshowTile" 
+				icon="fas fa-plus" 
+				displayName=this.displayName
+				tooltipText=(combineToString "Create a new" "<span>" this.type 
+								"</span>" "tile on the canvas in scene" 
+								"<span>" @root.currentSceneName "</span>" 
+							)
+			}}
+			{{else}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="selectTile" 
+				icon="fas fa-vector-square" 
+				tooltipText=(combineToString "select tile " "<span>" this.id 
+								"</span>" "in scene" "<span>" 
+								@root.currentSceneName "</span>" 
+							)
+			}}
+			{{/if}}
+			{{#if (eq this.missing true)}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="linkTile" 
+				icon="fas fa-link" 
+				tooltipText="link this tile to tile in scene"
+			}}
+			{{else}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
+				action="renderTileConfig" 
+				icon="fas fa-cog" 
+				tooltipText=(combineToString 
+							"link this data to a tile in scene" 
+							"<span class='accent'>" @root.currentSceneName "</span>"
+							)
+			}}
+			{{/if}}
+			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs"
+				action="deleteTileData"	
+				icon="fas fa-trash"
+				tooltipText=(combineToString
+						"delete this" this.type "tile data?" "<br/>"
+						"(this will not delete the tile object in the scene itself)"
+					)
+			}}
+		</div>
+	</header>
+		{{!-- <hr/> --}}
 		{{#if (eq this.type "art")}}
-			<div class="">
-				<label>Link this Tile to a Frame</label> 
-				<p class="notes"> Choose a tile to frame this tile's art, 
-					or let it scale to the scene's canvas.</p>
-				<select name="linkedBoundingTile" id="linkedBoundingTile" action="setFrameTile">
-						<option value=""> Canvas As Frame </option>
-							{{#each this.allFrameTiles as |boundingTile|}}
-								<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" 
-								{{#if (eq ../linkedBoundingTile boundingTile.id)}}
-									selected
-								{{/if}}>
-									{{boundingTile.displayName}}
-								</option>
-							{{/each}}
+		<footer class="footer">
+			<div class="connectedTiles flex-row" data-title="">
+				{{!-- <ul class="linked-tile-list hover-reveal--child focus-reveal--child"> --}}
+					<label>Frame</label> 
+					<select name="linkedBoundingTile" id="linkedBoundingTile" action="setFrameTile">
+						<option value=""> Use Canvas As Frame </option>
+						{{#each this.allFrameTiles as |boundingTile|}}
+							<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" 
+							{{#if (eq ../linkedBoundingTile boundingTile.id)}}
+								selected
+							{{/if}}>
+								{{boundingTile.displayName}}
+							</option>
+						{{/each}}
+					
 					</select>
-			</div>
+					{{> (dynamicPartial "tooltip" @root.partials)
+							content=(combineToString 
+							"Choose a tile to frame this tile's art," 
+							"<br/>" "or let it scale to the canvas.")
+					}}
+				{{!-- </ul> --}}
+			
+			</div>	
+		</footer>
 		{{/if}}
-	</details>
 </li>

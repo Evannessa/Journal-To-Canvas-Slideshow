@@ -46,19 +46,6 @@ export class HelperFunctions {
         if (settingData) {
             if (nestedKey) {
                 let nestedSettingData = getProperty(settingData, nestedKey);
-                // let nestedSettingData = flattenObject(settingData); //flatten the nested keys into dot notation
-
-                //Object.entires returns an array of arrays of key-value pairs [['key-a'],['value-a'], ['key-b'], ['value-b']]
-                // filter that array by the key that matches the "nestedKey" parameter, then convert back into an Object using fromEntries
-
-                // prettier-ignore
-                // nestedSettingData = expandObject(
-                // 		Object.fromEntries(
-                // 			Object.entries(nestedSettingData).filter(([key]) =>
-                // 				key.includes(nestedKey)
-                // 			)
-                // 		)
-                // );
 
                 return nestedSettingData;
             }

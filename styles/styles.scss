@@ -30,6 +30,7 @@
         }
         li {
             background: hsla(0, 0%, 100%, 0.3);
+            --flow-space: 0.25em;
         }
         li .actions {
             display: flex;
@@ -159,13 +160,14 @@
 }
 
 [data-type="art"] {
-    --accent-color-hue: 240;
-    --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+    --accent-color: var(--data-art-color);
 }
 
 [data-type="frame"] {
-    --accent-color-hue: 0;
-    --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+    --accent-color: var(--data-frame-color);
+}
+[data-type="unlinked"] {
+    --accent-color: var(--data-unlinked-color);
 }
 
 [data-type].accent {

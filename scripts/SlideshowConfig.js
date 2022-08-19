@@ -218,6 +218,18 @@ export class SlideshowConfig extends Application {
         });
     }
 
+    /**
+     *
+     * @param {JQueryObject} html - the html of the app (window content)
+     */
+    async setUIColors(html) {
+        let colors = await game.JTCS.utils.getSettingValue("artGallerySettings", "indicatorColorData.colors");
+        let { frameTileColor, artTileColor, unlinkedTileColor } = colors;
+        // let root = document.documentElement;
+        html[0].style.setProperty("--data-frame-color", frameTileColor);
+        html[0].style.setProperty("--data-art-color", artTileColor);
+        html[0].style.setProperty("--data-unlinked-color", unlinkedTileColor);
+    }
     async getData() {
         //return data to template
         let ourScene = game.scenes.viewed;
@@ -381,6 +393,7 @@ export class SlideshowConfig extends Application {
     async activateListeners(html) {
         super.activateListeners(html);
         // this.setupActionObjects();
+        await this.setUIColors(html);
         this.handleToggle(html);
 
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));

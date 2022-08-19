@@ -66,13 +66,20 @@ export class CanvasIndicators {
         // console.warn("Our color is ", colors);
         // color = 0xff0000;
         // color =
-        fillAlpha = 0.2;
-        color = PIXI.utils.string2hex(color); //convert string hex format
+        // fillAlpha = 0.2;
+        color = color.substring(1);
+        color = `0x${color}`;
+        color = parseInt(color);
+        // console.warn("Color is", color);
+        // color = PIXI.utils.string2hex(color); //convert string hex format
 
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
         let overlayGraphic = new PIXI.Graphics();
-        overlayGraphic.beginFill(color, fillAlpha);
+        let whiteColor = 0xffffff;
+        overlayGraphic.beginFill(whiteColor, fillAlpha);
+        // overlayGraphic.fillStyle(color, fillAlpha);
         overlayGraphic.lineStyle(lineWidth, color, 1);
+        overlayGraphic.tint = color;
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
         tileObject.overlayContainer.addChild(overlayGraphic);
@@ -87,6 +94,7 @@ export class CanvasIndicators {
         let tileObject = tileDocument.object;
         if (tileObject.overlayContainer) {
             tileObject.overlayContainer.alpha = alpha;
+            console.log(tileObject.overlayContainer.children[0]);
         } else {
             console.error("No overlay container found");
         }

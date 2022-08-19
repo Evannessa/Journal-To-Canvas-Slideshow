@@ -52,6 +52,9 @@ export const registerSettings = async function () {
                 },
             },
         }, // can be used to set up the default structure
+        onChange: (event) => {
+            Hooks.callAll("updateJTCSSettings", event.currentTarget);
+        },
     });
 
     game.settings.register("journal-to-canvas-slideshow", "journalFadeOpacity", {
