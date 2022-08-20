@@ -357,6 +357,10 @@ button.icon-button {
   background-color: transparent;
 }
 
+.hover-text-color:hover {
+  color: var(--color-accent);
+}
+
 .bg-dark {
   background-color: var(--bg-color);
   color: var(--color-text-secondary);
@@ -692,6 +696,25 @@ button.icon-button {
   margin-left: auto;
 }
 
+.has-floating-label {
+  box-sizing: border-box;
+  position: relative;
+  --form-field-height: fit-content;
+}
+.has-floating-label .floating-label {
+  color: var(--foundry-dark-gray);
+  position: absolute;
+  top: 0.1em;
+  left: 0.5em;
+  background: inherit;
+  font-size: smaller;
+}
+.has-floating-label input,
+.has-floating-label select {
+  padding-top: 1em;
+  padding-bottom: 0.25em;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -729,6 +752,13 @@ button.icon-button {
 }
 .flex-justify-end {
   justify-content: flex-end;
+}
+
+.flex-align-center {
+  align-items: center;
+}
+.flex-align-start {
+  align-items: flex-start;
 }
 
 .gap-small {
@@ -881,7 +911,7 @@ button.icon-button {
 }
 
 .border-accent {
-  border-color: var(--color-secondary-base);
+  border-color: var(--color-accent);
 }
 
 .max-height-50 {
@@ -1010,11 +1040,11 @@ button.icon-button {
 #slideshow-config {
   --flow-space: 1.25rem;
   width: min(600px, 45vw);
-  max-width: min(600px, 45vw);
+  max-height: calc(100vh - 200px);
+  max-width: min(600px, 55vw);
 }
 #slideshow-config .window-content {
   color: var(--color-text-primary);
-  max-height: calc(100vh - 200px);
 }
 #slideshow-config .window-content form {
   max-height: 80vh;
@@ -1033,12 +1063,8 @@ button.icon-button {
 #slideshow-config .window-content li .actions {
   display: flex;
   align-items: center;
-  border-left: 1px solid rgba(0, 0, 0, 0.15);
   flex: 0 0 50px;
   justify-content: center;
-}
-#slideshow-config .window-content li .actions * + * {
-  border-left: 1px solid rgba(0, 0, 0, 0.15);
 }
 #slideshow-config .window-content h1,
 #slideshow-config .window-content h2,
@@ -1147,6 +1173,26 @@ button.icon-button {
 
 [data-type].accent {
   color: var(--accent-color);
+}
+[data-type].accent input,
+[data-type].accent select {
+  border-color: var(--accent-color);
+}
+[data-type].accent input ::-moz-placeholder, [data-type].accent select ::-moz-placeholder {
+  color: var(--accent-color);
+}
+[data-type].accent input :-ms-input-placeholder, [data-type].accent select :-ms-input-placeholder {
+  color: var(--accent-color);
+}
+[data-type].accent input ::placeholder,
+[data-type].accent select ::placeholder {
+  color: var(--accent-color);
+}
+[data-type].accent label {
+  color: var(--accent-color);
+}
+[data-type].accent.border-accent {
+  border-color: var(--accent-color);
 }
 
 .error::before {

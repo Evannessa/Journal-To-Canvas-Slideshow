@@ -9,15 +9,8 @@
     data-missing="{{this.missing}}"
 >
 	<header class="flex-row flex-nowrap flex-justify-space-between">
+		{{!-- {{> (dynamicPartial "input-with-error" @root.partials)}} --}}
 		<div class="form-group-stacked">
-			<label>
-				{{#unless (eq this.type "frame")}}
-					<span class="toggle-icon">
-						<i class="fas fa-plus-square"></i>
-					</span>
-				{{/unless}}
-				Display Name
-			</label>
 			<input class="flex3" name="displayName" type="text" 
 				value="{{this.displayName}}"/>
 			{{#if (eq this.missing true)}}
@@ -75,6 +68,7 @@
 						"delete this" this.type "tile data?" "<br/>"
 						"(this will not delete the tile object in the scene itself)"
 					)
+				extraClass="danger-text"
 			}}
 		</div>
 	</header>
@@ -83,19 +77,21 @@
 		<footer class="footer">
 			<div class="connectedTiles flex-row" data-title="">
 				{{!-- <ul class="linked-tile-list hover-reveal--child focus-reveal--child"> --}}
-					<label>Frame</label> 
-					<select name="linkedBoundingTile" id="linkedBoundingTile" action="setFrameTile">
-						<option value=""> Use Canvas As Frame </option>
-						{{#each this.allFrameTiles as |boundingTile|}}
-							<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}" 
-							{{#if (eq ../linkedBoundingTile boundingTile.id)}}
-								selected
-							{{/if}}>
-								{{boundingTile.displayName}}
-							</option>
-						{{/each}}
-					
-					</select>
+					<div class="form-group has-floating-label">
+						<label class="floating-label" for="linkedBoundingTile">Frame</label>
+						<select name="linkedBoundingTile" id="linkedBoundingTile">
+							<option value=""> Use Canvas As Frame </option>
+							{{#each this.allFrameTiles as |boundingTile|}}
+								<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"
+								{{#if (eq ../linkedBoundingTile boundingTile.id)}}
+									selected
+								{{/if}}>
+									{{boundingTile.displayName}}
+								</option>
+							{{/each}}
+						
+						</select>
+					</div>
 					{{> (dynamicPartial "tooltip" @root.partials)
 							content=(combineToString 
 							"Choose a tile to frame this tile's art," 

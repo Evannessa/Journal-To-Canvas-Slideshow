@@ -84,7 +84,7 @@ export class ArtTileManager {
         let tileDataArray = (await ArtTileManager.getSceneSlideshowTiles()) || [];
         if (tileDataArray.length === 0) {
             ui.notifications.warn("No frame tile detected in scene. Creating new frame tile alongside display tile");
-            frameTile = await ArtTileManager.createFrameTile();
+            frameTile = await ArtTileManager.createFrameTileObject();
             return frameTile[0].id;
         } else {
             ui.notifications.warn(
@@ -130,13 +130,45 @@ export class ArtTileManager {
         let defaultData = await ArtTileManager.getDefaultData(isBoundingTile, linkedFrameTileId);
         await ArtTileManager.updateSceneTileFlags(defaultData, tileObjectID);
     }
+
+    /**
+     * Create a Tile in the current scene that is linked to the Tile Data we're passing in
+     * @param {Object} options
+     * @returns
+     */
+    static async createAndLinkSceneTile(
+        options = {
+            isFrameTile: false,
+            linkedFrameTileID: "",
+            unlinkedDataID: "",
+        }
+    ) {
+        let { isFrameTile, linkedFrameTileID, unlinkedDataID } = options;
+
+        let newTile = await ArtTileManager.createTileInScene(isFrameTile);
+
+        if (newTile) {
+            let tileObjectID = newTile[0].id;
+
+            //
+            if (!unlinkedDataID) {
+                await ArtTileManager.createTileData(linkedFrameTileID, tileObjectID, false);
+            } else {
+                await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
+            }
+        } else {
+            ui.notifications.error("New display tile couldn't be created");
+        }
+        return newTile;
+    }
+
     /**
      *
      * @param {String} linkedFrameTileId - the frame tile linked to this art tile, if it is one
      * @param {*} unlinkedDataID - if we're creating a new tile from the config rather than from the tile itself, it may have an unlinkedId
      * @returns  - the created art tile
      */
-    static async createArtTile(_linkedFrameTileId = "", unlinkedDataID = "") {
+    static async createArtTileObject(_linkedFrameTileId = "", unlinkedDataID = "") {
         let linkedFrameTileId = _linkedFrameTileId;
 
         let newTile = await ArtTileManager.createTileInScene(false);
@@ -158,7 +190,7 @@ export class ArtTileManager {
      * @param {*} unlinkedDataID - if we're creating a new tile from the config rather than from the tile itself, it may have an unlinkedId
      * @returns  - the created frame tile
      * */
-    static async createFrameTile(unlinkedDataID = "") {
+    static async createFrameTileObject(unlinkedDataID = "") {
         let newTile = await ArtTileManager.createTileInScene(true);
         if (newTile) {
             let tileObjectID = newTile[0].id;
@@ -359,11 +391,14 @@ export class ArtTileManager {
     static async updateAllSceneTileFlags(tiles) {
         let currentScene = game.scenes.viewed;
         await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
+        Hooks.callAll("updateArtGalleryTiles", currentScene, tiles);
     }
     static async deleteSceneTileData(tileID) {
         let tiles = await ArtTileManager.getSceneSlideshowTiles();
         //filter out the tile that matches this
         tiles = tiles.filter((tileData) => tileData.id !== tileID);
+        let tilesAfter = tiles.map((tileData) => tileData.id);
+        console.log("Should delete", tilesAfter, tileID, tilesAfter.includes(tileID));
         await ArtTileManager.updateAllSceneTileFlags(tiles);
     }
 

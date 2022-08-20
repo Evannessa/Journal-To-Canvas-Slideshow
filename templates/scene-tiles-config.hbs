@@ -1,39 +1,45 @@
-<form autocomplete="off" class="flexcol flow">
+<form autocomplete="off" class="flex-col flow">
 
-    <header class="flex0">
+    <header class="flex-col">
         <p class="flex0">Current Scene is:
             <span class="text-accent text-heavy">{{currentSceneName}}</span>
         </p>
-        <label for="artScene">Art Scene</label>
-        <select name="artScene" id="artScene" data-action="setArtScene">
-            {{#each artSceneData.options as |scene|}}
-                <option value="{{scene.id}}"
-                    {{#if (eq @root.artSceneData.value scene.id)}}
-                        selected 
-                    {{/if}}
-                >
-                    {{scene.name}}
-                </option>
-            {{/each}}
-        </select>
-        <label for="artScene">Art Journal</label>
-        <select name="artJournal" id="artJournal" data-action="setArtJournal">
-            {{#each artJournalData.options as |journal|}}
-                <option value="{{journal.id}}"
-					{{#if (eq @root.artJournalData.value journal.id)}}	
-						selected
-					{{/if}}
-				>
-					{{journal.name}}
-				</option>
-            {{/each}}
-        </select>
-		<div class="actions">
-			{{> (dynamicPartial "icon-button" partials)
-				action="showModuleSettings" 
-				icon="fas fa-cog" 
-				tooltipText="Open Journal-to-Canvas Slideshow Settings"
-			}}
+        <div class="wrapper flex-row flex-justify-space-evenly flex-align-center">
+			<div class="form-group has-floating-label">
+				<label class="floating-label" for="artScene">Art Scene</label>
+				<select name="artScene" id="artScene" data-action="setArtScene">
+					{{#each artSceneData.options as |scene|}}
+						<option value="{{scene.id}}"
+							{{#if (eq @root.artSceneData.value scene.id)}}
+								selected
+							{{/if}}
+						>
+							{{scene.name}}
+						</option>
+					{{/each}}
+				</select>
+			</div>
+			<div class="form-group has-floating-label">
+				<label class="floating-label" for="artScene">Art Journal</label>
+				<select name="artJournal" id="artJournal" data-action="setArtJournal">
+					{{#each artJournalData.options as |journal|}}
+						<option value="{{journal.id}}"
+									{{#if (eq @root.artJournalData.value journal.id)}}
+										selected
+									{{/if}}
+								>
+									{{journal.name}}
+								</option>
+					{{/each}}
+				</select>
+			</div>
+					<div class="actions">
+						{{> (dynamicPartial "icon-button" partials)
+							action="showModuleSettings" 
+							icon="fas fa-cog" 
+							tooltipText="Open Journal-to-Canvas Slideshow Settings"
+						}}
+					</div>
 		</div>
     </header>
     <section class="tilesInScene 
@@ -49,7 +55,9 @@
 				>
 			
             	<ul class="[ scroll-y 
-							hidden-overflow-x reset-padding ]">
+						hidden-overflow-x reset-padding 
+						flow ]"
+				>
 					{{#each artTiles as |tile|}}
 						{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
 							tile type="art"
@@ -57,7 +65,6 @@
 							allFrameTiles=@root.frameTiles
 						}}
 					{{/each}}
-					{{!-- "Add New List Item" --}}
 				
 				</ul>
 				{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
@@ -74,7 +81,8 @@
 			>
 			
 				<ul class="[ scroll-y ]
-						   [ hidden-overflow-x reset-padding ]"
+						   [ hidden-overflow-x reset-padding 
+						   flow ]" 
 					>
 					{{#each frameTiles as |tile|}}
 						{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
@@ -90,32 +98,4 @@
 			</div>
 		</div>
     </div>
-    {{!-- <footer>
-        <fieldset class="toggle-button-group | flex-row rounded">
-        
-            <input
-                type="radio"
-                class="hidden-input"
-                    id="displayInScene"
-                    name="displayLocation"
-                    value="displayInScene"
-            />
-            <label class="flex-row" for="displayInScene" data-title="">
-                Display In Scene
-            </label>
-        
-            <input
-                type="radio"
-                class="hidden-input"
-                id="displayInJournal"
-                name="displayLocation"
-                value="displayInJournal"
-            />
-            <label class="flex-row" for="displayInPopout" data-title="">
-                Display In Popout
-            </label>
-        
-        </fieldset>
-
-    </footer> --}}
 </form>

@@ -8,13 +8,13 @@
 #slideshow-config {
     --flow-space: 1.25rem;
     width: min(600px, 45vw);
-    max-width: min(600px, 45vw);
+    max-height: calc(100vh - 200px);
+    max-width: min(600px, 55vw);
 
     .window-content {
         color: var(--color-text-primary);
         // width: min(600px, 45vw);
         // max-width: min(600px, 45vw);
-        max-height: calc(100vh - 200px);
         form {
             max-height: 80vh;
         }
@@ -35,13 +35,8 @@
         li .actions {
             display: flex;
             align-items: center;
-            border-left: 1px solid rgba(0, 0, 0, 0.15);
             flex: 0 0 50px;
-            // height: 100%;
             justify-content: center;
-            * + * {
-                border-left: 1px solid rgba(0, 0, 0, 0.15);
-            }
         }
         h1,
         h2,
@@ -172,6 +167,19 @@
 
 [data-type].accent {
     color: var(--accent-color);
+    input,
+    select {
+        border-color: var(--accent-color);
+        ::placeholder {
+            color: var(--accent-color);
+        }
+    }
+    label {
+        color: var(--accent-color);
+    }
+    &.border-accent {
+        border-color: var(--accent-color);
+    }
 }
 
 .error {

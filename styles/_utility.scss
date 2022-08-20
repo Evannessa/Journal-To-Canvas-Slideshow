@@ -285,6 +285,11 @@ button.icon-button {
     background: none;
     background-color: transparent;
 }
+.hover-text-color {
+    &:hover {
+        color: var(--color-accent);
+    }
+}
 
 .bg-dark {
     background-color: var(--bg-color);
@@ -621,6 +626,26 @@ button.icon-button {
 .justify-self-right {
     margin-left: auto;
 }
+
+.has-floating-label {
+    box-sizing: border-box;
+    position: relative;
+    --form-field-height: fit-content;
+    .floating-label {
+        color: var(--foundry-dark-gray);
+        position: absolute;
+        top: 0.1em;
+        left: 0.5em;
+        background: inherit;
+        font-size: smaller;
+    }
+    input,
+    select {
+        padding-top: 1em;
+        padding-bottom: 0.25em;
+    }
+}
+
 .flex-row {
     display: flex;
     flex-direction: row;
@@ -661,6 +686,14 @@ button.icon-button {
     }
     &-end {
         justify-content: flex-end;
+    }
+}
+.flex-align {
+    &-center {
+        align-items: center;
+    }
+    &-start {
+        align-items: flex-start;
     }
 }
 .gap-small {
@@ -844,7 +877,7 @@ button.icon-button {
 }
 
 .border-accent {
-    border-color: var(--color-secondary-base);
+    border-color: var(--color-accent);
 }
 
 .max-height-50 {

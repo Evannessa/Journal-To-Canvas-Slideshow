@@ -1,0 +1,19 @@
+<div class="form-group-stacked">
+    <label>
+        Display Name
+    </label>
+    <input class="flex3" name="displayName" type="text" value="{{this.displayName}}" />
+    {{#if (eq this.missing true)}}
+        <p class="error | fs-small">
+            <span>
+                <i class="fas fa-unlink"></i>
+            </span>
+            A
+            {{this.type}}
+            tile with this id "
+            {{this.id}}
+            " doesn't exist in scene "
+            <span class="accent">{{this.currentSceneName}} " </span>.
+        </p>
+    {{/if}}
+</div>

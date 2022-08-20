@@ -94,7 +94,6 @@ export class CanvasIndicators {
         let tileObject = tileDocument.object;
         if (tileObject.overlayContainer) {
             tileObject.overlayContainer.alpha = alpha;
-            console.log(tileObject.overlayContainer.children[0]);
         } else {
             console.error("No overlay container found");
         }

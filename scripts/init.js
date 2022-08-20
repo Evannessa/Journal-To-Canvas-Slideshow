@@ -25,6 +25,7 @@ const templateBaseNames = [
     `display-tile-config.hbs`,
     `image-controls.hbs`,
     `tile-link-partial.hbs`,
+    `input-with-error.hbs`,
 ];
 
 /**
@@ -116,12 +117,6 @@ const setupHookHandlers = async () => {
                     hookName: "canvasReady",
                     handlerFunction: async (canvas) => {
                         updateAllGalleryIndicators(canvas.scene);
-                        // let tiles = canvas.scene.tiles;
-                        // let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
-                        // tiles.forEach(async (tileDoc) => {
-                        //     let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
-                        //     await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-                        // });
                     },
                 },
                 {
@@ -129,12 +124,14 @@ const setupHookHandlers = async () => {
                     handlerFunction: async () => {
                         let scene = game.scenes.viewed;
                         updateAllGalleryIndicators(scene);
-                        // let tiles = canvas.scene.tiles;
-                        // let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
-                        // tiles.forEach(async (tileDoc) => {
-                        //     let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
-                        //     await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-                        // });
+                    },
+                },
+                {
+                    hookName: "updateArtGalleryTiles",
+                    handlerFunction: async (scene) => {
+                        console.log("Scene is", scene);
+                        scene = game.scenes.viewed;
+                        updateAllGalleryIndicators(scene);
                     },
                 },
             ],
@@ -216,8 +213,9 @@ Hooks.on("init", async () => {
             scaleToBoundingTile: ImageDisplayManager.scaleArtTileToFrameTile,
         },
         tileUtils: {
-            createDisplayTile: ArtTileManager.createArtTile,
-            createFrameTile: ArtTileManager.createFrameTile,
+            createAndLinkSceneTile: ArtTileManager.createAndLinkSceneTile,
+            // createArtTileObject: ArtTileManager.createArtTileObject,
+            // createFrameTileObject: ArtTileManager.createFrameTileObject,
             getSceneSlideshowTiles: ArtTileManager.getSceneSlideshowTiles,
             getDefaultData: ArtTileManager.getDefaultData,
             getFrameTiles: ArtTileManager.getFrameTiles,
