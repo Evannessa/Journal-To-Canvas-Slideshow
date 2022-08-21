@@ -256,6 +256,7 @@ export class ArtTileManager {
         let { currentSceneID } = options;
         let currentScene = game.scenes.viewed;
         if (currentSceneID) {
+            console.log("Current ID is", currentSceneID);
             currentScene = game.scenes.get(currentSceneID);
         }
         let flaggedTiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];

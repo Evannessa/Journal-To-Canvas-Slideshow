@@ -7,30 +7,35 @@ export class ImageDisplayManager {
     static async getTilesFromArtScene() {
         let artSceneID = await game.JTCS.utils.getSettingValue(
             "artGallerySettings",
-            "dedicatedDisplayData.journal.value"
+            "dedicatedDisplayData.scene.value"
         );
-        console.log("Value is", artSceneID);
         let ourScene = game.scenes.get(artSceneID);
-        let artTile = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, { currentSceneID: artSceneID });
-        let frameTile = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true, { currentSceneID: artSceneID });
+        let artTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, { currentSceneID: artSceneID });
+        let artTileID = artTiles[0].id;
+
+        let frameTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true, {
+            currentSceneID: artSceneID,
+        });
+        let frameTileID = artTiles[0].linkedBoundingTile || frameTiles[0].id;
+
         return {
             ourScene: ourScene,
-            artTile: artTile,
-            frameTile: frameTile,
+            artTileID: artTileID,
+            frameTileID: frameTileID,
         };
     }
     static async updateTileObjectTexture(artTileID, frameTileID, url, method) {
         let ourScene = game.scenes.viewed;
-        let artTile = game.scenes.viewed.tiles.get(artTileID);
-        let frameTile = game.scenes.viewed.tiles.get(frameTileID);
-        console.warn("method", method);
         if (method == "artScene") {
             let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
             console.warn("Get data", artSceneData);
             ourScene = artSceneData.ourScene;
-            artTile = artSceneData.artTile;
-            frameTile = artSceneData.frameTile;
+            artTileID = artSceneData.artTileID;
+            frameTileID = artSceneData.frameTileID;
         }
+
+        let artTile = game.scenes.viewed.tiles.get(artTileID);
+        let frameTile = game.scenes.viewed.tiles.get(frameTileID);
 
         //load the texture from the source
         if (!artTile || !url) {

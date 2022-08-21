@@ -28,14 +28,9 @@ export class HelperFunctions {
             updateData = mergeObject(currentSettingData, updateData);
         }
         if (nestedKey) {
-            let prevValue = game.settings.get(HelperFunctions.MODULE_ID, settingName);
-            prevValue = flattenObject(prevValue); //flatten the nested keys into dot notation
-
-            //the nested key parameter will also be in dot notation, to directly set the nested value
-            prevValue[nestedKey] = updateData;
-
-            prevValue = expandObject(prevValue);
-            await game.settings.set(HelperFunctions.MODULE_ID, settingName, prevValue);
+            let settingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
+            setProperty(settingData, nestedKey, updateData);
+            await game.settings.set(HelperFunctions.MODULE_ID, settingName, settingData);
         } else {
             await game.settings.set(HelperFunctions.MODULE_ID, settingName, updateData);
         }

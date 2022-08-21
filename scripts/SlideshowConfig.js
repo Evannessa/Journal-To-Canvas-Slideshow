@@ -480,11 +480,10 @@ export class SlideshowConfig extends Application {
     }
     async _handleChange() {
         let app = game.JTCSlideshowConfig;
-        $(".tile-list-item :is(select, input[type='checkbox'], input[type='radio'], input[type='text'])").on(
+        $("#slideshow-config :is(select, input[type='checkbox'], input[type='radio'], input[type='text'])").on(
             "change",
             async (event) => {
                 await app.validateInput(event, async (event) => {
-                    console.log(app, "Handling change");
                     let clickedElement = $(event.currentTarget);
                     // let hoverAction = clickedElement.data().hoverAction;
                     let action = clickedElement.data().action;
