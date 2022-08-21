@@ -4,38 +4,33 @@ import ImageVideoPopout from "./MultiMediaPopout.js";
  * This class manages the images specifically, setting and clearing the tiles' images
  */
 export class ImageDisplayManager {
-    static artTileDefaultTexture = "/modules/journal-to-canvas-slideshow/assets/DarkBackground.webp";
-    static frameTileDefaultTexture = "/modules/journal-to-canvas-slideshow/assets/Bounding_Tile.webp";
-
-    static async setDefaultArtTileTexture(path) {
-        await game.JTCS.utils.setSettingValue("artTileDefaultTexture", path);
+    static async getTilesFromArtScene() {
+        let artSceneID = await game.JTCS.utils.getSettingValue(
+            "artGallerySettings",
+            "dedicatedDisplayData.journal.value"
+        );
+        console.log("Value is", artSceneID);
+        let ourScene = game.scenes.get(artSceneID);
+        let artTile = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, { currentSceneID: artSceneID });
+        let frameTile = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true, { currentSceneID: artSceneID });
+        return {
+            ourScene: ourScene,
+            artTile: artTile,
+            frameTile: frameTile,
+        };
     }
-
-    static async getDefaultArtTileTexture() {
-        let texture = await game.JTCS.utils.getSettingValue("artTileDefaultTexture");
-        return texture;
-    }
-
-    static async setDefaultFrameTileTexture(path) {
-        await game.JTCS.utils.setSettingValue("frameTileDefaultTexture", path);
-    }
-    static async getDefaultFrameTileTexture() {
-        let texture = await game.JTCS.utils.getSettingValue("frameTileDefaultTexture");
-        return texture;
-    }
-
-    static async setArtJournal(journalEntryID) {
-        game.JTCS.artJournalID = journalEntryID;
-    }
-    static async setArtScene(sceneID) {
-        game.JTCS.artSceneID = sceneID;
-    }
-
-    static async updateTileObjectTexture(artTileID, frameTileID, imageElement) {
+    static async updateTileObjectTexture(artTileID, frameTileID, url, method) {
         let ourScene = game.scenes.viewed;
-        let url = imageElement.getAttribute("src");
         let artTile = game.scenes.viewed.tiles.get(artTileID);
         let frameTile = game.scenes.viewed.tiles.get(frameTileID);
+        console.warn("method", method);
+        if (method == "artScene") {
+            let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
+            console.warn("Get data", artSceneData);
+            ourScene = artSceneData.ourScene;
+            artTile = artSceneData.artTile;
+            frameTile = artSceneData.frameTile;
+        }
 
         //load the texture from the source
         if (!artTile || !url) {
@@ -46,7 +41,7 @@ export class ImageDisplayManager {
         const tex = await loadTexture(url);
         var imageUpdate;
 
-        if (!frameTile) {
+        if (!frameTile || method === "artScene") {
             imageUpdate = await ImageDisplayManager.scaleArtTileToScene(artTile, tex, url);
         } else {
             imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url);
@@ -137,8 +132,6 @@ export class ImageDisplayManager {
 
         imageUpdate.x += boundingMiddle.x - imageMiddle.x;
         imageUpdate.y += boundingMiddle.y - imageMiddle.y;
-        // var updateArray = [];
-        // updateArray.push(imageUpdate);
         return imageUpdate;
     }
     //  Used snippet from the below stackOverflow answer to help me with proportionally resizing the images
@@ -151,14 +144,13 @@ export class ImageDisplayManager {
         };
     }
     static async displayImageInWindow(method, url) {
-        // let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
-        // get the url from the image clicked in the journal
         if (method === "journalEntry") {
             let dedicatedDisplayData = await game.JTCS.utils.getSettingValue(
                 "artGallerySettings",
                 "dedicatedDisplayData"
             );
-            let displayJournal = dedicatedDisplayData.journal;
+            let displayJournalID = dedicatedDisplayData.journal.value;
+            let displayJournal = game.journal.get(displayJournalID);
             //if we would like to display in a dedicated journal entry
             if (!displayJournal) {
                 //couldn't find display journal, so return
@@ -210,11 +202,54 @@ export class ImageDisplayManager {
             })
                 .render(true)
                 .shareImage();
-        } else if (method === "journalEntry") {
         }
     }
 
-    static async getImageSource(imageElement, myCallback) {
+    /**
+     * determine the location of the display
+     * @param {*} imageElement - the imageElement
+     * @param {*} location - the location we want to display our image in
+     * @param {*} journalSheet  - the journal sheet in which we're performing these actions
+     * @param {*} url
+     */
+    static async determineDisplayMethod(sheetImageData = { method: "window", url: "" }) {
+        let { method, imageElement, url } = sheetImageData;
+        console.warn(sheetImageData);
+        if (!url && imageElement) {
+            url = ImageDisplayManager.getImageSource(imageElement);
+        } else if (!url && !imageElement) {
+            console.error("No image data passed to this method");
+        }
+        //on click, this method will determine if the image should open in a scene or in a display journal
+        switch (method) {
+            case "artScene":
+            case "anyScene":
+                let { artTileID, frameTileID } = sheetImageData;
+                //if the setting is to display it in a scene, proceed as normal
+                if (method === "anyScene" && (!artTileID || !frameTileID)) {
+                    ui.notifications.error("No gallery tile found");
+                    return;
+                }
+                await ImageDisplayManager.updateTileObjectTexture(artTileID, frameTileID, url, method);
+                break;
+            case "journalEntry":
+            case "window":
+                await ImageDisplayManager.displayImageInWindow(method, url);
+                break;
+            // case "window":
+            //     await ImageDisplayManager.displayImageInWindow(
+            //         "window",
+            //         ImageDisplayManager.getImageSource(imageElement)
+            //     );
+            //     // if (!url) {
+            //     //     //if not, it happened because of an image click, so find the information of the clicked image
+            //     //     ImageDisplayManager.getImageSource(imageElement, ImageDisplayManager.displayImageInWindow);
+            //     // }
+            //     break;
+        }
+    }
+
+    static getImageSource(imageElement) {
         let type = imageElement.nodeName;
         let url;
 
@@ -233,10 +268,7 @@ export class ImageDisplayManager {
             ui.notifications.error("Type not supported");
             url = null;
         }
-        if (myCallback) {
-            //if my callback is defined
-            myCallback(url);
-        }
+
         return url;
 
         //load the texture from the source

@@ -15,6 +15,9 @@ export const registerHelpers = function () {
     });
 
     Handlebars.registerHelper("dynamicPartial", function (key, partials) {
+        if (!partials) {
+            partials = game.JTCS.templates;
+        }
         let partialPath = partials[key];
         return new Handlebars.SafeString(partialPath);
     });

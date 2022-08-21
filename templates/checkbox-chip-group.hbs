@@ -1,0 +1,6 @@
+<div class="form-group flex-row flex-justify-space-evenly">
+    {{#each checkboxOption}}
+        <input type="checkbox" class="hidden-input chip-span" id={{this.id}} />
+        <label for="{{this.id}}">{{this.name}}</label>
+    {{/each}}
+</div>

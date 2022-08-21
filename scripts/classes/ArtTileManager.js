@@ -252,8 +252,12 @@ export class ArtTileManager {
      * get tiles that have been stored by this module in a flag on this scene
      * @returns array of display tile data stored in "slideshowTiles" tag
      */
-    static async getSceneSlideshowTiles(type = "", shouldCheckIfExists = false) {
+    static async getSceneSlideshowTiles(type = "", shouldCheckIfExists = false, options = { currentSceneID: "" }) {
+        let { currentSceneID } = options;
         let currentScene = game.scenes.viewed;
+        if (currentSceneID) {
+            currentScene = game.scenes.get(currentSceneID);
+        }
         let flaggedTiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
 
         //check if the tile exists in the scene, and add a "missing" element if it does
@@ -398,7 +402,6 @@ export class ArtTileManager {
         //filter out the tile that matches this
         tiles = tiles.filter((tileData) => tileData.id !== tileID);
         let tilesAfter = tiles.map((tileData) => tileData.id);
-        console.log("Should delete", tilesAfter, tileID, tilesAfter.includes(tileID));
         await ArtTileManager.updateAllSceneTileFlags(tiles);
     }
 

@@ -95,12 +95,12 @@ export class HelperFunctions {
         await HelperFunctions.setSettingValue("showWelcomeMessage", false);
     }
 
-    static async createDialog(title, content, data) {
+    static async createDialog(title, templatePath, data) {
         const options = {
             width: 600,
             height: 250,
         };
-        let renderedHTML = await renderTemplate(content, data);
+        let renderedHTML = await renderTemplate(templatePath, data);
         let d = new Dialog(
             {
                 title: title,

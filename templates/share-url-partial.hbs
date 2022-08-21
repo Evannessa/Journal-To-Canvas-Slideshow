@@ -1,0 +1,13 @@
+<form action="">
+        Input URL
+        <p class="notes">
+            Type or paste a URL to share with players
+        </p>
+        {{> (dynamicPartial "fieldset-button-group" @root.partials)
+            buttonData=buttonData
+        }}
+		{{> (dynamicPartial "input-with-error" @root.partials)
+			id="urlInput"	
+			name="urlInput"
+		}}
+</form>

@@ -1,3 +1,4 @@
+"use strict";
 import { log, MODULE_ID } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 
@@ -58,6 +59,65 @@ export class SlideshowConfig extends Application {
     renderWithData() {
         this.render(true, this.data);
         // this.render(true, { renderData: this.data });
+    }
+    async createWikiShareDialog() {
+        let choices = {
+            clans: "clans",
+            locations: "locations",
+            lore: "lore",
+        };
+
+        let wikiShareCallback = async (html) => {
+            let clanInput = html.find("input[name='clan-name']");
+            let clanName = clanInput.val();
+            let personInput = html.find("input[name='person-name']");
+            let personName = personInput.val();
+            if (clanName !== "" && personName !== "") {
+                let url = `https://classy-bavarois-433634.netlify.app/assets/clans/${clanName}/${personName}.webp`;
+                await game.JTCS.imageUtils.manager.displayImageInWindow("window", url);
+            }
+        };
+    }
+
+    async createURLShareDialog() {
+        let shareLocations = [{ name: "artScene" }];
+        let onSubmitCallback = async (html) => {
+            let urlInput = html.find("input[name='urlInput']");
+            let url = urlInput.val();
+            let method = "window";
+            if (url !== "") {
+                await game.JTCS.imageUtils.manager.determineDisplayMethod({
+                    method: method,
+                    url: url,
+                });
+            }
+        };
+        let buttons = {
+            shareURL: {
+                label: "Share URL",
+                icon: '<i class="fas fa-external-link-alt"></i>',
+                callback: onSubmitCallback,
+            },
+            cancel: {
+                label: "Cancel",
+            },
+        };
+        let templatePath = game.JTCS.templates["share-url-partial"];
+
+        await game.JTCS.utils.createDialog("Share URL", templatePath, {
+            buttons: buttons,
+            partials: game.JTCS.templates,
+            value: "",
+            buttonData: {
+                type: "radio",
+                buttons: [
+                    {
+                        name: "Hello world",
+                        id: "id",
+                    },
+                ],
+            },
+        });
     }
 
     async createTileLinkDialogue(tileID) {
@@ -349,7 +409,9 @@ export class SlideshowConfig extends Application {
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
         let tileID;
-        tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
+        if (clickedElement[0].closest("li")) {
+            tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
+        }
 
         // let data = { clickedElement: clickedElement, action: action, type: type, name: name, tileID: tileID };
 
@@ -378,6 +440,9 @@ export class SlideshowConfig extends Application {
                 break;
             case "renderTileConfig":
                 await game.JTCS.tileUtils.renderTileConfig(tileID);
+                break;
+            case "shareURL":
+                await this.createURLShareDialog();
                 break;
             case "selectTile":
                 await game.JTCS.tileUtils.selectTile(tileID);
@@ -411,13 +476,15 @@ export class SlideshowConfig extends Application {
         // let changeSelectorString =
         // ".tile-list-item :is(select, input[type='checkbox'], input[type='radio'], input[type='text']";
         // html.on("change", changeSelectorString, this._handleChange().bind(this));
-        this._handleChange(this);
+        this._handleChange();
     }
-    async _handleChange(app) {
+    async _handleChange() {
+        let app = game.JTCSlideshowConfig;
         $(".tile-list-item :is(select, input[type='checkbox'], input[type='radio'], input[type='text'])").on(
             "change",
             async (event) => {
                 await app.validateInput(event, async (event) => {
+                    console.log(app, "Handling change");
                     let clickedElement = $(event.currentTarget);
                     // let hoverAction = clickedElement.data().hoverAction;
                     let action = clickedElement.data().action;

@@ -17,6 +17,16 @@ export const registerSettings = async function () {
         config: false, // we will use the menu above to edit this setting
         type: Object,
         default: {
+            sheetSettings: {
+                name: "Sheet Types",
+                hint: "Which types of sheets do you want to have clickable images?",
+                choices: {
+                    all: true, //if this is checked, it will check all the others
+                    journalSheet: true,
+                    actorSheet: true,
+                    itemSheet: true,
+                },
+            },
             colorSchemeData: {
                 name: "Color Scheme",
                 hint: "Which color scheme would you like to use?",

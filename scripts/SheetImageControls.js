@@ -14,7 +14,7 @@ export class SheetImageControls {
             tooltip: "display image in a dedicated journal entry",
         },
         {
-            name: "displayScene",
+            name: "artScene",
             icon: "far fa-image",
             tooltip: "display image in dedicated scene",
         },
@@ -113,7 +113,6 @@ export class SheetImageControls {
 
     static async setJournalFadeOpacity(journalSheet) {
         let opacityValue = game.JTCS.utils.getSettingValue("journalFadeOpacity");
-        // game.settings.get("journal-to-canvas-slideshow", "journalFadeOpacity");
         journalSheet.element[0].style.setProperty("--journal-fade", opacityValue + "%");
     }
 
@@ -157,7 +156,9 @@ export class SheetImageControls {
             users: users,
             ...imageFlagData,
         });
-        $(imgElement).parent().addClass("clickableImageContainer");
+        //wrap each image in a clickableImageContainer
+        $(imgElement).wrap("<div class='clickableImageContainer'></div>");
+        // $(imgElement).parent().addClass("clickableImageContainer");
         $(imgElement).parent().append(renderHtml);
         await SheetImageControls.activateEventListeners({ journalSheet: journalSheet, imgElement: imgElement });
     }
@@ -183,7 +184,7 @@ export class SheetImageControls {
         //for each display location button
         //add a click event listener
         locationButtons.forEach((button) => {
-            button.addEventListener("click", (event) => SheetImageControls.onLocationButtonClick(event, data));
+            button.addEventListener("click", (event) => SheetImageControls.onDisplayActionButtonClick(event, data));
         });
 
         //for each radio button, which shows the display tiles in scene
@@ -228,59 +229,71 @@ export class SheetImageControls {
         }
     }
 
+    static async wrapSheetImageData(data) {
+        let { journalSheet, imgElement: imageElement } = data;
+        //get location data
+        let imageData = await SheetImageControls.getJournalImageFlagData(journalSheet.object, imageElement);
+        let galleryTileIDs = await SheetImageControls.getGalleryTileIDsFromImage(imageElement, journalSheet);
+        let sheetImageData = {
+            imageElement: imageElement,
+            ...imageData,
+            ...galleryTileIDs,
+            ...(!imageData.method && { method: data.method || "window" }), //if we don't have a location set, default to window
+        };
+        return sheetImageData;
+    }
     static async onImageClick(event, data) {
-        let { journalSheet, imgElement } = data;
         event.stopPropagation();
         event.stopImmediatePropagation();
-        //get location data
-        let imageData = await SheetImageControls.getJournalImageFlagData(journalSheet.object, imgElement);
-        if (imageData.displayLocation) {
-            await SheetImageControls.determineDisplayLocation(imgElement, imageData.displayLocation, journalSheet);
-        } else {
-            await SheetImageControls.determineDisplayLocation(imgElement, "displayScene", journalSheet);
-        }
+
+        let sheetImageData = await SheetImageControls.wrapSheetImageData(data);
+
+        await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
     }
 
-    static async onLocationButtonClick(event, data) {
+    static async addFadeStylesToSheet(event) {
+        event.preventDefault();
+        let windowContent = event.currentTarget.closest(".window-content");
+        let fadeButtons = windowContent.querySelectorAll(`[data-action="fadeJournal"]`, `[data-action="fadeContent"]`);
+        // let className = location === "fadeContent" ? "fadeAll" : "fade";
+        let classNames = ["fade"];
+        if (action === "fadeContent") {
+            classNames.push("fade-all");
+        }
+
+        if (windowContent.classList.contains("fade")) {
+            windowContent.classList.remove("fade", "fade-all");
+            fadeButtons.forEach((btn) => btn.classList.remove("active"));
+        } else {
+            windowContent.classList.add(...classNames);
+            fadeButtons.forEach((btn) => btn.classList.add("active"));
+        }
+        return;
+    }
+
+    static async onDisplayActionButtonClick(event, data) {
         let { journalSheet, imgElement } = data;
         event.stopPropagation();
         event.stopImmediatePropagation();
 
         //get the action
-        let location = event.currentTarget.dataset.action;
+        let action = event.currentTarget.dataset.action;
 
-        if (location === "fadeJournal" || location === "fadeContent") {
-            event.preventDefault();
-            let windowContent = event.currentTarget.closest(".window-content");
-            let fadeButtons = windowContent.querySelectorAll(
-                `[data-action="fadeJournal"]`,
-                `[data-action="fadeContent"]`
-            );
-            // let className = location === "fadeContent" ? "fadeAll" : "fade";
-            let classNames = ["fade"];
-            if (location === "fadeContent") {
-                classNames.push("fade-all");
-            }
-
-            if (windowContent.classList.contains("fade")) {
-                windowContent.classList.remove("fade", "fade-all");
-                fadeButtons.forEach((btn) => btn.classList.remove("active"));
-            } else {
-                windowContent.classList.add(...classNames);
-                fadeButtons.forEach((btn) => btn.classList.add("active"));
-            }
-            return;
+        if (action === "fadeJournal" || action === "fadeContent") {
+            await SheetImageControls.addFadeStylesToSheet(event);
         }
 
         //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
         if (event.ctrlKey) {
-            //if the control key was also pressed
+            //if the control key was also pressed, store the display location
             await SheetImageControls.assignImageFlags(journalSheet, imgElement, {
-                displayLocation: location,
+                method: action,
             });
         } else {
             //otherwise, just launch to the clicked button's display location
-            await SheetImageControls.determineDisplayLocation(imgElement, location, journalSheet);
+            let sheetImageData = await SheetImageControls.wrapSheetImageData({ ...data, method: action });
+            console.warn(sheetImageData);
+            await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
         }
     }
 
@@ -343,52 +356,6 @@ export class SheetImageControls {
     }
 
     /**
-     * determine the location of the display
-     * @param {*} imageElement - the imageElement
-     * @param {*} location - the location we want to display our image in
-     * @param {*} journalSheet  - the journal sheet in which we're performing these actions
-     * @param {*} url
-     */
-    static async determineDisplayLocation(imageElement, location, journalSheet, url = "") {
-        let galleryTileIDs = await SheetImageControls.getGalleryTileIDsFromImage(imageElement, journalSheet);
-
-        // let tileID = imageElement.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
-        // let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
-        //on click, this method will determine if the image should open in a scene or in a display journal
-        switch (location) {
-            case "displayScene":
-            case "anyScene":
-                //if the setting is to display it in a scene, proceed as normal
-                if (!galleryTileIDs) {
-                    ui.notifications.error("No gallery tile found");
-                    return;
-                }
-                let { artTileID, frameTileID } = galleryTileIDs;
-                await game.JTCS.imageUtils.updateTileObjectTexture(artTileID, frameTileID, imageElement);
-                // await game.JTCS.imageUtils.displayImageInScene(imageElement, journalSheet, url);
-                break;
-            case "journalEntry":
-                await game.JTCS.imageUtils.manager.displayImageInWindow(
-                    "journalEntry",
-                    game.JTCS.imageUtils.manager.getImageSource(imageElement)
-                );
-                break;
-            case "window":
-                await game.JTCS.imageUtils.manager.displayImageInWindow(
-                    "window",
-                    game.JTCS.imageUtils.manager.getImageSource(imageElement)
-                );
-                if (url != undefined) {
-                    //if the url is not undefined, it means that this method is being called from the setUrlImageToShow() method
-                } else {
-                    //if not, it happened because of an image click, so find the information of the clicked image
-                    game.JTCS.imageUtils.manager.getImageSource(imageElement, displayImageInWindow);
-                }
-                break;
-        }
-    }
-
-    /**
      * Convert the image's path without extention to use as as an identifier to store it in flags
      * @param {Element} imgElement - the image element
      * @returns a string path
@@ -409,6 +376,6 @@ export class SheetImageControls {
         let foundData = clickableImages.find((imgData) => {
             return imgData.name == imgElement.dataset["name"];
         });
-        return foundData;
+        return { journalID: journalEntry.id, ...foundData };
     }
 }

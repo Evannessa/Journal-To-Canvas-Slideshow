@@ -1,0 +1,18 @@
+  <fieldset class="button-group {{extraClass}}">
+    {{#each this.buttonData.buttons}}
+      <input
+        type="radio"
+		class="hidden-input"
+        name="{{this.name}}"
+        id="{{this.id}}"
+        value="{{this.value}}"
+		{{#if (eq @root.selectedValue this.value)}}
+				checked	
+		{{/if}}
+      />
+      <label class="flex-row" for="{{this.id}}" data-title="">
+        {{this.name}}
+		{{> (dynamicPartial "tooltip" @root.partials)}}
+      </label>
+    {{/each}}
+  </fieldset>

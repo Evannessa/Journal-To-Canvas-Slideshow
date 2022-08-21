@@ -1,19 +1,16 @@
-<div class="form-group-stacked">
-    <label>
-        Display Name
-    </label>
-    <input class="flex3" name="displayName" type="text" value="{{this.displayName}}" />
-    {{#if (eq this.missing true)}}
-        <p class="error | fs-small">
-            <span>
-                <i class="fas fa-unlink"></i>
-            </span>
-            A
-            {{this.type}}
-            tile with this id "
-            {{this.id}}
-            " doesn't exist in scene "
-            <span class="accent">{{this.currentSceneName}} " </span>.
-        </p>
+<div class="form-group has-floating-label">
+    <label class="floating-label" for="{{this.id}}">{{this.name}}</label>
+    {{#if (eq this.type "select")}}
+        <select name="{{this.name}}" id="{{this.id}}">
+            {{selectOptions this.wikiData.choices selected=value nameAttr="key" labelAttr="label"}}
+        </select>
+    {{else}}
+        <input
+            class="flex3"
+            id="{{this.id}}"
+            name="{{this.name}}"
+            type="{{ternary this.type 'text'}}"
+            value="{{this.value}}"
+        />
     {{/if}}
 </div>

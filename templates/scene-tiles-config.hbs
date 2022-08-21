@@ -33,13 +33,18 @@
 					{{/each}}
 				</select>
 			</div>
-					<div class="actions">
-						{{> (dynamicPartial "icon-button" partials)
-							action="showModuleSettings" 
-							icon="fas fa-cog" 
-							tooltipText="Open Journal-to-Canvas Slideshow Settings"
-						}}
-					</div>
+			<div class="actions">
+				{{> (dynamicPartial "icon-button" partials)
+					action="showModuleSettings" 
+					icon="fas fa-cog" 
+					tooltipText="Open Journal-to-Canvas Slideshow Settings"
+				}}
+				{{> (dynamicPartial "icon-button" partials)
+					action="shareURL" 
+					icon="fas fa-external-link-alt" 
+					tooltipText="Share a URL link with your players"
+				}}
+			</div>
 		</div>
     </header>
     <section class="tilesInScene 

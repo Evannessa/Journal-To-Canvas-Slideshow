@@ -34,7 +34,9 @@
         "scripts/SheetImageControls.js",
         "scripts/classes/HelperFunctions.js",
         "scripts/classes/ImageDisplayManager.js",
-        "scripts/classes/JTCSSettingsApplication.js"
+        "scripts/classes/JTCSSettingsApplication.js",
+        "scripts/data/JTCS-Actions.js",
+        "scripts/data/templates.js"
     ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
