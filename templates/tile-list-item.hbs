@@ -67,11 +67,11 @@
 				extraClass="danger-text"
 			}}
             {{#with @root.settingsData}}
-                {{#each individualTileActions.actions}}
+                {{#each itemActions.click.actions}}
                     {{> (dynamicPartial "icon-button")
                         action=@key
                         name=(concat 
-                            @root.settingsData.individualTileActions.propertyString "." @key)
+                            @root.settingsData.itemActions.click.propertyString "." @key)
                         icon=this.icon
                         tooltipText=this.tooltipText
                         extraClass=this.extraClass

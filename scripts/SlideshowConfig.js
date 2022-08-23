@@ -18,96 +18,100 @@ const slideshowDefaultSettingsData = {
             },
         },
     ],
-    individualTileChangeListeners: {
-        actions: {
-            linkTile: {
-                onChange: (event, options = {}) => {},
-            },
-        },
-    },
-    individualTileHoverListeners: {
-        actions: {
-            highlightTile: {
-                onHover: async (event, options = {}) => {
-                    let isLeave = event.type === "mouseout" || event.type === "mouseleave";
-                    let { targetElement } = options;
-                    if (!targetElement) targetElement = event.currentTarget;
-                    if (targetElement.tagName === "LABEL") {
-                        targetElement = targetElement.previousElementSibling;
-                    }
-                    let tileID = targetElement.dataset.id;
-                    let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
-                    if (!isLeave) {
-                        await game.JTCS.indicatorUtils.showTileIndicator(tile);
-                    } else {
-                        await game.JTCS.indicatorUtils.hideTileIndicator(tile);
-                    }
+    itemActions: {
+        change: {
+            propertyString: "itemActions.change.actions",
+            actions: {
+                setLinkedTile: {
+                    onChange: (event, options = {}) => {},
                 },
             },
         },
-    },
-    individualTileActions: {
-        propertyString: "individualTileActions.actions",
-        actions: {
-            //for buttons
-            clearTileImage: {
-                icon: "fas fa-times-circle",
-                tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
-                onClick: async (event, options = {}) => {
-                    let { tileID } = options;
-                    // let tileID = parentElement.dataset.id;
-                    await game.JTCS.imageUtils.manager.clearTile(tileID);
-                },
-                extraClass: "danger-text",
-            },
-            linkTile: {
-                icon: "fas fa-link",
-                onClick: async (event, options = {}) => {
-                    let { tileID, app, html } = options;
-                    let buttonElement = event.currentTarget;
-                    let position = buttonElement.getBoundingClientRect();
-                    // -- RENDER THE POPOVER
-                    let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-                    let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
-                    let templateData = {
-                        passedPartial: "tile-link-partial",
-                        passedPartialContext: {
-                            artTileDataArray: artTileDataArray,
-                            unlinkedTilesIDs: unlinkedTilesIDs,
-                        },
-                    };
-
-                    let popover = await game.JTCS.utils.manager.createPopover(templateData, app, position);
-                    popover.on("change", "[data-change-action]", (event) => {
-                        let changeAction = event.currentTarget.dataset.changeAction;
-                        let settingsData = getProperty(
-                            slideshowDefaultSettingsData,
-                            `individualTileChangeListeners.actions.${changeAction}`
-                        );
-                        if (settingsData && settingsData.hasOwnProperty("onChange")) {
-                            settingsData.onChange(event, {});
-                        }
-                    });
-
-                    popover.on("mouseenter mouseleave", "[data-hover-action], [data-hover-action] + label", (event) => {
-                        let targetElement = event.currentTarget;
+        hover: {
+            propertyString: "itemActions.hover.actions",
+            actions: {
+                highlightTile: {
+                    onHover: async (event, options = {}) => {
+                        let isLeave = event.type === "mouseout" || event.type === "mouseleave";
+                        let { targetElement } = options;
+                        if (!targetElement) targetElement = event.currentTarget;
                         if (targetElement.tagName === "LABEL") {
                             targetElement = targetElement.previousElementSibling;
                         }
-                        let hoverAction = targetElement.dataset.hoverAction;
-                        let hoverData = getProperty(
-                            slideshowDefaultSettingsData,
-                            `individualTileHoverListeners.actions.${hoverAction}`
-                        );
-                        if (hoverData && hoverData.hasOwnProperty("onHover")) {
-                            hoverData.onHover(event, { targetElement: targetElement });
+                        let tileID = targetElement.dataset.id;
+                        let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
+                        if (!isLeave) {
+                            await game.JTCS.indicatorUtils.showTileIndicator(tile);
+                        } else {
+                            await game.JTCS.indicatorUtils.hideTileIndicator(tile);
                         }
-                    });
-                    // let selectedID = html[0].querySelector("select").value;
-                    // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
-                    // if (app.rendered) {
-                    // await app.renderWithData();
-                    // }
+                    },
+                },
+            },
+        },
+        click: {
+            //for buttons
+            propertyString: "itemActions.click.actions",
+            actions: {
+                clearTileImage: {
+                    icon: "fas fa-times-circle",
+                    tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
+                    onClick: async (event, options = {}) => {
+                        let { tileID } = options;
+                        // let tileID = parentElement.dataset.id;
+                        await game.JTCS.imageUtils.manager.clearTile(tileID);
+                    },
+                    extraClass: "danger-text",
+                },
+                linkTile: {
+                    icon: "fas fa-link",
+                    onClick: async (event, options = {}) => {
+                        let { tileID, app, html } = options;
+                        let buttonElement = event.currentTarget;
+                        let position = buttonElement.getBoundingClientRect();
+                        // -- RENDER THE POPOVER
+                        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+                        let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
+                        let templateData = {
+                            passedPartial: "tile-link-partial",
+                            passedPartialContext: {
+                                artTileDataArray: artTileDataArray,
+                                unlinkedTilesIDs: unlinkedTilesIDs,
+                            },
+                        };
+
+                        let popover = await game.JTCS.utils.manager.createPopover(templateData, app, position);
+                        popover.on("change", "[data-change-action]", (event) => {
+                            let changeAction = event.currentTarget.dataset.changeAction;
+                            let settingsData = getProperty(slideshowDefaultSettingsData, changeAction);
+                            if (settingsData && settingsData.hasOwnProperty("onChange")) {
+                                settingsData.onChange(event, {});
+                            }
+                        });
+
+                        popover.on(
+                            "mouseenter mouseleave",
+                            "[data-hover-action], [data-hover-action] + label",
+                            (event) => {
+                                let targetElement = event.currentTarget;
+
+                                //target the label as well in case we mouse over that
+                                if (targetElement.tagName === "LABEL") {
+                                    targetElement = targetElement.previousElementSibling;
+                                }
+                                let hoverAction = targetElement.dataset.hoverAction;
+                                let hoverData = getProperty(slideshowDefaultSettingsData, hoverAction);
+                                if (hoverData && hoverData.hasOwnProperty("onHover")) {
+                                    hoverData.onHover(event, { targetElement: targetElement });
+                                }
+                            }
+                        );
+                        // let selectedID = html[0].querySelector("select").value;
+                        // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
+                        // if (app.rendered) {
+                        // await app.renderWithData();
+                        // }
+                    },
                 },
             },
         },

@@ -10,12 +10,11 @@
                 <input
                     data-type="unlinked"
                     type="radio"
-                    name="unlinkedTiles"
-                    data-change-action="linkTile"
+                    data-change-action="itemActions.change.actions.setLinkedTile"
+                    data-hover-action="itemActions.hover.actions.highlightTile"
                     value="unlinkedTileID"
                     id="{{unlinkedTileID}}"
                     data-id="{{unlinkedTileID}}"
-                    data-hover-action="highlightTile"
                 />
                 <label for="{{unlinkedTileID}}">Tile {{unlinkedTileID}}</label>
             {{/each}}
