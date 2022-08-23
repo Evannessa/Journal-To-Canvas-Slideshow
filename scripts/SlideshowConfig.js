@@ -23,7 +23,16 @@ const slideshowDefaultSettingsData = {
             propertyString: "itemActions.change.actions",
             actions: {
                 setLinkedTile: {
-                    onChange: (event, options = {}) => {},
+                    onChange: async (event, options = {}) => {
+                        let { app, targetElement } = options;
+                        if (!targetElement) targetElement = event.currentTarget;
+                        if (!app) app = game.JTCSlideshowConfig;
+                        let selectedID = targetElement.value;
+                        // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
+                        if (app.rendered) {
+                            await app.renderWithData();
+                        }
+                    },
                 },
             },
         },
@@ -106,12 +115,8 @@ const slideshowDefaultSettingsData = {
                                 }
                             }
                         );
-                        // let selectedID = html[0].querySelector("select").value;
-                        // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
-                        // if (app.rendered) {
-                        // await app.renderWithData();
-                        // }
                     },
+                    renderCondition: () => {}, //TODO: Only render when meets condition
                 },
             },
         },
