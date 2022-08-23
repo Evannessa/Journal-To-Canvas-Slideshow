@@ -1,6 +1,10 @@
 <div class="form-group flex-row flex-justify-space-evenly">
-    {{#each checkboxOption}}
-        <input type="checkbox" class="hidden-input chip-span" id={{this.id}} />
-        <label for="{{this.id}}">{{this.name}}</label>
+    {{#each choices}}
+    <span class="chip-span">
+        <input type="checkbox" class="hidden-input" id={{@key}} {{#if (eq this true)}}
+           checked 
+        {{/if}} name="{{concat ../propertyString "." @key}}"/>
+        <label for="{{@key}}">{{camelCaseToArray @key true}}</label>
+    </span>
     {{/each}}
 </div>

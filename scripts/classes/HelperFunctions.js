@@ -1,5 +1,10 @@
+import { artGalleryDefaultSettings } from "../settings.js";
 export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";
+
+    static resetArtGallerySettings() {
+        HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);
+    }
     static async swapTools(layerName = "background", tool = "select") {
         ui.controls.controls.find((c) => c.layer === layerName).activeTool = tool;
 
@@ -26,6 +31,8 @@ export class HelperFunctions {
             let currentSettingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
             updateData = expandObject(updateData); //get expanded object version of formdata keys, which were strings in dot notation previously
             updateData = mergeObject(currentSettingData, updateData);
+            // let updated = await game.settings.set(HelperFunctions.MODULE_ID, settingName, currentSettingData);
+            // console.warn(updated);
         }
         if (nestedKey) {
             let settingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
@@ -88,6 +95,15 @@ export class HelperFunctions {
     static async disableWelcomeMessage() {
         //disable the welcome message
         await HelperFunctions.setSettingValue("showWelcomeMessage", false);
+    }
+
+    static async createPopover(templateData, parentApp, position) {
+        let popoverTemplate = game.JTCS.templates["popover"];
+        let renderedHTML = await renderTemplate(popoverTemplate, templateData);
+        parentApp.element.append(renderedHTML);
+        let popoverElement = parentApp.element.find(".popover");
+        popoverElement.css({ position: "absolute" });
+        popoverElement.offset({ top: position.top, left: position.left });
     }
 
     static async createDialog(title, templatePath, data) {

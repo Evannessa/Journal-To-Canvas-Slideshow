@@ -58,8 +58,16 @@ export class ArtTileManager {
 
     static async createTileInScene(isFrameTile) {
         let ourScene = game.scenes.viewed;
+        let pathProperty = isFrameTile ? "frameTilePath" : "artTilePath";
         let imageManager = game.JTCS.imageUtils.manager;
-        let imgPath = isFrameTile ? imageManager.frameTileDefaultTexture : imageManager.artTileDefaultTexture;
+
+        let imgPath = await game.JTCS.utils.getSettingValue(
+            "artGallerySettings",
+            `defaultTileImages.paths.${pathProperty}`
+        );
+        if (!imgPath) {
+            return;
+        }
         const tex = await loadTexture(imgPath);
         let dimensionObject = imageManager.calculateAspectRatioFit(
             tex.width,
@@ -256,7 +264,6 @@ export class ArtTileManager {
         let { currentSceneID } = options;
         let currentScene = game.scenes.viewed;
         if (currentSceneID) {
-            console.log("Current ID is", currentSceneID);
             currentScene = game.scenes.get(currentSceneID);
         }
         let flaggedTiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];

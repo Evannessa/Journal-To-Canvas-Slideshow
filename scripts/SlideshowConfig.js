@@ -2,46 +2,70 @@
 import { log, MODULE_ID } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 
+const slideshowDefaultSettingsData = {
+    globalActions: [
+        {
+            name: "showURLShareDialog",
+            icon: "fas fa-external-link-alt",
+            tooltipText: "Share a URL link with your players",
+        },
+        {
+            name: "showModuleSettings",
+            icon: "fas fa-cog",
+            tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
+            onClick: (event, options = {}) => {
+                let settingsApp = new JTCSSettingsApplication().render(true);
+            },
+        },
+    ],
+    individualTileActions: {
+        propertyString: "individualTileActions.actions",
+        actions: {
+            //for buttons
+            clearTileImage: {
+                icon: "fas fa-times-circle",
+                tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
+                onClick: async (event, options = {}) => {
+                    let { tileID } = options;
+                    // let tileID = parentElement.dataset.id;
+                    await game.JTCS.imageUtils.manager.clearTile(tileID);
+                },
+                extraClass: "danger-text",
+            },
+            linkTile: {
+                icon: "fas fa-link",
+                onClick: async (event, options = {}) => {
+                    let { tileID, app, html } = options;
+                    let buttonElement = event.currentTarget;
+                    let position = buttonElement.getBoundingClientRect();
+                    // -- RENDER THE POPOVER
+                    let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+                    let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
+                    let templateData = {
+                        passedPartial: "tile-link-partial",
+                        passedPartialContext: {
+                            artTileDataArray: artTileDataArray,
+                            unlinkedTilesIDs: unlinkedTilesIDs,
+                        },
+                    };
+                    await game.JTCS.utils.manager.createPopover(templateData, app, position);
+                    // let selectedID = html[0].querySelector("select").value;
+                    // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
+                    // if (app.rendered) {
+                    // await app.renderWithData();
+                    // }
+                },
+            },
+        },
+    },
+};
+
 export class SlideshowConfig extends Application {
     constructor(data = {}) {
         // super({ renderData: { ...data } });
         super(data);
         this.data = data;
     }
-    // 	async setupActionObjects(){
-    // 		this.data.actions = {
-    // 	click: [
-    // 		game.JTCS.utils.createEventActionObject("createSlideshowTile", async (data)=> {
-    // 			let {type} = data;
-    //   			if (type === "frame") {
-    //                     await game.JTCS.tileUtils.createFrameTile(tileID);
-    //                 } else {
-    //                     await game.JTCS.tileUtils.createDisplayTile("", tileID);
-    //                 }
-    // 		}, true),
-    // 		game.JTCS.utils.createEventActionObject("linkTile", async (data)=> {
-    // 				let {tileID} = data;
-    //                 await this.createTileLinkDialogue(tileID);
-    // 		}, false),
-    // 		game.JTCS.utils.createEventActionObject("renderTileConfig", (data)=> {
-
-    // 				let {tileID} = data;
-    // 			await this.renderTileConfig(tileID);
-    // 		}, false),
-    // 		game.JTCS.utils.createEventActionObject("selectTile", (data)=> {
-    // 				let {tileID} = data;
-    //                 await game.JTCS.tileUtils.selectTile(tileID);
-    // 		}, false),
-    // 		game.JTCS.utils.createEventActionObject("deleteTileData", (data)=> {
-    // 				let {tileID} = data;
-    // 				await game.JTCS.tileUtils.deleteSceneTileData(tileID);
-    // 		}, true)
-    // 	],
-    // 	onHover: [],
-    // 	onChange: [],
-    // 	onToggle: []
-    // }
-    // }
 
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
@@ -337,6 +361,7 @@ export class SlideshowConfig extends Application {
             artSceneData: artSceneData,
             artJournalData: artJournalData,
             partials: game.JTCS.templates,
+            settingsData: slideshowDefaultSettingsData,
             ...this.data,
         };
     }
@@ -405,24 +430,19 @@ export class SlideshowConfig extends Application {
         event.preventDefault();
         let action = clickedElement.data().action;
         let type = clickedElement.data().type;
-        let name = clickedElement.data().displayName;
+        // let name = clickedElement.data().displayName;
+        let propertyString = event.currentTarget.name;
+        console.log(propertyString);
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
         let tileID;
         if (clickedElement[0].closest("li")) {
             tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
         }
-
-        // let data = { clickedElement: clickedElement, action: action, type: type, name: name, tileID: tileID };
-
-        // for (let actionObj of actions.click) {
-        //     if (actionObj.name === action) {
-        //         await actionObj.callback();
-        //     }
-        // }
-        // if (actionObj.shouldRenderAppOnAction) {
-        //     await this.renderWithData();
-        // }
+        let settingsData = getProperty(slideshowDefaultSettingsData, propertyString);
+        if (settingsData && settingsData.hasOwnProperty("onClick")) {
+            settingsData.onClick(event, { tileID: tileID, app: this, html: this.element });
+        }
 
         switch (action) {
             case "convert":
@@ -434,10 +454,10 @@ export class SlideshowConfig extends Application {
                 await game.JTCS.tileUtils.createAndLinkSceneTile({ unlinkedDataID: tileID, isFrameTile: isFrameTile });
                 await this.renderWithData();
                 break;
-            case "linkTile":
-                //link this data to an unlinked tile in the scene
-                await this.createTileLinkDialogue(tileID);
-                break;
+            // case "linkTile":
+            //     //link this data to an unlinked tile in the scene
+            //     await this.createTileLinkDialogue(tileID);
+            //     break;
             case "renderTileConfig":
                 await game.JTCS.tileUtils.renderTileConfig(tileID);
                 break;

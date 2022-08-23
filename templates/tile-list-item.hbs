@@ -9,21 +9,17 @@
     data-missing="{{this.missing}}"
 >
 	<header class="flex-row flex-nowrap flex-justify-space-between">
-		{{!-- {{> (dynamicPartial "input-with-error" @root.partials)}} --}}
-		<div class="form-group-stacked">
-			<input class="flex3" name="displayName" type="text" 
-				value="{{this.displayName}}"/>
-			{{#if (eq this.missing true)}}
-				<p class="error | fs-small">
-				<span>
-					<i class="fas fa-unlink"></i>
-				</span>
-				A {{this.type}} tile with this id " {{this.id}} " 
-				doesn't exist in scene " 
-				<span class="accent">{{this.currentSceneName}} " </span>.
-				</p>
-			{{/if}}
-		</div>
+		{{> (dynamicPartial "input-with-error")
+            name="Display Name" 
+            id=this.displayName
+            value=this.displayName
+            errorCondition=(eq this.missing true)
+            errorContent=(combineToString 
+                "A " this.type "tile with ID " this.id 
+                " doesn't exist in scene " 
+                (wrapInSpan this.currentSceneName)
+            )
+        }} 
 		<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]">
 			{{#if (eq this.missing true)}}
 			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
@@ -70,36 +66,44 @@
 					)
 				extraClass="danger-text"
 			}}
+            {{#with @root.settingsData}}
+                {{#each individualTileActions.actions}}
+                    {{> (dynamicPartial "icon-button")
+                        action=@key
+                        name=(concat 
+                            @root.settingsData.individualTileActions.propertyString "." @key)
+                        icon=this.icon
+                        tooltipText=this.tooltipText
+                        extraClass=this.extraClass
+                    }}
+                {{/each}}
+            {{/with}}
 		</div>
 	</header>
-		{{!-- <hr/> --}}
 		{{#if (eq this.type "art")}}
-		<footer class="footer">
-			<div class="connectedTiles flex-row" data-title="">
-				{{!-- <ul class="linked-tile-list hover-reveal--child focus-reveal--child"> --}}
-					<div class="form-group has-floating-label">
-						<label class="floating-label" for="linkedBoundingTile">Frame</label>
-						<select name="linkedBoundingTile" id="linkedBoundingTile">
-							<option value=""> Use Canvas As Frame </option>
-							{{#each this.allFrameTiles as |boundingTile|}}
-								<option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"
-								{{#if (eq ../linkedBoundingTile boundingTile.id)}}
-									selected
-								{{/if}}>
-									{{boundingTile.displayName}}
-								</option>
-							{{/each}}
-						
-						</select>
-					</div>
-					{{> (dynamicPartial "tooltip" @root.partials)
-							content=(combineToString 
-							"Choose a tile to frame this tile's art," 
-							"<br/>" "or let it scale to the canvas.")
-					}}
-				{{!-- </ul> --}}
-			
-			</div>	
-		</footer>
+            <footer class="footer">
+                <div class="connectedTiles flex-row" data-title="">
+                        <div class="form-group has-floating-label">
+                            <label class="floating-label" for="linkedBoundingTile">Frame</label>
+                            <select name="linkedBoundingTile" id="linkedBoundingTile">
+                                <option value=""> Use Canvas As Frame </option>
+                                {{#each this.allFrameTiles as |boundingTile|}}
+                                    <option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"
+                                    {{#if (eq ../linkedBoundingTile boundingTile.id)}}
+                                        selected
+                                    {{/if}}>
+                                        {{boundingTile.displayName}}
+                                    </option>
+                                {{/each}}
+                            
+                            </select>
+                        </div>
+                        {{> (dynamicPartial "tooltip" @root.partials)
+                                content=(combineToString 
+                                "Choose a tile to frame this tile's art," 
+                                "<br/>" "or let it scale to the canvas.")
+                        }}
+                </div>	
+            </footer>
 		{{/if}}
 </li>

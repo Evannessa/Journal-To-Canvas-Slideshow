@@ -68,6 +68,9 @@ export class CanvasIndicators {
         // color =
         // fillAlpha = 0.2;
         color = color.substring(1);
+        if (color.length === 8) {
+            color = color.substring(-2);
+        }
         color = `0x${color}`;
         color = parseInt(color);
         // console.warn("Color is", color);

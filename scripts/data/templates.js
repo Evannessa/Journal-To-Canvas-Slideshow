@@ -15,6 +15,8 @@ const templateBaseNames = [
     `share-url-partial.hbs`,
     `fieldset-button-group.hbs`,
     `checkbox-chip-group.hbs`,
+    `notification-badge.hbs`,
+    `popover.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

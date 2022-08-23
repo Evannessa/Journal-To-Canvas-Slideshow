@@ -23,14 +23,7 @@ export class SheetImageControls {
             icon: "fas fa-vector-square",
             tooltip: "display image in any scene with a frame tile and display tile",
         },
-        // {
-        //     name: "showToAll",
-        //     icon: "fas fa-users",
-        //     tooltip: "show to all users",
-        //     additionalClass: "toggle push-down",
-        //     additionalParentClass: "hover-reveal-right",
-        //     multi: true,
-        // },
+
         {
             name: "fadeJournal",
             icon: "fas fa-eye-slash",
@@ -56,6 +49,7 @@ export class SheetImageControls {
 
     static async applyImageClasses(app, html) {
         if (game.user.isGM) {
+            let whichSheets = game.JTCS.utils.getSettingValue("artGallerySettings", "sheetSettings.choices");
             let canUseItemAndActorImages = game.JTCS.utils.getSettingValue("useActorSheetImages");
             // check to see if we should can use images in item and actor sheets too, or just in journal images
             let selectorString = canUseItemAndActorImages
@@ -255,6 +249,7 @@ export class SheetImageControls {
         event.preventDefault();
         let windowContent = event.currentTarget.closest(".window-content");
         let fadeButtons = windowContent.querySelectorAll(`[data-action="fadeJournal"]`, `[data-action="fadeContent"]`);
+        let action = event.currentTarget.dataset.action;
         // let className = location === "fadeContent" ? "fadeAll" : "fade";
         let classNames = ["fade"];
         if (action === "fadeContent") {
@@ -292,7 +287,6 @@ export class SheetImageControls {
         } else {
             //otherwise, just launch to the clicked button's display location
             let sheetImageData = await SheetImageControls.wrapSheetImageData({ ...data, method: action });
-            console.warn(sheetImageData);
             await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
         }
     }

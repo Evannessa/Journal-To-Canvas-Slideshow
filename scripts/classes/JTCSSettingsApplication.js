@@ -1,7 +1,11 @@
-import { MODULE_ID } from "../debug-mode.js";
+import { log, MODULE_ID } from "../debug-mode.js";
+import { artGalleryDefaultSettings } from "../settings.js";
 /**
  * Form app to handle JTCS settings
  */
+Hooks.on("renderJTCSSettingsApplication", (app) => {
+    game.JTCSSettingsApp = app;
+});
 export class JTCSSettingsApplication extends FormApplication {
     constructor(data = {}) {
         super();
@@ -17,17 +21,19 @@ export class JTCSSettingsApplication extends FormApplication {
             minimizable: true,
             submitOnClose: true,
             closeOnSubmit: true,
-            submitOnChange: true,
+            submitOnChange: false,
             template: `modules/${MODULE_ID}/templates/JTCS-settings-app.hbs`,
             id: "JTCSSettingsApplication",
             title: " JTCSSettings Application",
         });
     }
 
-    getData() {
+    async getData() {
         // Send data to the template
         // let data = game.JTCS.utils.getSettingValue("artGallerySettings");
         let data = this.data;
+        this.data = await game.JTCS.utils.getSettingValue("artGallerySettings");
+
         return data;
     }
 
@@ -38,11 +44,30 @@ export class JTCSSettingsApplication extends FormApplication {
     }
 
     async _handleChange() {
+        let app = game.JTCSSettingsApp;
         $(`select, input[type='checkbox'], input[type='radio'], input[type='text']`).on(
             "change",
             async function (event) {
                 let { value, name, checked, type } = event.currentTarget;
-                let clickedElement = $(event.currentTarget);
+                let propertyString = "";
+                switch (type) {
+                    case "select":
+                    case "radio":
+                        //the radio or select data is nested in a parent object that holds both its choices and the chosen value
+                        //so we will want to get that parent object instead of the object itself
+                        propertyString = name.split(".").splice(0, 2).join(".");
+                        break;
+                    case "checkbox":
+                        value = checked; //if its a checkbox, set its value to whether or not it is checked
+                    default:
+                        propertyString = name;
+                        break;
+                }
+                let settingsObject = getProperty(artGalleryDefaultSettings, propertyString);
+                if (settingsObject && settingsObject.hasOwnProperty("onChange")) {
+                    let ourApp = game.JTCSSettingsApp;
+                    settingsObject.onChange(event, { value: value, app: ourApp, html: ourApp.element });
+                }
             }
         );
     }

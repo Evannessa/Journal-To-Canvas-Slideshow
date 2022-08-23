@@ -88,6 +88,12 @@
   background: transparent;
 }
 
+.popover {
+  position: absolute;
+  background-color: var(--bg-color);
+  color: var(--color-text-primary);
+}
+
 .fill-parent {
   width: 100%;
   height: 100%;
@@ -187,7 +193,7 @@
   color: var(--color-text-secondary-hover);
 }
 
-input[type=radio].hidden-input {
+input:is([type=radio], [type=checkbox]).hidden-input {
   transform: scale(0);
   position: absolute;
   overflow: hidden;
@@ -198,7 +204,7 @@ input[type=radio].hidden-input {
   padding: 0;
   border: 0;
 }
-input[type=radio].hidden-input + label {
+input:is([type=radio], [type=checkbox]).hidden-input + label {
   transform: scale(1);
   color: var(--color-text-secondary);
   background-color: var(--bg-color);
@@ -217,13 +223,13 @@ input[type=radio].hidden-input + label {
   align-items: center;
   transition: background-color 150ms ease-out transform 150ms ease-out;
 }
-input[type=radio].hidden-input + label:hover {
+input:is([type=radio], [type=checkbox]).hidden-input + label:hover {
   cursor: pointer;
   border: 1px solid var(--border-color-hover);
   color: var(--color-text-secondary-hover);
   box-shadow: 0 0 10px var(--shadow-color-hover);
 }
-input[type=radio].hidden-input:checked + label {
+input:is([type=radio], [type=checkbox]).hidden-input:checked + label {
   transform: scale(1.04);
   z-index: 1;
   color: var(--color-text-secondary-hover);
@@ -231,10 +237,10 @@ input[type=radio].hidden-input:checked + label {
   border: 1px solid var(--color-border-highlight-alt);
   transition: background-color 250ms ease-out;
 }
-input[type=radio].hidden-input:checked + label:hover {
+input:is([type=radio], [type=checkbox]).hidden-input:checked + label:hover {
   color: var(--shadow-color-hover);
 }
-input[type=radio].hidden-input:checked + label .tooltip {
+input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
   box-shadow: 0px 0px 10px var(--shadow-color-hover);
   border: 1px solid var(--color-border-highlight-alt);
 }
@@ -454,6 +460,7 @@ button.icon-button {
 }
 .hover-border:hover {
   border-color: var(--accent-color);
+  transition: border-color 150ms ease-out;
 }
 
 .focus-border {
@@ -462,6 +469,7 @@ button.icon-button {
 }
 .focus-border:focus, .focus-border:focus-within {
   outline-color: var(--accent-color);
+  transition: outline-color 150ms ease-out;
 }
 
 .focus-bg-none:focus {
@@ -804,6 +812,10 @@ button.icon-button {
   gap: 0.5rem;
   padding: 0.5rem;
 }
+.chip-span label {
+  border-radius: 999px;
+  min-width: 13ch;
+}
 
 .wrap {
   flex-wrap: wrap;
@@ -1037,6 +1049,14 @@ button.icon-button {
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
 
+#JTCSSettingsApplication .color-picker-group {
+  position: relative;
+}
+#JTCSSettingsApplication .color-picker-group .picker_wrapper {
+  position: absolute;
+  z-index: 800;
+}
+
 #slideshow-config {
   --flow-space: 1.25rem;
   width: min(600px, 45vw);
@@ -1047,11 +1067,24 @@ button.icon-button {
   color: var(--color-text-primary);
 }
 #slideshow-config .window-content form {
+  height: 100%;
   max-height: 80vh;
 }
 #slideshow-config .window-content .tilesInScene {
-  min-height: 50vh;
-  max-height: 80vh;
+  height: 80%;
+  position: relative;
+}
+#slideshow-config .window-content .tilesInScene ul {
+  max-height: 90%;
+}
+#slideshow-config .window-content .tilesInScene .item-wrapper {
+  position: relative;
+  max-height: 90%;
+}
+#slideshow-config .window-content .tilesInScene .item-wrapper .new-tile-list-item {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);

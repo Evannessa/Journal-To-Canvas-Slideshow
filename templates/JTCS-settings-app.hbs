@@ -1,38 +1,54 @@
 <form class="flexcol flow">
-    <div class="form-group">
-        {{> dynamicPartial "checkbox-chip-group" @root.partials}}
+    <div class="form-group-stacked" id="JTCSsheetSettings">
+        {{#with sheetSettings}}
+            <h2>{{this.name}}</h2>
+            <p>{{this.hint}}</p>
+            {{> (dynamicPartial "fieldset-button-group")
+                choices=this.globalChoices.choices
+                chosen=this.globalChoices.chosen
+                propertyString="sheetSettings.globalChoices.chosen"
+            }}
+            {{> (dynamicPartial "checkbox-chip-group") 
+                choices=this.modularChoices 
+                propertyString="sheetSettings.modularChoices"
+            }}
+        {{/with}}
     </div>
-    <div class="form-group-stacked">
-        <label for="artTileColor">Color for Art Tile Indicator</label>
-        <input
-            id="artTileColor"
-            type="text"
-            name="indicatorColorData.colors.artTileColor"
-            is="colorpicker-input"
-            data-responsive-color
-            value={{indicatorColorData.colors.artTileColor}}
-        />
-
-        <label for="frameTileColor">Color for Frame Tile Indicator</label>
-        <input
-            id="frameTileColor"
-            type="text"
-            name="indicatorColorData.colors.frameTileColor"
-            is="colorpicker-input"
-            data-responsive-color
-            value={{indicatorColorData.colors.frameTileColor}}
-        />
-
-        <label for="unlinkedTileColor">Color for Unlinked Tile Indicator</label>
-        <input
-            id="unlinkedTileColor"
-            type="text"
-            name="indicatorColorData.colors.unlinkedTileColor"
-            is="colorpicker-input"
-            value="{{indicatorColorData.colors.unlinkedTileColor}}"
-            data-responsive-color
-        />
+    <div class="form-group-stacked" id="JTCSindicatorColorData">
+        {{#with indicatorColorData}}
+            <h2>{{this.name}}</h2>
+            <p>{{this.hint}}</p>
+            <div class="form-group">
+            {{#each this.colors}}
+                <div class="form-group color-picker-group">
+                    <label for="artTileColor">{{camelCaseToArray @key}}</label>
+                    {{log (lookup ../colors @key)}}
+                    <input
+                        id="{{@key}}"
+                        type="text"
+                        name={{concat "indicatorColorData.colors" "." @key}}
+                        is="colorpicker-input"
+                        data-responsive-color
+                        value={{lookup ../colors @key}}
+                    />
+                </div>
+            {{/each}}
+            </div>
+    {{/with}}
     </div>
-    {{! <button name="colored" is="colorpicker-button" data-responsive-color> }}
+    <div class="form-group-stacked" id="JTCSdefaultImages">
+        {{#with defaultTileImages}}
+        <h2>{{this.name}}</h2>
+        <p>{{this.hint}}</p>
+        {{#each this.paths}}
+           <div class="form-group">
+                <label for="{{@key}}">{{camelCaseToArray @key true}}</label>
+               <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
+               {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}
+           </div>
+        {{/each}}
+        {{/with}}
+
+    </div>
     <input type="submit" />
 </form>

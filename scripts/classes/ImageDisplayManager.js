@@ -28,7 +28,6 @@ export class ImageDisplayManager {
         let ourScene = game.scenes.viewed;
         if (method == "artScene") {
             let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
-            console.warn("Get data", artSceneData);
             ourScene = artSceneData.ourScene;
             artTileID = artSceneData.artTileID;
             frameTileID = artSceneData.frameTileID;
@@ -302,14 +301,18 @@ export class ImageDisplayManager {
         const updated = await displayJournal.update(update, {});
     }
 
-    static async clearTile(tileObject) {
-        let ourScene = game.scenes.viewed;
-        // const tex = await loadTexture("/modules/journal-to-canvas-slideshow/assets/HD_transparent_picture.png");
+    static async clearTile(tileID, options = {}) {
+        let { ourScene } = options;
+        if (!ourScene) ourScene = game.scenes.viewed;
+        let clearImagePath = await game.JTCS.utils.getSettingValue(
+            "artGallerySettings",
+            "defaultTileImages.paths.artTilePath"
+        );
         var clearTileUpdate = {
-            _id: tileObject.id,
-            img: "/modules/journal-to-canvas-slideshow/assets/HD_transparent_picture.png",
+            _id: tileID,
+            img: clearImagePath,
         };
-        const updated = await ourScene.updateEmbeddedDocuments("Tile", [clearTileUpdate]);
+        await ourScene.updateEmbeddedDocuments("Tile", [clearTileUpdate]);
     }
 
     static async checkMeetsDisplayRequirements(source, displayTile, boundingTile) {

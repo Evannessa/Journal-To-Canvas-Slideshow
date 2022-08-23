@@ -221,6 +221,7 @@ Hooks.on("init", async () => {
             setUpIndicators: CanvasIndicators.setUpIndicators,
         },
         utils: {
+            manager: HelperFunctions,
             createDialog: HelperFunctions.createDialog,
             swapTools: HelperFunctions.swapTools,
             setSettingValue: HelperFunctions.setSettingValue,

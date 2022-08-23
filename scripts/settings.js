@@ -1,6 +1,74 @@
 "use strict";
-import { MODULE_ID } from "./debug-mode.js";
+import { MODULE_ID, log } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
+const assetFolderBasePath = `modules/${MODULE_ID}/assets/`;
+
+export const artGalleryDefaultSettings = {
+    sheetSettings: {
+        name: "Sheet Types",
+        hint: "Which types of sheets do you want to have clickable images?",
+        globalChoices: {
+            //these will be radio buttons that control the checkboxes below
+            chosen: "all",
+            onChange: (event, options = { value: "" }) => {
+                let { value, app, html } = options;
+                let areDisabled = value === "all" ? false : true;
+                html && html.find("#JTCSsheetSettings input[type='checkbox']").prop("disabled", areDisabled);
+            },
+            choices: {
+                all: "All Sheets",
+                toggleEach: "Toggle Each Individually",
+            },
+        },
+        modularChoices: {
+            journalSheets: true,
+            actorSheets: true,
+            itemSheets: true,
+        },
+    },
+    colorSchemeData: {
+        name: "Color Scheme",
+        hint: "Which color scheme would you like to use?",
+        choices: {
+            foundryDefault: "Default Foundry Color Scheme",
+            jtcsDefault: "A Bluish Dark Theme",
+        },
+    },
+    dedicatedDisplayData: {
+        journal: {
+            name: "Art Journal",
+            value: "Art",
+            hint: "Art Journal",
+        },
+        scene: {
+            name: "Art Scene",
+            value: "Art",
+            hint: "Art Journal",
+        },
+    },
+    journalFadeOpacityData: {
+        name: "Journal Fade Opacity",
+        hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
+        value: 0.5,
+    },
+    indicatorColorData: {
+        name: "Tile Indicator Colors",
+        hint: "Choose colors for the tile indicators",
+        colors: {
+            frameTileColor: "#cf4040",
+            artTileColor: "#5e97ff",
+            unlinkedTileColor: "#aaf3a2",
+        },
+    },
+    defaultTileImages: {
+        name: "Default Tile Images",
+        hint: "Choose images for the Art and Frame tiles when they're first created, and for art tiles to reset to when the tile is 'cleared'",
+        paths: {
+            frameTilePath: `${assetFolderBasePath}Bounding_Tile.webp`,
+            artTilePath: `${assetFolderBasePath}DarkBackground.webp`,
+        },
+    },
+};
 
 export const registerSettings = async function () {
     await game.settings.registerMenu(MODULE_ID, "JTCSSettingsMenu", {
@@ -16,52 +84,7 @@ export const registerSettings = async function () {
         scope: "world", // "world" = sync to db, "client" = local storage
         config: false, // we will use the menu above to edit this setting
         type: Object,
-        default: {
-            sheetSettings: {
-                name: "Sheet Types",
-                hint: "Which types of sheets do you want to have clickable images?",
-                choices: {
-                    all: true, //if this is checked, it will check all the others
-                    journalSheet: true,
-                    actorSheet: true,
-                    itemSheet: true,
-                },
-            },
-            colorSchemeData: {
-                name: "Color Scheme",
-                hint: "Which color scheme would you like to use?",
-                choices: {
-                    foundryDefault: "Default Foundry Color Scheme",
-                    jtcsDefault: "A Bluish Dark Theme",
-                },
-            },
-            dedicatedDisplayData: {
-                journal: {
-                    name: "Art Journal",
-                    value: "Art",
-                    hint: "Art Journal",
-                },
-                scene: {
-                    name: "Art Scene",
-                    value: "Art",
-                    hint: "Art Journal",
-                },
-            },
-            journalFadeOpacityData: {
-                name: "Journal Fade Opacity",
-                hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
-                value: 0.5,
-            },
-            indicatorColorData: {
-                name: "Tile Indicator Colors",
-                hint: "Choose colors for the tile indicators",
-                colors: {
-                    frameTileColor: "#cf4040",
-                    artTileColor: "#5e97ff",
-                    unlinkedTileColor: "#aaf3a2",
-                },
-            },
-        }, // can be used to set up the default structure
+        default: artGalleryDefaultSettings,
         onChange: (event) => {
             Hooks.callAll("updateJTCSSettings", event.currentTarget);
         },
@@ -80,15 +103,6 @@ export const registerSettings = async function () {
             max: 100,
             step: 10,
         },
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "imageSaveLocation", {
-        name: "Save Location",
-        hint: "Set the default upload location for images dragged into a journal entry",
-        scope: "client",
-        config: true,
-        type: String,
-        default: "displayScene",
     });
 
     game.settings.register("journal-to-canvas-slideshow", "useActorSheetImages", {

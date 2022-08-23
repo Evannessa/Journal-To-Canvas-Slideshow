@@ -13,4 +13,7 @@
             value="{{this.value}}"
         />
     {{/if}}
+    {{#if (eq this.errorCondition true)}}
+        {{> (dynamicPartial "notification-badge")}}
+    {{/if}}
 </div>

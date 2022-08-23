@@ -1,4 +1,12 @@
 export const registerHelpers = function () {
+    Handlebars.registerHelper("camelCaseToArray", function (string, shouldJoin = false) {
+        let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
+        if (shouldJoin) {
+            sentence = sentence.join(" ");
+        }
+        return sentence;
+    });
+
     Handlebars.registerHelper("combineToString", function (...args) {
         args.pop();
         let sentence = args.join(" ");
@@ -14,11 +22,15 @@ export const registerHelpers = function () {
         return test ? yes : no;
     });
 
-    Handlebars.registerHelper("dynamicPartial", function (key, partials) {
-        if (!partials) {
+    Handlebars.registerHelper("dynamicPartial", function (key, partials = "") {
+        if (!partials || !Array.isArray(partials)) {
             partials = game.JTCS.templates;
         }
         let partialPath = partials[key];
         return new Handlebars.SafeString(partialPath);
+    });
+
+    Handlebars.registerHelper("withTooltip", function () {
+        let wrappedString = `<span class=${classList}>${stringToWrap}</span>`;
     });
 };
