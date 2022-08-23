@@ -97,6 +97,12 @@ export class HelperFunctions {
         await HelperFunctions.setSettingValue("showWelcomeMessage", false);
     }
 
+    /**
+     *
+     * @param {Object} templateData - the data to be passed to the popover
+     * @param {Application} parentApp - the parent application rendering the popover
+     * @param {Object} position - an object containing the position of the element that called for this popover (for tooltips and such)
+     */
     static async createPopover(templateData, parentApp, position) {
         let popoverTemplate = game.JTCS.templates["popover"];
         let renderedHTML = await renderTemplate(popoverTemplate, templateData);
@@ -104,6 +110,7 @@ export class HelperFunctions {
         let popoverElement = parentApp.element.find(".popover");
         popoverElement.css({ position: "absolute" });
         popoverElement.offset({ top: position.top, left: position.left });
+        return popoverElement;
     }
 
     static async createDialog(title, templatePath, data) {

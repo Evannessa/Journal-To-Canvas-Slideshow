@@ -91,7 +91,10 @@
 .popover {
   position: absolute;
   background-color: var(--bg-color);
-  color: var(--color-text-primary);
+  color: var(--color-text-light-0);
+}
+.popover * {
+  color: var(--color-text-light-0);
 }
 
 .fill-parent {

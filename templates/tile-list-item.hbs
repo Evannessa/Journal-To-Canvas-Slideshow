@@ -88,7 +88,7 @@
                             <select name="linkedBoundingTile" id="linkedBoundingTile">
                                 <option value=""> Use Canvas As Frame </option>
                                 {{#each this.allFrameTiles as |boundingTile|}}
-                                    <option data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"
+                                    <option data-hover-action="highlightTile" data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"
                                     {{#if (eq ../linkedBoundingTile boundingTile.id)}}
                                         selected
                                     {{/if}}>

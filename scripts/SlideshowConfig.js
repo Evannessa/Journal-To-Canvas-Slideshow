@@ -18,6 +18,34 @@ const slideshowDefaultSettingsData = {
             },
         },
     ],
+    individualTileChangeListeners: {
+        actions: {
+            linkTile: {
+                onChange: (event, options = {}) => {},
+            },
+        },
+    },
+    individualTileHoverListeners: {
+        actions: {
+            highlightTile: {
+                onHover: async (event, options = {}) => {
+                    let isLeave = event.type === "mouseout" || event.type === "mouseleave";
+                    let { targetElement } = options;
+                    if (!targetElement) targetElement = event.currentTarget;
+                    if (targetElement.tagName === "LABEL") {
+                        targetElement = targetElement.previousElementSibling;
+                    }
+                    let tileID = targetElement.dataset.id;
+                    let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
+                    if (!isLeave) {
+                        await game.JTCS.indicatorUtils.showTileIndicator(tile);
+                    } else {
+                        await game.JTCS.indicatorUtils.hideTileIndicator(tile);
+                    }
+                },
+            },
+        },
+    },
     individualTileActions: {
         propertyString: "individualTileActions.actions",
         actions: {
@@ -48,7 +76,33 @@ const slideshowDefaultSettingsData = {
                             unlinkedTilesIDs: unlinkedTilesIDs,
                         },
                     };
-                    await game.JTCS.utils.manager.createPopover(templateData, app, position);
+
+                    let popover = await game.JTCS.utils.manager.createPopover(templateData, app, position);
+                    popover.on("change", "[data-change-action]", (event) => {
+                        let changeAction = event.currentTarget.dataset.changeAction;
+                        let settingsData = getProperty(
+                            slideshowDefaultSettingsData,
+                            `individualTileChangeListeners.actions.${changeAction}`
+                        );
+                        if (settingsData && settingsData.hasOwnProperty("onChange")) {
+                            settingsData.onChange(event, {});
+                        }
+                    });
+
+                    popover.on("mouseenter mouseleave", "[data-hover-action], [data-hover-action] + label", (event) => {
+                        let targetElement = event.currentTarget;
+                        if (targetElement.tagName === "LABEL") {
+                            targetElement = targetElement.previousElementSibling;
+                        }
+                        let hoverAction = targetElement.dataset.hoverAction;
+                        let hoverData = getProperty(
+                            slideshowDefaultSettingsData,
+                            `individualTileHoverListeners.actions.${hoverAction}`
+                        );
+                        if (hoverData && hoverData.hasOwnProperty("onHover")) {
+                            hoverData.onHover(event, { targetElement: targetElement });
+                        }
+                    });
                     // let selectedID = html[0].querySelector("select").value;
                     // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
                     // if (app.rendered) {
@@ -170,6 +224,19 @@ export class SlideshowConfig extends Application {
             buttons: buttons,
             unlinkedTilesIDs: unlinkedTilesIDs,
         });
+    }
+    async handleHover(event) {
+        let hoveredElement = $(event.currentTarget);
+        let hoverAction = hoveredElement.data().hoverAction;
+        console.log(hoverAction, hoveredElement);
+        let hoverData = getProperty(
+            slideshowDefaultSettingsData,
+            `individualTileHoverListeners.actions.${hoverAction}`
+        );
+        console.log(hoverAction, hoverData);
+        if (hoverData && hoverData.hasOwnProperty("onHover")) {
+            hoverData.onHover(event, {});
+        }
     }
     async _handleHover(event) {
         let isLeave = event.type === "mouseleave" ? true : false;
@@ -493,6 +560,7 @@ export class SlideshowConfig extends Application {
             `li:not([data-missing='true'], [data-flag='ignore-hover'])`,
             this._handleHover.bind(this)
         );
+        html.on("mouseover mouseout", "[data-hover-action]", this.handleHover.bind(this));
         // let changeSelectorString =
         // ".tile-list-item :is(select, input[type='checkbox'], input[type='radio'], input[type='text']";
         // html.on("change", changeSelectorString, this._handleChange().bind(this));
