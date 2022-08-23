@@ -500,12 +500,6 @@ button.icon-button {
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.35));
 }
 
-.item-wrapper {
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: 90% 10%;
-}
-
 .max-height-full-parent {
   max-height: 100%;
 }
@@ -537,6 +531,38 @@ button.icon-button {
 
 .shadow-inset {
   box-shadow: var(--box-shadow-inset);
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+.overflow-auto-x {
+  overflow-x: auto;
+}
+.overflow-auto-y {
+  overflow-y: auto;
+}
+.overflow-scroll {
+  overflow: scroll;
+}
+.overflow-scroll-x {
+  overflow-x: scroll;
+}
+.overflow-scroll-y {
+  overflow-y: scroll;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-hidden-x {
+  overflow-x: hidden;
+}
+.overflow-hidden-y {
+  overflow-y: hidden;
+}
+
+.overflow-auto-y {
+  overflow-y: auto;
 }
 
 .scroll-y {
@@ -1063,7 +1089,6 @@ button.icon-button {
 #slideshow-config {
   --flow-space: 1.25rem;
   width: min(600px, 45vw);
-  max-height: calc(100vh - 200px);
   max-width: min(600px, 55vw);
 }
 #slideshow-config .window-content {
@@ -1071,7 +1096,6 @@ button.icon-button {
 }
 #slideshow-config .window-content form {
   height: 100%;
-  max-height: 80vh;
 }
 #slideshow-config .window-content .tilesInScene {
   height: 80%;
@@ -1081,7 +1105,11 @@ button.icon-button {
   max-height: 90%;
 }
 #slideshow-config .window-content .tilesInScene .item-wrapper {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 90% 10%;
   position: relative;
+  min-height: 80%;
   max-height: 90%;
 }
 #slideshow-config .window-content .tilesInScene .item-wrapper .new-tile-list-item {

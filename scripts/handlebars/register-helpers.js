@@ -18,6 +18,13 @@ export const registerHelpers = function () {
         return new Handlebars.SafeString(wrappedString);
     });
 
+    Handlebars.registerHelper("wrapInElement", function (stringToWrap, tagName, classList = "") {
+        let wrappedString = `<${tagName} class=${classList}>${stringToWrap}</${tagName}>`;
+        return new Handlebars.SafeString(wrappedString);
+    });
+
+    Handlebars.registerHelper("generateChildPartials", function (object) {});
+
     Handlebars.registerHelper("ternary", function (test, yes, no) {
         return test ? yes : no;
     });

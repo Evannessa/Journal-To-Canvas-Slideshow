@@ -3,11 +3,17 @@
         <p class="notes">
             Type or paste a URL to share with players
         </p>
-        {{> (dynamicPartial "fieldset-button-group" @root.partials)
-            buttonData=buttonData
-        }}
 		{{> (dynamicPartial "input-with-error" @root.partials)
 			id="urlInput"	
 			name="urlInput"
 		}}
+        <ul>
+            {{#each actions as |action|}}
+                <li>{{> (dynamicPartial "icon-button")
+                    name=@key     
+                    icon=action.icon
+                    action=@key
+                }}</li>
+            {{/each}}
+        </ul>
 </form>

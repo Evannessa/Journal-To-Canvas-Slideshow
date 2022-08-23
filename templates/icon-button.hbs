@@ -1,7 +1,17 @@
-<button class="flex0 icon-button {{extraClass}}" name={{this.name}} data-display-name="{{this.displayName}}" data-action="{{this.action}}" data-title="">
+<button
+    class="flex0 icon-button {{extraClass}}"
+    name={{this.name}}
+    data-display-name="{{this.displayName}}"
+    data-action="{{this.action}}"
+    data-title=""
+>
     <i class="{{this.icon}}"></i>
-	{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" 
+    {{!-- {{> (dynamicPartial "tooltip")
+        content=this.tooltipText
+        extraClass="tooltip-right tooltip-wide"
+    }} --}}
+    {{!-- {{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" 
 		content=this.tooltipText
 		extraClass="tooltip-right tooltip-wide"
-	}}
+	}} --}}
 </button>

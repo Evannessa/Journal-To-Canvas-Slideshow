@@ -1,27 +1,34 @@
 import { MODULE_ID } from "../debug-mode.js";
 export class JTCSActions {
-    static displayActions = [
-        {
-            name: "window",
+    static async onDisplayActionClick(event, options = {}) {
+        let { method, url } = options;
+        await game.JTCS.imageUtils.manager.determineDisplayMethod({
+            method: method,
+            url: url,
+        });
+    }
+    static displayActions = {
+        window: {
             icon: "fas fa-external-link-alt",
             tooltip: "display image in pop-out window",
+            onClick: (event, options) => JTCSActions.onDisplayActionClick(event, "window", url),
         },
-        {
-            name: "journalEntry",
+        journalEntry: {
             icon: "fas fa-book-open",
             tooltip: "display image in a dedicated journal entry",
+            onClick: JTCSActions.onDisplayActionClick,
         },
-        {
-            name: "displayScene",
+        artScene: {
             icon: "far fa-image",
             tooltip: "display image in dedicated scene",
+            onClick: JTCSActions.onDisplayActionClick,
         },
-        {
-            name: "anyScene",
+        anyScene: {
             icon: "fas fa-vector-square",
             tooltip: "display image in any scene with a frame tile and display tile",
+            onClick: JTCSActions.onDisplayActionClick,
         },
-        {
+        fadeJournal: {
             name: "fadeJournal",
             icon: "fas fa-eye-slash",
             tooltip: "Fade journal background to see canvas",
@@ -37,5 +44,5 @@ export class JTCSActions {
                 },
             ],
         },
-    ];
+    };
 }

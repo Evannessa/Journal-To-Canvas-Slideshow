@@ -429,11 +429,6 @@ button.icon-button {
     filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.35));
 }
 
-.item-wrapper {
-    display: grid;
-    grid-template-columns: 100%;
-    grid-template-rows: 90% 10%;
-}
 .max-height-full-parent {
     max-height: 100%;
 }
@@ -463,6 +458,23 @@ button.icon-button {
 
 .shadow-inset {
     box-shadow: var(--box-shadow-inset);
+}
+.overflow {
+    $types: (auto, scroll, hidden);
+    @each $type in $types {
+        &-#{$type} {
+            overflow: $type;
+            &-x {
+                overflow-x: $type;
+            }
+            &-y {
+                overflow-y: $type;
+            }
+        }
+    }
+}
+.overflow-auto-y {
+    overflow-y: auto;
 }
 
 .scroll-y {

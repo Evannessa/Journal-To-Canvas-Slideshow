@@ -1,25 +1,26 @@
 <form action="">
     <label>
         Link to Tile In Scene
-        <p class="notes">Choose a tile object in this scene to link this
-            {{this.type}}
-            data to
-        </p>
-        <div class="form-field flex-column">
-            {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
-                <input
-                    data-type="unlinked"
-                    type="radio"
-                    data-change-action="itemActions.change.actions.setLinkedTile"
-                    data-hover-action="itemActions.hover.actions.highlightTile"
-                    value="{{unlinkedTileID}}"
-                    id="{{unlinkedTileID}}"
-                    data-id="{{unlinkedTileID}}"
-                />
-                <label for="{{unlinkedTileID}}">Tile {{unlinkedTileID}}</label>
-            {{/each}}
-        </div>
-        {{!-- <select name="unlinkedTiles" id="unlinkedTiles" data-change-action="setLinkedTileObject">
+    </label>
+    <p class="notes">Choose a tile object in this scene to link this
+        {{this.type}}
+        data to
+    </p>
+    <div class="form-field flex-column">
+        {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
+            <input
+                data-type="unlinked"
+                type="radio"
+                data-change-action="itemActions.change.actions.setLinkedTile"
+                data-hover-action="itemActions.hover.actions.highlightTile"
+                value="{{unlinkedTileID}}"
+                id="{{unlinkedTileID}}"
+                data-id="{{unlinkedTileID}}"
+            />
+            <label for="{{unlinkedTileID}}">Tile {{unlinkedTileID}}</label>
+        {{/each}}
+    </div>
+    {{!-- <select name="unlinkedTiles" id="unlinkedTiles" data-change-action="setLinkedTileObject">
             {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
                 <option data-id="{{unlinkedTileID}}" value="{{unlinkedTileID}}" data-hover-action="highlightTile">
                     Tile:
@@ -27,5 +28,4 @@
                 </option>
             {{/each}}
         </select> --}}
-    </label>
 </form>

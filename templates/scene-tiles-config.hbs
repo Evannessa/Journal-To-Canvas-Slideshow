@@ -32,16 +32,14 @@
 				</select>
 			</div>
 			<div class="actions">
-				{{> (dynamicPartial "icon-button" partials)
-					action="showModuleSettings" 
-					icon="fas fa-cog" 
-					tooltipText="Open Journal-to-Canvas Slideshow Settings"
-				}}
-				{{> (dynamicPartial "icon-button" partials)
-					action="shareURL" 
-					icon="fas fa-external-link-alt" 
-					tooltipText="Share a URL link with your players"
-				}}
+                {{#with settingsData}}
+                    {{#each globalActions as |action|}}
+                        {{> (dynamicPartial "icon-button")
+                            action
+                            name=(concat "globalActions" "." @key)
+                        }}
+                    {{/each}}
+                {{/with}}
 			</div>
 		</div>
     </header>
@@ -57,7 +55,7 @@
 				slight-rounded ] "
 				>
 			
-            	<ul class="[ scroll-y 
+            	<ul class="[ overflow-auto-y 
 						hidden-overflow-x reset-padding 
 						flow ]"
 				>
@@ -83,7 +81,7 @@
 						slight-rounded ]"
 			>
 			
-				<ul class="[ scroll-y ]
+				<ul class="[ overflow-auto-y ]
 						   [ hidden-overflow-x reset-padding 
 						   flow ]" 
 					>

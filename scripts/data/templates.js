@@ -17,6 +17,7 @@ const templateBaseNames = [
     `checkbox-chip-group.hbs`,
     `notification-badge.hbs`,
     `popover.hbs`,
+    `item-list.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

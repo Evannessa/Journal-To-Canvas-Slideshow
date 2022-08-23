@@ -1,0 +1,23 @@
+<div class="wrapper max-height-full-parent flexcol">
+            {{wrapInElement (wrapInElement @root.currentSceneName "span" "accent") "h3" "flex0"}}
+            {{!-- <h3 class="flex0">Art Tiles in "{{wrapInSpan currentSceneName}}"</h3> --}}
+			<div class="item-wrapper 
+			[ border-styled border-hover 
+				slight-rounded ] "
+				>
+            	<ul class="[ overflow-auto-y 
+						hidden-overflow-x reset-padding 
+						flow ]"
+				>
+                    {{#each itemList as item}}
+                        {{> (dynamicPartial "tile-list-item.hbs")
+                        item 
+                        type=../type
+                        currentSceneName=@root.currentSceneName
+                        allFrameTiles=@root.frameTiles
+                        }}
+                    {{/each}}
+                    </ul>
+                    {{> (dynamicPartial "new-tile-list-item") type=../type }}
+			</div>
+</div>

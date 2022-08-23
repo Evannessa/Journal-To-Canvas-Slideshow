@@ -1,23 +1,62 @@
 "use strict";
 import { log, MODULE_ID } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
+import { JTCSActions } from "./data/JTCS-Actions.js";
 
 const slideshowDefaultSettingsData = {
-    globalActions: [
-        {
+    globalActions: {
+        showURLShareDialog: {
             name: "showURLShareDialog",
             icon: "fas fa-external-link-alt",
             tooltipText: "Share a URL link with your players",
+            onClick: async (event, options = {}) => {
+                // let buttonActionCallback = async (html) => {
+                //     let urlInput = html.find("input[name='urlInput']");
+                //     let url = urlInput.val();
+                //     let method = "window";
+                //     if (url !== "") {
+                //         await game.JTCS.imageUtils.manager.determineDisplayMethod({
+                //             method: method,
+                //             url: url,
+                //         });
+                //     }
+                // };
+                let wrappedActions = {};
+                for (let actionName in JTCSActions.displayActions.actionName) {
+                    wrappedActions[actionName].callback = async (html) => {
+                        let urlInput = html.find("input[name='urlInput']");
+                        let url = urlInput.val();
+                        if (url !== "") {
+                            await game.JTCS.imageUtils.manager.determineDisplayMethod({
+                                method: actionName,
+                                url: url,
+                            });
+                        }
+                    };
+                }
+                let buttons = {
+                    ...wrappedActions,
+                    cancel: {
+                        label: "Cancel",
+                    },
+                };
+                let templatePath = game.JTCS.templates["share-url-partial"];
+
+                await game.JTCS.utils.createDialog("Share URL", templatePath, {
+                    buttons: buttons,
+                    partials: game.JTCS.templates,
+                    value: "",
+                });
+            },
         },
-        {
-            name: "showModuleSettings",
+        showModuleSettings: {
             icon: "fas fa-cog",
             tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
             onClick: (event, options = {}) => {
                 let settingsApp = new JTCSSettingsApplication().render(true);
             },
         },
-    ],
+    },
     itemActions: {
         change: {
             propertyString: "itemActions.change.actions",
@@ -147,93 +186,11 @@ export class SlideshowConfig extends Application {
         this.render(true, this.data);
         // this.render(true, { renderData: this.data });
     }
-    async createWikiShareDialog() {
-        let choices = {
-            clans: "clans",
-            locations: "locations",
-            lore: "lore",
-        };
-
-        let wikiShareCallback = async (html) => {
-            let clanInput = html.find("input[name='clan-name']");
-            let clanName = clanInput.val();
-            let personInput = html.find("input[name='person-name']");
-            let personName = personInput.val();
-            if (clanName !== "" && personName !== "") {
-                let url = `https://classy-bavarois-433634.netlify.app/assets/clans/${clanName}/${personName}.webp`;
-                await game.JTCS.imageUtils.manager.displayImageInWindow("window", url);
-            }
-        };
-    }
 
     async createURLShareDialog() {
         let shareLocations = [{ name: "artScene" }];
-        let onSubmitCallback = async (html) => {
-            let urlInput = html.find("input[name='urlInput']");
-            let url = urlInput.val();
-            let method = "window";
-            if (url !== "") {
-                await game.JTCS.imageUtils.manager.determineDisplayMethod({
-                    method: method,
-                    url: url,
-                });
-            }
-        };
-        let buttons = {
-            shareURL: {
-                label: "Share URL",
-                icon: '<i class="fas fa-external-link-alt"></i>',
-                callback: onSubmitCallback,
-            },
-            cancel: {
-                label: "Cancel",
-            },
-        };
-        let templatePath = game.JTCS.templates["share-url-partial"];
-
-        await game.JTCS.utils.createDialog("Share URL", templatePath, {
-            buttons: buttons,
-            partials: game.JTCS.templates,
-            value: "",
-            buttonData: {
-                type: "radio",
-                buttons: [
-                    {
-                        name: "Hello world",
-                        id: "id",
-                    },
-                ],
-            },
-        });
     }
 
-    async createTileLinkDialogue(tileID) {
-        //create a dialog to link to the tile, and use this as a callback
-        let onSubmitCallback = async (html) => {
-            let selectedID = html[0].querySelector("select").value;
-            await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
-            if (game.JTCSlideshowConfig?.rendered) {
-                await game.JTCSlideshowConfig.renderWithData();
-            }
-        };
-        let buttons = {
-            submit: {
-                label: "Link Tile",
-                icon: '<i class="fas fa-plus"></i>',
-                callback: onSubmitCallback,
-            },
-            cancel: {
-                label: "Cancel",
-            },
-        };
-        let linkedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-        let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(linkedTiles);
-        let templatePath = game.JTCS.utils.createTemplatePathString("tile-link-partial.hbs");
-        await game.JTCS.utils.createDialog("Tile Link Config", templatePath, {
-            buttons: buttons,
-            unlinkedTilesIDs: unlinkedTilesIDs,
-        });
-    }
     async handleHover(event) {
         let hoveredElement = $(event.currentTarget);
         let hoverAction = hoveredElement.data().hoverAction;
