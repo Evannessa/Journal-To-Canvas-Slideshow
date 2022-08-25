@@ -3,11 +3,45 @@ import { log, MODULE_ID } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 import { JTCSActions } from "./data/JTCS-Actions.js";
 
-async function createTileItemPopover(event, templateData, options = {}) {
-    let { tileID, app, html } = options;
-    let buttonElement = event.currentTarget;
+function createTemplateData(parentLI, partialName, context = {}) {
+    let dataset = $(parentLI).data();
+    console.log(dataset);
+    return {
+        passedPartial: partialName,
+        dataset: dataset,
+        passedPartialContext: context,
+    };
+}
+
+let defaultElementData = {
+    popoverElement: {
+        target: null,
+        hideEvents: [],
+    },
+    sourceElement: {
+        target: null,
+        hideEvents: [],
+    },
+    parentElement: {
+        target: null,
+        hideEvents: [],
+    },
+};
+
+async function createTileItemPopover(event, templateData, options = {}, elementData = defaultElementData) {
+    let { app, html } = options;
+    let sourceElement = event.currentTarget;
     // -- RENDER THE POPOVER
-    let popover = await game.JTCS.utils.manager.createAndPositionPopover(templateData, app, buttonElement);
+    elementData.parentElement.target = html;
+    elementData.sourceElement.target = sourceElement;
+
+    let elementDataArray = Object.keys(elementData).map((key) => {
+        let newData = elementData[key];
+        newData.name = key;
+        return newData;
+    });
+
+    let popover = await game.JTCS.utils.manager.createAndPositionPopover(templateData, elementDataArray);
     return popover;
 }
 const extraActions = {
@@ -132,48 +166,46 @@ const slideshowDefaultSettingsData = {
                     extraClass: "danger-text",
                     overflow: false,
                 },
-                linkTile: {
+                showUnlinkedTiles: {
                     icon: "fas fa-link",
                     onClick: async (event, options = {}) => {
+                        let { app, tileID, parentLI } = options;
+                        let type = parentLI.dataset.type;
+
+                        let frameTileID;
+                        if (!frameTileID) frameTileID = parentLI.dataset.frameId;
+
                         let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
                         let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
-                        let templateData = {
-                            passedPartial: "tile-link-partial",
-                            passedPartialContext: {
-                                artTileDataArray: artTileDataArray,
-                                unlinkedTilesIDs: unlinkedTilesIDs,
-                            },
+                        let context = {
+                            artTileDataArray: artTileDataArray,
+                            unlinkedTilesIDs: unlinkedTilesIDs,
                         };
-                        templateData = { ...options, partialContext };
-                        let popover = createTileItemPopover(event, templateData);
-                        // -- RENDER THE POPOVER
-                        popover.on("change", "[data-change-action]", (event) => {
-                            let changeAction = event.currentTarget.dataset.changeAction;
-                            let settingsData = getProperty(slideshowDefaultSettingsData, changeAction);
-                            if (settingsData && settingsData.hasOwnProperty("onChange")) {
-                                settingsData.onChange(event, {});
-                            }
+                        let templateData = createTemplateData(parentLI, "tile-link-partial", context);
+
+                        // let templateData = {
+                        //     passedPartial: "tile-link-partial",
+                        //     dataset: {
+                        //         id: tileID,
+                        //         type: type,
+                        //     },
+                        // };
+
+                        let elementData = { ...defaultElementData };
+                        elementData["popoverElement"].hideEvents.push({
+                            eventName: "change",
+                            selector: "input, input + label",
+                            wrapperFunction: async (event) => {
+                                console.log("Selected tile changed", event);
+                            },
                         });
+                        // -- RENDER THE POPOVER
+                        let popover = await createTileItemPopover(event, templateData, options, elementData);
+                        await app.activateListeners(app.element);
+                        popover[0].querySelector("input").focus({ focusVisible: true });
 
-                        popover.on(
-                            "mouseenter mouseleave",
-                            "[data-hover-action], [data-hover-action] + label",
-                            (event) => {
-                                let targetElement = event.currentTarget;
-
-                                //target the label as well in case we mouse over that
-                                if (targetElement.tagName === "LABEL") {
-                                    targetElement = targetElement.previousElementSibling;
-                                }
-                                let hoverAction = targetElement.dataset.hoverAction;
-                                let hoverData = getProperty(slideshowDefaultSettingsData, hoverAction);
-                                if (hoverData && hoverData.hasOwnProperty("onHover")) {
-                                    hoverData.onHover(event, { targetElement: targetElement });
-                                }
-                            }
-                        );
+                        return;
                     },
-                    renderCondition: () => {}, //TODO: Only render when meets condition
                     overflow: false,
                     renderOnMissing: true,
                 },
@@ -194,31 +226,66 @@ const slideshowDefaultSettingsData = {
                             }
                         }
 
-                        let templateData = {
-                            passedPartial: "input-with-error",
-                            passedPartialContext: {
-                                // artTileDataArray: artTileDataArray,
-                                // unlinkedTilesIDs: unlinkedTilesIDs,
-                            },
+                        let templateData = createTemplateData(parentLI, "input-with-error");
+
+                        // let templateData = {
+                        //     passedPartial: "input-with-error",
+                        //     dataset: {
+                        //         id: tileID,
+                        //         "frame-id": frameTileID,
+                        //         type: type,
+                        //     },
+                        //     passedPartialContext: {
+                        //         // artTileDataArray: artTileDataArray,
+                        //         // unlinkedTilesIDs: unlinkedTilesIDs,
+                        //     },
+                        // };
+
+                        let elementData = { ...defaultElementData };
+
+                        elementData["popoverElement"] = {
+                            targetElement: null,
+                            hideEvents: [
+                                {
+                                    eventName: "change",
+                                    selector: "input",
+                                    wrapperFunction: async (event) => {
+                                        let url = event.currentTarget.value;
+                                        let valid = game.JTCS.utils.manager.validateInput(url, "image");
+                                        if (valid) {
+                                            await game.JTCS.imageUtils.manager.updateTileObjectTexture(
+                                                tileID,
+                                                frameTileID,
+                                                url,
+                                                "anyTile"
+                                            );
+                                        } else {
+                                            ui.notifications.error("URL not an image");
+                                            //TODO: show error?
+                                        }
+                                    },
+                                },
+                            ],
                         };
-                        let popover = await createTileItemPopover(event, templateData, options);
+
+                        let popover = await createTileItemPopover(event, templateData, options, elementData);
                         popover[0].querySelector("input").focus({ focusVisible: true });
-                        popover.on("change", "input", async (event) => {
-                            let url = event.currentTarget.value;
-                            let valid = game.JTCS.utils.manager.validateInput(url, "image");
-                            if (valid) {
-                                await game.JTCS.imageUtils.manager.updateTileObjectTexture(
-                                    tileID,
-                                    frameTileID,
-                                    url,
-                                    "anyTile"
-                                );
-                                await game.JTCS.utils.manager.hideAndDeletePopover(popover);
-                            } else {
-                                ui.notifications.error("URL not an image");
-                                //TODO: show error?
-                            }
-                        });
+                        // popover.on("change", "input", async (event) => {
+                        //     let url = event.currentTarget.value;
+                        //     let valid = game.JTCS.utils.manager.validateInput(url, "image");
+                        //     if (valid) {
+                        //         await game.JTCS.imageUtils.manager.updateTileObjectTexture(
+                        //             tileID,
+                        //             frameTileID,
+                        //             url,
+                        //             "anyTile"
+                        //         );
+                        //         await game.JTCS.utils.manager.hideAndDeletePopover(popover);
+                        //     } else {
+                        //         ui.notifications.error("URL not an image");
+                        //         //TODO: show error?
+                        //     }
+                        // });
                     },
                     overflow: false,
                 },
@@ -230,27 +297,44 @@ const slideshowDefaultSettingsData = {
                         let { app, tileID, parentLI } = options;
                         let frameTileID = parentLI.dataset.frameTileID;
                         if (!tileID) tileID = parentLI.dataset.tileID;
+                        let type = parentLI.dataset.type;
 
                         let actions = slideshowDefaultSettingsData.itemActions.click.actions;
                         let overflowActions = {};
                         for (let actionKey in actions) {
                             if (actions[actionKey].overflow) {
                                 overflowActions[actionKey] = actions[actionKey];
-                                overflowActions[actionKey].dataset = {};
-                                overflowActions[actionKey].dataset.id = tileID;
-                                overflowActions[actionKey].dataset["frame-id"] = frameTileID;
+                                // overflowActions[actionKey].dataset = {};
+                                // overflowActions[actionKey].dataset.id = tileID;
+                                // overflowActions[actionKey].dataset["frame-id"] = frameTileID;
                             }
                         }
-                        let templateData = {
-                            passedPartial: "item-menu",
-                            passedPartialContext: {
-                                propertyString: "itemActions.click.actions",
-                                items: overflowActions,
-                            },
+                        let context = {
+                            propertyString: "itemActions.click.actions",
+                            items: overflowActions,
                         };
-                        await createTileItemPopover(event, templateData, options);
-                        console.log(app, app.element);
+                        let templateData = createTemplateData(parentLI, "item-menu", context);
+
+                        // let templateData = {
+                        //     passedPartial: "item-menu",
+                        //     dataset: {
+                        //         id: tileID,
+                        //         "frame-id": frameTileID,
+                        //         type: type,
+                        //     },
+
+                        // };
+                        let elementData = { ...defaultElementData };
+                        // elementData["popoverElement"].hideEvents.push({
+                        //     eventName: "click",
+                        //     selector: "[data-action]",
+                        //     wrapperFunction: async (event) => {},
+                        // });
+
+                        let popover = await createTileItemPopover(event, templateData, options, elementData);
+
                         await app.activateListeners(app.element);
+                        popover.focus({ focusVisible: true });
                     },
                 },
                 selectTile: {
@@ -312,13 +396,17 @@ export class SlideshowConfig extends Application {
 
     async handleHover(event) {
         let hoveredElement = $(event.currentTarget);
+        let tag = hoveredElement.prop("nodeName");
         let hoverAction = hoveredElement.data().hoverAction;
-        console.log(hoverAction, hoveredElement);
-        let hoverData = getProperty(
-            slideshowDefaultSettingsData,
-            `individualTileHoverListeners.actions.${hoverAction}`
-        );
-        console.log(hoverAction, hoverData);
+        console.log("Our tag is", tag);
+        if (tag === "LABEL") {
+            console.log(hoveredElement.prop("nodeName"), hoveredElement.prev().prop("nodeName"));
+            hoverAction = hoveredElement.prev().data().hoverAction;
+            console.log(hoverAction);
+        }
+        // let propertyString = $(event.currentTarget).data();
+        console.log("Property string on hover is", hoverAction);
+        let hoverData = getProperty(slideshowDefaultSettingsData, hoverAction);
         if (hoverData && hoverData.hasOwnProperty("onHover")) {
             hoverData.onHover(event, {});
         }
@@ -549,7 +637,7 @@ export class SlideshowConfig extends Application {
         let clickedElement = $(event.currentTarget);
         //if its an input or a select
 
-        let tileType = clickedElement[0].closest("li").dataset.type;
+        let tileType = clickedElement[0].closest(".tile-list-item, .popover").dataset.type;
         let isNewTile = false;
 
         let tileID;
@@ -585,15 +673,19 @@ export class SlideshowConfig extends Application {
         event.preventDefault();
         let action = clickedElement.data().action;
         let type = clickedElement.data().type;
-        // let name = clickedElement.data().displayName;
+
         let propertyString = $(event.currentTarget).attr("name");
-        // console.log("Property string is", propertyString, $(event.currentTarget).attr("name"));
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
         let tileID;
-        let parentLI = clickedElement[0].closest("li");
-        if (clickedElement[0].closest("li")) {
-            tileID = this.getIDFromListItem(clickedElement, ["BUTTON"]);
+        let parentLI = clickedElement[0].closest(".tile-list-item");
+        console.log("Trying to find parent LI from", clickedElement[0]);
+        if (!parentLI) {
+            parentLI = clickedElement[0].closest(".popover");
+        }
+        console.log("Parent list item is", parentLI);
+        if (parentLI) {
+            tileID = parentLI.dataset.id;
         }
         let settingsData = getProperty(slideshowDefaultSettingsData, propertyString);
         if (settingsData && settingsData.hasOwnProperty("onClick")) {
@@ -639,13 +731,14 @@ export class SlideshowConfig extends Application {
         await this.setUIColors(html);
         this._handleToggle(html);
 
+        // html.on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.on(
             "mouseenter mouseleave",
             `li:not([data-missing='true'], [data-flag='ignore-hover'])`,
             this._handleHover.bind(this)
         );
-        html.on("mouseover mouseout", "[data-hover-action]", this.handleHover.bind(this));
+        html.on("mouseover mouseout", "[data-hover-action], [data-hover-action] + label", this.handleHover.bind(this));
         // let changeSelectorString =
         // ".tile-list-item :is(select, input[type='checkbox'], input[type='radio'], input[type='text']";
         // html.on("change", changeSelectorString, this._handleChange().bind(this));

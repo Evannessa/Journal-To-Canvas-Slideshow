@@ -1272,6 +1272,12 @@ button.icon-button {
 [data-type].accent.border-accent {
   border-color: var(--accent-color);
 }
+[data-type].accent [data-type=unlinked] {
+  --accent-color: var(--data-unlinked-color);
+}
+[data-type].accent [data-type=unlinked] + label {
+  --accent-color: var(--data-unlinked-color);
+}
 
 .error::before {
   content: "⚠";

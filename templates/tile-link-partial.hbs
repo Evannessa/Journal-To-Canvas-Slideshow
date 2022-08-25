@@ -7,18 +7,23 @@
         data to
     </p>
     <div class="form-field flex-column">
-        {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
-            <input
-                data-type="unlinked"
-                type="radio"
-                data-change-action="itemActions.change.actions.setLinkedTile"
-                data-hover-action="itemActions.hover.actions.highlightTile"
-                value="{{unlinkedTileID}}"
-                id="{{unlinkedTileID}}"
-                data-id="{{unlinkedTileID}}"
-            />
-            <label for="{{unlinkedTileID}}">Tile {{unlinkedTileID}}</label>
-        {{/each}}
+        <ul>
+
+            {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
+                <li data-type="unlinked" data-id="{{unlinkedTileID}}">
+                    <input
+                        data-type="unlinked"
+                        type="radio"
+                        data-change-action="itemActions.change.actions.setLinkedTile"
+                        data-hover-action="itemActions.hover.actions.highlightTile"
+                        value="{{unlinkedTileID}}"
+                        id="{{unlinkedTileID}}"
+                        data-id="{{unlinkedTileID}}"
+                    />
+                    <label for="{{unlinkedTileID}}">Tile {{unlinkedTileID}}</label>
+                </li>
+            {{/each}}
+        </ul>
     </div>
     {{!-- <select name="unlinkedTiles" id="unlinkedTiles" data-change-action="setLinkedTileObject">
             {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}

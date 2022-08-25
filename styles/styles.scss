@@ -204,6 +204,12 @@
     &.border-accent {
         border-color: var(--accent-color);
     }
+    [data-type="unlinked"] {
+        --accent-color: var(--data-unlinked-color);
+        + label {
+            --accent-color: var(--data-unlinked-color);
+        }
+    }
 }
 
 .error {

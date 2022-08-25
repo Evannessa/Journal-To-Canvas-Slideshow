@@ -124,6 +124,13 @@ export class HelperFunctions {
         return {};
     }
 
+    static createPopoverEventData(element, hideEvents = []) {
+        return {
+            target: element,
+            hideEvents: hideEvents,
+        };
+    }
+
     /**
      * Generates a popover (tooltip, etc), and positions it from the source element
      * boundingClientRect data
@@ -131,20 +138,78 @@ export class HelperFunctions {
      * @param {Application} parentApp - the parent application rendering the popover
      * @param {HTMLElement} sourceElement - the element that is the "source" of the popover (a button, input, etc.)
      */
-    static async createAndPositionPopover(templateData, parentApp, sourceElement) {
+    static async createAndPositionPopover(templateData, elementDataArray = []) {
+        let elements = elementDataArray.map((data) => data.target);
+        let [popoverElement, sourceElement, parentElement] = elements; //destructure the passed-in elements
+        console.log(parentElement, sourceElement);
+
         let boundingRect = sourceElement.getBoundingClientRect();
 
         let popoverTemplate = game.JTCS.templates["popover"];
         let renderedHTML = await renderTemplate(popoverTemplate, templateData);
 
-        parentApp.element.append(renderedHTML);
-        let popoverElement = parentApp.element.find(".popover");
+        parentElement.append(renderedHTML);
+        popoverElement = parentElement.find(".popover");
+
+        let popoverData = elementDataArray.find((data) => data.name === "popoverElement");
+        popoverData.target = popoverElement;
 
         popoverElement.css({ position: "absolute" });
 
         popoverElement.offset({ top: boundingRect.top + boundingRect.height, left: boundingRect.left });
 
+        popoverElement.focus({ focusVisible: true });
+
+        //set up a "Click Out" event handler
+        $(document).on("click", async (event) => {
+            if (HelperFunctions.isOutsideClick(event)) {
+                await HelperFunctions.hideAndDeletePopover(popoverElement);
+            } else {
+                console.log("We clicked on popover. No need to close");
+            }
+        });
+
+        //hideEvents should be list of events to hide the popover on (like blur, change, mouseout, etc)
+        elementDataArray.forEach((data) => {
+            let targetElement = data.target;
+            data.hideEvents.forEach((eventData) => {
+                let handler;
+                let selector;
+                let eventName;
+                if (typeof eventData === "string") {
+                    //if it's a simple string, just set the handler to immediaetly hide the popover on this event
+                    eventName = eventData;
+                    handler = async (event) => await HelperFunctions.hideAndDeletePopover(popoverElement);
+                    selector = "*";
+                } else if (typeof eventData === "object") {
+                    //if it's an object, we'll want to do something (like validate input) first before hiding
+                    console.log(eventData);
+                    eventName = eventData.eventName;
+                    handler = async (event) => {
+                        await eventData.wrapperFunction(event);
+                        await HelperFunctions.hideAndDeletePopover(popoverElement);
+                    };
+                    selector = eventData.selector;
+                }
+                $(targetElement).on(
+                    eventName,
+                    selector,
+                    async (event) => await handler(event)
+                    // HelperFunctions.hideAndDeletePopover(popoverElement)
+                );
+            });
+        });
+
         return popoverElement;
+    }
+
+    static isOutsideClick(event) {
+        if ($(event.target).closest(".popover").length) {
+            //click was on the popover
+            return false;
+        }
+        //if our click is outside of our popover element
+        return true;
     }
 
     static async hideAndDeletePopover(popoverElement) {

@@ -1,4 +1,9 @@
-<div class="popover padding-medium slight-rounded single-sharp-corner absolute-child {{extraClass}}">
+<div class="popover padding-medium slight-rounded single-sharp-corner absolute-child {{extraClass}}" 
+    data-gallery-item-data="true" 
+   {{#each dataset}} 
+    data-{{@key}}="{{this}}"
+   {{/each}}
+    >
     {{> (dynamicPartial this.passedPartial)
         this.passedPartialContext
     }}
