@@ -31,10 +31,18 @@
 
 .popover {
     position: absolute;
+    padding: var(--padding-small);
     background-color: var(--bg-color);
     color: var(--color-text-light-0);
-    * {
+    top: 100%;
+    select {
         color: var(--color-text-light-0);
+    }
+    input[type="text"] {
+        color: var(--color-text-dark-primary, black) !important;
+    }
+    &[data-variant="over"] {
+        bottom: 100%;
     }
 }
 

@@ -1,4 +1,12 @@
 export const registerHelpers = function () {
+    Handlebars.registerHelper("applyTemplate", function (subTemplateId, context) {
+        var subTemplate = Handlebars.compile($("#" + subTemplateId).html());
+        var innerContent = context.fn({});
+        var subTemplateArgs = _.extend({}, context.hash, { content: new Handlebars.SafeString(innerContent) });
+
+        return subTemplate(subTemplateArgs);
+    });
+
     Handlebars.registerHelper("camelCaseToArray", function (string, shouldJoin = false) {
         let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
         if (shouldJoin) {

@@ -50,6 +50,9 @@
   --color-info-dark: hsl(200deg, 100%, 25%);
   --color-info-base: hsl(200deg, 60%, 40%);
   --color-info-light: hsl(200deg, 80%, 60%);
+  --space-small: 1rem;
+  --space-medium: 2rem;
+  --space-large: 3rem;
 }
 
 :root body.pink {
@@ -90,11 +93,19 @@
 
 .popover {
   position: absolute;
+  padding: var(--padding-small);
   background-color: var(--bg-color);
   color: var(--color-text-light-0);
+  top: 100%;
 }
-.popover * {
+.popover select {
   color: var(--color-text-light-0);
+}
+.popover input[type=text] {
+  color: var(--color-text-dark-primary, black) !important;
+}
+.popover[data-variant=over] {
+  bottom: 100%;
 }
 
 .fill-parent {
@@ -1062,6 +1073,9 @@ button.icon-button {
   --color-info-dark: hsl(200deg, 100%, 25%);
   --color-info-base: hsl(200deg, 60%, 40%);
   --color-info-light: hsl(200deg, 80%, 60%);
+  --space-small: 1rem;
+  --space-medium: 2rem;
+  --space-large: 3rem;
 }
 :root body.pink {
   background-color: #dc51ac;

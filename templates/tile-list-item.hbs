@@ -32,42 +32,13 @@
 							)
 			}}
 			{{else}}
-			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-				action="selectTile" 
-				icon="fas fa-vector-square" 
-				tooltipText=(combineToString "select tile " "<span>" this.id 
-								"</span>" "in scene" "<span>" 
-								@root.currentSceneName "</span>" 
-							)
-			}}
+		
 			{{/if}}
-			{{#if (eq this.missing true)}}
-			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-				action="linkTile" 
-				icon="fas fa-link" 
-				tooltipText="link this tile to tile in scene"
-			}}
-			{{else}}
-			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-				action="renderTileConfig" 
-				icon="fas fa-cog" 
-				tooltipText=(combineToString 
-							"link this data to a tile in scene" 
-							"<span class='accent'>" @root.currentSceneName "</span>"
-							)
-			}}
-			{{/if}}
-			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs"
-				action="deleteTileData"	
-				icon="fas fa-trash"
-				tooltipText=(combineToString
-						"delete this" this.type "tile data?" "<br/>"
-						"(this will not delete the tile object in the scene itself)"
-					)
-				extraClass="danger-text"
-			}}
+		
+		
             {{#with @root.settingsData}}
                 {{#each itemActions.click.actions}}
+                    {{#unless (eq overflow true)}}
                     {{> (dynamicPartial "icon-button")
                         action=@key
                         name=(concat 
@@ -76,6 +47,7 @@
                         tooltipText=this.tooltipText
                         extraClass=this.extraClass
                     }}
+                    {{/unless}}
                 {{/each}}
             {{/with}}
 		</div>

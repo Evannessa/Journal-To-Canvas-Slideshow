@@ -96,21 +96,60 @@ export class HelperFunctions {
         //disable the welcome message
         await HelperFunctions.setSettingValue("showWelcomeMessage", false);
     }
+    static isImage(url) {
+        return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
+    }
+    /**
+     * Validating text input
+     * @param {String} inputValue - the input value
+     * @param {string} validationType - the type of input, what are we looking for, an image, video, etc.
+     * @param {function} onInvalid - callback function for if our input is invalid
+     * @returns true or false depending on if our input is valid or not
+     */
+
+    static validateInput(inputValue, validationType, onInvalid = "") {
+        let valid = false;
+        switch (validationType) {
+            case "image":
+                valid = HelperFunctions.isImage(inputValue);
+                break;
+            default:
+                valid = inputValue !== undefined;
+                break;
+        }
+        return valid;
+    }
+
+    static getElementPositionAndDimension(element) {
+        return {};
+    }
 
     /**
-     *
+     * Generates a popover (tooltip, etc), and positions it from the source element
+     * boundingClientRect data
      * @param {Object} templateData - the data to be passed to the popover
      * @param {Application} parentApp - the parent application rendering the popover
-     * @param {Object} position - an object containing the position of the element that called for this popover (for tooltips and such)
+     * @param {HTMLElement} sourceElement - the element that is the "source" of the popover (a button, input, etc.)
      */
-    static async createPopover(templateData, parentApp, position) {
+    static async createAndPositionPopover(templateData, parentApp, sourceElement) {
+        let boundingRect = sourceElement.getBoundingClientRect();
+
         let popoverTemplate = game.JTCS.templates["popover"];
         let renderedHTML = await renderTemplate(popoverTemplate, templateData);
+
         parentApp.element.append(renderedHTML);
         let popoverElement = parentApp.element.find(".popover");
+
         popoverElement.css({ position: "absolute" });
-        popoverElement.offset({ top: position.top, left: position.left });
+
+        popoverElement.offset({ top: boundingRect.top + boundingRect.height, left: boundingRect.left });
+
         return popoverElement;
+    }
+
+    static async hideAndDeletePopover(popoverElement) {
+        popoverElement.addClass("hidden");
+        popoverElement.remove();
     }
 
     static async createDialog(title, templatePath, data) {

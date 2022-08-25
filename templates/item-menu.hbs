@@ -1,0 +1,18 @@
+<ul class="flex-col">
+    {{#each items as |item|}}
+        <li class="item [ flex-row flex-justify-space-between bg-primary ]
+                [ interactive hover-bg-primary ] 
+        " 
+            name="{{concat ../propertyString "." @key}}"
+            {{#if item.dataset}}
+                {{#each item.dataset as |value|}}
+                    data-{{@key}}="{{value}}"
+                {{/each}}
+            {{/if}}
+            data-action="{{@key}}"
+            >
+            <i class="{{item.icon}}"></i>
+            {{@key}}
+        </li>
+    {{/each}}
+</ul>

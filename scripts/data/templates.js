@@ -18,6 +18,7 @@ const templateBaseNames = [
     `notification-badge.hbs`,
     `popover.hbs`,
     `item-list.hbs`,
+    `item-menu.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

@@ -218,7 +218,6 @@ export class ImageDisplayManager {
      */
     static async determineDisplayMethod(sheetImageData = { method: "window", url: "" }) {
         let { method, imageElement, url } = sheetImageData;
-        console.warn(sheetImageData);
         if (!url && imageElement) {
             url = ImageDisplayManager.getImageSource(imageElement);
         } else if (!url && !imageElement) {
