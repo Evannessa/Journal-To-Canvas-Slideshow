@@ -1,11 +1,13 @@
 "use strict";
 import { log, MODULE_ID } from "./debug-mode.js";
-import { slideshowDefaultSettingsData } from "../data/JTCSSlideshowConfigData.js";
+import { slideshowDefaultSettingsData } from "./data/ArtGalleryConfigData.js";
+import { Popover } from "./classes/PopoverGenerator.js";
 
 export class SlideshowConfig extends Application {
     constructor(data = {}) {
         // super({ renderData: { ...data } });
-        super(data);
+        // super(data);
+        super();
         this.data = data;
     }
 
@@ -26,13 +28,14 @@ export class SlideshowConfig extends Application {
         this.render(true, this.data);
     }
 
-    async handleAction(event, actionType = "action") {
+    async handleAction(event, actionType = "action", html) {
         event.preventDefault();
-        if (actionType === "action") {
-            console.log(actionType, event.target, " is being called");
-            //TODO: this is a hacky solution for your issue. fIgure out a better way.
-            // event.stopPropagation();
-        }
+        if (event.delegateTarget)
+            if (actionType === "action") {
+                console.log(event.delegateTarget, html, "handlign click");
+                //TODO: this is a hacky solution for your issue. fIgure out a better way.
+                // event.stopPropagation();
+            }
         let targetElement = $(event.currentTarget);
         //if our target element is a label, get the input before it instead
         targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
@@ -65,112 +68,6 @@ export class SlideshowConfig extends Application {
             };
             actionData[handlerPropertyString](event, options);
         }
-    }
-
-    async handleHover(event) {
-        let hoveredElement = $(event.currentTarget);
-        let tag = hoveredElement.prop("nodeName");
-        let hoverAction = hoveredElement.data().hoverAction;
-        if (tag === "LABEL") {
-            hoverAction = hoveredElement.prev().data().hoverAction;
-        }
-        let hoverData = getProperty(slideshowDefaultSettingsData, hoverAction);
-        if (hoverData && hoverData.hasOwnProperty("onHover")) {
-            hoverData.onHover(event, {});
-        }
-    }
-    async _handleHover(event) {
-        let isLeave = event.type === "mouseleave" ? true : false;
-        // we want every hover over a tile to highlight the tiles it is linked to
-        let hoveredElement = $(event.currentTarget);
-        let type = hoveredElement.data().type;
-        let id = hoveredElement.data().id;
-
-        let otherListItems = [];
-        let frameID = hoveredElement.data().frameId;
-        if (type === "frame") frameID = id;
-
-        if (frameID) {
-            otherListItems = Array.from(hoveredElement[0].closest(".tilesInScene").querySelectorAll("li")).filter(
-                //get list items with the opposite tile type
-                (item) => {
-                    let passed = true;
-                    if (item.dataset.type === type) {
-                        passed = false;
-                    }
-                    if (item.dataset.flag === "ignoreHover") {
-                        passed = false;
-                    }
-                    return passed;
-                }
-            );
-
-            //filter out list items
-            otherListItems = otherListItems.filter((element) => {
-                let dataset = Object.values({ ...element.dataset }).join(" ");
-                let match = false;
-                if (type === "art") {
-                    //for art tiles, we're looking for frameTiles in the list that match the frame id
-                    match = dataset.includes(frameID);
-                } else if (type === "frame") {
-                    //for frame tiles, we're looking for art tiles in the list that have our id
-                    match = dataset.includes(id);
-                }
-                return match;
-            });
-        }
-        if (!id) {
-            return;
-        }
-
-        let tile = await game.JTCS.tileUtils.getTileObjectByID(id);
-        if (isLeave) {
-            hoveredElement.removeClass("accent border-accent");
-            $(otherListItems).removeClass("accent border-accent");
-            game.JTCS.indicatorUtils.hideTileIndicator(tile);
-        } else {
-            hoveredElement.addClass("accent border-accent");
-            $(otherListItems).addClass("accent border-accent");
-            game.JTCS.indicatorUtils.showTileIndicator(tile);
-        }
-    }
-
-    async _handleToggle(html) {
-        let details = html.find("details");
-
-        let toggleClassListener = (event, element) => {
-            if ($(element).attr("open")) {
-                $(element).find(".toggle-icon i").removeClass("fa-plus-square").addClass("fa-minus-square");
-            } else {
-                $(element).find(".toggle-icon i").removeClass("fa-minus-square").addClass("fa-plus-square");
-            }
-        };
-
-        let saveOpenState = (event) => {
-            let element = event.currentTarget;
-            let isOpen = element.open;
-            let elementData = game.JTCSlideshowConfig.data[element.id];
-            if (isOpen === undefined || isOpen === null) {
-                return;
-            }
-            if (elementData) {
-                elementData = { ...elementData, isOpen: isOpen };
-            } else {
-                game.JTCSlideshowConfig.data[element.id] = { isOpen: isOpen };
-            }
-        };
-
-        details.each((index, element) => {
-            element.addEventListener("toggle", (event) => {
-                toggleClassListener(event, element);
-            });
-
-            if (element.classList.contains("collapsible-wrapper")) {
-                element.addEventListener("toggle", (event) => {
-                    saveOpenState(event, element);
-                });
-            }
-        });
     }
 
     /**
@@ -231,78 +128,29 @@ export class SlideshowConfig extends Application {
         };
     }
 
-    async _handleButtonClick(event) {
-        let clickedElement = $(event.currentTarget);
-        event.stopPropagation();
-        event.preventDefault();
-        let action = clickedElement.data().action;
-
-        //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
-        let parentLI = clickedElement[0].closest(".tile-list-item, .popover");
-        let tileID = parentLI?.dataset?.id;
-
-        let settingsData = getProperty(slideshowDefaultSettingsData, action);
-
-        if (settingsData && settingsData.hasOwnProperty("onClick")) {
-            settingsData.onClick(event, {
-                action: action,
-                tileID: tileID,
-                parentLI: parentLI,
-                app: this,
-                html: this.element,
-            });
-        }
-    }
-
     async activateListeners(html) {
-        super.activateListeners(html);
+        // super.activateListeners(html);
+        html = $(html[0].closest(".window-app"));
         await this.setUIColors(html);
         // this._handleToggle(html);
 
-        html.off("click").on("click", "[data-action]", (event) => this.handleAction(event));
+        html.off("click").on("click", "[data-action]", async (event) => await this.handleAction(event, "action", html));
         html.off("mouseenter mouseleave").on(
             "mouseenter mouseleave",
             `[data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']), 
             [data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']) + label`,
-            (event) => this.handleAction(event, "hoverAction")
+            async (event) => await this.handleAction(event, "hoverAction")
+        );
+        html.off("mouseenter mouseleave").on(
+            "mouseenter mouseleave",
+            `[data-tooltip]`,
+            async (event) => await Popover.generateTooltip(event, html, ".popover, .tile-list-item")
         );
         // html.on("mouseover mouseout", "[data-title]", (event) => this.handleAction(event, "hoverAction"));
-        html.off("change").on("change", "[data-change-action]", (event) => this.handleAction(event, "changeAction"));
-
-        // html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
-        // html.on(
-        //     "mouseenter mouseleave",
-        //     `li:not([data-missing='true'], [data-flag='ignore-hover'])`,
-        //     this._handleHover.bind(this)
-        // );
-        // html.on("mouseover mouseout", "[data-hover-action], [data-hover-action] + label", this.handleHover.bind(this));
-
-        // this._handleChange();
-    }
-    async _handleChange() {
-        $("#slideshow-config :is(select, input[type='checkbox'], input[type='radio'], input[type='text'])").on(
+        html.off("change").on(
             "change",
-            async (event) => {
-                let changedElement = $(event.currentTarget);
-
-                let parentLI = changedElement[0].closest(".tile-list-item, .popover");
-                let tileID = parentLI?.dataset?.id;
-
-                let changeAction = changedElement.data().changeAction;
-                let changeSettingsData = getProperty(slideshowDefaultSettingsData, changeAction);
-
-                if (changeSettingsData && changeSettingsData.hasOwnProperty("onChange")) {
-                    let app = game.JTCSlideshowConfig;
-                    let html = app.element;
-                    let options = {
-                        app: app,
-                        html: html,
-                        tileID: tileID,
-                        parentLI: parentLI,
-                    };
-                    changeSettingsData.onChange(event, options);
-                }
-            }
+            "[data-change-action]",
+            async (event) => await this.handleAction(event, "changeAction")
         );
     }
 }

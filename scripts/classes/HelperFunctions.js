@@ -1,3 +1,4 @@
+import { log } from "../debug-mode.js";
 import { artGalleryDefaultSettings } from "../settings.js";
 export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";
@@ -138,10 +139,13 @@ export class HelperFunctions {
         let boundingRect = sourceElement.getBoundingClientRect();
 
         let popoverTemplate = game.JTCS.templates["popover"];
-        let renderedHTML = await renderTemplate(popoverTemplate, templateData);
-
-        parentElement.append(renderedHTML);
         popoverElement = parentElement.find(".popover");
+        if (!popoverElement.length) {
+            //if it doesn't already exist, create it
+            let renderedHTML = await renderTemplate(popoverTemplate, templateData);
+            parentElement.append(renderedHTML);
+            popoverElement = parentElement.find(".popover");
+        }
 
         let popoverData = elementDataArray.find((data) => data.name === "popoverElement");
         popoverData.target = popoverElement;
@@ -168,6 +172,7 @@ export class HelperFunctions {
                 let handler;
                 let selector;
                 let eventName;
+                let options;
                 if (typeof eventData === "string") {
                     //if it's a simple string, just set the handler to immediaetly hide the popover on this event
                     eventName = eventData;
@@ -176,20 +181,22 @@ export class HelperFunctions {
                 } else if (typeof eventData === "object") {
                     //if it's an object, we'll want to do something (like validate input) first before hiding
                     eventName = eventData.eventName;
-                    handler = async (event) => {
-                        await eventData.wrapperFunction(event);
-                        await HelperFunctions.hideAndDeletePopover(popoverElement);
+                    options = {
+                        ...eventData.options,
+                        popover: popoverElement,
+                        hideFunction: HelperFunctions.hideAndDeletePopover,
+                    };
+                    handler = async (event, options) => {
+                        await eventData.wrapperFunction(event, options);
+                        // if (proceed) {
+                        // await HelperFunctions.hideAndDeletePopover(popoverElement);
+                        // }
                     };
                     selector = eventData.selector;
                 }
                 $(targetElement)
                     .off(eventName)
-                    .on(
-                        eventName,
-                        selector,
-                        async (event) => await handler(event)
-                        // HelperFunctions.hideAndDeletePopover(popoverElement)
-                    );
+                    .on(eventName, selector, async (event) => await handler(event, options));
             });
         });
 
@@ -206,8 +213,19 @@ export class HelperFunctions {
     }
 
     static async hideAndDeletePopover(popoverElement) {
-        popoverElement.addClass("hidden");
-        popoverElement.remove();
+        // console.log("Hiding", popoverElement, popoverElement[0].isMouseOver);
+        // popoverElement.addClass("hidden");
+        //TODO: Put some sort of fading animation here
+        if (popoverElement.timeout) {
+            //if the popover is already counting down to a timeout, cancel it
+            clearTimeout(popoverElement.timeout);
+        }
+        let popoverTimeout = setTimeout(() => {
+            //set a new timeout to remove the popover
+            popoverElement.remove();
+        }, 900);
+        //save that timeout's id on the popover
+        popoverElement.timeout = popoverTimeout;
     }
 
     static async createDialog(title, templatePath, data) {

@@ -1,46 +1,8 @@
-import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
-import { JTCSActions } from "./data/JTCS-Actions.js";
+"use strict";
+import { JTCSSettingsApplication } from "../classes/JTCSSettingsApplication.js";
+import { JTCSActions } from "./JTCS-Actions.js";
+import { Popover } from "../classes/PopoverGenerator.js";
 
-export function createTemplateData(parentLI, partialName, context = {}) {
-    let dataset = $(parentLI).data();
-    return {
-        passedPartial: partialName,
-        dataset: dataset,
-        passedPartialContext: context,
-    };
-}
-
-let defaultElementData = {
-    popoverElement: {
-        target: null,
-        hideEvents: [],
-    },
-    sourceElement: {
-        target: null,
-        hideEvents: [],
-    },
-    parentElement: {
-        target: null,
-        hideEvents: [],
-    },
-};
-
-async function createTileItemPopover(event, templateData, options = {}, elementData = defaultElementData) {
-    let { html } = options;
-    let sourceElement = event.currentTarget;
-    // -- RENDER THE POPOVER
-    elementData.parentElement.target = html;
-    elementData.sourceElement.target = sourceElement;
-
-    let elementDataArray = Object.keys(elementData).map((key) => {
-        let newData = elementData[key];
-        newData.name = key;
-        return newData;
-    });
-
-    let popover = await game.JTCS.utils.manager.createAndPositionPopover(templateData, elementDataArray);
-    return popover;
-}
 const extraActions = {
     renderTileConfig: async (event, options = {}) => {
         let { tileID } = options;
@@ -151,17 +113,38 @@ const extraActions = {
             game.JTCS.indicatorUtils.showTileIndicator(tile);
         }
     },
-    showTooltip: async (event, options = {}) => {
-        // console.log(event);
-        let tooltipText = $(event.currentTarget).data.tooltip;
-        let { parentLI, app } = options;
-        let templateData = createTemplateData(parentLI, "tooltip", { tooltip: tooltipText });
-        let elementData = { ...defaultElementData };
-        elementData["sourceElement"].hideEvents.push("mouseleave");
-        let popover = await createTileItemPopover(event, templateData, options, elementData);
-        popover.focus({ focusVisible: true });
-        await app.activateListeners(app.element);
-    },
+    // showTooltip: async (event, options = {}) => {
+    //     if (event.type === "mouseout" || event.type === "mouseleave") {
+    //         return;
+    //     }
+    //     // console.log(event);
+    //     let tooltipText = $(event.currentTarget).data.tooltip;
+    //     let { parentLI, app } = options;
+    //     let templateData = Popover.createTemplateData(parentLI, "tooltip", { tooltip: tooltipText });
+    //     let elementData = { ...Popover.defaultElementData };
+    //     elementData["sourceElement"].hideEvents.push({
+    //         eventName: "mouseleave",
+    //         wrapperFunction: async (event, options) => {
+    //             let { popover, hideFunction } = options;
+    //             if (popover.timeout) {
+    //                 //if the popover is already counting down to a timeout, cancel it
+    //                 clearTimeout(popover.timeout);
+    //             }
+    //             let popoverTimeout = setTimeout(async () => {
+    //                 //set a new timeout to remove the popover
+    //                 console.log("Mouse leaving button, is on popover?", popover[0].isMouseOver);
+    //                 if (!popover[0].isMouseOver) {
+    //                     await hideFunction(popover);
+    //                 }
+    //             }, 900);
+    //             //save that timeout's id on the popover
+    //             popover.timeout = popoverTimeout;
+    //         },
+    //     });
+    //     let popover = await Popover.processPopoverData(event, templateData, options, elementData);
+    //     popover.focus({ focusVisible: true });
+    //     await app.activateListeners(app.element);
+    // },
 };
 export const slideshowDefaultSettingsData = {
     globalActions: {
@@ -253,6 +236,29 @@ export const slideshowDefaultSettingsData = {
                 },
             },
         },
+        hover: {
+            actions: {
+                //for the popover
+                // setIsMouseOver: {
+                //     onHover: async (event, options = {}) => {
+                //         let { type } = event;
+                //         let element = event.currentTarget;
+                //         switch (type) {
+                //             case "mouseenter":
+                //             case "mouseover":
+                //                 element.isMouseOver = true;
+                //                 break;
+                //             case "mouseleave":
+                //             case "mouseout":
+                //                 element.isMouseOver = false;
+                //                 break;
+                //             default:
+                //                 break;
+                //         }
+                //     },
+                // },
+            },
+        },
     },
     itemActions: {
         change: {
@@ -325,7 +331,6 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-link",
                     onClick: async (event, options = {}) => {
                         let { app, tileID, parentLI } = options;
-                        let type = parentLI.dataset.type;
 
                         let frameTileID;
                         if (!frameTileID) frameTileID = parentLI.dataset.frameId;
@@ -336,16 +341,22 @@ export const slideshowDefaultSettingsData = {
                             artTileDataArray: artTileDataArray,
                             unlinkedTilesIDs: unlinkedTilesIDs,
                         };
-                        let templateData = createTemplateData(parentLI, "tile-link-partial", context);
+                        let templateData = Popover.createTemplateData(parentLI, "tile-link-partial", context);
 
-                        let elementData = { ...defaultElementData };
+                        let elementData = { ...Popover.defaultElementData };
                         elementData["popoverElement"].hideEvents.push({
                             eventName: "change",
                             selector: "input, input + label",
                             wrapperFunction: async (event) => {},
                         });
                         // -- RENDER THE POPOVER
-                        let popover = await createTileItemPopover(event, templateData, options, elementData);
+                        let popover = await Popover.processPopoverData(
+                            event.currentTarget,
+                            app.element,
+                            templateData,
+                            options,
+                            elementData
+                        );
                         await app.activateListeners(app.element);
                         popover[0].querySelector("input").focus({ focusVisible: true });
 
@@ -365,9 +376,9 @@ export const slideshowDefaultSettingsData = {
                             id: "shareURL",
                         };
 
-                        let templateData = createTemplateData(parentLI, "input-with-error", context);
+                        let templateData = Popover.createTemplateData(parentLI, "input-with-error", context);
 
-                        let elementData = { ...defaultElementData };
+                        let elementData = { ...Popover.defaultElementData };
 
                         elementData["popoverElement"] = {
                             targetElement: null,
@@ -394,7 +405,7 @@ export const slideshowDefaultSettingsData = {
                             ],
                         };
 
-                        let popover = await createTileItemPopover(event, templateData, options, elementData);
+                        let popover = await Popover.processPopoverData(event, templateData, options, elementData);
                         popover[0].querySelector("input").focus({ focusVisible: true });
                     },
                     overflow: false,
@@ -406,34 +417,24 @@ export const slideshowDefaultSettingsData = {
                     renderAlways: true,
                     onClick: async (event, options = {}) => {
                         let { app, tileID, parentLI } = options;
-                        let frameTileID = parentLI.dataset.frameTileID;
                         if (!tileID) tileID = parentLI.dataset.tileID;
-                        let type = parentLI.dataset.type;
 
                         let actions = slideshowDefaultSettingsData.itemActions.click.actions;
                         let overflowActions = {};
                         for (let actionKey in actions) {
                             if (actions[actionKey].overflow) {
                                 overflowActions[actionKey] = actions[actionKey];
-                                // overflowActions[actionKey].dataset = {};
-                                // overflowActions[actionKey].dataset.id = tileID;
-                                // overflowActions[actionKey].dataset["frame-id"] = frameTileID;
                             }
                         }
                         let context = {
                             propertyString: "itemActions.click.actions",
                             items: overflowActions,
                         };
-                        let templateData = createTemplateData(parentLI, "item-menu", context);
+                        let templateData = Popover.createTemplateData(parentLI, "item-menu", context);
 
-                        let elementData = { ...defaultElementData };
-                        // elementData["popoverElement"].hideEvents.push({
-                        //     eventName: "click",
-                        //     selector: "[data-action]",
-                        //     wrapperFunction: async (event) => {},
-                        // });
+                        let elementData = { ...Popover.defaultElementData };
 
-                        let popover = await createTileItemPopover(event, templateData, options, elementData);
+                        let popover = await Popover.processPopoverData(event, templateData, options, elementData);
 
                         await app.activateListeners(app.element);
                         popover.focus({ focusVisible: true });
