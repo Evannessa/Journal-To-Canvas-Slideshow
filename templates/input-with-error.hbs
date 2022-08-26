@@ -1,6 +1,5 @@
 <div class="form-group has-floating-label">
     <label class="floating-label" for="{{this.id}}">{{camelCaseToArray this.name true}}</label>
-    {{#unless (eq this.type select)}}
         <input
             class="flex2"
             id="{{this.id}}"
@@ -9,7 +8,6 @@
             value="{{this.value}}"
             data-change-action="{{this.changeAction}}"
         />
-    {{/unless}}
     {{#if (eq this.errorCondition true)}}
         {{> (dynamicPartial "notification-badge")}}
     {{/if}}

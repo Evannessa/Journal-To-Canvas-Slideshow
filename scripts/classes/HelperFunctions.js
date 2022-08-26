@@ -124,13 +124,6 @@ export class HelperFunctions {
         return {};
     }
 
-    static createPopoverEventData(element, hideEvents = []) {
-        return {
-            target: element,
-            hideEvents: hideEvents,
-        };
-    }
-
     /**
      * Generates a popover (tooltip, etc), and positions it from the source element
      * boundingClientRect data
@@ -141,7 +134,6 @@ export class HelperFunctions {
     static async createAndPositionPopover(templateData, elementDataArray = []) {
         let elements = elementDataArray.map((data) => data.target);
         let [popoverElement, sourceElement, parentElement] = elements; //destructure the passed-in elements
-        console.log(parentElement, sourceElement);
 
         let boundingRect = sourceElement.getBoundingClientRect();
 
@@ -161,13 +153,13 @@ export class HelperFunctions {
         popoverElement.focus({ focusVisible: true });
 
         //set up a "Click Out" event handler
-        $(document).on("click", async (event) => {
-            if (HelperFunctions.isOutsideClick(event)) {
-                await HelperFunctions.hideAndDeletePopover(popoverElement);
-            } else {
-                console.log("We clicked on popover. No need to close");
-            }
-        });
+        $(document)
+            .off("click")
+            .on("click", async (event) => {
+                if (HelperFunctions.isOutsideClick(event)) {
+                    await HelperFunctions.hideAndDeletePopover(popoverElement);
+                }
+            });
 
         //hideEvents should be list of events to hide the popover on (like blur, change, mouseout, etc)
         elementDataArray.forEach((data) => {
@@ -183,7 +175,6 @@ export class HelperFunctions {
                     selector = "*";
                 } else if (typeof eventData === "object") {
                     //if it's an object, we'll want to do something (like validate input) first before hiding
-                    console.log(eventData);
                     eventName = eventData.eventName;
                     handler = async (event) => {
                         await eventData.wrapperFunction(event);
@@ -191,12 +182,14 @@ export class HelperFunctions {
                     };
                     selector = eventData.selector;
                 }
-                $(targetElement).on(
-                    eventName,
-                    selector,
-                    async (event) => await handler(event)
-                    // HelperFunctions.hideAndDeletePopover(popoverElement)
-                );
+                $(targetElement)
+                    .off(eventName)
+                    .on(
+                        eventName,
+                        selector,
+                        async (event) => await handler(event)
+                        // HelperFunctions.hideAndDeletePopover(popoverElement)
+                    );
             });
         });
 

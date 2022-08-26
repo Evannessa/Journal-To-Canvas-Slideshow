@@ -303,6 +303,13 @@ button.icon-button {
     background-color: transparent;
     width: 35%;
     padding-bottom: 35%;
+    position: relative;
+    i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
 .hover-text-color {
     &:hover {
