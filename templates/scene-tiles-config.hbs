@@ -5,7 +5,7 @@
         <div class="wrapper flex-row flex-justify-space-evenly flex-align-center">
 			<div class="form-group has-floating-label">
 				<label class="floating-label" for="artScene">Art Scene</label>
-				<select name="artScene" id="artScene" data-action="setArtScene">
+				<select name="artScene" id="artScene" data-change-action="globalActions.change.actions.setArtScene">
 					{{#each artSceneData.options as |scene|}}
 						<option value="{{scene.id}}"
 							{{#if (eq @root.artSceneData.value scene.id)}}
@@ -19,7 +19,7 @@
 			</div>
 			<div class="form-group has-floating-label">
 				<label class="floating-label" for="artScene">Art Journal</label>
-				<select name="artJournal" id="artJournal" data-action="setArtJournal">
+				<select name="artJournal" id="artJournal" data-change-action="globalActions.change.actions.setArtJournal">
 					{{#each artJournalData.options as |journal|}}
 						<option value="{{journal.id}}"
 									{{#if (eq @root.artJournalData.value journal.id)}}
@@ -32,11 +32,12 @@
 				</select>
 			</div>
 			<div class="actions">
-                {{#with settingsData}}
-                    {{#each globalActions as |action|}}
+                {{#with @root.settingsData.globalActions.click}}
+                    {{#each (filter actions "renderedInTemplate" undefined) as |action|}}
                         {{> (dynamicPartial "icon-button")
                             action
-                            name=(concat "globalActions" "." @key)
+                            name=(concat ../propertyString "." @key)
+                            action=(concat ../propertyString "." @key)
                         }}
                     {{/each}}
                 {{/with}}
@@ -50,7 +51,7 @@
     >
 		<div class="wrapper max-height-full-parent flexcol">
             <h3 class="flex0">Art Tiles in "{{wrapInSpan currentSceneName}}"</h3>
-			<div class="item-wrapper 
+			<div id="artTileWrapper" class="item-wrapper 
 			    [ border-styled border-hover 
 				slight-rounded ] "
 				>
@@ -76,7 +77,7 @@
 		</div>
 		<div class="wrapper max-height-full-parent flexcol">
 			<h3 class="flex0">Frame Tiles in "{{wrapInSpan currentSceneName}}"</h3>
-			<div class="item-wrapper
+			<div id="frameTileWrapper" class="item-wrapper
 						[ border-styled border-hover 
 						slight-rounded ]"
 			>

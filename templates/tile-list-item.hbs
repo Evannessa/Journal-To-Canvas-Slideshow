@@ -10,7 +10,9 @@
 >
 	<header class="flex-row flex-nowrap flex-justify-space-between">
 		{{> (dynamicPartial "input-with-error")
-            name="Display Name" 
+            name="displayName" 
+            label="Display Name"
+            changeAction="itemActions.change.actions.setDisplayName"
             id=this.displayName
             value=this.displayName
             errorCondition=(eq this.missing true)
@@ -20,27 +22,12 @@
                 (wrapInSpan this.currentSceneName)
             )
         }} 
-		<div class="[ actions ] [ flex0 focus-reveal--child hover-reveal--child ]">
-			{{#if (eq this.missing true)}}
-			{{> "modules/journal-to-canvas-slideshow/templates/icon-button.hbs" 
-				action="createSlideshowTile" 
-				icon="fas fa-plus" 
-				displayName=this.displayName
-				tooltipText=(combineToString "Create a new" "<span>" this.type 
-								"</span>" "tile on the canvas in scene" 
-								"<span>" @root.currentSceneName "</span>" 
-							)
-			}}
-			{{else}}
-		
-			{{/if}}
-		
-		
+		<div class="[ actions ] [ focus-reveal--child hover-reveal--child ]">
             {{#with @root.settingsData}}
-                {{#each itemActions.click.actions}}
+                {{#each (filter itemActions.click.actions "renderOnMissing" ../missing)}}
                     {{#unless (eq overflow true)}}
                     {{> (dynamicPartial "icon-button")
-                        action=@key
+                        action=(concat "itemActions.click.actions" "." @key)
                         name=(concat 
                             @root.settingsData.itemActions.click.propertyString "." @key)
                         icon=this.icon
@@ -57,7 +44,7 @@
                 <div class="connectedTiles flex-row" data-title="">
                         <div class="form-group has-floating-label">
                             <label class="floating-label" for="linkedBoundingTile">Frame</label>
-                            <select name="linkedBoundingTile" id="linkedBoundingTile">
+                            <select name="linkedBoundingTile" id="linkedBoundingTile" data-change-action="itemActions.change.actions.setFrameTile">
                                 <option value=""> Use Canvas As Frame </option>
                                 {{#each this.allFrameTiles as |boundingTile|}}
                                     <option data-hover-action="highlightTile" data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"

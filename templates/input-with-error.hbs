@@ -1,18 +1,15 @@
 <div class="form-group has-floating-label">
-    <label class="floating-label" for="{{this.id}}">{{this.name}}</label>
-    {{#if (eq this.type "select")}}
-        <select name="{{this.name}}" id="{{this.id}}">
-            {{selectOptions this.wikiData.choices selected=value nameAttr="key" labelAttr="label"}}
-        </select>
-    {{else}}
+    <label class="floating-label" for="{{this.id}}">{{camelCaseToArray this.name true}}</label>
+    {{#unless (eq this.type select)}}
         <input
-            class="flex3"
+            class="flex2"
             id="{{this.id}}"
             name="{{this.name}}"
             type="{{ternary this.type 'text'}}"
             value="{{this.value}}"
+            data-change-action="{{this.changeAction}}"
         />
-    {{/if}}
+    {{/unless}}
     {{#if (eq this.errorCondition true)}}
         {{> (dynamicPartial "notification-badge")}}
     {{/if}}

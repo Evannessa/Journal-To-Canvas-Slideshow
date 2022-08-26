@@ -367,14 +367,14 @@ fieldset.toggle-button-group label:last-of-type {
 }
 
 button.icon-button {
-  aspect-ratio: 1/1;
-  max-width: 1rem;
-  max-height: 1rem;
+  height: 0;
   padding: 0;
   margin: 0;
   border: none;
   background: none;
   background-color: transparent;
+  width: 35%;
+  padding-bottom: 35%;
 }
 
 .hover-text-color:hover {

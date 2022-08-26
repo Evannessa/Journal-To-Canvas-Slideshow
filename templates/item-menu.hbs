@@ -9,7 +9,7 @@
                     data-{{@key}}="{{value}}"
                 {{/each}}
             {{/if}}
-            data-action="{{@key}}"
+            data-action="{{concat ../propertyString "." @key}}"
             >
             <i class="{{item.icon}}"></i>
             {{@key}}

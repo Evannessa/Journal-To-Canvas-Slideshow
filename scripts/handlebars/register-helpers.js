@@ -6,6 +6,12 @@ export const registerHelpers = function () {
 
         return subTemplate(subTemplateArgs);
     });
+    Handlebars.registerHelper("filter", function (object, conditionName, conditionValue) {
+        let array = Object.entries(object).filter(
+            ([key, data]) => data[conditionName] === conditionValue || data.renderAlways
+        );
+        return Object.fromEntries(array);
+    });
 
     Handlebars.registerHelper("camelCaseToArray", function (string, shouldJoin = false) {
         let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());

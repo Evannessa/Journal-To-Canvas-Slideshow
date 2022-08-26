@@ -5,7 +5,6 @@ import { JTCSActions } from "./data/JTCS-Actions.js";
 
 function createTemplateData(parentLI, partialName, context = {}) {
     let dataset = $(parentLI).data();
-    console.log(dataset);
     return {
         passedPartial: partialName,
         dataset: dataset,
@@ -53,6 +52,44 @@ const extraActions = {
         let { tileID } = options;
         await game.JTCS.tileUtils.selectTile(tileID);
     },
+    updateTileData: async (event, options = {}) => {
+        let clickedElement = $(event.currentTarget);
+
+        let { name, value } = event.currentTarget;
+
+        let { tileID, app, parentLI } = options;
+
+        let action = clickedElement.data().action || clickedElement.data().changeAction;
+        // let changeAction = clickedElement.data().changeAction;
+
+        let { type } = $(parentLI).data();
+
+        let isNewTile = false;
+        let isBoundingTile = type === "frame";
+
+        // console.log("updating tile data with these options", options, "this action", action, type);
+
+        if (action.includes("createNewTileData")) {
+            isNewTile = true;
+            tileID = `unlinked${foundry.utils.randomID()}`;
+            name = "displayName";
+            value = `Untitled ${type} Tile`;
+        } else {
+            // if we're already a Slideshow tile, look for our ID
+            tileID = clickedElement[0].closest(".tile-list-item, .popover").dataset.id;
+            name = "displayName";
+        }
+
+        if (tileID) {
+            let updateData = {
+                id: tileID,
+                [name]: value,
+                ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
+            };
+            await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
+            await app.renderWithData();
+        }
+    },
     deleteTileData: async (event, options = {}) => {
         let { app, tileID } = options;
         await game.JTCS.tileUtils.deleteSceneTileData(tileID);
@@ -61,53 +98,92 @@ const extraActions = {
 };
 const slideshowDefaultSettingsData = {
     globalActions: {
-        showURLShareDialog: {
-            name: "showURLShareDialog",
-            icon: "fas fa-external-link-alt",
-            tooltipText: "Share a URL link with your players",
-            onClick: async (event, options = {}) => {
-                let wrappedActions = {};
-                let { displayActions } = JTCSActions;
-                for (let actionName in displayActions) {
-                    wrappedActions[actionName] = displayActions[actionName];
-                    //converting properties to fit the dialog's schema
-                    wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
-                    wrappedActions[actionName].label = actionName;
-                    wrappedActions[actionName].callback = async (html) => {
-                        let urlInput = html.find("input[name='urlInput']");
-                        let url = urlInput.val();
-                        if (url !== "") {
-                            await game.JTCS.imageUtils.manager.determineDisplayMethod({
-                                method: actionName,
-                                url: url,
-                            });
+        click: {
+            propertyString: "globalActions.click.actions",
+            actions: {
+                showURLShareDialog: {
+                    icon: "fas fa-external-link-alt",
+                    tooltipText: "Share a URL link with your players",
+                    onClick: async (event, options = {}) => {
+                        let wrappedActions = {};
+                        let { displayActions } = JTCSActions;
+                        for (let actionName in displayActions) {
+                            wrappedActions[actionName] = displayActions[actionName];
+                            //converting properties to fit the dialog's schema
+                            wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
+                            wrappedActions[actionName].label = actionName;
+                            wrappedActions[actionName].callback = async (html) => {
+                                let urlInput = html.find("input[name='urlInput']");
+                                let url = urlInput.val();
+                                if (url !== "") {
+                                    await game.JTCS.imageUtils.manager.determineDisplayMethod({
+                                        method: actionName,
+                                        url: url,
+                                    });
+                                }
+                            };
                         }
-                    };
-                }
-                delete wrappedActions.fadeJournal;
-                delete wrappedActions.anyScene;
-                let buttons = {
-                    ...wrappedActions,
-                    cancel: {
-                        label: "Cancel",
-                    },
-                };
-                let templatePath = game.JTCS.templates["share-url-partial"];
+                        delete wrappedActions.fadeJournal;
+                        delete wrappedActions.anyScene;
+                        let buttons = {
+                            ...wrappedActions,
+                            cancel: {
+                                label: "Cancel",
+                            },
+                        };
+                        let templatePath = game.JTCS.templates["share-url-partial"];
 
-                await game.JTCS.utils.createDialog("Share URL", templatePath, {
-                    buttons: buttons,
-                    partials: game.JTCS.templates,
-                    value: "",
-                });
+                        await game.JTCS.utils.createDialog("Share URL", templatePath, {
+                            buttons: buttons,
+                            partials: game.JTCS.templates,
+                            value: "",
+                        });
+                    },
+                },
+                showModuleSettings: {
+                    icon: "fas fa-cog",
+                    tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
+                    onClick: (event, options = {}) => {
+                        if (!game.JTCSSettingsApp) {
+                            game.JTCSSettingsApp = new JTCSSettingsApplication().render(true);
+                        }
+                    },
+                },
+                createNewTileData: {
+                    icon: "fas fa-plus",
+                    tooltipText: "Create new tile data",
+                    renderedInTemplate: true,
+                    onClick: async (event, options) => await extraActions.updateTileData(event, options),
+                },
             },
         },
-        showModuleSettings: {
-            icon: "fas fa-cog",
-            tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
-            onClick: (event, options = {}) => {
-                if (!game.JTCSSettingsApp) {
-                    game.JTCSSettingsApp = new JTCSSettingsApplication().render(true);
-                }
+        change: {
+            propertyString: "globalActions.change.actions",
+            actions: {
+                setArtScene: {
+                    onChange: async (event, options = {}) => {
+                        let { app } = options;
+                        let value = event.currentTarget.value;
+                        await game.JTCS.utils.setSettingValue(
+                            "artGallerySettings",
+                            value,
+                            "dedicatedDisplayData.scene.value"
+                        );
+                        await app.renderWithData();
+                    },
+                },
+                setArtJournal: {
+                    onChange: async (event, options = {}) => {
+                        let { app } = options;
+                        let value = event.currentTarget.value;
+                        await game.JTCS.utils.setSettingValue(
+                            "artGallerySettings",
+                            value,
+                            "dedicatedDisplayData.journal.value"
+                        );
+                        await app.renderWithData();
+                    },
+                },
             },
         },
     },
@@ -117,15 +193,21 @@ const slideshowDefaultSettingsData = {
             actions: {
                 setLinkedTile: {
                     onChange: async (event, options = {}) => {
-                        let { app, targetElement } = options;
+                        let { app, tileID, targetElement } = options;
                         if (!targetElement) targetElement = event.currentTarget;
                         if (!app) app = game.JTCSlideshowConfig;
                         let selectedID = targetElement.value;
-                        // await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
+                        await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
                         if (app.rendered) {
                             await app.renderWithData();
                         }
                     },
+                },
+                setFrameTile: {
+                    onChange: async (event, options) => await extraActions.updateTileData(event, options),
+                },
+                setDisplayName: {
+                    onChange: async (event, options) => await extraActions.updateTileData(event, options),
                 },
             },
         },
@@ -183,21 +265,11 @@ const slideshowDefaultSettingsData = {
                         };
                         let templateData = createTemplateData(parentLI, "tile-link-partial", context);
 
-                        // let templateData = {
-                        //     passedPartial: "tile-link-partial",
-                        //     dataset: {
-                        //         id: tileID,
-                        //         type: type,
-                        //     },
-                        // };
-
                         let elementData = { ...defaultElementData };
                         elementData["popoverElement"].hideEvents.push({
                             eventName: "change",
                             selector: "input, input + label",
-                            wrapperFunction: async (event) => {
-                                console.log("Selected tile changed", event);
-                            },
+                            wrapperFunction: async (event) => {},
                         });
                         // -- RENDER THE POPOVER
                         let popover = await createTileItemPopover(event, templateData, options, elementData);
@@ -216,7 +288,6 @@ const slideshowDefaultSettingsData = {
                     //     action: "shareURLOnTile",
                     // },
                     onClick: async (event, options = {}) => {
-                        // console.log(event.currentTarget)
                         let { tileID, parentLI, app, html } = options;
                         let frameTileID = "";
                         if (parentLI) {
@@ -227,19 +298,6 @@ const slideshowDefaultSettingsData = {
                         }
 
                         let templateData = createTemplateData(parentLI, "input-with-error");
-
-                        // let templateData = {
-                        //     passedPartial: "input-with-error",
-                        //     dataset: {
-                        //         id: tileID,
-                        //         "frame-id": frameTileID,
-                        //         type: type,
-                        //     },
-                        //     passedPartialContext: {
-                        //         // artTileDataArray: artTileDataArray,
-                        //         // unlinkedTilesIDs: unlinkedTilesIDs,
-                        //     },
-                        // };
 
                         let elementData = { ...defaultElementData };
 
@@ -270,22 +328,6 @@ const slideshowDefaultSettingsData = {
 
                         let popover = await createTileItemPopover(event, templateData, options, elementData);
                         popover[0].querySelector("input").focus({ focusVisible: true });
-                        // popover.on("change", "input", async (event) => {
-                        //     let url = event.currentTarget.value;
-                        //     let valid = game.JTCS.utils.manager.validateInput(url, "image");
-                        //     if (valid) {
-                        //         await game.JTCS.imageUtils.manager.updateTileObjectTexture(
-                        //             tileID,
-                        //             frameTileID,
-                        //             url,
-                        //             "anyTile"
-                        //         );
-                        //         await game.JTCS.utils.manager.hideAndDeletePopover(popover);
-                        //     } else {
-                        //         ui.notifications.error("URL not an image");
-                        //         //TODO: show error?
-                        //     }
-                        // });
                     },
                     overflow: false,
                 },
@@ -293,6 +335,7 @@ const slideshowDefaultSettingsData = {
                     icon: "fas fa-ellipsis-v",
                     tooltipText: "show menu of extra options for this art tile",
                     overflow: false,
+                    renderAlways: true,
                     onClick: async (event, options = {}) => {
                         let { app, tileID, parentLI } = options;
                         let frameTileID = parentLI.dataset.frameTileID;
@@ -315,15 +358,6 @@ const slideshowDefaultSettingsData = {
                         };
                         let templateData = createTemplateData(parentLI, "item-menu", context);
 
-                        // let templateData = {
-                        //     passedPartial: "item-menu",
-                        //     dataset: {
-                        //         id: tileID,
-                        //         "frame-id": frameTileID,
-                        //         type: type,
-                        //     },
-
-                        // };
                         let elementData = { ...defaultElementData };
                         // elementData["popoverElement"].hideEvents.push({
                         //     eventName: "click",
@@ -360,6 +394,23 @@ const slideshowDefaultSettingsData = {
                     extraClass: "danger-text",
                     onClick: async (event, options = {}) => extraActions.deleteTileData(event, options),
                 },
+                createNewGalleryTile: {
+                    icon: "fas fa-plus",
+                    tooltipText: `"Create a new" "<span>" this.type "</span>" "tile on the canvas in scene" 
+								"<span>" @root.currentSceneName "</span>" 
+							)`,
+                    overflow: false,
+                    renderOnMissing: true,
+                    onClick: async (event, options = {}) => {
+                        let { tileID, parentLI, app } = options;
+                        let isFrameTile = parentLI.dataset.type === "frame";
+                        await game.JTCS.tileUtils.createAndLinkSceneTile({
+                            unlinkedDataID: tileID,
+                            isFrameTile: isFrameTile,
+                        });
+                        await app.renderWithData();
+                    },
+                },
             },
         },
     },
@@ -387,25 +438,16 @@ export class SlideshowConfig extends Application {
     //for saving tab layouts and such
     renderWithData() {
         this.render(true, this.data);
-        // this.render(true, { renderData: this.data });
-    }
-
-    async createURLShareDialog() {
-        let shareLocations = [{ name: "artScene" }];
     }
 
     async handleHover(event) {
         let hoveredElement = $(event.currentTarget);
         let tag = hoveredElement.prop("nodeName");
         let hoverAction = hoveredElement.data().hoverAction;
-        console.log("Our tag is", tag);
         if (tag === "LABEL") {
-            console.log(hoveredElement.prop("nodeName"), hoveredElement.prev().prop("nodeName"));
             hoverAction = hoveredElement.prev().data().hoverAction;
-            console.log(hoverAction);
         }
         // let propertyString = $(event.currentTarget).data();
-        console.log("Property string on hover is", hoverAction);
         let hoverData = getProperty(slideshowDefaultSettingsData, hoverAction);
         if (hoverData && hoverData.hasOwnProperty("onHover")) {
             hoverData.onHover(event, {});
@@ -467,50 +509,6 @@ export class SlideshowConfig extends Application {
         }
     }
 
-    async setTileLinks(artTileDataArray, frameTileDataArray) {
-        //get ids
-        artTileDataArray.forEach((artTileData) => {
-            //if we have a linked bounding tile
-
-            let linkedFrameID = artTileData.linkedBoundingTile;
-
-            frameTileDataArray.forEach((frameTileData) => {
-                if (frameTileData.id === linkedFrameID) {
-                }
-            });
-        });
-    }
-    async showURLImage() {
-        new Dialog({
-            title: "Set url image",
-            content: `
-		  <form>
-			<div class="form-group">
-			  <label>Set url image</label>
-			  <input type='text' name='inputField'></input>
-			</div>
-		  </form>`,
-            buttons: {
-                yes: {
-                    icon: "<i class='fas fa-check'></i>",
-                    label: `Show Image to Players`,
-                },
-            },
-            default: "yes",
-            close: (html) => {
-                let result = html.find("input[name='inputField']");
-                if (result.val() !== "") {
-                    game.JTCS.dis;
-                    determineLocation(null, result.val());
-                }
-            },
-        }).render(true);
-    }
-
-    async setToggleButtonState(buttonElement, isActive = true) {
-        buttonElement.classList.toggle("active");
-    }
-
     async _handleToggle(html) {
         let details = html.find("details");
 
@@ -524,8 +522,6 @@ export class SlideshowConfig extends Application {
 
         let saveOpenState = (event) => {
             let element = event.currentTarget;
-            console.log(element);
-            console.log(element.open);
             let isOpen = element.open;
             let elementData = game.JTCSlideshowConfig.data[element.id];
             if (isOpen === undefined || isOpen === null) {
@@ -609,129 +605,72 @@ export class SlideshowConfig extends Application {
         };
     }
 
-    /**
-     * Returns the data-id attribute's value from the parent LI if a child is clicked, or grabs it from the li itself if the li is clicked
-     * @param {Element} clickedElement - the element that was clicked
-     * @returns the ID from the "data-id" attribute stored on parent li
-     */
-    getIDFromListItem(clickedElement, childElementTypes = []) {
-        let elementType = clickedElement.prop("tagName");
-        //if the element's type is included in the array of types to look for
-        let tileID = childElementTypes.includes(elementType)
-            ? clickedElement[0].closest("li").dataset.id
-            : clickedElement[0].dataset.id;
-        return tileID;
-    }
+    // async validateInput(event, eventHandler, options = {}) {
+    //     let { type, value } = event.currentTarget;
+    //     if (type.includes("text") && value === "") {
+    //         ui.notifications.error("Please enter a value");
+    //     } else {
+    //         await eventHandler(event, options);
+    //     }
+    // }
+    // async updateTileItem(event, action) {
+    //     event.preventDefault();
+    //     let { value, name, checked, type } = event.currentTarget;
+    //     let clickedElement = $(event.currentTarget);
 
-    async validateInput(event, eventHandler, options = {}) {
-        let { type, value } = event.currentTarget;
-        if (type.includes("text") && value === "") {
-            ui.notifications.error("Please enter a value");
-        } else {
-            await eventHandler(event, options);
-        }
-    }
-    async updateTileItem(event, action) {
-        event.preventDefault();
-        let { value, name, checked, type } = event.currentTarget;
-        let clickedElement = $(event.currentTarget);
-        //if its an input or a select
+    //     let parentLI = clickedElement[0].closest(".tile-list-item, .popover");
+    //     let app = game.JTCSlideshowConfig;
+    //     let html = app.element;
+    //     let options = { app: app, html: html };
+    //     if (parentLI) {
+    //         //if it has a parent LI, it means it's a tile item
+    //         let tileType = parentLI.dataset?.type;
+    //         let tileID = parentLI.dataset?.id;
 
-        let tileType = clickedElement[0].closest(".tile-list-item, .popover").dataset.type;
-        let isNewTile = false;
+    //         let isNewTile = false;
 
-        let tileID;
-        let isBoundingTile = tileType === "frame" ? true : false;
-        if (action === "createNewTileData") {
-            isNewTile = true;
-            tileID = `unlinked${foundry.utils.randomID()}`;
-            name = "displayName";
-            value = "Untitled Art Tile";
-        } else {
-            // if we're already a Slideshow tile, use this data
-            tileID = game.JTCSlideshowConfig.getIDFromListItem(clickedElement, ["INPUT", "SELECT"]);
-        }
+    //         let isBoundingTile = tileType === "frame" ? true : false;
+    //         options = { ...options, tileID: tileID, parentLI: parentLI };
+    //     }
 
-        if (tileID) {
-            let updateData = {
-                id: tileID,
-                [name]: value,
-                ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
-            };
-            await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
-            await game.JTCSlideshowConfig.renderWithData();
-            // game.JTCSlideshowConfig.render(true, { renderData: this.data });
-        } else {
-            //tile is unlinked
-            // await game.JTCS.getTile;
-        }
-    }
+    //     let changeSettingsData = getProperty(slideshowDefaultSettingsData, action);
+
+    //     if (changeSettingsData && changeSettingsData.hasOwnProperty("onChange")) {
+    //         let app = game.JTCSlideshowConfig;
+    //         let html = app.element;
+    //         changeSettingsData.onChange(event, options);
+    //         return;
+    //     }
+    // }
 
     async _handleButtonClick(event) {
         let clickedElement = $(event.currentTarget);
         event.stopPropagation();
         event.preventDefault();
         let action = clickedElement.data().action;
-        let type = clickedElement.data().type;
-
-        let propertyString = $(event.currentTarget).attr("name");
 
         //if we're clicking on a button within the list item, get the parent list item's id, else, get the list item's id
-        let tileID;
-        let parentLI = clickedElement[0].closest(".tile-list-item");
-        console.log("Trying to find parent LI from", clickedElement[0]);
-        if (!parentLI) {
-            parentLI = clickedElement[0].closest(".popover");
-        }
-        console.log("Parent list item is", parentLI);
-        if (parentLI) {
-            tileID = parentLI.dataset.id;
-        }
-        let settingsData = getProperty(slideshowDefaultSettingsData, propertyString);
-        if (settingsData && settingsData.hasOwnProperty("onClick")) {
-            settingsData.onClick(event, { tileID: tileID, parentLI: parentLI, app: this, html: this.element });
-        }
+        let parentLI = clickedElement[0].closest(".tile-list-item, .popover");
+        let tileID = parentLI?.dataset?.id;
 
-        switch (action) {
-            // case "convert":
-            //     this.convertToNewSystem();
-            //     break;
-            case "createSlideshowTile":
-                let isFrameTile = false;
-                if (type === "frame") isFrameTile = true;
-                await game.JTCS.tileUtils.createAndLinkSceneTile({ unlinkedDataID: tileID, isFrameTile: isFrameTile });
-                await this.renderWithData();
-                break;
-            // case "renderTileConfig":
-            //     await game.JTCS.tileUtils.renderTileConfig(tileID);
-            //     break;
-            // case "shareURL":
-            //     await this.createURLShareDialog();
-            //     break;
-            // case "selectTile":
-            //     await game.JTCS.tileUtils.selectTile(tileID);
-            //     break;
-            case "deleteTileData":
-                await game.JTCS.tileUtils.deleteSceneTileData(tileID);
-                await this.renderWithData();
-                break;
-            case "createNewTileData":
-                await this.updateTileItem(event, action);
-                await this.renderWithData();
-                break;
-            // case "showModuleSettings":
-            //     let settingsApp = new JTCSSettingsApplication().render(true);
-            //     break;
+        let settingsData = getProperty(slideshowDefaultSettingsData, action);
+
+        if (settingsData && settingsData.hasOwnProperty("onClick")) {
+            settingsData.onClick(event, {
+                action: action,
+                tileID: tileID,
+                parentLI: parentLI,
+                app: this,
+                html: this.element,
+            });
         }
     }
 
     async activateListeners(html) {
         super.activateListeners(html);
-        // this.setupActionObjects();
         await this.setUIColors(html);
         this._handleToggle(html);
 
-        // html.on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.on(
             "mouseenter mouseleave",
@@ -739,48 +678,32 @@ export class SlideshowConfig extends Application {
             this._handleHover.bind(this)
         );
         html.on("mouseover mouseout", "[data-hover-action], [data-hover-action] + label", this.handleHover.bind(this));
-        // let changeSelectorString =
-        // ".tile-list-item :is(select, input[type='checkbox'], input[type='radio'], input[type='text']";
-        // html.on("change", changeSelectorString, this._handleChange().bind(this));
+
         this._handleChange();
     }
     async _handleChange() {
-        let app = game.JTCSlideshowConfig;
         $("#slideshow-config :is(select, input[type='checkbox'], input[type='radio'], input[type='text'])").on(
             "change",
             async (event) => {
-                await app.validateInput(event, async (event) => {
-                    let clickedElement = $(event.currentTarget);
-                    // let hoverAction = clickedElement.data().hoverAction;
-                    let action = clickedElement.data().action;
-                    let value = clickedElement.val();
+                let changedElement = $(event.currentTarget);
 
-                    if (action) {
-                        switch (action) {
-                            case "setArtScene":
-                                await game.JTCS.utils.setSettingValue(
-                                    "artGallerySettings",
-                                    value,
-                                    "dedicatedDisplayData.scene.value"
-                                );
-                                await game.JTCSlideshowConfig.renderWithData();
-                                break;
-                            case "setArtJournal":
-                                await game.JTCS.utils.setSettingValue(
-                                    "artGallerySettings",
-                                    value,
-                                    "dedicatedDisplayData.journal.value"
-                                );
-                                await game.JTCSlideshowConfig.renderWithData();
-                                break;
-                            default:
-                                console.error("Action didn't match any of these options", action);
-                                break;
-                        }
-                    } else {
-                        await game.JTCSlideshowConfig.updateTileItem(event, action);
-                    }
-                });
+                let parentLI = changedElement[0].closest(".tile-list-item, .popover");
+                let tileID = parentLI?.dataset?.id;
+
+                let changeAction = changedElement.data().changeAction;
+                let changeSettingsData = getProperty(slideshowDefaultSettingsData, changeAction);
+
+                if (changeSettingsData && changeSettingsData.hasOwnProperty("onChange")) {
+                    let app = game.JTCSlideshowConfig;
+                    let html = app.element;
+                    let options = {
+                        app: app,
+                        html: html,
+                        tileID: tileID,
+                        parentLI: parentLI,
+                    };
+                    changeSettingsData.onChange(event, options);
+                }
             }
         );
     }
