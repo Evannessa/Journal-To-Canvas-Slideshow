@@ -440,6 +440,43 @@ export class SlideshowConfig extends Application {
         this.render(true, this.data);
     }
 
+    async handleAction(event, actionType = "action") {
+        event.preventDefault();
+        let targetElement = $(event.currentTarget);
+        //if our target element is a label, get the input before it instead
+        targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
+
+        let action = targetElement.data()[actionType];
+        let handlerPropertyString = "onClick";
+
+        let parentLI = targetElement[0].closest(".tile-list-item, .popover");
+        let tileID = parentLI?.dataset?.id;
+
+        switch (actionType) {
+            case "hoverAction":
+                handlerPropertyString = "onHover";
+                break;
+            case "changeAction":
+                handlerPropertyString = "onChange";
+                break;
+        }
+        let actionData = getProperty(slideshowDefaultSettingsData, action);
+
+        if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
+            //call the event handler stored on this object
+            let app = game.JTCSlideshowConfig;
+            let options = {
+                action: action,
+                tileID: tileID,
+                parentLI: parentLI,
+                app: app,
+                html: app.element,
+            };
+
+            actionData[handlerPropertyString](event, options);
+        }
+    }
+
     async handleHover(event) {
         let hoveredElement = $(event.currentTarget);
         let tag = hoveredElement.prop("nodeName");
@@ -447,7 +484,6 @@ export class SlideshowConfig extends Application {
         if (tag === "LABEL") {
             hoverAction = hoveredElement.prev().data().hoverAction;
         }
-        // let propertyString = $(event.currentTarget).data();
         let hoverData = getProperty(slideshowDefaultSettingsData, hoverAction);
         if (hoverData && hoverData.hasOwnProperty("onHover")) {
             hoverData.onHover(event, {});
@@ -671,15 +707,21 @@ export class SlideshowConfig extends Application {
         await this.setUIColors(html);
         this._handleToggle(html);
 
-        html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
+        html.off("click").on("click", "[data-action]", (event) => this.handleAction(event));
+        html.on("mouseover mouseout", "[data-hover-action], [data-hover-action] + label", (event) =>
+            this.handleAction(event, "hoverAction")
+        );
+        html.on("change", "[data-change-action]", (event) => this.handleAction(event, "changeAction"));
+
+        // html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         html.on(
             "mouseenter mouseleave",
             `li:not([data-missing='true'], [data-flag='ignore-hover'])`,
             this._handleHover.bind(this)
         );
-        html.on("mouseover mouseout", "[data-hover-action], [data-hover-action] + label", this.handleHover.bind(this));
+        // html.on("mouseover mouseout", "[data-hover-action], [data-hover-action] + label", this.handleHover.bind(this));
 
-        this._handleChange();
+        // this._handleChange();
     }
     async _handleChange() {
         $("#slideshow-config :is(select, input[type='checkbox'], input[type='radio'], input[type='text'])").on(
