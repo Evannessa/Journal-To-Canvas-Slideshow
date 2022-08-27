@@ -5,14 +5,7 @@
     data-action="{{this.action}}"
     data-hover-action="itemActions.hover.actions.showTooltip"
     data-tooltip="{{this.tooltipText}}"
+    title="{{this.tooltipText}}"
 >
     <i class="{{this.icon}}"></i>
-    {{!-- {{> (dynamicPartial "tooltip")
-        content=this.tooltipText
-        extraClass="tooltip-right tooltip-wide"
-    }} --}}
-    {{!-- {{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" 
-		content=this.tooltipText
-		extraClass="tooltip-right tooltip-wide"
-	}} --}}
 </button>

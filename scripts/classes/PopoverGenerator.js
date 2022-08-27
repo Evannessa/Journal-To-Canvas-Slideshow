@@ -19,7 +19,8 @@ export class Popover {
         sourceElement,
         parentElement,
         templateData,
-        elementData = Popover.defaultElementData
+        elementData = Popover.defaultElementData,
+        sourceEvent = ""
     ) {
         // -- RENDER THE POPOVER
         elementData.parentElement.target = parentElement;
@@ -31,66 +32,88 @@ export class Popover {
             return newData;
         });
 
-        let popover = await Popover.createAndPositionPopover(templateData, elementDataArray);
+        let popover = await Popover.createAndPositionPopover(templateData, elementDataArray, sourceEvent);
+
         return popover;
     }
-
-    static hideBehavior = {
-        hideOnMouseLeave: (event, type, popover) => {
-            if (popover.timeout) {
-                //if the popover is already counting down to a timeout, cancel it
-                clearTimeout(popover.timeout);
-            }
-            let popoverTimeout = setTimeout(async () => {
-                //set a new timeout to remove the popover
-                console.log("Mouse leaving button, is on popover?", popover[0].isMouseOver);
-                if (!popover[0].isMouseOver) {
-                    await hideFunction(popover);
-                }
-            }, 900);
-            //save that timeout's id on the popover
-            popover.timeout = popoverTimeout;
-        },
-        hideOnOutsideClick: (event) => {
-            if ($(event.target).closest(".popover").length) {
-                //click was on the popover
-                return false;
-            }
-            //if our click is outside of our popover element
-            return true;
-        },
-    };
 
     /**
      *
      * @param {Event} event - the event (usually hover) that generated the tooltip
-     * @param {JQueryObject} html - the html of the entire app
+     * @param {JQueryObject} $html - the html of the entire app
      * @param {String} dataElementSelector - a string to select the parent element with the relevant data for this tooltip
      */
-    static async generateTooltip(event, html, dataElementSelector) {
-        let element = event.currentTarget;
+    static async generateTooltip(event, $html, dataElementSelector, sourceEvent) {
+        console.log("Generating new tooltip for", event.currentTarget);
+        if (!$html.jquery) $html = $($html);
 
-        let options = {
-            html: html,
-        };
+        let sourceElement = event.currentTarget;
+        let parentDataElement = sourceElement.closest(dataElementSelector);
 
-        let context = {
-            content: element.dataset.tooltipText,
-        };
+        let templateData = Popover.createTemplateData(parentDataElement, "tooltip", {
+            content: sourceElement.dataset.tooltipText,
+        });
+        let popover = await Popover.processPopoverData(
+            sourceElement,
+            $html,
+            templateData,
+            {
+                ...Popover.defaultElementData,
+            },
+            sourceEvent
+        );
+        let eventString = "mouseenter mouseleave";
+        let selectorString = `[data-tooltip], .popover[data-popover-id="tooltip"]`;
+        $html.off(eventString, selectorString).on(eventString, selectorString, async (event) => {
+            let { type, currentTarget } = event;
+            let isMouseOver = type === "mouseover" || type === "mouseenter";
+            !currentTarget.jquery && (currentTarget = $(currentTarget));
 
-        let elementData = { ...Popover.defaultElementData };
+            //if our current target is our source element or the popover itself
+            if (currentTarget.is($(sourceElement)) || currentTarget.is($(popover))) {
+                if (!popover.hoveredElements) popover.hoveredElements = [];
+                let { hoveredElements } = popover;
+                let isInArray = Popover.JqObjectInArray(hoveredElements, currentTarget);
+                if (isMouseOver) {
+                    //if we're already tracking it, remove it
+                    if (!isInArray) {
+                        hoveredElements.push(currentTarget);
+                    } else {
+                    }
+                    popover.hoveredElements = hoveredElements;
+                } else {
+                    if (isInArray) {
+                        //if we're already tracking it, remove it
+                        hoveredElements = hoveredElements.filter((el) => !el.is(currentTarget));
+                    }
+                    popover.hoveredElements = hoveredElements;
+                    if (popover.hoveredElements.length === 0) {
+                        await Popover.hideAndDeletePopover(popover);
+                    }
+                }
+            }
+        });
+    }
 
-        let parentDataElement = element.closest(dataElementSelector);
-        let templateData = Popover.createTemplateData(parentDataElement, "tooltip", context);
-        await Popover.processPopoverData(event, templateData, options, elementData);
+    static JqObjectInArray(objectArray, searchObject) {
+        let isIncluded = false;
+        objectArray.forEach((obj) => {
+            if (obj.is(searchObject)) {
+                isIncluded = true;
+            }
+        });
+        return isIncluded;
     }
 
     static createTemplateData(parentLI, partialName, context = {}) {
-        let dataset = $(parentLI).data();
+        let template = { frameId: "", id: "", type: "" };
+        let dataset = filterObject($(parentLI).data(), template);
         if (!dataset) {
             dataset = {};
         }
-        dataset.popoverId = partialName; //to keep there from being multiples of the same popover
+        let popoverId = partialName;
+
+        dataset.popoverId = popoverId; //to keep there from being multiples of the same popover
         return {
             passedPartial: partialName,
             dataset: dataset,
@@ -101,22 +124,6 @@ export class Popover {
         elementArray.forEach((element) => {
             $(element).on(eventName);
         });
-    }
-    static setIsMouseOver(event) {
-        let { type } = event;
-        let element = event.currentTarget;
-        switch (type) {
-            case "mouseenter":
-            case "mouseover":
-                element.isMouseOver = true;
-                break;
-            case "mouseleave":
-            case "mouseout":
-                element.isMouseOver = false;
-                break;
-            default:
-                break;
-        }
     }
 
     static validateInput(inputValue, validationType, onInvalid = "") {
@@ -143,7 +150,7 @@ export class Popover {
      * @param {Application} parentApp - the parent application rendering the popover
      * @param {HTMLElement} sourceElement - the element that is the "source" of the popover (a button, input, etc.)
      */
-    static async createAndPositionPopover(templateData, elementDataArray = []) {
+    static async createAndPositionPopover(templateData, elementDataArray = [], sourceEvent = "") {
         let elements = elementDataArray.map((data) => data.target);
         let [popoverElement, sourceElement, parentElement] = elements; //destructure the passed-in elements
 
@@ -151,11 +158,12 @@ export class Popover {
 
         let popoverTemplate = game.JTCS.templates["popover"];
         popoverElement = parentElement.find(`.popover[data-popover-id="${templateData.dataset.popoverId}"]`);
-        if (!popoverElement.length) {
+        if (popoverElement.length === 0) {
             //if it doesn't already exist, create it
             let renderedHTML = await renderTemplate(popoverTemplate, templateData);
             parentElement.append(renderedHTML);
-            popoverElement = parentElement.find(".popover");
+            popoverElement = parentElement.find(`.popover[data-popover-id="${templateData.dataset.popoverId}"`);
+            console.log("This is our popover element", popoverElement.data().popoverId);
         }
 
         let popoverData = elementDataArray.find((data) => data.name === "popoverElement");
@@ -167,13 +175,6 @@ export class Popover {
         popoverElement.focus({ focusVisible: true });
 
         //set up a "Click Out" event handler
-        $(document)
-            .off("click")
-            .on("click", async (event) => {
-                if (Popover.isOutsideClick(event)) {
-                    await Popover.hideAndDeletePopover(popoverElement);
-                }
-            });
 
         //hideEvents should be list of events to hide the popover on (like blur, change, mouseout, etc)
         elementDataArray.forEach((data) => {
@@ -206,10 +207,24 @@ export class Popover {
                     selector = eventData.selector;
                 }
                 $(targetElement)
-                    .off(eventName)
+                    .off(eventName, selector)
                     .on(eventName, selector, async (event) => await handler(event, options));
             });
         });
+        let popoverID = popoverElement.data().popoverId;
+        $(document)
+            .off("click")
+            .on("click", async (event) => {
+                //make sure the button that originated the click wasn't
+                //the same one being handled by this document
+                if ($(event.target).is($(sourceElement))) {
+                    return;
+                }
+                if (Popover.isOutsideClick(event)) {
+                    console.log("Clicked outside?", popoverElement.data());
+                    await Popover.hideAndDeletePopover(popoverElement);
+                }
+            });
 
         return popoverElement;
     }
@@ -223,10 +238,9 @@ export class Popover {
         return true;
     }
 
-    static isMouseOver() {}
-
     static async hideAndDeletePopover(popoverElement) {
         // popoverElement.addClass("hidden");
+        console.log("Should be deleting", popoverElement.data().popoverId);
         //TODO: Put some sort of fading animation here
         if (popoverElement.timeout) {
             //if the popover is already counting down to a timeout, cancel it

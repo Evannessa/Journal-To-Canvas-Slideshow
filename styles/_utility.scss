@@ -305,6 +305,7 @@ button.icon-button {
     padding-bottom: 35%;
     position: relative;
     i {
+        pointer-events: none;
         position: absolute;
         top: 50%;
         left: 50%;

@@ -113,38 +113,6 @@ const extraActions = {
             game.JTCS.indicatorUtils.showTileIndicator(tile);
         }
     },
-    // showTooltip: async (event, options = {}) => {
-    //     if (event.type === "mouseout" || event.type === "mouseleave") {
-    //         return;
-    //     }
-    //     // console.log(event);
-    //     let tooltipText = $(event.currentTarget).data.tooltip;
-    //     let { parentLI, app } = options;
-    //     let templateData = Popover.createTemplateData(parentLI, "tooltip", { tooltip: tooltipText });
-    //     let elementData = { ...Popover.defaultElementData };
-    //     elementData["sourceElement"].hideEvents.push({
-    //         eventName: "mouseleave",
-    //         wrapperFunction: async (event, options) => {
-    //             let { popover, hideFunction } = options;
-    //             if (popover.timeout) {
-    //                 //if the popover is already counting down to a timeout, cancel it
-    //                 clearTimeout(popover.timeout);
-    //             }
-    //             let popoverTimeout = setTimeout(async () => {
-    //                 //set a new timeout to remove the popover
-    //                 console.log("Mouse leaving button, is on popover?", popover[0].isMouseOver);
-    //                 if (!popover[0].isMouseOver) {
-    //                     await hideFunction(popover);
-    //                 }
-    //             }, 900);
-    //             //save that timeout's id on the popover
-    //             popover.timeout = popoverTimeout;
-    //         },
-    //     });
-    //     let popover = await Popover.processPopoverData(event, templateData, options, elementData);
-    //     popover.focus({ focusVisible: true });
-    //     await app.activateListeners(app.element);
-    // },
 };
 export const slideshowDefaultSettingsData = {
     globalActions: {
@@ -237,27 +205,7 @@ export const slideshowDefaultSettingsData = {
             },
         },
         hover: {
-            actions: {
-                //for the popover
-                // setIsMouseOver: {
-                //     onHover: async (event, options = {}) => {
-                //         let { type } = event;
-                //         let element = event.currentTarget;
-                //         switch (type) {
-                //             case "mouseenter":
-                //             case "mouseover":
-                //                 element.isMouseOver = true;
-                //                 break;
-                //             case "mouseleave":
-                //             case "mouseout":
-                //                 element.isMouseOver = false;
-                //                 break;
-                //             default:
-                //                 break;
-                //         }
-                //     },
-                // },
-            },
+            actions: {},
         },
     },
     itemActions: {
@@ -303,9 +251,6 @@ export const slideshowDefaultSettingsData = {
                             await game.JTCS.indicatorUtils.hideTileIndicator(tile);
                         }
                     },
-                },
-                showTooltip: {
-                    onHover: async (event, options = {}) => await extraActions.showTooltip(event, options),
                 },
                 highlightItemAndTile: {
                     onHover: async (event, options = {}) => await extraActions.highlightItemAndTile(event, options),
@@ -354,7 +299,6 @@ export const slideshowDefaultSettingsData = {
                             event.currentTarget,
                             app.element,
                             templateData,
-                            options,
                             elementData
                         );
                         await app.activateListeners(app.element);
@@ -405,7 +349,12 @@ export const slideshowDefaultSettingsData = {
                             ],
                         };
 
-                        let popover = await Popover.processPopoverData(event, templateData, options, elementData);
+                        let popover = await Popover.processPopoverData(
+                            event.currentTarget,
+                            app.element,
+                            templateData,
+                            elementData
+                        );
                         popover[0].querySelector("input").focus({ focusVisible: true });
                     },
                     overflow: false,
@@ -434,7 +383,12 @@ export const slideshowDefaultSettingsData = {
 
                         let elementData = { ...Popover.defaultElementData };
 
-                        let popover = await Popover.processPopoverData(event, templateData, options, elementData);
+                        let popover = await Popover.processPopoverData(
+                            event.currentTarget,
+                            app.element,
+                            templateData,
+                            elementData
+                        );
 
                         await app.activateListeners(app.element);
                         popover.focus({ focusVisible: true });

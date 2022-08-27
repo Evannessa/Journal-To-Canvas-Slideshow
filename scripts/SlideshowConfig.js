@@ -135,18 +135,24 @@ export class SlideshowConfig extends Application {
         // this._handleToggle(html);
 
         html.off("click").on("click", "[data-action]", async (event) => await this.handleAction(event, "action", html));
-        html.off("mouseenter mouseleave").on(
-            "mouseenter mouseleave",
-            `[data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']), 
-            [data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']) + label`,
+
+        let hoverEventString = "mouseenter mouseleave";
+        let hoverActionSelectorString = `[data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']), 
+            [data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']) + label`;
+
+        html.off(hoverEventString, hoverActionSelectorString).on(
+            hoverEventString,
+            hoverActionSelectorString,
             async (event) => await this.handleAction(event, "hoverAction")
         );
-        html.off("mouseenter mouseleave").on(
-            "mouseenter mouseleave",
-            `[data-tooltip]`,
-            async (event) => await Popover.generateTooltip(event, html, ".popover, .tile-list-item")
-        );
-        // html.on("mouseover mouseout", "[data-title]", (event) => this.handleAction(event, "hoverAction"));
+
+        // let tooltipActionSelectorString = "[data-tooltip]";
+        // html.off(hoverEventString, tooltipActionSelectorString).on(
+        //     hoverEventString,
+        //     tooltipActionSelectorString,
+        //     async (event) => await Popover.generateTooltip(event, html, ".popover, .tile-list-item", "tooltip")
+        // );
+
         html.off("change").on(
             "change",
             "[data-change-action]",

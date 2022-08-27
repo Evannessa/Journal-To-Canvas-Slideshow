@@ -12,6 +12,13 @@ export const registerHelpers = function () {
         );
         return Object.fromEntries(array);
     });
+    Handlebars.registerHelper("camelCaseToDashCase", function (string) {
+        let dashedString = string.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+        return dashedString;
+    });
+    Handlebars.registerHelper("safeString", function (string) {
+        return Handlebars.SafeString(string);
+    });
 
     Handlebars.registerHelper("camelCaseToArray", function (string, shouldJoin = false) {
         let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
