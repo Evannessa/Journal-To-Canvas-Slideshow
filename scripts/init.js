@@ -314,6 +314,7 @@ Hooks.on("canvasReady", async (canvas) => {
     const isDebugging = game.modules.get("_dev-mode")?.api?.getPackageDebugValue(MODULE_ID);
     //re-render the tile config
     if (game.JTCSlideshowConfig && game.user.isGM && isDebugging) {
+        console.log("Debugging!");
         game.JTCSlideshowConfig.render(true);
     }
 

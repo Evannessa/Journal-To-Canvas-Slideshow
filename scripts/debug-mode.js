@@ -5,8 +5,8 @@ Hooks.once("devModeReady", ({ registerPackageDebugFlag }) => {
     registerPackageDebugFlag("journal-to-canvas-slideshow");
 });
 Hooks.on("canvasReady", () => {
-    game.JTCSlideshowConfig = new SlideshowConfig().render(true);
-    autoRender(true, { type: "journal", name: "Art" });
+    // game.JTCSlideshowConfig = new SlideshowConfig().render(true);
+    // autoRender(true, { type: "journal", name: "Art" });
 });
 export function autoRender(force, ...args) {
     try {
