@@ -30,7 +30,7 @@
 					{{/each}}
 				</select>
 			</div>
-			<div class="actions">
+			<div class="actions flex-row flex-wrap flex-align-center">
                 {{#with @root.settingsData.globalActions.click}}
                     {{#each (filter actions "renderedInTemplate" undefined) as |action|}}
                         {{> (dynamicPartial "icon-button")

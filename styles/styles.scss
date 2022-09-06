@@ -24,6 +24,16 @@
         color: var(--color-text-primary);
         // width: min(600px, 45vw);
         // max-width: min(600px, 45vw);
+        header .wrapper {
+            flex-wrap: wrap;
+
+            .form-group {
+                flex: 2;
+            }
+            .actions {
+                flex: 1;
+            }
+        }
         form {
             height: 100%;
             // max-height: 80vh;

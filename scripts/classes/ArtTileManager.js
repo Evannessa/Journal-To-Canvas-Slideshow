@@ -3,6 +3,9 @@ import { MODULE_ID } from "../debug-mode.js";
  * This class manages the Art and Bounding Tiles, creating them, showing them in the Config, and
  * getting and setting their values
  */
+export function sum(a, b) {
+    return a + b;
+}
 export class ArtTileManager {
     /**
      *

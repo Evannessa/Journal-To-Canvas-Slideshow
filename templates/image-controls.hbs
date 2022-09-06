@@ -1,20 +1,15 @@
 <div class="clickableImageControls" data-image="{{imgPath}}">
 	
 	<ul class="displayLocations | flex-column gap-small">
-		{{#each displayLocations as |location|}}
-		<li class="button-container {{location.additionalParentClass}}">
-			<button class="floating-control square {{additionalClass}}" id="{{location.name}}" data-action="{{location.name}}" title="{{location.tooltip}}">
-				<i class="{{location.icon}}"></i>
+		{{#each displayMethods as |method|}}
+		<li class="button-container {{method.additionalParentClass}}">
+			<button class="floating-control square {{additionalClass}}" id="{{method.name}}" 
+                data-method="{{method.name}}" 
+                data-action="displayActionButton.click.sendDataToDisplay"
+                data-ctrl-click-action="displayActionButton.ctrlClick.storeDefaultAction"
+                title="{{method.tooltip}}">
+				<i class="{{method.icon}}"></i>
 	  		</button>
-		{{#if location.multi}}
-			<div class="nested-buttons hover-reveal-right-child">
-			{{#each location.childButtons}}
-				<button class="floating-control" data-action="{{this.name}}" title="{{this.tooltip}}">
-					<i class="{{this.icon}}"></i>
-				</button>
-			{{/each}}
-		</div>
-		{{/if}}
 		</li>
 	  	{{/each}}
 	</ul>
@@ -26,7 +21,8 @@
 		class="hidden-input"
         name="{{concat "selectedDisplayTile" @root.imgPath}}"
         data-display-name="{{tileData.tile.displayName}}"
-		data-hover-action="highlight-tile"
+        data-change-action="tileButton.change.updateImageFlags"
+		data-hover-action="tileButton.hover.showTileIndicator"
         id="{{tileData.randomID}}"
         value="{{tileData.tile.id}}"
 		{{#if @root.selectedTileID}}
@@ -35,7 +31,10 @@
 			{{/if}}
 		{{/if}}
       />
-      <label class="flex-row" for="{{tileData.randomID}}" data-title="">
+      <label class="flex-row" for="{{tileData.randomID}}" data-title="" 
+        data-change-action="tileButton.change.updateImageFlags"
+		data-hover-action="tileButton.hover.showTileIndicator"
+      >
         {{tileData.tile.displayName}}
 		{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString (ternary (eq @root.selectedTileID tileData.tile.id) "This image will be displayed on the selected tile" "Click to display this image on tile") "<span>" tileData.tile.displayName "</span>" "in scene" "<span>" @root.currentSceneName "</span>")}}
       </label>

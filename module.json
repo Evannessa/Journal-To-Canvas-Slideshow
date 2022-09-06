@@ -7,6 +7,7 @@
     "version": "0.2.0",
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9",
+    "type": "module",
     "packs": [
         {
             "name": "jtcs-premade-scenes",
@@ -25,6 +26,7 @@
         "scripts/shim.js",
         "scripts/ClickImageInJournal.js",
         "scripts/classes/MultiMediaPopout.js",
+        "scripts/classes/SlideshowConfig.test.js",
         "scripts/SlideshowConfig.js",
         "scripts/init.js",
         "scripts/DragDropIntoJournal.js",

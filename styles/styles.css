@@ -1116,6 +1116,15 @@ button.icon-button i {
 #slideshow-config .window-content {
   color: var(--color-text-primary);
 }
+#slideshow-config .window-content header .wrapper {
+  flex-wrap: wrap;
+}
+#slideshow-config .window-content header .wrapper .form-group {
+  flex: 2;
+}
+#slideshow-config .window-content header .wrapper .actions {
+  flex: 1;
+}
 #slideshow-config .window-content form {
   height: 100%;
 }

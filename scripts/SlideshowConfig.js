@@ -2,7 +2,6 @@
 import { log, MODULE_ID } from "./debug-mode.js";
 import { slideshowDefaultSettingsData } from "./data/ArtGalleryConfigData.js";
 import { Popover } from "./classes/PopoverGenerator.js";
-
 export class SlideshowConfig extends Application {
     constructor(data = {}) {
         // super({ renderData: { ...data } });
@@ -28,14 +27,13 @@ export class SlideshowConfig extends Application {
         this.render(true, this.data);
     }
 
-    async handleAction(event, actionType = "action", html) {
+    /**
+     * Handles all types of actions (click, hover, etc.) and finds their relevant functions
+     * @param {Event} event - the passed in event that triggered this
+     * @param {String} actionType - the type of action "action, hover action, changeAction, etc"
+     */
+    async handleAction(event, actionType = "action") {
         event.preventDefault();
-        if (event.delegateTarget)
-            if (actionType === "action") {
-                console.log(event.delegateTarget, html, "handlign click");
-                //TODO: this is a hacky solution for your issue. fIgure out a better way.
-                // event.stopPropagation();
-            }
         let targetElement = $(event.currentTarget);
         //if our target element is a label, get the input before it instead
         targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());

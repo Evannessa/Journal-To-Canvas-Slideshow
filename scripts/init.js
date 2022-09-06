@@ -52,6 +52,8 @@ const setupHookHandlers = async () => {
         });
     }
 
+    async function updateJournalImageData() {}
+
     async function addJTCSControls(controls) {
         if (!game.user.isGM) {
             return;
@@ -83,6 +85,10 @@ const setupHookHandlers = async () => {
         renderImageControls: {
             hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
             handlerFunction: renderImageControls,
+        },
+        updateJournalImageData: {
+            hooks: ["updateJTCSSettings"],
+            handlerFunction: updateJournalImageData,
         },
         renderSlideshowConfig: {
             hooks: [
@@ -311,13 +317,6 @@ async function insertImageIntoJournal(file, editor) {
 }
 
 Hooks.on("canvasReady", async (canvas) => {
-    const isDebugging = game.modules.get("_dev-mode")?.api?.getPackageDebugValue(MODULE_ID);
-    //re-render the tile config
-    if (game.JTCSlideshowConfig && game.user.isGM && isDebugging) {
-        console.log("Debugging!");
-        game.JTCSlideshowConfig.render(true);
-    }
-
     //get tile data from scene flags
 
     let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);

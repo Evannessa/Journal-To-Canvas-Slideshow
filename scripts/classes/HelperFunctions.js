@@ -21,6 +21,17 @@ export class HelperFunctions {
         }
     }
 
+    static async setFlagValue(document, flagName, updateData, nestedKey = "") {
+        await document.setFlag(MODULE_ID, flagName, updateData);
+    }
+    static async getFlagValue(document, flagName, nestedKey = "") {
+        let flagData = await document.getFlag(MODULE_ID, flagName);
+        if (!flagData) {
+            flagData = [];
+        }
+        return flagData;
+    }
+
     /**
      *  Sets a value, using the "flattenObject" and "expandObject" utilities to reach a nested property
      * @param {String} settingName - the name of the setting

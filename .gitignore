@@ -1,3 +1,4 @@
+node_modules/*
 node_modules/.package-lock.json
 node_modules/@pixi/constants/index.d.ts
 node_modules/@pixi/constants/LICENSE

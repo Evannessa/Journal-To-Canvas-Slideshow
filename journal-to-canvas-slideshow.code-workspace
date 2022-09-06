@@ -1,0 +1,15 @@
+{
+    "folders": [
+		{
+			"name": "journal-to-canvas-slideshow",
+			"path": "."
+		}
+	],
+    "settings": {
+        "gotoSymbolStack.currentStackPosition": 0,
+        "gotoSymbolStack.filePositionInfo": [],
+        "gotoSymbolStack.maxStackPosition": 0,
+        "cSpell.words": ["JTCS", "PIXI"],
+        "workbench.tree.renderIndentGuides": "always"
+    }
+}
