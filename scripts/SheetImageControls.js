@@ -151,7 +151,7 @@ export class SheetImageControls {
             users: users,
             ...imageFlagData,
         });
-        $(imgElement).attr("data-hover-action", "image.hover.showTileIndicators");
+        $(imgElement).attr("data-hover-action", "image.hover.showTileIndicator");
         $(imgElement).attr("data-action", "image.click.sendImageDataToDisplay");
         // $(imgElement).data({
         //     hoverAction: "image.hover.showTileIndicators",

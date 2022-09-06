@@ -22,8 +22,7 @@ export const sheetImageActions = {
                     // event.stopPropagation();
                     // event.stopImmediatePropagation();
                     let { app, html, imgElement } = options;
-                    console.log("our data on hover is", options);
-                    let imageData = await SheetImageControls.getJournalImageFlagData(journalSheet.object, imgElement);
+                    let imageData = await SheetImageControls.getJournalImageFlagData(app.object, imgElement);
 
                     // do not continue this if we find no image data
                     if (!imageData) {
@@ -69,8 +68,8 @@ export const sheetImageActions = {
         },
         change: {
             updateImageFlags: {
-                onChange: async (event, data) => {
-                    let { journalSheet, imgElement } = data;
+                onChange: async (event, options) => {
+                    let { app, html, imgElement } = options;
                     event.stopPropagation();
                     event.stopImmediatePropagation();
                     let value = event.currentTarget.value;
@@ -83,7 +82,7 @@ export const sheetImageActions = {
                             },
                         ],
                     };
-                    await SheetImageControls.assignImageFlags(journalSheet, imgElement, updateData);
+                    await SheetImageControls.assignImageFlags(app, imgElement, updateData);
                 },
             },
         },
@@ -91,29 +90,30 @@ export const sheetImageActions = {
     displayActionButton: {
         click: {
             fadeJournal: {
-                onClick: async (event, data) => {
-                    let { journalSheet, imgElement } = data;
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
+                onClick: async (event, options) => {
+                    let { app, imgElement } = options;
+                    // event.stopPropagation();
+                    // event.stopImmediatePropagation();
 
                     //get the action
                     let action = event.currentTarget.dataset.action;
 
-                    if (action === "fadeJournal" || action === "fadeContent") {
+                    if (action.includes("fadeJournal")) {
                         await SheetImageControls.addFadeStylesToSheet(event);
                     }
                 },
             },
             sendImageDataToDisplay: {
-                onClick: async (event, data) => {
-                    let { journalSheet, imgElement } = data;
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
+                onClick: async (event, options) => {
+                    let { app, html, imgElement } = options;
+                    // event.stopPropagation();
+                    // event.stopImmediatePropagation();
 
                     //get the action
-                    let method = event.currentTarget.dataset.action;
+                    let method = event.currentTarget.dataset.method;
                     //otherwise, just launch to the clicked button's display location
-                    let sheetImageData = await SheetImageControls.wrapSheetImageData({ ...data, method: method });
+                    let sheetImageData = await SheetImageControls.wrapSheetImageData({ ...options, method: method });
+                    console.log({ ...options, method: method });
                     await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
                 },
             },
@@ -121,11 +121,11 @@ export const sheetImageActions = {
         ctrlClick: {
             //for ctrl + click
             storeDefaultAction: {
-                onClick: async (event, data) => {
-                    let { method } = data;
+                onClick: async (event, options) => {
+                    let { app, html, imgElement, method } = options;
                     //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
                     //if the control key was also pressed, store the display location
-                    await SheetImageControls.assignImageFlags(journalSheet, imgElement, {
+                    await SheetImageControls.assignImageFlags(app, imgElement, {
                         method: method,
                     });
                 },

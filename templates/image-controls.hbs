@@ -5,7 +5,11 @@
 		<li class="button-container {{method.additionalParentClass}}">
 			<button class="floating-control square {{additionalClass}}" id="{{method.name}}" 
                 data-method="{{method.name}}" 
-                data-action="displayActionButton.click.sendDataToDisplay"
+                {{#if (eq method.name "fadeJournal")}}
+                   data-action="displayActionButton.click.fadeJournal" 
+                {{else}}
+                    data-action="displayActionButton.click.sendImageDataToDisplay"
+                {{/if}}
                 data-ctrl-click-action="displayActionButton.ctrlClick.storeDefaultAction"
                 title="{{method.tooltip}}">
 				<i class="{{method.icon}}"></i>
