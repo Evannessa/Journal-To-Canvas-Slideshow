@@ -3,9 +3,7 @@ import { MODULE_ID } from "../debug-mode.js";
  * This class manages the Art and Bounding Tiles, creating them, showing them in the Config, and
  * getting and setting their values
  */
-export function sum(a, b) {
-    return a + b;
-}
+
 export class ArtTileManager {
     /**
      *
@@ -205,6 +203,7 @@ export class ArtTileManager {
         let newTile = await ArtTileManager.createTileInScene(true);
         if (newTile) {
             let tileObjectID = newTile[0].id;
+            // let tileObjectID = newTile[0].document.id;
             if (!unlinkedDataID) {
                 await ArtTileManager.createTileData("", tileObjectID, true);
             } else {
@@ -414,6 +413,9 @@ export class ArtTileManager {
         tiles = tiles.filter((tileData) => tileData.id !== tileID);
         let tilesAfter = tiles.map((tileData) => tileData.id);
         await ArtTileManager.updateAllSceneTileFlags(tiles);
+
+        //call hook to delete the art tile data
+        Hooks.callAll("deleteArtTileData", tileID);
     }
 
     static async getAllScenesWithSlideshowData() {

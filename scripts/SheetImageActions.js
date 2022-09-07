@@ -82,7 +82,7 @@ export const sheetImageActions = {
                             },
                         ],
                     };
-                    await SheetImageControls.assignImageFlags(app, imgElement, updateData);
+                    await SheetImageControls.updateImageFlags(app, imgElement, updateData);
                 },
             },
         },
@@ -125,7 +125,7 @@ export const sheetImageActions = {
                     let { app, html, imgElement, method } = options;
                     //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
                     //if the control key was also pressed, store the display location
-                    await SheetImageControls.assignImageFlags(app, imgElement, {
+                    await SheetImageControls.updateImageFlags(app, imgElement, {
                         method: method,
                     });
                 },

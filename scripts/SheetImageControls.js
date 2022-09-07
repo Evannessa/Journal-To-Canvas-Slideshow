@@ -86,11 +86,10 @@ export class SheetImageControls {
      * @param {HTMLElement} imgElement - the image HTML element
      * @param {Obj} newImgData - the data being stored
      */
-    static async assignImageFlags(journalSheet, imgElement, newImgData) {
+    static async updateImageFlags(journalSheet, imgElement, newImgData) {
         let journalEntry = journalSheet.object;
         let imageName = await SheetImageControls.convertImageSourceToID(imgElement);
-        let clickableImages = await HelperFunctions.getFlag(journalEntry, "clickableImages");
-        // let clickableImages = (await journalEntry.getFlag("journal-to-canvas-slideshow", "clickableImages")) || [];
+        let clickableImages = await HelperFunctions.getFlagValue(journalEntry, "clickableImages");
 
         if (clickableImages.find((imgData) => imgData.name === imageName)) {
             clickableImages = clickableImages.map((imgData) => {
@@ -101,9 +100,44 @@ export class SheetImageControls {
             clickableImages.push({ name: imageName, ...newImgData });
         }
 
-        await HelperFunctions.setFlag(journalEntry, "clickableImages", clickableImages);
+        await HelperFunctions.setFlagValue(journalEntry, "clickableImages", clickableImages);
 
         // await journalEntry.setFlag("journal-to-canvas-slideshow", "clickableImages", clickableImages);
+    }
+
+    static checkFlags(documentCollectionName, flagName = "journal-to-canvas-slideshow") {
+        let flaggedJournalEntries = game[documentCollectionName].contents.filter(
+            (entry) => entry.data.flags["journal-to-canvas-slideshow"]
+        );
+        return flaggedJournalEntries;
+    }
+    static async getAllFlaggedSheets() {
+        //get every journal entry with flags associated with this
+        let flaggedJournals = SheetImageControls.checkFlags("journal");
+        let flaggedActors = SheetImageControls.checkFlags("actors");
+        let flaggedItems = SheetImageControls.checkFlags("items");
+        let flaggedDocs = [...flaggedJournals, ...flaggedActors, ...flaggedItems];
+        return flaggedDocs;
+    }
+
+    /**
+     *Remove any tile data from docs that has an id that was deleted
+     * @param {*} removedTileID - remove any reference to a tile with this ID
+     */
+    static async removeTileDataFromDocs(removedTileID, sceneID) {
+        let flaggedDocs = await SheetImageControls.getAllFlaggedSheets();
+        for (let doc of flaggedDocs) {
+            let clickableImages = await HelperFunctions.getFlagValue(doc, "clickableImages");
+            clickableImages = clickableImages.map((item) => {
+                return {
+                    ...item,
+                    scenesData: item.scenesData.filter((sceneData) => removedTileID !== sceneData.selectedTileID),
+                };
+            });
+
+            // map array of objects, and filter out any scenesdata objects in scenesDay array that hold the removed tile id
+            await HelperFunctions.setFlagValue(doc, "clickableImages", clickableImages);
+        }
     }
 
     static async setJournalFadeOpacity(journalSheet) {
@@ -153,10 +187,6 @@ export class SheetImageControls {
         });
         $(imgElement).attr("data-hover-action", "image.hover.showTileIndicator");
         $(imgElement).attr("data-action", "image.click.sendImageDataToDisplay");
-        // $(imgElement).data({
-        //     hoverAction: "image.hover.showTileIndicators",
-        //     action: "image.click.sendImageDataToDisplay",
-        // });
 
         //wrap each image in a clickableImageContainer
         $(imgElement).wrap("<div class='clickableImageContainer'></div>");
@@ -231,65 +261,7 @@ export class SheetImageControls {
                 "[data-change-action]",
                 async (event) => await SheetImageControls.handleAction(event, journalSheet, "changeAction")
             );
-
-        // let locationButtons = imgElement
-        //     .closest(".editor-content")
-        //     .querySelectorAll(`.clickableImageContainer .displayLocations button`);
-
-        // let tileRadioButtons = imgElement
-        //     .closest(".editor-content")
-        //     .querySelectorAll(`.clickableImageContainer .displayTiles input[type="radio"]`);
-
-        // imgElement.addEventListener("click", async (event) => await SheetImageControls.onImageClick(event, data));
-        // $(imgElement).on("mouseenter mouseleave", async (event) => await SheetImageControls.onImageHover(event, data));
-
-        // //for each display location button
-        // //add a click event listener
-        // locationButtons.forEach((button) => {
-        //     button.addEventListener("click", (event) => SheetImageControls.onDisplayActionButtonClick(event, data));
-        // });
-
-        // //for each radio button, which shows the display tiles in scene
-        // //add change and hover event listeners
-        // tileRadioButtons.forEach((button) => {
-        //     button.addEventListener(
-        //         "change",
-        //         async (event) => await SheetImageControls.onTileRadioButtonChange(event, data)
-        //     );
-        //     $(button.nextElementSibling).on(
-        //         "mouseenter mouseleave",
-        //         async (event) => await SheetImageControls.onTileButtonLabelHover(event, data)
-        //     );
-        // });
     }
-
-    // static async onImageHover(event, data) {
-    //     // event.stopPropagation();
-    //     // event.stopImmediatePropagation();
-    //     let { journalSheet, imgElement } = data;
-    //     let imageData = await SheetImageControls.getJournalImageFlagData(journalSheet.object, imgElement);
-
-    //     // do not continue this if we find no image data
-    //     if (!imageData) {
-    //         log(false, "No image data found; Returning!");
-    //         return;
-    //     }
-    //     //we need to get the data for the tile
-    //     let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
-    //     let sceneID = game.scenes.viewed.id;
-
-    //     let tileID = imageData.scenesData.find((sceneData) => sceneData.sceneID === sceneID)?.selectedTileID;
-    //     if (!tileID) {
-    //         log(false, ["No tile with this id ", tileID, "found in scene", sceneID]);
-    //         return;
-    //     }
-    //     let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
-    //     if (isLeave) {
-    //         await game.JTCS.indicatorUtils.hideTileIndicator(tile);
-    //     } else {
-    //         await game.JTCS.indicatorUtils.showTileIndicator(tile);
-    //     }
-    // }
 
     /**
      * Returns all the necessary data in a bundled object
@@ -310,14 +282,6 @@ export class SheetImageControls {
         };
         return sheetImageData;
     }
-    // static async onImageClick(event, data) {
-    //     event.stopPropagation();
-    //     event.stopImmediatePropagation();
-
-    //     let sheetImageData = await SheetImageControls.wrapSheetImageData(data);
-
-    //     await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
-    // }
 
     static async addFadeStylesToSheet(event) {
         event.preventDefault();
@@ -339,60 +303,6 @@ export class SheetImageControls {
         }
         return;
     }
-
-    // static async onDisplayActionButtonClick(event, data) {
-    //     let { journalSheet, imgElement } = data;
-    //     event.stopPropagation();
-    //     event.stopImmediatePropagation();
-
-    //     //get the action
-    //     let action = event.currentTarget.dataset.action;
-
-    //     if (action === "fadeJournal" || action === "fadeContent") {
-    //         await SheetImageControls.addFadeStylesToSheet(event);
-    //     }
-
-    //     //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
-    //     if (event.ctrlKey) {
-    //         //if the control key was also pressed, store the display location
-    //         await SheetImageControls.assignImageFlags(journalSheet, imgElement, {
-    //             method: action,
-    //         });
-    //     } else {
-    //         //otherwise, just launch to the clicked button's display location
-    //         let sheetImageData = await SheetImageControls.wrapSheetImageData({ ...data, method: action });
-    //         await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
-    //     }
-    // }
-
-    // static async onTileButtonLabelHover(event, data = {}) {
-    //     let isLeave = event.type === "mouseout" || event.type === "mouseleave";
-    //     let tileID = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
-    //     let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
-
-    //     if (isLeave) {
-    //         await game.JTCS.indicatorUtils.hideTileIndicator(tile);
-    //     } else {
-    //         await game.JTCS.indicatorUtils.showTileIndicator(tile);
-    //     }
-    // }
-
-    // static async onTileRadioButtonChange(event, data) {
-    //     let { journalSheet, imgElement } = data;
-    //     event.stopPropagation();
-    //     event.stopImmediatePropagation();
-    //     let value = event.currentTarget.value;
-    //     let updateData = {
-    //         name: imgElement.dataset.name,
-    //         scenesData: [
-    //             {
-    //                 sceneID: game.scenes.viewed.data._id,
-    //                 selectedTileID: value,
-    //             },
-    //         ],
-    //     };
-    //     await SheetImageControls.assignImageFlags(journalSheet, imgElement, updateData);
-    // }
 
     /**
      * Return data specific to the current viewed scene for the particular image in the journal entry, which should change when the scene does

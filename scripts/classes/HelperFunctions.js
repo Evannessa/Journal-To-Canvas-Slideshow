@@ -1,4 +1,4 @@
-import { log } from "../debug-mode.js";
+import { log, MODULE_ID } from "../debug-mode.js";
 import { artGalleryDefaultSettings } from "../settings.js";
 export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";

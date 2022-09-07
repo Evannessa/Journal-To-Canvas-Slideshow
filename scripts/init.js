@@ -28,6 +28,20 @@ const setupHookHandlers = async () => {
             game.JTCSlideshowConfig.render(false);
         }
     }
+    /**
+     * Show a toggle in the journal sheet's header to toggle whether the journal
+     * has controls on or off
+     */
+    async function renderSheetHeaderButton(app, html) {
+        //get the global toggle "all sheets" or "toggle individual"
+        let settingsToggle = HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            "sheetSettings.globalChoices.chosen"
+        );
+        //get the modular toggle for "journal sheets", "actor sheets", "item sheets"
+        //this will be an array
+        let individualToggles = HelperFunctions.getSettingValue("artGallerySettings", "sheetSettings.modularChoices");
+    }
     async function renderImageControls(app, html) {
         if (!game.user.isGM) {
             return;
@@ -52,7 +66,15 @@ const setupHookHandlers = async () => {
         });
     }
 
-    async function updateJournalImageData() {}
+    // async function updateJournalImageData(tileDoc) {
+    //     let id = tileDoc.id;
+    //     game.sheetImageUtils.manager.removeTileDataFromDocs(id);
+
+    // }
+    async function unlinkSheetImageDataFromTile(tileID) {
+        // let id = tileDoc.id;
+        game.JTCS.sheetImageUtils.manager.removeTileDataFromDocs(tileID);
+    }
 
     async function addJTCSControls(controls) {
         if (!game.user.isGM) {
@@ -86,10 +108,13 @@ const setupHookHandlers = async () => {
             hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
             handlerFunction: renderImageControls,
         },
-        updateJournalImageData: {
-            hooks: ["updateJTCSSettings"],
-            handlerFunction: updateJournalImageData,
-        },
+        unlinkSheetImageDataFromTile: {
+            hooks: ["deleteTile", "deleteArtTileData"],
+            handlerFunction: unlinkSheetImageDataFromTile,
+        }, // updateJournalImageData: {
+        //     hooks: ["updateJTCSSettings"],
+        //     handlerFunction: updateJournalImageData,
+        // },
         renderSlideshowConfig: {
             hooks: [
                 "createTile",
@@ -235,6 +260,9 @@ Hooks.on("init", async () => {
             createTemplatePathString: createTemplatePathString,
             createEventActionObject: HelperFunctions.createEventActionObject,
         },
+        sheetImageUtils: {
+            manager: SheetImageControls,
+        },
     };
 
     //load templates
@@ -256,37 +284,6 @@ Hooks.on("journalToCanvasSlideshowReady", async (api) => {
 Hooks.once("renderSlideshowConfig", (app) => {
     game.JTCSlideshowConfig = app;
 });
-
-// Hooks.on("canvasReady", async (canvas) => {
-//     const isDebugging = game.modules.get("_dev-mode")?.api?.getPackageDebugValue(MODULE_ID);
-//     //re-render the tile config
-//     if (game.JTCSlideshowConfig && game.user.isGM && isDebugging) {
-//         game.JTCSlideshowConfig.render(true);
-//     }
-//     //get tile data from scene flags
-
-//     let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
-
-//     game.scenes.viewed.tiles.forEach(async (tileDoc) => {
-//         let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
-
-//         await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-//     });
-// });
-
-// Hooks.on("canvasReady", (canvas) => {
-//     //! This should ONLY re-render if the editor is not actively being edited
-//     let renderedJournalSheets = Object.values(window.ui.windows).filter(
-//         (obj) => obj.document?.documentName === "JournalEntry" && obj.editors?.content.active === false //?editors.content.active === false ensures the editor is not being actively edited before re-rendering the entry
-//     );
-//     renderedJournalSheets.forEach((sheet) => {
-//         let windowContent = sheet.element[0].querySelector(".window-content");
-//         if (windowContent.classList.contains("fade")) {
-//             windowContent.classList.remove("fade");
-//         }
-//         sheet.render(true);
-//     });
-// });
 
 Hooks.on("getSceneControlButtons", (controls) => {
     //controls refers to all of the controls
