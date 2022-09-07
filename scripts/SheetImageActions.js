@@ -1,5 +1,6 @@
 "use strict";
-import { SheetImageControls } from "./SheetImageControls.js";
+import { HelperFunctions } from "./classes/HelperFunctions.js";
+import { SheetImageDataController } from "./SheetImageDataController.js";
 export const sheetImageActions = {
     image: {
         click: {
@@ -10,7 +11,7 @@ export const sheetImageActions = {
                     let { app, html, imgElement } = options;
 
                     // bundle all the necessary data into an object
-                    let sheetImageData = await SheetImageControls.wrapSheetImageData(options);
+                    let sheetImageData = await SheetImageDataController.wrapSheetImageData(options);
 
                     await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
                 },
@@ -22,11 +23,11 @@ export const sheetImageActions = {
                     // event.stopPropagation();
                     // event.stopImmediatePropagation();
                     let { app, html, imgElement } = options;
-                    let imageData = await SheetImageControls.getJournalImageFlagData(app.object, imgElement);
+                    let imageData = await SheetImageDataController.getJournalImageFlagData(app.object, imgElement);
 
                     // do not continue this if we find no image data
                     if (!imageData) {
-                        log(false, "No image data found; Returning!");
+                        // log(false, "No image data found; Returning!");
                         return;
                     }
                     //we need to get the data for the tile
@@ -37,7 +38,7 @@ export const sheetImageActions = {
                         (sceneData) => sceneData.sceneID === sceneID
                     )?.selectedTileID;
                     if (!tileID) {
-                        log(false, ["No tile with this id ", tileID, "found in scene", sceneID]);
+                        // log(false, ["No tile with this id ", tileID, "found in scene", sceneID]);
                         return;
                     }
                     let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
@@ -82,7 +83,7 @@ export const sheetImageActions = {
                             },
                         ],
                     };
-                    await SheetImageControls.updateImageFlags(app, imgElement, updateData);
+                    await SheetImageDataController.updateImageFlags(app, imgElement, updateData);
                 },
             },
         },
@@ -99,21 +100,21 @@ export const sheetImageActions = {
                     let action = event.currentTarget.dataset.action;
 
                     if (action.includes("fadeJournal")) {
-                        await SheetImageControls.addFadeStylesToSheet(event);
+                        await SheetImageDataController.addFadeStylesToSheet(event);
                     }
                 },
             },
             sendImageDataToDisplay: {
                 onClick: async (event, options) => {
                     let { app, html, imgElement } = options;
-                    // event.stopPropagation();
-                    // event.stopImmediatePropagation();
 
                     //get the action
                     let method = event.currentTarget.dataset.method;
                     //otherwise, just launch to the clicked button's display location
-                    let sheetImageData = await SheetImageControls.wrapSheetImageData({ ...options, method: method });
-                    console.log({ ...options, method: method });
+                    let sheetImageData = await SheetImageDataController.wrapSheetImageData({
+                        ...options,
+                        method: method,
+                    });
                     await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
                 },
             },
@@ -125,7 +126,7 @@ export const sheetImageActions = {
                     let { app, html, imgElement, method } = options;
                     //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
                     //if the control key was also pressed, store the display location
-                    await SheetImageControls.updateImageFlags(app, imgElement, {
+                    await SheetImageDataController.updateImageFlags(app, imgElement, {
                         method: method,
                     });
                 },

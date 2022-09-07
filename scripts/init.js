@@ -1,4 +1,5 @@
 "use strict";
+import { SheetImageDataController } from "./SheetImageDataController.js";
 import { log, MODULE_ID } from "./debug-mode.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
 import { ImageDisplayManager } from "./classes/ImageDisplayManager.js";
@@ -7,7 +8,7 @@ import { registerSettings } from "./settings.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import ImageVideoPopout from "./classes/MultiMediaPopout.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
-import { SheetImageControls } from "./SheetImageControls.js";
+import { SheetImageApp } from "./SheetImageApp.js";
 import { JTCSActions } from "./data/JTCS-Actions.js";
 import { generateTemplates, createTemplatePathString, mapTemplates } from "./data/templates.js";
 import { registerHelpers } from "./handlebars/register-helpers.js";
@@ -47,7 +48,7 @@ const setupHookHandlers = async () => {
             return;
         }
         // console.error(app, html, args);
-        await SheetImageControls.applyImageClasses(app, html);
+        await SheetImageApp.applyImageClasses(app, html);
     }
 
     async function updateGalleryTileIndicator(tileDoc) {
@@ -66,15 +67,19 @@ const setupHookHandlers = async () => {
         });
     }
 
-    // async function updateJournalImageData(tileDoc) {
-    //     let id = tileDoc.id;
-    //     game.sheetImageUtils.manager.removeTileDataFromDocs(id);
-
-    // }
-    async function unlinkSheetImageDataFromTile(tileID) {
-        // let id = tileDoc.id;
-        game.JTCS.sheetImageUtils.manager.removeTileDataFromDocs(tileID);
+    async function updateSheetImageData(currentScene, tiles) {
+        console.table("Here are our tiles", tiles);
+        let tileDataOnSheets = (await SheetImageDataController.getAllFlaggedSheets()).map(
+            (item) => item.data.flags["journal-to-canvas-slideshow"]
+        );
+        tileDataOnSheets;
+        console.table("Here's our sheet data", tileDataOnSheets);
+        //
     }
+    // async function unlinkSheetImageDataFromTile(tileID) {
+    //     // let id = tileDoc.id;
+    //     game.JTCS.sheetImageUtils.manager.removeTileDataFromDocs(tileID);
+    // }
 
     async function addJTCSControls(controls) {
         if (!game.user.isGM) {
@@ -108,10 +113,29 @@ const setupHookHandlers = async () => {
             hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
             handlerFunction: renderImageControls,
         },
-        unlinkSheetImageDataFromTile: {
-            hooks: ["deleteTile", "deleteArtTileData"],
-            handlerFunction: unlinkSheetImageDataFromTile,
-        }, // updateJournalImageData: {
+        updateSheetImageData: {
+            hooks: ["deleteTile", "createTile"],
+            handlerFunction: updateSheetImageData,
+            specialHooks: [
+                {
+                    hookName: "updateArtGalleryTiles",
+                    handlerFunction: async (currentScene, tiles) => {
+                        await updateSheetImageData(currentScene, tiles);
+                    },
+                },
+            ],
+        },
+        // unlinkSheetImageDataFromTile: {
+        //     hooks: ["deleteArtTileData"],
+        //     handlerFunction: unlinkSheetImageDataFromTile,
+        //     specialHooks: {
+        //         hookName: "deleteTile",
+        //         handlerFunction: async (tileDoc) => {
+        //             let tileID = tileDoc.id;
+        //             await unlinkSheetImageDataFromTile(tileID);
+        //         },
+        //     },
+        // }, // updateJournalImageData: {
         //     hooks: ["updateJTCSSettings"],
         //     handlerFunction: updateJournalImageData,
         // },
@@ -142,15 +166,14 @@ const setupHookHandlers = async () => {
                     hookName: "updateJTCSSettings",
                     handlerFunction: async () => {
                         let scene = game.scenes.viewed;
-                        updateAllGalleryIndicators(scene);
+                        await updateAllGalleryIndicators(scene);
                     },
                 },
                 {
                     hookName: "updateArtGalleryTiles",
                     handlerFunction: async (scene) => {
-                        console.log("Scene is", scene);
                         scene = game.scenes.viewed;
-                        updateAllGalleryIndicators(scene);
+                        await updateAllGalleryIndicators(scene);
                     },
                 },
             ],
@@ -261,7 +284,7 @@ Hooks.on("init", async () => {
             createEventActionObject: HelperFunctions.createEventActionObject,
         },
         sheetImageUtils: {
-            manager: SheetImageControls,
+            manager: SheetImageApp,
         },
     };
 

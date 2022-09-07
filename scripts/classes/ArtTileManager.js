@@ -415,7 +415,7 @@ export class ArtTileManager {
         await ArtTileManager.updateAllSceneTileFlags(tiles);
 
         //call hook to delete the art tile data
-        Hooks.callAll("deleteArtTileData", tileID);
+        // Hooks.callAll("deleteArtTileData", tileID);
     }
 
     static async getAllScenesWithSlideshowData() {
