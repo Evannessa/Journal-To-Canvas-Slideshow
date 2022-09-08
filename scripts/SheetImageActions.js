@@ -1,24 +1,83 @@
 "use strict";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
+import { SheetImageApp } from "./SheetImageApp.js";
+import { SlideshowConfig } from "./SlideshowConfig.js";
+import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 import { universalInterfaceActions as UIA } from "./data/Universal-Actions.js";
 
-// const revealTileButtons = async (event, options) => {
-//     let { html } = options;
-//     let el = event.currentTarget;
-//     let targetID = el.dataset.targetId;
-//     console.log("Target Id is", targetID);
-//     let target = el.closest(".clickableImageContainer").querySelector(`#${targetID}`);
-//     target?.classList.toggle("hidden");
-// };
+export const sheetControls = [
+    {
+        action: "sheet.click.fadeJournal",
+        icon: "fas fa-eye-slash",
+        tooltipText: "Fade sheet background to see canvas",
+    },
+    {
+        action: "sheet.click.setDefaultTileInScene",
+        icon: "fas fa-cubes",
+        tooltipText: "Set default tile images",
+    },
+    {
+        action: "sheet.click.toggleImageControls",
+        tooltip: "Toggle the image controls on this sheet",
+        icon: "fas fa-sliders-h",
+    },
+    {
+        action: "sheet.click.openSlideshowConfig",
+        tooltip: "open Art Gallery Tile Configuration for the current scene",
+        icon: "fas fa-external-link-alt",
+    },
+    {
+        action: "sheet.click.openSettingsApp",
+        tooltip: "open Journal to Canvas Slideshow Settings",
+        icon: "fas fa-cog",
+    },
+];
 export const sheetImageActions = {
+    sheet: {
+        click: {
+            fadeJournal: {
+                onClick: async (event, options) => {
+                    await SheetImageApp.addFadeStylesToSheet(event);
+                },
+            },
+            setDefaultTileInScene: {
+                onClick: async (event, options) => {
+                    //TODO:
+                    //? show the tiles
+                },
+            },
+            toggleImageControls: {
+                onClick: async (event, options) => {
+                    let { app } = options;
+                    let journalEntry = app.object;
+                    let currentSetting = HelperFunctions.getFlagValue(journalEntry, "showControls");
+                    //if current setting is false, or doesn't exist, set it to true
+                    if (!currentSetting) {
+                        await HelperFunctions.setFlagValue(journalEntry, "showControls", true);
+                    } else {
+                        await HelperFunctions.setFlagValue(journalEntry, "showControls", false);
+                    }
+                },
+            },
+            openSlideshowConfig: {
+                onClick: async () => {
+                    UIA.renderAnotherApp("JTCSlideshowConfig", SlideshowConfig);
+                },
+            },
+            openSettingsApp: {
+                onClick: async () => {
+                    UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
+                },
+            },
+        },
+    },
     image: {
         click: {
             sendImageDataToDisplay: {
                 onClick: async (event, options) => {
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                    let { app, html, imgElement } = options;
+                    // event.stopPropagation();
+                    // event.stopImmediatePropagation();
 
                     // bundle all the necessary data into an object
                     let sheetImageData = await SheetImageDataController.wrapSheetImageData(options);
@@ -93,49 +152,17 @@ export const sheetImageActions = {
                 },
             },
         },
-        // change: {
-        //     updateImageFlags: {
-        //         onChange: async (event, options) => {
-        //             let { app, html, imgElement } = options;
-        //             event.stopPropagation();
-        //             event.stopImmediatePropagation();
-        //             let value = event.currentTarget.value;
-        //             let sceneID = game.scenes.viewed.data._id;
-        //             let updateData = {
-        //                 name: imgElement.dataset.name,
-        //                 scenesData: [`Scene.${sceneID}.Tile.${value}`],
-        //             };
-        //             await SheetImageDataController.updateImageFlags(app, imgElement, updateData);
-        //         },
-        //     },
-        // },
     },
     displayActionButton: {
         click: {
-            fadeJournal: {
-                onClick: async (event, options) => {
-                    let { app, imgElement } = options;
-                    // event.stopPropagation();
-                    // event.stopImmediatePropagation();
-
-                    //get the action
-                    let action = event.currentTarget.dataset.action;
-
-                    if (action.includes("fadeJournal")) {
-                        await SheetImageDataController.addFadeStylesToSheet(event);
-                    }
-                },
-            },
             sendImageDataToDisplay: {
                 onClick: async (event, options) => {
                     let { app, html, imgElement } = options;
-
-                    //get the action
                     let method = event.currentTarget.dataset.method;
-                    //otherwise, just launch to the clicked button's display location
                     let sheetImageData = await SheetImageDataController.wrapSheetImageData({
                         ...options,
                         method: method,
+                        imgElement,
                     });
                     await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
                 },
@@ -147,23 +174,5 @@ export const sheetImageActions = {
                 },
             },
         },
-        // ctrlClick: {
-        //     //for ctrl + click
-        //     storeDefaultAction: {
-        //         onClick: async (event, options) => {
-        //             let { app, html, imgElement, method } = options;
-        //             //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
-        //             //if the control key was also pressed, store the display location
-        //             await SheetImageDataController.updateImageFlags(app, imgElement, {
-        //                 method: method,
-        //             });
-        //         },
-        //     },
-        // },
-        // hover: {
-        //     revealTileButtons: {
-        //         onHover: async (event, options) => {},
-        //     },
-        // },
     },
 };

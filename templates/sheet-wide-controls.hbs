@@ -1,0 +1,9 @@
+<section class="flex-row" id="sheet-controls">
+    {{#each controls as |control|}}
+        {{> (dynamicPartial "icon-button")
+            action=control.action
+            tooltipText=control.tooltip
+            icon=control.icon
+        }}
+    {{/each}}
+</section>

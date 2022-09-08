@@ -47,7 +47,6 @@ const setupHookHandlers = async () => {
         if (!game.user.isGM) {
             return;
         }
-        // console.error(app, html, args);
         await SheetImageApp.applyImageClasses(app, html);
     }
 
@@ -113,32 +112,6 @@ const setupHookHandlers = async () => {
             hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
             handlerFunction: renderImageControls,
         },
-        updateSheetImageData: {
-            hooks: ["deleteTile", "createTile"],
-            handlerFunction: updateSheetImageData,
-            specialHooks: [
-                {
-                    hookName: "updateArtGalleryTiles",
-                    handlerFunction: async (currentScene, tiles) => {
-                        await updateSheetImageData(currentScene, tiles);
-                    },
-                },
-            ],
-        },
-        // unlinkSheetImageDataFromTile: {
-        //     hooks: ["deleteArtTileData"],
-        //     handlerFunction: unlinkSheetImageDataFromTile,
-        //     specialHooks: {
-        //         hookName: "deleteTile",
-        //         handlerFunction: async (tileDoc) => {
-        //             let tileID = tileDoc.id;
-        //             await unlinkSheetImageDataFromTile(tileID);
-        //         },
-        //     },
-        // }, // updateJournalImageData: {
-        //     hooks: ["updateJTCSSettings"],
-        //     handlerFunction: updateJournalImageData,
-        // },
         renderSlideshowConfig: {
             hooks: [
                 "createTile",

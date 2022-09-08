@@ -1,7 +1,7 @@
 "use strict";
 import { log } from "./debug-mode.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
-import { sheetImageActions } from "./SheetImageActions.js";
+import { sheetImageActions, sheetControls } from "./SheetImageActions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
 export class SheetImageApp {
     static displayMethods = [
@@ -25,29 +25,13 @@ export class SheetImageApp {
             icon: "fas fa-vector-square",
             tooltip: "display image in any scene with a frame tile and display tile",
         },
-        {
-            name: "fadeJournal",
-            icon: "fas fa-eye-slash",
-            tooltip: "Fade journal background to see canvas",
-            additionalClass: "toggle push-down",
-            // additionalParentClass: "hover-reveal-right",
-            // multi: true,
-            // childButtons: [
-            //     {
-            //         name: "fadeContent",
-            //         icon: "far fa-print-slash",
-            //         tooltip: "Fade journal AND all its content",
-            //         additionalClass: "toggle",
-            //     },
-            // ],
-        },
     ];
 
     /**
      *
-     * @param {Object} journalEntry - set a dedicated journal entry
+     * @param {*} app - the application (sheet) that this is being called from
+     * @param {*} html
      */
-
     static async applyImageClasses(app, html) {
         if (game.user.isGM) {
             let whichSheets = game.JTCS.utils.getSettingValue("artGallerySettings", "sheetSettings.choices");
@@ -63,6 +47,8 @@ export class SheetImageApp {
             Array.from(html[0].querySelectorAll(".clickableImage, .rightClickableImage")).forEach((img) =>
                 SheetImageApp.injectImageControls(img, app)
             );
+            //inject controls onto the sheet itself too
+            SheetImageApp.injectSheetWideControls(app);
         }
     }
 
@@ -83,15 +69,6 @@ export class SheetImageApp {
 
         let imageName = await SheetImageDataController.convertImageSourceToID(imgElement);
         imgElement.dataset.name = imageName;
-
-        //get the flags for this particular journal entry
-        // let imageFlagData = await SheetImageDataController.getJournalImageFlagData(journalSheet.object, imgElement);
-
-        // log(false, ["Our image data is", imageFlagData]);
-
-        // if (imageFlagData) {
-        //     imageFlagData = imageFlagData.scenesData?.find((obj) => obj.sceneID === game.scenes.viewed.data._id); //want to get the specific data for the current scene
-        // }
 
         let displayTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true);
         displayTiles = displayTiles.map((tile) => {
@@ -116,27 +93,53 @@ export class SheetImageApp {
         $(imgElement).wrap("<div class='clickableImageContainer'></div>");
 
         $(imgElement).parent().append(renderHtml);
-        await SheetImageApp.activateEventListeners({
+        await SheetImageApp.activateImageEventListeners({
             controlsContainer: $(imgElement).parent(),
             journalSheet: journalSheet,
             imgElement: imgElement,
         });
     }
+    static async injectSheetWideControls(journalSheet) {
+        let template = game.JTCS.templates["sheet-wide-controls"];
+        let renderHtml = await renderTemplate(template, {
+            controls: sheetControls,
+        });
+        let $editorElement = $(journalSheet.element[0].querySelector(".window-content form"));
+        $editorElement.prepend(renderHtml);
+        let controlsContainer = $("#sheet-controls");
+        await SheetImageApp.activateSheetWideEventListeners({ controlsContainer, journalSheet });
+    }
+
+    static async activateSheetWideEventListeners(options) {
+        let { controlsContainer, journalSheet } = options;
+        console.log("Conainer is", controlsContainer);
+        $(controlsContainer)
+            .off("click", "[data-action]")
+            .on(
+                "click",
+                "[data-action]",
+                async (event) => await SheetImageApp.handleAction(event, journalSheet, "action", false)
+            );
+    }
 
     // handle any interaction event
-    static async handleAction(event, journalSheet, actionType = "action") {
+    static async handleAction(event, journalSheet, actionType = "action", isItem = true) {
         event.preventDefault();
         let targetElement = $(event.currentTarget);
         let imgElement;
-        //if our target element is not an image, get the closest image from our clickableImageContainer parent
-        //else just get the current target itself
-        if (targetElement.prop("nodeName") !== "IMG") {
-            imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img");
-        } else {
-            imgElement = targetElement[0];
+
+        //"isItem" stands for if it's a sheet-wide control or an item-specific control
+        if (isItem) {
+            //if our target element is not an image, get the closest image from our clickableImageContainer parent
+            //else just get the current target itself
+            if (targetElement.prop("nodeName") !== "IMG") {
+                imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img");
+            } else {
+                imgElement = targetElement[0];
+            }
+            //if our target element is a label, get the input before it instead
+            targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
         }
-        //if our target element is a label, get the input before it instead
-        targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
 
         let action = targetElement.data()[actionType];
         let handlerPropertyString = "onClick";
@@ -150,6 +153,9 @@ export class SheetImageApp {
                 break;
         }
         let actionData = getProperty(sheetImageActions, action);
+        if (actionType == "action") {
+            console.table({ actionType, actionData });
+        }
 
         if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
             //call the event handler stored on this object
@@ -157,7 +163,7 @@ export class SheetImageApp {
                 action: action,
                 app: journalSheet,
                 html: journalSheet.element,
-                parentItem: imgElement.closest(".clickableImageContainer"),
+                ...(imgElement && { parentItem: imgElement.closest(".clickableImageContainer") }),
                 imgElement: imgElement,
             };
             actionData[handlerPropertyString](event, options);
@@ -168,7 +174,7 @@ export class SheetImageApp {
      *
      * @param data - the data object
      */
-    static async activateEventListeners(data) {
+    static async activateImageEventListeners(data) {
         let { journalSheet, imgElement, controlsContainer } = data;
         let html = journalSheet.element;
         //add data actions to the images
@@ -176,10 +182,10 @@ export class SheetImageApp {
         $(imgElement).attr("data-action", "image.click.sendImageDataToDisplay");
 
         $(controlsContainer)
-            .off("click", "[data-action]")
+            .off("click", ".clickableImageControls [data-action]")
             .on(
                 "click",
-                "[data-action]",
+                ".clickableImageControls [data-action]",
                 async (event) => await SheetImageApp.handleAction(event, journalSheet, "action")
             );
         $(controlsContainer)

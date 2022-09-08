@@ -20,4 +20,16 @@ export const universalInterfaceActions = {
         el.closest(ancestorSelector).classList.toggle("hidden");
         // parentItem.classList.toggle("hidden");
     },
+    renderAnotherApp: (appName, constructor) => {
+        //if global variable's not initialized, initialize it
+        if (!game[appName]) game[appName] = new constructor();
+        //if it's not rendered, render it
+        console.log(game[appName]);
+        if (!game[appName].rendered) {
+            game[appName].render(true);
+        } else {
+            //if it is rendered, bring it to the top
+            game[appName].bringToTop();
+        }
+    },
 };

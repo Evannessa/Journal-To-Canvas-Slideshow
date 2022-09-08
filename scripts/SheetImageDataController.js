@@ -86,7 +86,8 @@ export class SheetImageDataController {
         // imageData = await SheetImageDataController.getSceneSpecificImageData(imageData);
 
         let flaggedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-        let artTileID = imageData.split(".").pop(); //if stored by uuid, should get the tile's id
+        console.log("Image data is", imageData);
+        // let artTileID = imageData.split(".").pop(); //if stored by uuid, should get the tile's id
         let frameTileID = await game.JTCS.tileUtils.getLinkedFrameID(artTileID, flaggedTiles);
         if (!artTileID) {
             console.error("Image data has no tile ID");
@@ -130,13 +131,13 @@ export class SheetImageDataController {
      */
     static async wrapSheetImageData(options) {
         let { app, html, imgElement } = options;
-        let imageData = await SheetImageDataController.getJournalImageFlagData(app.object, imgElement);
-        let galleryTileIDs = await SheetImageDataController.getGalleryTileIDsFromImage(imgElement, app);
+        // let imageData = await SheetImageDataController.getJournalImageFlagData(app.object, imgElement);
+        // let galleryTileIDs = await SheetImageDataController.getGalleryTileIDsFromImage(imgElement, app);
         let sheetImageData = {
             imageElement: imgElement,
-            ...imageData,
-            ...galleryTileIDs,
-            ...(!imageData.method && { method: options.method || "window" }), //if we don't have a location set, default to window
+            // ...imageData,
+            // ...galleryTileIDs,
+            method: options.method || "window", //if we don't have a location set, default to window
         };
         return sheetImageData;
     }

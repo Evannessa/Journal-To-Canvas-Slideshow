@@ -19,6 +19,7 @@ const templateBaseNames = [
     `popover.hbs`,
     `item-list.hbs`,
     `item-menu.hbs`,
+    `sheet-wide-controls.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray
