@@ -85,13 +85,13 @@ export class SheetImageApp {
         imgElement.dataset.name = imageName;
 
         //get the flags for this particular journal entry
-        let imageFlagData = await SheetImageDataController.getJournalImageFlagData(journalSheet.object, imgElement);
+        // let imageFlagData = await SheetImageDataController.getJournalImageFlagData(journalSheet.object, imgElement);
 
-        log(false, ["Our image data is", imageFlagData]);
+        // log(false, ["Our image data is", imageFlagData]);
 
-        if (imageFlagData) {
-            imageFlagData = imageFlagData.scenesData?.find((obj) => obj.sceneID === game.scenes.viewed.data._id); //want to get the specific data for the current scene
-        }
+        // if (imageFlagData) {
+        //     imageFlagData = imageFlagData.scenesData?.find((obj) => obj.sceneID === game.scenes.viewed.data._id); //want to get the specific data for the current scene
+        // }
 
         let displayTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true);
         displayTiles = displayTiles.map((tile) => {
@@ -109,7 +109,7 @@ export class SheetImageApp {
             displayTiles: displayTiles,
             imgPath: imageName,
             users: users,
-            ...imageFlagData,
+            // ...imageFlagData,
         });
 
         //wrap each image in a clickableImageContainer

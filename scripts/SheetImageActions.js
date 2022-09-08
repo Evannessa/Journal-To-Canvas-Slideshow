@@ -66,7 +66,7 @@ export const sheetImageActions = {
             showTileIndicator: {
                 onHover: async (event, data = {}) => {
                     let isLeave = event.type === "mouseout" || event.type === "mouseleave";
-                    let tileID = event.currentTarget.previousElementSibling.value; //this should grab the value from the radio button itself
+                    let tileID = event.currentTarget.dataset.id; //this should grab the value from the radio button itself
                     let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
 
                     if (isLeave) {
@@ -77,22 +77,38 @@ export const sheetImageActions = {
                 },
             },
         },
-        change: {
-            updateImageFlags: {
-                onChange: async (event, options) => {
-                    let { app, html, imgElement } = options;
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                    let value = event.currentTarget.value;
-                    let sceneID = game.scenes.viewed.data._id;
-                    let updateData = {
-                        name: imgElement.dataset.name,
-                        scenesData: [`Scene.${sceneID}.Tile.${value}`],
-                    };
-                    await SheetImageDataController.updateImageFlags(app, imgElement, updateData);
+        click: {
+            displayImageOnTile: {
+                onClick: async (event, options) => {
+                    let { imgElement } = options;
+
+                    let url = game.JTCS.imageUtils.manager.getImageSource(imgElement);
+                    let tileID = event.currentTarget.dataset.id;
+                    let frameID = await game.JTCS.tileUtils.getLinkedFrameID(tileID);
+
+                    await game.JTCS.imageUtils.manager.updateTileObjectTexture(tileID, frameID, url);
+
+                    //once clicked, hide the buttons
+                    UIA.toggleHideAncestor(event, { ...options, ancestorSelector: "#displayTileButtons" });
                 },
             },
         },
+        // change: {
+        //     updateImageFlags: {
+        //         onChange: async (event, options) => {
+        //             let { app, html, imgElement } = options;
+        //             event.stopPropagation();
+        //             event.stopImmediatePropagation();
+        //             let value = event.currentTarget.value;
+        //             let sceneID = game.scenes.viewed.data._id;
+        //             let updateData = {
+        //                 name: imgElement.dataset.name,
+        //                 scenesData: [`Scene.${sceneID}.Tile.${value}`],
+        //             };
+        //             await SheetImageDataController.updateImageFlags(app, imgElement, updateData);
+        //         },
+        //     },
+        // },
     },
     displayActionButton: {
         click: {
@@ -126,7 +142,7 @@ export const sheetImageActions = {
             },
             revealTileButtons: {
                 onClick: async (event, options) => {
-                    UIA.revealAnotherElement(event, options);
+                    UIA.toggleShowAnotherElement(event, options);
                     UIA.toggleActiveStyles(event);
                 },
             },

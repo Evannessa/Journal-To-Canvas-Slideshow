@@ -249,6 +249,7 @@ Hooks.on("init", async () => {
             scaleToBoundingTile: ImageDisplayManager.scaleArtTileToFrameTile,
         },
         tileUtils: {
+            getLinkedFrameID: ArtTileManager.getLinkedFrameID,
             createAndLinkSceneTile: ArtTileManager.createAndLinkSceneTile,
             // createArtTileObject: ArtTileManager.createArtTileObject,
             // createFrameTileObject: ArtTileManager.createFrameTileObject,
