@@ -111,22 +111,7 @@
 
         transition: opacity 100ms ease-in;
         pointer-events: none;
-        // button,
-        // input[type="radio"] + label {
-        //     background: var(--foundry-dark-gray);
-        //     box-shadow: 0 0 10px var(--color-shadow-dark);
-        //     color: var(--color-text-light-heading);
-        //     border: 1px solid var(--color-border-dark);
-        //     cursor: pointer;
-        //     pointer-events: all;
-        //     &.active,
-        //     &:hover {
-        //         color: var(--color-text-light-highlight);
-        //         border: 1px solid var(--color-border-highlight-alt);
-        //         border-bottom: 1px solid var(--color-border-highlight);
-        //         box-shadow: 0 0 10px var(--color-shadow-highlight);
-        //     }
-        // }
+
         &:hover {
             opacity: 100%;
         }
@@ -138,7 +123,8 @@
             pointer-events: auto;
         }
     }
-    fieldset {
+
+    .displayTiles {
         box-shadow: var(--box-shadow);
         pointer-events: auto;
         * {

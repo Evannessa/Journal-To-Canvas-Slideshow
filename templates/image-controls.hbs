@@ -7,6 +7,10 @@
                 data-method="{{method.name}}" 
                 {{#if (eq method.name "fadeJournal")}}
                    data-action="displayActionButton.click.fadeJournal" 
+               {{else if (eq method.name "anyScene")}}
+                    data-action="displayActionButton.click.revealTileButtons"  
+                    data-hover-action="displayActionButton.hover.revealTileButtons"
+                    data-target-id="displayTileButtons"
                 {{else}}
                     data-action="displayActionButton.click.sendImageDataToDisplay"
                 {{/if}}
@@ -18,11 +22,9 @@
 	  	{{/each}}
 	</ul>
 	<div class="flex-column">
-  <fieldset class="displayTiles | flex-row rounded">
+  <div class="displayTiles | hidden | flex-row rounded " id="displayTileButtons">
     {{#each displayTiles as |tileData|}}
-      <input
-        type="radio"
-		class="hidden-input"
+      <button
         name="{{concat "selectedDisplayTile" @root.imgPath}}"
         data-display-name="{{tileData.tile.displayName}}"
         data-change-action="tileButton.change.updateImageFlags"
@@ -34,15 +36,11 @@
 				checked	
 			{{/if}}
 		{{/if}}
-      />
-      <label class="flex-row" for="{{tileData.randomID}}" data-title="" 
-        data-change-action="tileButton.change.updateImageFlags"
-		data-hover-action="tileButton.hover.showTileIndicator"
       >
         {{tileData.tile.displayName}}
 		{{> "modules/journal-to-canvas-slideshow/templates/tooltip.hbs" content=(combineToString (ternary (eq @root.selectedTileID tileData.tile.id) "This image will be displayed on the selected tile" "Click to display this image on tile") "<span>" tileData.tile.displayName "</span>" "in scene" "<span>" @root.currentSceneName "</span>")}}
-      </label>
+      </button>
     {{/each}}
-  </fieldset>
+  </div>
 </div>
 </div>

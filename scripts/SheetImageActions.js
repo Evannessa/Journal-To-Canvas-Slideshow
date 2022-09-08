@@ -1,6 +1,16 @@
 "use strict";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
+import { universalInterfaceActions as UIA } from "./data/Universal-Actions.js";
+
+// const revealTileButtons = async (event, options) => {
+//     let { html } = options;
+//     let el = event.currentTarget;
+//     let targetID = el.dataset.targetId;
+//     console.log("Target Id is", targetID);
+//     let target = el.closest(".clickableImageContainer").querySelector(`#${targetID}`);
+//     target?.classList.toggle("hidden");
+// };
 export const sheetImageActions = {
     image: {
         click: {
@@ -74,14 +84,10 @@ export const sheetImageActions = {
                     event.stopPropagation();
                     event.stopImmediatePropagation();
                     let value = event.currentTarget.value;
+                    let sceneID = game.scenes.viewed.data._id;
                     let updateData = {
                         name: imgElement.dataset.name,
-                        scenesData: [
-                            {
-                                sceneID: game.scenes.viewed.data._id,
-                                selectedTileID: value,
-                            },
-                        ],
+                        scenesData: [`Scene.${sceneID}.Tile.${value}`],
                     };
                     await SheetImageDataController.updateImageFlags(app, imgElement, updateData);
                 },
@@ -118,19 +124,30 @@ export const sheetImageActions = {
                     await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
                 },
             },
-        },
-        ctrlClick: {
-            //for ctrl + click
-            storeDefaultAction: {
+            revealTileButtons: {
                 onClick: async (event, options) => {
-                    let { app, html, imgElement, method } = options;
-                    //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
-                    //if the control key was also pressed, store the display location
-                    await SheetImageDataController.updateImageFlags(app, imgElement, {
-                        method: method,
-                    });
+                    UIA.revealAnotherElement(event, options);
+                    UIA.toggleActiveStyles(event);
                 },
             },
         },
+        // ctrlClick: {
+        //     //for ctrl + click
+        //     storeDefaultAction: {
+        //         onClick: async (event, options) => {
+        //             let { app, html, imgElement, method } = options;
+        //             //if control is pressed down, change the displayLocation to automatically be set to this when you click on the image
+        //             //if the control key was also pressed, store the display location
+        //             await SheetImageDataController.updateImageFlags(app, imgElement, {
+        //                 method: method,
+        //             });
+        //         },
+        //     },
+        // },
+        // hover: {
+        //     revealTileButtons: {
+        //         onHover: async (event, options) => {},
+        //     },
+        // },
     },
 };

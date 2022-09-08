@@ -25,7 +25,6 @@ export class SheetImageApp {
             icon: "fas fa-vector-square",
             tooltip: "display image in any scene with a frame tile and display tile",
         },
-
         {
             name: "fadeJournal",
             icon: "fas fa-eye-slash",
@@ -158,6 +157,7 @@ export class SheetImageApp {
                 action: action,
                 app: journalSheet,
                 html: journalSheet.element,
+                parentItem: imgElement.closest(".clickableImageContainer"),
                 imgElement: imgElement,
             };
             actionData[handlerPropertyString](event, options);

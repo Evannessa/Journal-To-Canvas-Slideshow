@@ -4,6 +4,7 @@ import { log, MODULE_ID } from "./debug-mode.js";
 // View: The frontend or graphical user interface (GUI)
 // Controller: The brains of the application that controls how data is displayed
 // import { artGalleryDefaultSettings } from "./settings.js";
+
 export class SheetImageDataController {
     static checkFlags(documentCollectionName, flagName = "journal-to-canvas-slideshow") {
         let flaggedJournalEntries = game[documentCollectionName].contents.filter(
@@ -50,30 +51,30 @@ export class SheetImageDataController {
         let journalEntry = journalSheet.object;
         let imageName = await SheetImageDataController.convertImageSourceToID(imgElement);
         let clickableImages = await HelperFunctions.getFlagValue(journalEntry, "clickableImages");
-
-        if (clickableImages.find((imgData) => imgData.name === imageName)) {
-            clickableImages = clickableImages.map((imgData) => {
-                // if the ids match, update the matching one with the new displayName
-                return imgData.name === imageName ? { ...imgData, ...newImgData } : imgData; //else just return the original
-            });
+        let foundImage = clickableImages.find((imgData) => imgData.name === imageName);
+        if (foundImage) {
+            setProperty(foundImage, newImgData);
+            // clickableImages = clickableImages.map((imgData) => {
+            //     // if the ids match, update the matching one with the new displayName
+            //     return imgData.name === imageName ? { ...imgData, ...newImgData } : imgData; //else just return the original
+            // });
         } else {
             clickableImages.push({ name: imageName, ...newImgData });
         }
 
         await HelperFunctions.setFlagValue(journalEntry, "clickableImages", clickableImages);
-
-        // await journalEntry.setFlag("journal-to-canvas-slideshow", "clickableImages", clickableImages);
+        await HelperFunctions.setFlagValue(journalEntry, "linkedImageTilesByID", clickableImages);
     }
 
-    /**
-     * Return data specific to the current viewed scene for the particular image in the journal entry, which should change when the scene does
-     * @param {Object} imageFlagData - the data from the flag for this particular image in the journal entry
-     * @returns the data specific to the current viewed scene
-     */
-    static async getSceneSpecificImageData(imageFlagData) {
-        let currentSceneID = game.scenes.viewed.data._id;
-        return imageFlagData.scenesData?.find((obj) => obj.sceneID === currentSceneID); //want to get the specific data for the current scene
-    }
+    // /**
+    //  * Return data specific to the current viewed scene for the particular image in the journal entry, which should change when the scene does
+    //  * @param {Object} imageFlagData - the data from the flag for this particular image in the journal entry
+    //  * @returns the data specific to the current viewed scene
+    //  */
+    // static async getSceneSpecificImageData(imageFlagData) {
+    //     let currentSceneID = game.scenes.viewed.data._id;
+    //     return imageFlagData.scenesData?.find((obj) => obj.sceneID === currentSceneID); //want to get the specific data for the current scene
+    // }
 
     static async getGalleryTileIDsFromImage(imageElement, journalSheet) {
         let imageData = await SheetImageDataController.getJournalImageFlagData(journalSheet.object, imageElement);
@@ -81,9 +82,12 @@ export class SheetImageDataController {
             console.error("could not get data from that sheet and element");
             return;
         }
-        imageData = await SheetImageDataController.getSceneSpecificImageData(imageData);
-        let artTileID = imageData.selectedTileID;
-        let frameTileID = game.JTCS.tileUtils.getLinkedFrameID;
+
+        // imageData = await SheetImageDataController.getSceneSpecificImageData(imageData);
+
+        let flaggedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+        let artTileID = imageData.split(".").pop(); //if stored by uuid, should get the tile's id
+        let frameTileID = await game.JTCS.tileUtils.getLinkedFrameID(artTileID, flaggedTiles);
         if (!artTileID) {
             console.error("Image data has no tile ID");
             return;

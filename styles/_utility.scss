@@ -138,8 +138,7 @@
         color: var(--color-text-secondary-hover);
     }
 }
-
-input:is([type="radio"], [type="checkbox"]).hidden-input {
+.hidden {
     transform: scale(0);
     position: absolute;
     overflow: hidden;
@@ -149,6 +148,11 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
     margin: -1px;
     padding: 0;
     border: 0;
+}
+
+input:is([type="radio"], [type="checkbox"]).hidden-input {
+    @extend .hidden;
+
     & + label {
         transform: scale(1);
         color: var(--color-text-secondary);

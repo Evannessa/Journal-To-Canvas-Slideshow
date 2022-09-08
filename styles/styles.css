@@ -207,7 +207,7 @@
   color: var(--color-text-secondary-hover);
 }
 
-input:is([type=radio], [type=checkbox]).hidden-input {
+.hidden, input:is([type=radio], [type=checkbox]).hidden-input {
   transform: scale(0);
   position: absolute;
   overflow: hidden;
@@ -218,6 +218,7 @@ input:is([type=radio], [type=checkbox]).hidden-input {
   padding: 0;
   border: 0;
 }
+
 input:is([type=radio], [type=checkbox]).hidden-input + label {
   transform: scale(1);
   color: var(--color-text-secondary);
@@ -1204,7 +1205,7 @@ button.icon-button i {
 .clickableImageContainer .displayLocations * {
   pointer-events: auto;
 }
-.clickableImageContainer fieldset {
+.clickableImageContainer .displayTiles {
   box-shadow: var(--box-shadow);
   pointer-events: auto;
   grid-row: 1/2;
@@ -1216,18 +1217,18 @@ button.icon-button i {
   padding: 0rem 0rem;
   min-width: 50%;
 }
-.clickableImageContainer fieldset * {
+.clickableImageContainer .displayTiles * {
   pointer-events: auto;
 }
-.clickableImageContainer fieldset legend {
+.clickableImageContainer .displayTiles legend {
   background-color: inherit;
   padding: 0.5rem;
 }
-.clickableImageContainer fieldset label:first-of-type {
+.clickableImageContainer .displayTiles label:first-of-type {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
-.clickableImageContainer fieldset label:last-of-type {
+.clickableImageContainer .displayTiles label:last-of-type {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
 }
