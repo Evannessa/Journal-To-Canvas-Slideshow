@@ -71,7 +71,6 @@ const setupHookHandlers = async () => {
         let tileDataOnSheets = (await SheetImageDataController.getAllFlaggedSheets()).map(
             (item) => item.data.flags["journal-to-canvas-slideshow"]
         );
-        tileDataOnSheets;
         console.table("Here's our sheet data", tileDataOnSheets);
         //
     }
@@ -222,6 +221,7 @@ Hooks.on("init", async () => {
             scaleToBoundingTile: ImageDisplayManager.scaleArtTileToFrameTile,
         },
         tileUtils: {
+            manager: ArtTileManager,
             getLinkedFrameID: ArtTileManager.getLinkedFrameID,
             createAndLinkSceneTile: ArtTileManager.createAndLinkSceneTile,
             // createArtTileObject: ArtTileManager.createArtTileObject,

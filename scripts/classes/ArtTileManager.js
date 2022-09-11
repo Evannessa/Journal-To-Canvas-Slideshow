@@ -259,6 +259,30 @@ export class ArtTileManager {
     }
 
     /**
+     * Set the default art gallery art tile in this scene
+     * @param {String} tileID - the id of the art gallery tile that was clicked
+     * @param {Object} currentScene - the current scene doc
+     */
+    static async setDefaultArtTileID(tileID, currentScene) {
+        if (!currentScene) currentScene = game.scenes.viewed;
+        await currentScene.setFlag(MODULE_ID, "defaultArtTileID", tileID);
+    }
+    /**
+     * Gets the default art gallery tile in this scene, or returns the first tile in scene if not found
+     * returns undefined if that is also not found
+     * @param {Object} currentScene - the current scene doc
+     */
+    static async getDefaultArtTileID(currentScene) {
+        if (!currentScene) currentScene = game.scenes.viewed;
+        let defaultArtTileID = await currentScene.getFlag(MODULE_ID, "defaultArtTileID");
+        if (!defaultArtTileID) {
+            //if you can't find it, default to the first tile in the scene
+            defaultArtTileID = currentScene.tiles.contents[0]?.id;
+        }
+        return defaultArtTileID;
+    }
+
+    /**
      * get tiles that have been stored by this module in a flag on this scene
      * @returns array of display tile data stored in "slideshowTiles" tag
      */

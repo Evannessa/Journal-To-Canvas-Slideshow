@@ -113,6 +113,13 @@ const extraActions = {
             game.JTCS.indicatorUtils.showTileIndicator(tile);
         }
     },
+    setDefaultTileInScene: async (event, options = {}) => {
+        let { tileID } = options;
+        await game.JTCS.tileUtils.manager.setDefaultArtTileID(tileID, game.scenes.viewed);
+        //get it to check that it was successful
+        let defaultArtTileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID(game.scenes.viewed);
+        console.log(defaultArtTileID);
+    },
 };
 export const slideshowDefaultSettingsData = {
     globalActions: {
@@ -261,6 +268,11 @@ export const slideshowDefaultSettingsData = {
             //for buttons
             propertyString: "itemActions.click.actions",
             actions: {
+                setAsDefault: {
+                    onClick: async (event, options = {}) => {
+                        await extraActions.setDefaultTileInScene(event, options);
+                    },
+                },
                 clearTileImage: {
                     icon: "fas fa-times-circle",
                     tooltipText: "'Clear' this tile's image, or reset it to your chosen default",

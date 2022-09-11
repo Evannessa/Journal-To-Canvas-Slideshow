@@ -10,12 +10,7 @@ export const sheetControls = [
     {
         action: "sheet.click.fadeJournal",
         icon: "fas fa-eye-slash",
-        tooltipText: "Fade sheet background to see canvas",
-    },
-    {
-        action: "sheet.click.setDefaultTileInScene",
-        icon: "fas fa-cubes",
-        tooltipText: "Set default tile images",
+        tooltip: "Fade sheet background to see canvas",
     },
     {
         action: "sheet.click.toggleImageControls",
@@ -25,7 +20,7 @@ export const sheetControls = [
     {
         action: "sheet.click.openSlideshowConfig",
         tooltip: "open Art Gallery Tile Configuration for the current scene",
-        icon: "fas fa-external-link-alt",
+        icon: "fas fa-cubes",
     },
     {
         action: "sheet.click.openSettingsApp",

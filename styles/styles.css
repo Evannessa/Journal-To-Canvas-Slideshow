@@ -385,6 +385,10 @@ button.icon-button i {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+button.icon-button[data-variant=small] {
+  width: 5%;
+  padding-bottom: 5%;
+}
 
 .hover-text-color:hover {
   color: var(--color-accent);

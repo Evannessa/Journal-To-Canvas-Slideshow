@@ -315,6 +315,10 @@ button.icon-button {
         left: 50%;
         transform: translate(-50%, -50%);
     }
+    &[data-variant="small"] {
+        width: 5%;
+        padding-bottom: 5%;
+    }
 }
 .hover-text-color {
     &:hover {

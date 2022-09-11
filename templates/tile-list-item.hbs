@@ -8,6 +8,9 @@
 	data-display-name="{{this.displayName}}"
     data-missing="{{this.missing}}" 
     data-hover-action="itemActions.hover.actions.highlightItemAndTile"
+    {{#if (eq this.type "art")}}
+        data-action="itemActions.click.actions.setAsDefault"
+    {{/if}}
 >
 	<header class="flex-row flex-nowrap flex-justify-space-between">
 		{{> (dynamicPartial "input-with-error")

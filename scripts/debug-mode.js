@@ -14,6 +14,7 @@ Hooks.on("canvasReady", ({}) => {
     if (game.user.isGM && isDebugging) {
         if (!game[appName]) game[appName] = appNames[appName]; //.render(true)
         game[appName].render(true);
+        game.journal.getName("Art").sheet.render(true);
     }
 });
 

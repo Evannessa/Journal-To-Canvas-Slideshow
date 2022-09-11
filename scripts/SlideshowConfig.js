@@ -34,6 +34,10 @@ export class SlideshowConfig extends Application {
      */
     async handleAction(event, actionType = "action") {
         event.preventDefault();
+
+        if (actionType === "action") {
+            console.log("handling " + actionType, event.target, event.currentTarget);
+        }
         let targetElement = $(event.currentTarget);
         //if our target element is a label, get the input before it instead
         targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
