@@ -10,6 +10,9 @@
     data-hover-action="itemActions.hover.actions.highlightItemAndTile"
     {{#if (eq this.type "art")}}
         data-action="itemActions.click.actions.setAsDefault"
+        {{#if (eq this.id @root.defaultArtTileID)}}
+            data-is-default="true"
+        {{/if}}
     {{/if}}
 >
 	<header class="flex-row flex-nowrap flex-justify-space-between">

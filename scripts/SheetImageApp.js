@@ -34,21 +34,30 @@ export class SheetImageApp {
      */
     static async applyImageClasses(app, html) {
         if (game.user.isGM) {
-            let whichSheets = game.JTCS.utils.getSettingValue("artGallerySettings", "sheetSettings.choices");
-            let canUseItemAndActorImages = game.JTCS.utils.getSettingValue("useActorSheetImages");
-            // check to see if we should can use images in item and actor sheets too, or just in journal images
-            let selectorString = canUseItemAndActorImages
-                ? "img, video, .lightbox-image"
-                : "img:not([data-edit]), video:not([data-edit]), .lightbox-image";
-
-            html.find(selectorString).addClass("clickableImage");
-
-            //inject the controls into every image that has the clickableImage or rightClickableImage classes
-            Array.from(html[0].querySelectorAll(".clickableImage, .rightClickableImage")).forEach((img) =>
-                SheetImageApp.injectImageControls(img, app)
+            let whichSheets = await game.JTCS.utils.getSettingValue(
+                "artGallerySettings",
+                "sheetSettings.modularChoices"
             );
-            //inject controls onto the sheet itself too
-            SheetImageApp.injectSheetWideControls(app);
+            let documentName = app.document.documentName;
+            documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
+            let selectorString = "img, video, .lightbox-image";
+            if (whichSheets[documentName]) {
+                console.log("Show controls in, " + documentName + " sheets");
+                if (documentName === "journalEntry") {
+                    html.find(selectorString).addClass("clickableImage");
+                } else {
+                    //for journal sheets, we want to right-click
+                    html.find(selectorString).addClass("rightClickableImage");
+                }
+                //inject the controls into every image that has the clickableImage or rightClickableImage classes
+                Array.from(html[0].querySelectorAll(".clickableImage, .rightClickableImage")).forEach((img) =>
+                    SheetImageApp.injectImageControls(img, app)
+                );
+                //inject controls onto the sheet itself too
+                SheetImageApp.injectSheetWideControls(app);
+            } else {
+                console.log(" controls in, " + documentName + " sheets toggled OFF :(");
+            }
         }
     }
 

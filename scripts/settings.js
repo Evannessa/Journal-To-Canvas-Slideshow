@@ -9,21 +9,21 @@ export const artGalleryDefaultSettings = {
         hint: "Which types of sheets do you want to have clickable images?",
         globalChoices: {
             //these will be radio buttons that control the checkboxes below
-            chosen: "all",
+            chosen: "toggleType",
             onChange: (event, options = { value: "" }) => {
                 let { value, app, html } = options;
-                let areDisabled = value === "all" ? false : true;
+                let areDisabled = value === "toggleType" ? false : true;
                 html && html.find("#JTCSsheetSettings input[type='checkbox']").prop("disabled", areDisabled);
             },
             choices: {
-                all: "All Sheets",
-                toggleEach: "Toggle Each Individually",
+                toggleType: "Toggle Sheets By Type",
+                toggleEach: "Toggle Each Sheet Individually",
             },
         },
         modularChoices: {
-            journalSheets: true,
-            actorSheets: true,
-            itemSheets: true,
+            journalEntry: true,
+            actor: true,
+            item: true,
         },
     },
     colorSchemeData: {
@@ -43,7 +43,7 @@ export const artGalleryDefaultSettings = {
         scene: {
             name: "Art Scene",
             value: "Art",
-            hint: "Art Journal",
+            hint: "Art Scene",
         },
     },
     journalFadeOpacityData: {

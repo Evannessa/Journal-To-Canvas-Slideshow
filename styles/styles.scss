@@ -66,6 +66,10 @@
             select {
                 height: var(--form-field-height);
             }
+            &[data-is-default] {
+                border-width: 5px;
+                border-color: hotpink !important;
+            }
         }
         li {
             background: hsla(0, 0%, 100%, 0.3);

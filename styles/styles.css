@@ -1156,6 +1156,10 @@ button.icon-button[data-variant=small] {
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);
 }
+#slideshow-config .window-content .tile-list-item[data-is-default] {
+  border-width: 5px;
+  border-color: hotpink !important;
+}
 #slideshow-config .window-content li {
   background: hsla(0deg, 0%, 100%, 0.3);
   --flow-space: 0.25em;

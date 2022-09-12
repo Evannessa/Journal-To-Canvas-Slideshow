@@ -111,6 +111,7 @@ export class SlideshowConfig extends Application {
         let allScenes = await game.JTCS.tileUtils.getAllScenesWithSlideshowData();
         let artScene = await game.JTCS.utils.getSettingValue("artGallerySettings", "dedicatedDisplayData.scene.value");
 
+        let defaultArtTileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID();
         let artSceneData = {
             options: allScenes,
             value: artScene,
@@ -119,6 +120,7 @@ export class SlideshowConfig extends Application {
         return {
             shouldActivateDisplayScene: this.shouldActivateDisplayScene,
             artTiles: artTileDataArray,
+            defaultArtTileID,
             frameTiles: frameTileDataArray,
             unlinkedTiles: unlinkedTileIDs,
             currentSceneName: game.scenes.viewed.name,

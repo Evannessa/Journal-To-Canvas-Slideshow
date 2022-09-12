@@ -3,8 +3,17 @@ import { artGalleryDefaultSettings } from "../settings.js";
 export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";
 
-    static resetArtGallerySettings() {
-        HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);
+    static async resetArtGallerySettings() {
+        let currentSettings = await game.settings.get(MODULE_ID, "artGallerySettings");
+        let newSettings = mergeObject(currentSettings, artGalleryDefaultSettings, {
+            insertValues: false,
+            overwrite: true,
+        });
+        // delete newSettings.sheetSettings.modularChoices["-=journalSheets"];
+        // delete newSettings.sheetSettings.modularChoices["-=itemSheets"];
+        // delete newSettings.sheetSettings.modularChoices["-=actorSheets"];
+        await game.settings.set(MODULE_ID, "artGallerySettings", newSettings);
+        // HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);
     }
     static async swapTools(layerName = "background", tool = "select") {
         ui.controls.controls.find((c) => c.layer === layerName).activeTool = tool;

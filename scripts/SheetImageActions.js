@@ -84,27 +84,10 @@ export const sheetImageActions = {
         hover: {
             showTileIndicator: {
                 onHover: async (event, options) => {
-                    // event.stopPropagation();
-                    // event.stopImmediatePropagation();
-                    let { app, html, imgElement } = options;
-                    let imageData = await SheetImageDataController.getJournalImageFlagData(app.object, imgElement);
-
-                    // do not continue this if we find no image data
-                    if (!imageData) {
-                        // log(false, "No image data found; Returning!");
-                        return;
-                    }
-                    //we need to get the data for the tile
+                    //!get the default tile
+                    //get the default art tile in this scene
+                    let tileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID();
                     let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
-                    let sceneID = game.scenes.viewed.id;
-
-                    let tileID = imageData.scenesData.find(
-                        (sceneData) => sceneData.sceneID === sceneID
-                    )?.selectedTileID;
-                    if (!tileID) {
-                        // log(false, ["No tile with this id ", tileID, "found in scene", sceneID]);
-                        return;
-                    }
                     let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
                     if (isLeave) {
                         await game.JTCS.indicatorUtils.hideTileIndicator(tile);

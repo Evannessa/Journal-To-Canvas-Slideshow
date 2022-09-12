@@ -169,9 +169,8 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-cog",
                     tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
                     onClick: (event, options = {}) => {
-                        if (!game.JTCSSettingsApp) {
-                            game.JTCSSettingsApp = new JTCSSettingsApplication().render(true);
-                        }
+                        if (!game.JTCSSettingsApp) game.JTCSSettingsApp = new JTCSSettingsApplication();
+                        game.JTCSSettingsApp.render(true);
                     },
                 },
                 createNewTileData: {
@@ -273,54 +272,6 @@ export const slideshowDefaultSettingsData = {
                         await extraActions.setDefaultTileInScene(event, options);
                     },
                 },
-                clearTileImage: {
-                    icon: "fas fa-times-circle",
-                    tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
-                    onClick: async (event, options = {}) => {
-                        let { tileID } = options;
-                        // let tileID = parentElement.dataset.id;
-                        await game.JTCS.imageUtils.manager.clearTile(tileID);
-                    },
-                    extraClass: "danger-text",
-                    overflow: false,
-                },
-                showUnlinkedTiles: {
-                    icon: "fas fa-link",
-                    onClick: async (event, options = {}) => {
-                        let { app, tileID, parentLI } = options;
-
-                        let frameTileID;
-                        if (!frameTileID) frameTileID = parentLI.dataset.frameId;
-
-                        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-                        let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
-                        let context = {
-                            artTileDataArray: artTileDataArray,
-                            unlinkedTilesIDs: unlinkedTilesIDs,
-                        };
-                        let templateData = Popover.createTemplateData(parentLI, "tile-link-partial", context);
-
-                        let elementData = { ...Popover.defaultElementData };
-                        elementData["popoverElement"].hideEvents.push({
-                            eventName: "change",
-                            selector: "input, input + label",
-                            wrapperFunction: async (event) => {},
-                        });
-                        // -- RENDER THE POPOVER
-                        let popover = await Popover.processPopoverData(
-                            event.currentTarget,
-                            app.element,
-                            templateData,
-                            elementData
-                        );
-                        await app.activateListeners(app.element);
-                        popover[0].querySelector("input").focus({ focusVisible: true });
-
-                        return;
-                    },
-                    overflow: false,
-                    renderOnMissing: true,
-                },
                 shareURLOnTile: {
                     icon: "fas fa-external-link-alt",
                     tooltipText: "Share image from a url on this tile",
@@ -371,6 +322,74 @@ export const slideshowDefaultSettingsData = {
                     },
                     overflow: false,
                 },
+                createNewGalleryTile: {
+                    icon: "fas fa-plus",
+                    tooltipText:
+                        "Create a new tile object on the canvas in this scene, linked to this art gallery item",
+                    overflow: false,
+                    renderOnMissing: true,
+                    onClick: async (event, options = {}) => {
+                        let { tileID, parentLI, app } = options;
+                        let isFrameTile = parentLI.dataset.type === "frame";
+                        await game.JTCS.tileUtils.createAndLinkSceneTile({
+                            unlinkedDataID: tileID,
+                            isFrameTile: isFrameTile,
+                        });
+                        await app.renderWithData();
+                    },
+                },
+                showUnlinkedTiles: {
+                    icon: "fas fa-link",
+                    onClick: async (event, options = {}) => {
+                        let { app, tileID, parentLI } = options;
+
+                        let frameTileID;
+                        if (!frameTileID) frameTileID = parentLI.dataset.frameId;
+
+                        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+                        let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
+                        let context = {
+                            artTileDataArray: artTileDataArray,
+                            unlinkedTilesIDs: unlinkedTilesIDs,
+                        };
+                        let templateData = Popover.createTemplateData(parentLI, "tile-link-partial", context);
+
+                        let elementData = { ...Popover.defaultElementData };
+                        elementData["popoverElement"].hideEvents.push({
+                            eventName: "change",
+                            selector: "input, input + label",
+                            wrapperFunction: async (event) => {},
+                        });
+                        // -- RENDER THE POPOVER
+                        let popover = await Popover.processPopoverData(
+                            event.currentTarget,
+                            app.element,
+                            templateData,
+                            elementData
+                        );
+                        await app.activateListeners(app.element);
+                        popover[0].querySelector("input").focus({ focusVisible: true });
+
+                        return;
+                    },
+                    overflow: false,
+                    renderOnMissing: true,
+                },
+
+                //a more destructive item that should go second-to-last in the list
+                clearTileImage: {
+                    icon: "fas fa-times-circle",
+                    tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
+                    onClick: async (event, options = {}) => {
+                        let { tileID } = options;
+                        // let tileID = parentElement.dataset.id;
+                        await game.JTCS.imageUtils.manager.clearTile(tileID);
+                    },
+                    extraClass: "danger-text",
+                    overflow: false,
+                },
+
+                // the overflow menu should be last
                 toggleOverflowMenu: {
                     icon: "fas fa-ellipsis-v",
                     tooltipText: "show menu of extra options for this art tile",
@@ -406,6 +425,7 @@ export const slideshowDefaultSettingsData = {
                         popover.focus({ focusVisible: true });
                     },
                 },
+                //overflow menu items
                 selectTile: {
                     text: "Select tile object",
                     tooltipText: "Select the tile object in this scene",
@@ -428,23 +448,6 @@ export const slideshowDefaultSettingsData = {
                     overflow: true,
                     extraClass: "danger-text",
                     onClick: async (event, options = {}) => extraActions.deleteTileData(event, options),
-                },
-                createNewGalleryTile: {
-                    icon: "fas fa-plus",
-                    tooltipText: `"Create a new" "<span>" this.type "</span>" "tile on the canvas in scene" 
-								"<span>" @root.currentSceneName "</span>" 
-							)`,
-                    overflow: false,
-                    renderOnMissing: true,
-                    onClick: async (event, options = {}) => {
-                        let { tileID, parentLI, app } = options;
-                        let isFrameTile = parentLI.dataset.type === "frame";
-                        await game.JTCS.tileUtils.createAndLinkSceneTile({
-                            unlinkedDataID: tileID,
-                            isFrameTile: isFrameTile,
-                        });
-                        await app.renderWithData();
-                    },
                 },
             },
         },
