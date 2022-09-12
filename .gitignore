@@ -194,3 +194,4 @@ node_modules/url/url.js
 node_modules/url/util.js
 .prettierignore
 .vscode/settings.json
+ClickImage/
