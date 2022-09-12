@@ -42,7 +42,6 @@ export class SheetImageApp {
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
             let selectorString = "img, video, .lightbox-image";
             if (whichSheets[documentName]) {
-                console.log("Show controls in, " + documentName + " sheets");
                 if (documentName === "journalEntry") {
                     html.find(selectorString).addClass("clickableImage");
                 } else {
@@ -55,8 +54,6 @@ export class SheetImageApp {
                 );
                 //inject controls onto the sheet itself too
                 SheetImageApp.injectSheetWideControls(app);
-            } else {
-                console.log(" controls in, " + documentName + " sheets toggled OFF :(");
             }
         }
     }

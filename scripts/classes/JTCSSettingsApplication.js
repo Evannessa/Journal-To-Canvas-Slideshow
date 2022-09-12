@@ -43,6 +43,8 @@ export class JTCSSettingsApplication extends FormApplication {
         this._handleChange();
     }
 
+    async handleAction(event, actionType) {}
+
     async _handleChange() {
         let app = game.JTCSSettingsApp;
         $(`select, input[type='checkbox'], input[type='radio'], input[type='text']`).on(
