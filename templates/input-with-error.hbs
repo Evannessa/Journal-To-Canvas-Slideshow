@@ -1,5 +1,6 @@
-<div class="form-group has-floating-label">
-    <label class="floating-label" for="{{this.id}}">{{camelCaseToArray this.name true}}</label>
+<div class="form-group form-group-stacked">
+    <div class="input-wrapper has-floating-label">
+        <label class="floating-label" for="{{this.id}}">{{camelCaseToArray this.name true}}</label>
         <input
             class="flex2"
             id="{{this.id}}"
@@ -8,7 +9,12 @@
             value="{{this.value}}"
             data-change-action="{{this.changeAction}}"
         />
-    {{#if (eq this.errorCondition true)}}
-        {{> (dynamicPartial "notification-badge")}}
+    </div>
+    {{#if (eq this.missing true)}}
+       {{> (dynamicPartial "notification-badge")
+        notificationType="warning"
+        message="Gallery data not linked to scene tile" 
+       }} 
     {{/if}}
+
 </div>

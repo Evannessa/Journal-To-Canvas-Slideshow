@@ -1,6 +1,6 @@
 "use strict";
 import { log, MODULE_ID } from "./debug-mode.js";
-import { slideshowDefaultSettingsData } from "./data/ArtGalleryConfigData.js";
+import { slideshowDefaultSettingsData } from "./data/SlideshowConfigActions.js";
 import { Popover } from "./classes/PopoverGenerator.js";
 export class SlideshowConfig extends Application {
     constructor(data = {}) {

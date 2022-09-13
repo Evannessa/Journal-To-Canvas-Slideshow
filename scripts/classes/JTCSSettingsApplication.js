@@ -3,9 +3,9 @@ import { artGalleryDefaultSettings } from "../settings.js";
 /**
  * Form app to handle JTCS settings
  */
-Hooks.on("renderJTCSSettingsApplication", (app) => {
-    game.JTCSSettingsApp = app;
-});
+// Hooks.on("renderJTCSSettingsApplication", (app) => {
+//     game.JTCSSettingsApp = app;
+// });
 export class JTCSSettingsApplication extends FormApplication {
     constructor(data = {}) {
         super();
@@ -19,7 +19,7 @@ export class JTCSSettingsApplication extends FormApplication {
             popOut: true,
             resizable: true,
             minimizable: true,
-            submitOnClose: true,
+            submitOnClose: false,
             closeOnSubmit: true,
             submitOnChange: false,
             template: `modules/${MODULE_ID}/templates/JTCS-settings-app.hbs`,
@@ -31,9 +31,8 @@ export class JTCSSettingsApplication extends FormApplication {
     async getData() {
         // Send data to the template
         // let data = game.JTCS.utils.getSettingValue("artGallerySettings");
-        let data = this.data;
         this.data = await game.JTCS.utils.getSettingValue("artGallerySettings");
-
+        let data = this.data;
         return data;
     }
 
@@ -46,7 +45,6 @@ export class JTCSSettingsApplication extends FormApplication {
     async handleAction(event, actionType) {}
 
     async _handleChange() {
-        let app = game.JTCSSettingsApp;
         $(`select, input[type='checkbox'], input[type='radio'], input[type='text']`).on(
             "change",
             async function (event) {
@@ -104,8 +102,10 @@ export class JTCSSettingsApplication extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        //right now, setting key for colors is like --- indicatorColorData.colors.artTileColor
+        console.log("Settings changing?", formData);
         await game.JTCS.utils.setSettingValue("artGallerySettings", formData, "", true);
+        await game.JTCSSettingsApp.render(true);
+        // this.render(true);
     }
 }
 

@@ -46,10 +46,19 @@ export const artGalleryDefaultSettings = {
             hint: "Art Scene",
         },
     },
-    journalFadeOpacityData: {
-        name: "Journal Fade Opacity",
-        hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
-        value: 0.5,
+    // sheetFadeOpacityData: {
+    //     name: "Sheet Fade Opacity",
+    //     hint: "Change the opacity of the background when the sheet fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
+    //     value: 0.5,
+    // },
+    fadeSheetImagesData: {
+        name: "Fade Sheet Images",
+        hint: "When fading a JournalEntry, Actor, or Item sheet, should the images fade as well as the background?",
+        chosen: "fadeAll",
+        choices: {
+            fadeBackground: "Fade Background and UI Only",
+            fadeAll: "Fade Background, UI AND Images",
+        },
     },
     indicatorColorData: {
         name: "Tile Indicator Colors",
@@ -90,9 +99,9 @@ export const registerSettings = async function () {
         },
     });
 
-    game.settings.register("journal-to-canvas-slideshow", "journalFadeOpacity", {
-        name: "Journal Fade Opacity",
-        hint: "Change the opacity of the background when the journal fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
+    game.settings.register("journal-to-canvas-slideshow", "sheetFadeOpacity", {
+        name: "Sheet Fade Opacity",
+        hint: "Change the opacity of the background when the sheet fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
         scope: "client",
         config: true,
         type: Number,

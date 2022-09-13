@@ -3,6 +3,7 @@ import { log } from "./debug-mode.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { sheetImageActions, sheetControls } from "./SheetImageActions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
+import { artTileManager, helpers } from "./data/ModuleManager.js";
 export class SheetImageApp {
     static displayMethods = [
         {
@@ -58,9 +59,20 @@ export class SheetImageApp {
         }
     }
 
-    static async setJournalFadeOpacity(journalSheet) {
-        let opacityValue = game.JTCS.utils.getSettingValue("journalFadeOpacity");
-        journalSheet.element[0].style.setProperty("--journal-fade", opacityValue + "%");
+    static async applySheetFadeSettings(journalSheet) {
+        //get opacity, and whether or not journals should be faded
+        let opacityValue = await game.JTCS.utils.getSettingValue("sheetFadeOpacity");
+        let shouldFadeImages = (await game.JTCS.utils.getSettingValue("artGallerySettings", "fadeSheetImagesData"))
+            .chosen;
+        //set a CSS variable on the journal sheet to grab the opacity in css
+        let sheetElement = journalSheet.element;
+        sheetElement[0].style.setProperty("--journal-fade", opacityValue + "%");
+
+        //set the window content's data-attribute to "data-fade-all" so it fades the journal's opacity, and not just the background color
+        if (shouldFadeImages === "fadeAll") {
+            sheetElement.find(".window-content").attr("data-fade-all", true);
+            // sheetElementStyle.setProperty("--fade-all", true);
+        }
     }
 
     /**
@@ -69,7 +81,7 @@ export class SheetImageApp {
      * @param {*} journalSheet - the journal sheet we're searching within
      */
     static async injectImageControls(imgElement, journalSheet) {
-        await SheetImageApp.setJournalFadeOpacity(journalSheet);
+        await SheetImageApp.applySheetFadeSettings(journalSheet);
 
         let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
 
@@ -77,6 +89,7 @@ export class SheetImageApp {
         imgElement.dataset.name = imageName;
 
         let displayTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true);
+        displayTiles = displayTiles.filter((tile) => !tile.missing);
         displayTiles = displayTiles.map((tile) => {
             return {
                 tile: tile,
@@ -212,22 +225,14 @@ export class SheetImageApp {
 
     static async addFadeStylesToSheet(event) {
         event.preventDefault();
-        let windowContent = event.currentTarget.closest(".window-content");
-        let fadeButtons = windowContent.querySelectorAll(`[data-action="fadeJournal"]`, `[data-action="fadeContent"]`);
-        let action = event.currentTarget.dataset.action;
-        // let className = location === "fadeContent" ? "fadeAll" : "fade";
-        let classNames = ["fade"];
-        if (action === "fadeContent") {
-            classNames.push("fade-all");
-        }
 
-        if (windowContent.classList.contains("fade")) {
-            windowContent.classList.remove("fade", "fade-all");
-            fadeButtons.forEach((btn) => btn.classList.remove("active"));
+        let windowContent = event.currentTarget.closest(".window-content");
+        let faded = windowContent.classList.contains("fade") || windowContent.classList.contains("fade-all");
+
+        if (faded) {
+            windowContent.classList.remove("fade");
         } else {
-            windowContent.classList.add(...classNames);
-            fadeButtons.forEach((btn) => btn.classList.add("active"));
+            windowContent.classList.add("fade");
         }
-        return;
     }
 }

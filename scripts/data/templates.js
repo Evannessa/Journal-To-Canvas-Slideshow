@@ -20,6 +20,7 @@ const templateBaseNames = [
     `item-list.hbs`,
     `item-menu.hbs`,
     `sheet-wide-controls.hbs`,
+    `badge.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

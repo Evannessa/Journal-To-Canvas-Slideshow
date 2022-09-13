@@ -4,16 +4,9 @@ export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";
 
     static async resetArtGallerySettings() {
-        let currentSettings = await game.settings.get(MODULE_ID, "artGallerySettings");
-        let newSettings = mergeObject(currentSettings, artGalleryDefaultSettings, {
-            insertValues: false,
-            overwrite: true,
-        });
-        // delete newSettings.sheetSettings.modularChoices["-=journalSheets"];
-        // delete newSettings.sheetSettings.modularChoices["-=itemSheets"];
-        // delete newSettings.sheetSettings.modularChoices["-=actorSheets"];
-        await game.settings.set(MODULE_ID, "artGallerySettings", newSettings);
-        // HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);
+        await HelperFunctions.setSettingValue("artGallerySettings", {}, "", false);
+        await HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);
+        // await game.settings.set(MODULE_ID, "artGallerySettings", newSettings);
     }
     static async swapTools(layerName = "background", tool = "select") {
         ui.controls.controls.find((c) => c.layer === layerName).activeTool = tool;
@@ -65,7 +58,7 @@ export class HelperFunctions {
     }
 
     static async getSettingValue(settingName, nestedKey = "") {
-        let settingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
+        let settingData = await game.settings.get(HelperFunctions.MODULE_ID, settingName);
         if (settingData) {
             if (nestedKey) {
                 let nestedSettingData = getProperty(settingData, nestedKey);

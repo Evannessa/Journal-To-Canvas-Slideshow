@@ -1,178 +1,30 @@
 "use strict";
-import { SheetImageDataController } from "./SheetImageDataController.js";
-import { log, MODULE_ID } from "./debug-mode.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
-import { ImageDisplayManager } from "./classes/ImageDisplayManager.js";
 import { CanvasIndicators } from "./classes/CanvasIndicators.js";
-import { registerSettings } from "./settings.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
+import { ImageDisplayManager } from "./classes/ImageDisplayManager.js";
 import ImageVideoPopout from "./classes/MultiMediaPopout.js";
-import { SlideshowConfig } from "./SlideshowConfig.js";
-import { SheetImageApp } from "./SheetImageApp.js";
 import { JTCSActions } from "./data/JTCS-Actions.js";
+import { SheetImageApp } from "./SheetImageApp.js";
+import { SheetImageDataController } from "./SheetImageDataController.js";
+import { SlideshowConfig } from "./SlideshowConfig.js";
+
+import { log, MODULE_ID } from "./debug-mode.js";
 import { generateTemplates, createTemplatePathString, mapTemplates } from "./data/templates.js";
 import { registerHelpers } from "./handlebars/register-helpers.js";
+import { registerSettings } from "./settings.js";
+import { setupHookHandlers } from "./hooks.js";
 
-const renderSheetHooks = ["renderItemSheet", "renderActorSheet", "renderJournalSheet"];
-const createTileHooks = ["createTile", "updateTile", "deleteTile"];
-const indicatorSetupHooks = [...createTileHooks, "canvasReady"];
-
-/**
- * This sets up most hooks we want to respond to in our code,
- * grouping hooks with identical
- * callbacks into arrays on an object
- * @returns object containing registerHooks function
- */
-const setupHookHandlers = async () => {
-    async function renderSlideshowConfig() {
-        if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
-            game.JTCSlideshowConfig.render(false);
-        }
-    }
-    /**
-     * Show a toggle in the journal sheet's header to toggle whether the journal
-     * has controls on or off
-     */
-    async function renderSheetHeaderButton(app, html) {
-        //get the global toggle "all sheets" or "toggle individual"
-        let settingsToggle = HelperFunctions.getSettingValue(
-            "artGallerySettings",
-            "sheetSettings.globalChoices.chosen"
-        );
-        //get the modular toggle for "journal sheets", "actor sheets", "item sheets"
-        //this will be an array
-        let individualToggles = HelperFunctions.getSettingValue("artGallerySettings", "sheetSettings.modularChoices");
-    }
-    async function renderImageControls(app, html) {
-        if (!game.user.isGM) {
-            return;
-        }
-        await SheetImageApp.applyImageClasses(app, html);
-    }
-
-    async function updateGalleryTileIndicator(tileDoc) {
-        let tileID = tileDoc.id;
-        let sceneTiles = await ArtTileManager.getSceneSlideshowTiles("", true);
-        let foundTileData = await ArtTileManager.getTileDataFromFlag(tileID, sceneTiles);
-        await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-    }
-
-    async function updateAllGalleryIndicators(scene) {
-        let tiles = scene.tiles;
-        let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
-        tiles.forEach(async (tileDoc) => {
-            let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
-            await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-        });
-    }
-
-    async function updateSheetImageData(currentScene, tiles) {
-        console.table("Here are our tiles", tiles);
-        let tileDataOnSheets = (await SheetImageDataController.getAllFlaggedSheets()).map(
-            (item) => item.data.flags["journal-to-canvas-slideshow"]
-        );
-        console.table("Here's our sheet data", tileDataOnSheets);
-        //
-    }
-    // async function unlinkSheetImageDataFromTile(tileID) {
-    //     // let id = tileDoc.id;
-    //     game.JTCS.sheetImageUtils.manager.removeTileDataFromDocs(tileID);
-    // }
-
-    async function addJTCSControls(controls) {
-        if (!game.user.isGM) {
-            return;
-        }
-        const tileControls = controls.find((control) => control?.name === "tiles");
-
-        tileControls.tools.push({
-            name: "ShowJTCSConfig",
-            title: "Show Slideshow Config",
-            icon: "far fa-image",
-            onClick: () => {
-                new SlideshowConfig().render(true);
-            },
-            button: true,
-        });
-        //push the clear display button regardless of what setting is selected
-        tileControls.tools.push({
-            name: "ClearDisplay",
-            title: "ClearDisplay",
-            icon: "fas fa-times-circle",
-            onClick: () => {
-                determineWhatToClear();
-            },
-            button: true,
-        });
-    }
-
-    const hookHandlers = {
-        renderImageControls: {
-            hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
-            handlerFunction: renderImageControls,
-        },
-        renderSlideshowConfig: {
-            hooks: [
-                "createTile",
-                "updateTile",
-                "deleteTile",
-                "canvasReady",
-                "createJournalEntry",
-                "updateJournalEntry",
-                "deleteJournalEntry",
-                "updateJTCSSettings",
-            ],
-            handlerFunction: renderSlideshowConfig,
-        },
-        updateCanvasIndicators: {
-            hooks: ["createTile", "updateTile", "deleteTile"],
-            handlerFunction: updateGalleryTileIndicator,
-            specialHooks: [
-                {
-                    hookName: "canvasReady",
-                    handlerFunction: async (canvas) => {
-                        updateAllGalleryIndicators(canvas.scene);
-                    },
-                },
-                {
-                    hookName: "updateJTCSSettings",
-                    handlerFunction: async () => {
-                        let scene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(scene);
-                    },
-                },
-                {
-                    hookName: "updateArtGalleryTiles",
-                    handlerFunction: async (scene) => {
-                        scene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(scene);
-                    },
-                },
-            ],
-        },
-        addJTCSControls: {
-            hooks: ["getSceneControlButtons"],
-            handlerFunction: addJTCSControls,
-        },
-    };
-
-    async function registerHooks() {
-        for (let handlerKey in hookHandlers) {
-            let handler = hookHandlers[handlerKey];
-            if (handler.specialHooks) {
-                handler.specialHooks.forEach((specialHookData) => {
-                    let { hookName, handlerFunction: callback } = specialHookData;
-                    Hooks.on(hookName, callback);
-                });
-            }
-            for (let hookName of handler.hooks) {
-                Hooks.on(hookName, handler.handlerFunction);
-            }
-        }
-    }
-    return {
-        registerHooks: registerHooks,
-    };
+export const JTCSModules = {
+    ArtTileManager,
+    CanvasIndicators,
+    HelperFunctions,
+    ImageDisplayManager,
+    ImageVideoPopout,
+    JTCSActions,
+    SheetImageApp,
+    SheetImageDataController,
+    SlideshowConfig,
 };
 
 Hooks.on("init", async () => {
@@ -180,6 +32,7 @@ Hooks.on("init", async () => {
 
     //register settings
     registerSettings();
+    //register handlebars helpers
     registerHelpers();
 
     libWrapper.register(
@@ -205,12 +58,11 @@ Hooks.on("init", async () => {
         "MIXED"
     );
 
-    // once settings are set up, create our API object
-
     //map of template names w/ short keys
     let templates = generateTemplates();
     let mappedTemplates = mapTemplates(templates);
 
+    // once settings are set up, create our API object
     game.modules.get("journal-to-canvas-slideshow").api = {
         templates: mappedTemplates,
         imageUtils: {

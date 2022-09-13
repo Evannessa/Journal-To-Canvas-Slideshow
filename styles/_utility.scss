@@ -1,4 +1,5 @@
 @use "variables" as *;
+@use "sass:string";
 :root {
     //foundry colors
 
@@ -206,6 +207,21 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
     transition: transform 100ms ease-out, opacity 100ms ease-out;
 }
 
+.inline-notification {
+    display: inline-flex;
+    $variants: (info, warning, danger, success);
+
+    @each $type in $variants {
+        &[data-variant="#{$type}"] {
+            color: var(--color-#{$type}-dark);
+            background-color: var(--color-#{$type}-light);
+            .icon-span i {
+                color: var(--color-#{$type}-dark);
+            }
+        }
+    }
+}
+
 .fit-content-width {
     width: fit-content;
 }
@@ -285,13 +301,13 @@ fieldset.toggle-button-group {
 .interactive {
     cursor: pointer;
 }
-
 .fade {
     background: rgba(255, 255, 255, var(--journal-fade, 50%)) !important;
+    &[data-fade-all] {
+        opacity: var(--journal-fade, 50%);
+    }
 }
-.fade-all {
-    opacity: var(--journal-fade, 50%);
-}
+
 .padding-small {
     padding: 0.25rem 0.5rem;
 }

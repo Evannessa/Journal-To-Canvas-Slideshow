@@ -39,8 +39,10 @@
         "scripts/classes/JTCSSettingsApplication.js",
         "scripts/data/JTCS-Actions.js",
         "scripts/data/templates.js",
-        "scripts/data/ArtGalleryConfigData.js",
-        "scripts/classes/PopoverGenerator.js"
+        "scripts/data/SlideshowConfigActions.js",
+        "scripts/classes/PopoverGenerator.js",
+        "scripts/hooks.js",
+        "scripts/data/ModuleManager.js"
     ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",

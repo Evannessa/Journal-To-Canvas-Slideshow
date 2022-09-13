@@ -224,17 +224,17 @@
         cursor: not-allowed;
     }
     color: var(--color-danger-base);
-    p:not(.error) {
-        opacity: 50%;
-        text-decoration: line-through;
+    // p:not(.error) {
+    //     opacity: 50%;
+    //     text-decoration: line-through;
 
-        &::before {
-            content: "⚠";
-            text-decoration: none;
-            color: var(--color-danger-base);
-            margin-right: 1rem;
-        }
-    }
+    //     &::before {
+    //         content: "⚠";
+    //         text-decoration: none;
+    //         color: var(--color-danger-base);
+    //         margin-right: 1rem;
+    //     }
+    // }
     button:disabled {
         opacity: 50%;
         &:hover {

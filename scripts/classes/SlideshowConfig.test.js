@@ -1,5 +1,5 @@
 import { SlideshowConfig } from "../SlideshowConfig.js";
-import { slideshowDefaultSettingsData } from "../data/ArtGalleryConfigData.js";
+import { slideshowDefaultSettingsData } from "../data/SlideshowConfigActions.js";
 
 Hooks.on("quenchReady", (quench) => {
     quench.registerBatch(

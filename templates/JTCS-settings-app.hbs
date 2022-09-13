@@ -14,6 +14,15 @@
             }}
         {{/with}}
     </div>
+    <div class="form-group-stacked" id="JTCSsheetFadeData">
+        {{#with fadeSheetImagesData}}
+            {{> (dynamicPartial "fieldset-button-group")
+                choices=this.choices 
+                chosen=this.chosen
+                propertyString="fadeSheetImagesData.choices.chosen"
+            }}
+        {{/with}}
+    </div>
     <div class="form-group-stacked" id="JTCSindicatorColorData">
         {{#with indicatorColorData}}
             <h2>{{this.name}}</h2>

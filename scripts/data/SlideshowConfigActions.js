@@ -2,6 +2,9 @@
 import { JTCSSettingsApplication } from "../classes/JTCSSettingsApplication.js";
 import { JTCSActions } from "./JTCS-Actions.js";
 import { Popover } from "../classes/PopoverGenerator.js";
+import { universalInterfaceActions as UIA } from "./Universal-Actions.js";
+import { ImageDisplayManager } from "../classes/ImageDisplayManager.js";
+import { ArtTileManager } from "../classes/ArtTileManager.js";
 
 const extraActions = {
     renderTileConfig: async (event, options = {}) => {
@@ -20,14 +23,11 @@ const extraActions = {
         let { tileID, app, parentLI } = options;
 
         let action = clickedElement.data().action || clickedElement.data().changeAction;
-        // let changeAction = clickedElement.data().changeAction;
 
         let { type } = $(parentLI).data();
 
         let isNewTile = false;
         let isBoundingTile = type === "frame";
-
-        // console.log("updating tile data with these options", options, "this action", action, type);
 
         if (action.includes("createNewTileData")) {
             isNewTile = true;
@@ -37,7 +37,6 @@ const extraActions = {
         } else {
             // if we're already a Slideshow tile, look for our ID
             tileID = clickedElement[0].closest(".tile-list-item, .popover").dataset.id;
-            // name = "displayName";
         }
 
         if (tileID) {
@@ -118,7 +117,6 @@ const extraActions = {
         await game.JTCS.tileUtils.manager.setDefaultArtTileID(tileID, game.scenes.viewed);
         //get it to check that it was successful
         let defaultArtTileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID(game.scenes.viewed);
-        console.log(defaultArtTileID);
     },
 };
 export const slideshowDefaultSettingsData = {
@@ -169,10 +167,70 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-cog",
                     tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
                     onClick: (event, options = {}) => {
-                        if (!game.JTCSSettingsApp) game.JTCSSettingsApp = new JTCSSettingsApplication();
-                        game.JTCSSettingsApp.render(true);
+                        UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
                     },
                 },
+                // showArtScenes: {
+                //     icon: "fas fa-map",
+                //     tooltipText: "Show art scenes",
+                //     onClick: async (event, options = {}) => {
+                //         //display the art scenes (scenes that currently have slideshow data)
+                //         let artScenes = await game.JTCS.tileUtils.getAllScenesWithSlideshowData();
+                //         let chosenArtScene = await game.JTCS.utils.getSettingValue(
+                //             "artGallerySettings",
+                //             "dedicatedDisplayData.scene.value"
+                //         );
+                //         let artSceneItems = {};
+
+                //         artScenes.forEach((scene) => {
+                //             artSceneItems[scene.name] = {
+                //                 icon: scene.thumbnail,
+                //                 dataset: {},
+                //             };
+                //         });
+
+                //         let context = {
+                //             propertyString: "globalActions.click.actions",
+                //             items: artSceneItems,
+                //         };
+                //         let templateData = Popover.createTemplateData(parentLI, "item-menu", context);
+                //         let elementData = { ...Popover.defaultElementData };
+
+                //         elementData["popoverElement"] = {
+                //             targetElement: null,
+                //             hideEvents: [
+                //                 {
+                //                     eventName: "change",
+                //                     selector: "input",
+                //                     wrapperFunction: async (event) => {
+                //                         let url = event.currentTarget.value;
+                //                         let valid = game.JTCS.utils.manager.validateInput(url, "image");
+                //                         if (valid) {
+                //                             await game.JTCS.imageUtils.manager.updateTileObjectTexture(
+                //                                 tileID,
+                //                                 frameTileID,
+                //                                 url,
+                //                                 "anyTile"
+                //                             );
+                //                         } else {
+                //                             ui.notifications.error("URL not an image");
+                //                             //TODO: show error?
+                //                         }
+                //                     },
+                //                 },
+                //             ],
+                //         };
+
+                //         let popover = await Popover.processPopoverData(
+                //             event.currentTarget,
+                //             app.element,
+                //             templateData,
+                //             elementData
+                //         );
+                //         popover[0].querySelector("input").focus({ focusVisible: true });
+                //     },
+                // },
+                // showArtSheets: {},
                 createNewTileData: {
                     icon: "fas fa-plus",
                     tooltipText: "Create new tile data",
@@ -223,6 +281,7 @@ export const slideshowDefaultSettingsData = {
                         let { app, tileID, targetElement } = options;
                         if (!targetElement) targetElement = event.currentTarget;
                         if (!app) app = game.JTCSlideshowConfig;
+
                         let selectedID = targetElement.value;
                         await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
                         if (app.rendered) {
@@ -234,7 +293,18 @@ export const slideshowDefaultSettingsData = {
                     onChange: async (event, options) => await extraActions.updateTileData(event, options),
                 },
                 setDisplayName: {
-                    onChange: async (event, options) => await extraActions.updateTileData(event, options),
+                    onChange: async (event, options) => {
+                        //validate the input first
+                        let isValid = await UIA.validateInput(event, {
+                            noWhitespaceStart: {
+                                notificationType: "danger",
+                                message: "Please enter a name that doesn't start with a white space",
+                            },
+                        });
+                        if (isValid) {
+                            await extraActions.updateTileData(event, options);
+                        }
+                    },
                 },
             },
         },
