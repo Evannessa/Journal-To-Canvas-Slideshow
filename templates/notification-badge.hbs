@@ -1,6 +1,10 @@
-<p class="inline-notification | fs-small" data-variant="{{this.notificationType}}">
+<p
+    class="inline-notification | fs-small slight-rounded padding-small margin-none"
+    data-variant="{{this.notificationType}}"
+    title="{{this.hoverMessage}}"
+>
     <span class="icon-span">
-        <i class={{this.icon}}></i>
+        <i class="{{this.icon}}"></i>
     </span>
     {{this.message}}
 </p>

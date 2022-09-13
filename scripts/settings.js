@@ -62,11 +62,12 @@ export const artGalleryDefaultSettings = {
     },
     indicatorColorData: {
         name: "Tile Indicator Colors",
-        hint: "Choose colors for the tile indicators",
+        hint: "Choose colors for the tile indicators, and the tile accent colors in the settings",
         colors: {
-            frameTileColor: "#cf4040",
+            frameTileColor: "#cf8f40",
             artTileColor: "#5e97ff",
             unlinkedTileColor: "#aaf3a2",
+            defaultTileColor: "#ff458c",
         },
     },
     defaultTileImages: {

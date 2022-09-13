@@ -10,11 +10,4 @@
             data-change-action="{{this.changeAction}}"
         />
     </div>
-    {{#if (eq this.missing true)}}
-       {{> (dynamicPartial "notification-badge")
-        notificationType="warning"
-        message="Gallery data not linked to scene tile" 
-       }} 
-    {{/if}}
-
 </div>

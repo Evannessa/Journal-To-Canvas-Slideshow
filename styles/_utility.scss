@@ -217,6 +217,7 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
             background-color: var(--color-#{$type}-light);
             .icon-span i {
                 color: var(--color-#{$type}-dark);
+                margin-right: 0.25rem;
             }
         }
     }
@@ -313,6 +314,12 @@ fieldset.toggle-button-group {
 }
 .padding-medium {
     padding: 0.5rem 1rem;
+}
+.padding-none {
+    padding: 0;
+}
+.margin-none {
+    margin: 0;
 }
 button.icon-button {
     height: 0;
@@ -540,7 +547,10 @@ button.icon-button {
     border-block: 2px solid var(--border-color);
 }
 .border-inline {
-    border-block: 2px solid var(--border-color);
+    border-inline: 2px solid var(--border-color);
+}
+.border-full {
+    border: 2px solid var(--border-color);
 }
 
 .square {
@@ -885,8 +895,8 @@ button.icon-button {
 }
 
 .bg-accent {
-    background-color: var(--color-secondary-base);
-    border-color: var(--color-primary-base);
+    background-color: var(--accent-color);
+    // border-color: var(--color-primary-base);
 }
 
 .overflow-hidden {

@@ -73,16 +73,17 @@ export class SlideshowConfig extends Application {
     }
 
     /**
-     *
+     * Set the accent colors for borders and text in the Slideshow config to match the colors of the indicators on the canvas
      * @param {JQueryObject} html - the html of the app (window content)
      */
     async setUIColors(html) {
         let colors = await game.JTCS.utils.getSettingValue("artGallerySettings", "indicatorColorData.colors");
-        let { frameTileColor, artTileColor, unlinkedTileColor } = colors;
+        let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = colors;
         // let root = document.documentElement;
         html[0].style.setProperty("--data-frame-color", frameTileColor);
         html[0].style.setProperty("--data-art-color", artTileColor);
         html[0].style.setProperty("--data-unlinked-color", unlinkedTileColor);
+        html[0].style.setProperty("--data-default-color", defaultTileColor);
     }
     async getData() {
         //return data to template

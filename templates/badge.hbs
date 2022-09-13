@@ -1,4 +1,8 @@
-<div class="badge" data-variant="{{this.variant}}">
+<div
+    class="badge | cap-rounded bg-accent padding-small fit-content-width"
+    data-variant="ternary {{this.variant}} {{this.variant}} ''"
+    title="{{this.hoverMessage}}"
+>
     <i class="{{this.icon}}"></i>
     {{this.message}}
 </div>

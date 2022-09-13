@@ -1,6 +1,6 @@
 <li
     class="tile-list-item | 
-	interactive flexcol flex-justify-stretch padding-small slight-rounded | 
+	interactive flexcol flex-justify-stretch padding-small slight-rounded border-full | 
 	hover-border focus-border focus-reveal hover-reveal flow"
     data-id="{{this.id}}"
     data-type="{{this.type}}"
@@ -22,13 +22,8 @@
             changeAction="itemActions.change.actions.setDisplayName"
             id=this.displayName
             value=this.displayName
-            errorCondition=(eq this.missing true)
-            errorContent=(combineToString 
-                "A " this.type "tile with ID " this.id 
-                " doesn't exist in scene " 
-                (wrapInSpan this.currentSceneName)
-            )
         }} 
+     
 		<div class="[ actions ] [ focus-reveal--child hover-reveal--child ]">
             {{#with @root.settingsData}}
                 {{#each (filter itemActions.click.actions "renderOnMissing" ../missing)}}
@@ -46,8 +41,8 @@
             {{/with}}
 		</div>
 	</header>
+        <footer class="footer">
 		{{#if (eq this.type "art")}}
-            <footer class="footer">
                 <div class="connectedTiles flex-row" data-title="">
                         <div class="form-group has-floating-label">
                             <label class="floating-label" for="linkedBoundingTile">Frame</label>
@@ -70,6 +65,21 @@
                                 "<br/>" "or let it scale to the canvas.")
                         }}
                 </div>	
-            </footer>
 		{{/if}}
+        {{#if (eq this.missing true)}}
+            {{> (dynamicPartial "notification-badge")
+                notificationType="warning"
+                message="Gallery data not linked to scene tile" 
+                icon="fas fa-unlink"
+                hoverMessage="Try buttons on right for linking options"
+            }} 
+        {{/if}}
+        {{#if (eq this.id @root.defaultArtTileID)}}
+            {{> (dynamicPartial "badge")
+                icon="fas fa-star"
+                message="default"
+                hoverMessage="Art will default to displaying on this tile, unless another tile is chosen"
+            }}   
+        {{/if}}
+    </footer>
 </li>
