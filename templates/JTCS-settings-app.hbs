@@ -4,6 +4,7 @@
             <h2>{{this.name}}</h2>
             <p>{{this.hint}}</p>
             {{> (dynamicPartial "fieldset-button-group")
+                variant="visible-tick"
                 choices=this.globalChoices.choices
                 chosen=this.globalChoices.chosen
                 propertyString="sheetSettings.globalChoices.chosen"
@@ -19,6 +20,7 @@
             {{> (dynamicPartial "fieldset-button-group")
                 choices=this.choices 
                 chosen=this.chosen
+                variant="visible-tick"
                 propertyString="fadeSheetImagesData.choices.chosen"
             }}
         {{/with}}

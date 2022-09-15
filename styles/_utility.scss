@@ -21,10 +21,29 @@
     --accent-color-1: var(--foundry-purple-shadow-hover, #9b8dff);
     --accent-color-2: var(--color-border-highlight);
     --color-accent: var(--foundry-purple-background);
-    &.JTCS {
+}
+@mixin with-absolute-pseudo($centeredX: true, $centeredY: true, $isBefore: true) {
+    $pseudoSelector: before;
+    @if ($isBefore != true) {
+        $pseudoSelector: after;
+    }
+    position: relative;
+    &:#{$pseudoSelector} {
+        position: absolute;
+        content: "";
+        @if ($centeredX and not $centeredY) {
+            left: 50%;
+            transform: translateX(-50%);
+        } @else if ($centeredY and not $centeredX) {
+            top: 50%;
+            transform: translateY(-50%);
+        } @else if($centeredX and $centeredY) {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
 }
-
 .blank-button {
     border: none;
     background: transparent;
@@ -221,6 +240,49 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
             }
         }
     }
+}
+.input-span {
+    --accent-color: var(--accent-color-1);
+    display: inline-flex;
+    &[data-variant="visible-tick"] {
+        input[type="radio"] {
+            @extend .hidden;
+            + label {
+                border: 2px solid var(--accent-color);
+                background-color: transparent;
+                .tick-circle {
+                    border: 2px solid var(--accent-color);
+                    display: inline-flex;
+                    width: 1rem;
+                    height: 1rem;
+                    border-radius: 50%;
+                    background-color: white;
+                }
+            }
+            &:checked {
+                + label {
+                    border: 2px solid var(--accent-color);
+                    background-color: var(--accent-color);
+                    .tick-circle {
+                        @include with-absolute-pseudo($isBefore: false);
+                        &:after {
+                            width: 0.5rem;
+                            height: 0.5rem;
+                            border-radius: 50%;
+                            background-color: var(--accent-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+input[type="radio"]:checked.accent-input {
+    --accent-color: var(--accent-color-1);
+    accent-color: var(--accent-color);
+    filter: unset;
+    -webkit-filter: unset;
 }
 
 .fit-content-width {
