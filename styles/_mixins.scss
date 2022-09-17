@@ -1,0 +1,26 @@
+@mixin with-absolute-pseudo($centeredX: true, $centeredY: true, $isBefore: true) {
+    $pseudoSelector: before;
+    @if ($isBefore != true) {
+        $pseudoSelector: after;
+    }
+    position: relative;
+    &:#{$pseudoSelector} {
+        position: absolute;
+        content: "";
+        @if ($centeredX and not $centeredY) {
+            left: 50%;
+            transform: translateX(-50%);
+        } @else if ($centeredY and not $centeredX) {
+            top: 50%;
+            transform: translateY(-50%);
+        } @else if($centeredX and $centeredY) {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+}
+.blank-button {
+    border: none;
+    background: transparent;
+}

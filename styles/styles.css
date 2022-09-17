@@ -67,6 +67,11 @@
   background-color: #e55937;
 }
 
+.blank-button {
+  border: none;
+  background: transparent;
+}
+
 :root {
   --bg-color-hover: var(--color-border-dark-primary);
   --bg-color: hsla(0, 0%, 20%, 0.9);
@@ -85,11 +90,6 @@
   --accent-color-1: var(--foundry-purple-shadow-hover, #9b8dff);
   --accent-color-2: var(--color-border-highlight);
   --color-accent: var(--foundry-purple-background);
-}
-
-.blank-button {
-  border: none;
-  background: transparent;
 }
 
 .popover {
@@ -274,6 +274,44 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
   transition: transform 100ms ease-out, opacity 100ms ease-out;
 }
 
+.input-span {
+  --bg-color: var(--accent-color-1);
+  --border-color: var(--accent-color-1);
+  display: inline-flex;
+}
+.input-span[data-variant=visible-tick] input[type=radio] + label {
+  --bg-color: transparent;
+}
+.input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle {
+  --border-color: transparent;
+  border: 2px solid var(--border-color);
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: white;
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label {
+  --bg-color: var(--accent-color-1);
+  border: 2px solid var(--border-color);
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle {
+  position: relative;
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after {
+  position: absolute;
+  content: "";
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--bg-color);
+}
+
 .inline-notification {
   display: inline-flex;
 }
@@ -308,43 +346,6 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 .inline-notification[data-variant=success] .icon-span i {
   color: var(--color-success-dark);
   margin-right: 0.25rem;
-}
-
-.input-span {
-  --accent-color: var(--accent-color-1);
-  display: inline-flex;
-}
-.input-span[data-variant=visible-tick] input[type=radio] + label {
-  border: 2px solid var(--accent-color);
-  background-color: transparent;
-}
-.input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle {
-  border: 2px solid var(--accent-color);
-  display: inline-flex;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background-color: white;
-}
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label {
-  border: 2px solid var(--accent-color);
-  background-color: var(--accent-color);
-}
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle {
-  position: relative;
-}
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after {
-  position: absolute;
-  content: "";
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background-color: var(--accent-color);
 }
 
 input[type=radio]:checked.accent-input {
@@ -482,6 +483,17 @@ button.icon-button[data-variant=small] {
   color: var(--color-accent);
 }
 
+.bg-fill, .input-span[data-variant=visible-tick] input[type=radio]:checked + label {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.bg-ghost {
+  background-color: transparent;
+  border: 2px solid var(--border-color);
+  color: var(--text-color);
+}
+
 .bg-dark {
   background-color: var(--bg-color);
   color: var(--color-text-secondary);
@@ -562,10 +574,10 @@ button.icon-button[data-variant=small] {
   background-color: transparent;
 }
 
-.hover-bg-dynamic {
+.hover-bg-dynamic, .input-span[data-variant=visible-tick] input[type=radio] + label, .input-span[data-variant=visible-tick] input[type=radio]:checked + label {
   transition: background-color 150ms ease-in;
 }
-.hover-bg-dynamic:hover {
+.hover-bg-dynamic:hover, .input-span[data-variant=visible-tick] input[type=radio] + label:hover {
   background-color: var(--bg-color);
 }
 
@@ -705,7 +717,7 @@ button.icon-button[data-variant=small] {
   border-inline: 2px solid var(--border-color);
 }
 
-.border-full {
+.border-full, .input-span[data-variant=visible-tick] input[type=radio] + label {
   border: 2px solid var(--border-color);
 }
 

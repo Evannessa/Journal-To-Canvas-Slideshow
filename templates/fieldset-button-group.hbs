@@ -1,6 +1,6 @@
   <fieldset class="button-group {{extraClass}}">
     {{#each this.choices}}
-      <span class="input-span slight-rounded fit-content-width" data-variant="{{../variant}}">
+      <span class="input-span slight-rounded fit-content-width interactive" data-variant="{{../variant}}">
    
           <input
             type="radio"
@@ -12,7 +12,7 @@
                         checked	
                 {{/if}}
           />
-          <label class="flex-row slight-rounded gap-small padding-small" for="{{@key}}" data-title="">
+          <label class="flex-row slight-rounded gap-small padding-small interactive" for="{{@key}}" data-title="">
             {{#if (eq ../variant "visible-tick") }}
                 <span class="tick-circle"></span> 
             {{/if}}
