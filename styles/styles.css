@@ -246,7 +246,8 @@
   transition: opacity 500ms ease-out;
 }
 
-.hidden, .input-span[data-variant=visible-tick] input[type=radio], input:is([type=radio], [type=checkbox]).hidden-input {
+.hidden, .input-span[data-variant=visible-tick] input[type=radio],
+.input-span[data-variant=visible-tick] input[type=checkbox], input:is([type=radio], [type=checkbox]).hidden-input {
   transform: scale(0);
   position: absolute;
   overflow: hidden;
@@ -317,37 +318,68 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
   --border-color: var(--accent-color-1);
   display: inline-flex;
 }
-.input-span[data-variant=visible-tick] input[type=radio] + label {
-  --bg-color: transparent;
+.input-span input:disabled + label {
+  opacity: 50%;
 }
-.input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle {
+.input-span[data-variant=visible-tick] input[type=radio] + label,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label {
+  --bg-color: transparent;
+  background-color: transparent;
+  color: var(--color-text-dark-primary);
+}
+.input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle,
+.input-span[data-variant=visible-tick] input[type=radio] + label .tick-box,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label .tick-circle,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label .tick-box {
   --border-color: transparent;
   border: 2px solid var(--border-color);
   display: inline-flex;
   width: 1rem;
   height: 1rem;
-  border-radius: 50%;
   background-color: white;
 }
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label {
+.input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label .tick-circle {
+  border-radius: 50%;
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label {
   --bg-color: var(--accent-color-1);
   border: 2px solid var(--border-color);
 }
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle {
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle,
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-box,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-circle,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-box {
   position: relative;
 }
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after {
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after,
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-box:after,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-circle:after,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-box:after {
   position: absolute;
   content: "";
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after {
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after,
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-box:after,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-circle:after,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-box:after {
   width: 0.5rem;
   height: 0.5rem;
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle:after,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-circle:after {
   border-radius: 50%;
   background-color: var(--bg-color);
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-box:after,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label .tick-box:after {
+  content: "✓";
+  color: var(--bg-color);
+  top: unset;
 }
 
 .inline-notification {
@@ -521,7 +553,8 @@ button.icon-button[data-variant=small] {
   color: var(--color-accent);
 }
 
-.bg-fill, .input-span[data-variant=visible-tick] input[type=radio]:checked + label {
+.bg-fill, .input-span[data-variant=visible-tick] input[type=radio]:checked + label,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label {
   background-color: var(--bg-color);
   color: var(--text-color);
 }
@@ -612,10 +645,13 @@ button.icon-button[data-variant=small] {
   background-color: transparent;
 }
 
-.hover-bg-dynamic, .input-span[data-variant=visible-tick] input[type=radio] + label, .input-span[data-variant=visible-tick] input[type=radio]:checked + label {
+.hover-bg-dynamic, .input-span[data-variant=visible-tick] input[type=radio] + label,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label, .input-span[data-variant=visible-tick] input[type=radio]:checked + label,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label {
   transition: background-color 150ms ease-in;
 }
-.hover-bg-dynamic:hover, .input-span[data-variant=visible-tick] input[type=radio] + label:hover {
+.hover-bg-dynamic:hover, .input-span[data-variant=visible-tick] input[type=radio] + label:hover,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label:hover {
   background-color: var(--bg-color);
 }
 
@@ -755,7 +791,8 @@ button.icon-button[data-variant=small] {
   border-inline: 2px solid var(--border-color);
 }
 
-.border-full, .input-span[data-variant=visible-tick] input[type=radio] + label {
+.border-full, .input-span[data-variant=visible-tick] input[type=radio] + label,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label {
   border: 2px solid var(--border-color);
 }
 
@@ -1246,6 +1283,9 @@ button.icon-button[data-variant=small] {
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
 
+#JTCSSettingsApplication {
+  max-width: 50vw;
+}
 #JTCSSettingsApplication .color-picker-group {
   position: relative;
 }

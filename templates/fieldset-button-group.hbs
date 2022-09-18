@@ -1,22 +1,45 @@
-  <fieldset class="button-group {{extraClass}}">
+  <fieldset class="button-group flex-justify-space-evenly gap-small {{extraClass}}">
     {{#each this.choices}}
       <span class="input-span slight-rounded fit-content-width interactive" data-variant="{{../variant}}">
    
           <input
-            type="radio"
-                class="accent-input"
-            name="{{../propertyString}}"
+            type="{{../type}}"
+            class="accent-input"
             id="{{@key}}"
-            value="{{@key}}"
+
+            {{#if (eq ../type "radio")}}
+                value="{{@key}}"
+                name="{{../propertyString}}"
                 {{#if (eq ../chosen @key)}}
                         checked	
                 {{/if}}
+
+            {{else}}
+                name="{{concat ../propertyString "." @key}}"
+
+                {{#if (eq ../isDisabled true)}} 
+                    disabled
+                {{/if}}
+
+                {{#if (eq this true)}}
+                    checked 
+                {{/if}} 
+
+            {{/if}}
           />
           <label class="flex-row slight-rounded gap-small padding-small interactive" for="{{@key}}" data-title="">
             {{#if (eq ../variant "visible-tick") }}
-                <span class="tick-circle"></span> 
+                {{#if (eq ../type "radio")}}
+                    <span class="tick-circle"></span> 
+                {{else}}
+                    <span class="tick-box"></span> 
+                {{/if}}
             {{/if}}
-            {{this}}
+            {{#if (eq ../type "radio")}}
+                    {{this}}
+                {{else}}
+                   {{@key}}
+            {{/if}}
           </label>
       </span>
     {{/each}}

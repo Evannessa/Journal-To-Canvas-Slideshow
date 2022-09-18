@@ -4,24 +4,31 @@
             <h2>{{this.name}}</h2>
             <p>{{this.hint}}</p>
             {{> (dynamicPartial "fieldset-button-group")
+                type="radio"
                 variant="visible-tick"
                 choices=this.globalChoices.choices
                 chosen=this.globalChoices.chosen
                 propertyString="sheetSettings.globalChoices.chosen"
             }}
-            {{> (dynamicPartial "checkbox-chip-group") 
+            {{> (dynamicPartial "fieldset-button-group") 
+                type="checkbox"
+                variant="visible-tick"
                 choices=this.modularChoices 
                 propertyString="sheetSettings.modularChoices"
+                isDisabled=(eq this.globalChoices.chosen "toggleEach")
             }}
         {{/with}}
     </div>
     <div class="form-group-stacked" id="JTCSsheetFadeData">
         {{#with fadeSheetImagesData}}
+        <h2>{{this.name}}</h2>
+        <p class="notes">{{this.hint}}</p>
             {{> (dynamicPartial "fieldset-button-group")
+                type="radio"
                 choices=this.choices 
                 chosen=this.chosen
                 variant="visible-tick"
-                propertyString="fadeSheetImagesData.choices.chosen"
+                propertyString="fadeSheetImagesData.chosen"
             }}
         {{/with}}
     </div>
@@ -29,7 +36,7 @@
         {{#with indicatorColorData}}
             <h2>{{this.name}}</h2>
             <p>{{this.hint}}</p>
-            <div class="form-group">
+            <div class="form-group-stacked">
             {{#each this.colors}}
                 <div class="form-group color-picker-group">
                     <label for="artTileColor">{{camelCaseToArray @key}}</label>

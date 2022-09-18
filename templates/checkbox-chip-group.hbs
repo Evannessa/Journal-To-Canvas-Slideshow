@@ -1,10 +1,21 @@
 <div class="form-group flex-row flex-justify-space-evenly">
     {{#each choices}}
-    <span class="chip-span">
-        <input type="checkbox" class="hidden-input" id={{@key}} {{#if (eq this true)}}
+    <span class="input-span">
+        <input type="checkbox" id={{@key}} 
+        {{#if (eq this true)}}
            checked 
-        {{/if}} name="{{concat ../propertyString "." @key}}"/>
-        <label for="{{@key}}">{{camelCaseToArray @key true}}</label>
+        {{/if}} 
+        name="{{concat ../propertyString "." @key}}"
+        {{#if (eq ../isDisabled true)}} 
+            disabled
+        {{/if}}
+        />
+        <label for="{{@key}}">
+            {{#if (eq ../variant "visible-tick") }}
+            <span class="tick-box"></span>
+            {{/if}}
+            {{camelCaseToArray @key true}}
+        </label>
     </span>
     {{/each}}
 </div>
