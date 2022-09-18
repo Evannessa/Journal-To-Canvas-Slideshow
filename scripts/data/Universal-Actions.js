@@ -11,6 +11,67 @@ async function renderInlineNotification(event, ancestorSelector = "formGroup", o
     let renderHTML = await renderTemplate(template, options);
     parentItem.insertAdjacentHTML("beforeend", renderHTML);
 }
+
+function setAnimDefaults(animOptions) {
+    const defaultOptions = {
+        isFadeOut: false,
+        duration: 300,
+        onFadeOut: ($el, event) => {
+            $el.remove();
+        },
+    };
+    return mergeObject(defaultOptions, animOptions);
+}
+/**
+ *
+ * for fading objects in and out when they enter or exit the DOM
+ * @param {JQuery} $element - Jquery object representing element to fade
+ * @param {Object}  options - the options object
+ * @param {Number} options.duration - default fade animation duration
+ * @param {Boolean} options.isFadeOut - a boolean determining whether or not this should fade in our out
+ * @param {Function} options.onFadeOut - the callback to handle what happens when the fade animation is complete
+ */
+async function fade($element, options = {}) {
+    let { duration, isFadeOut, onFadeOut } = setAnimDefaults(options);
+    console.log("Fading", $element, "With", options);
+
+    let fadeAnim = $element[0].animate(
+        [
+            // keyframes
+            { opacity: isFadeOut ? "100%" : "0%" },
+            { opacity: isFadeOut ? "0%" : "100%" },
+        ],
+        {
+            // timing options
+            duration: duration,
+        }
+    );
+    fadeAnim.addEventListener("finish", (event) => {
+        if (isFadeOut) {
+            onFadeOut($element, event);
+        }
+    });
+}
+/**
+ * Handle the adding and removal of classes and triggering of animations to hide and fade elements
+ * @param {JQuery} $element - the JQuery object representing DOM Element we want to show or hide
+ */
+async function handleVisibilityTransitions($element) {
+    //if the class already has hidden, set it to fadeIn rather than out
+    const isFadeOut = $element.hasClass("hidden") ? false : true;
+
+    //if we're fading in, remove the hidden class
+    if (!isFadeOut) $($element).removeClass("hidden");
+
+    //set our fade animation options
+    let options = {
+        isFadeOut,
+        onFadeOut: ($element, event) => $element.addClass("hidden"),
+    };
+    //handle the fade animation
+    //? Fade will handle the opacity, while our "hidden" class handles everything else (transform, clip rect, position absolute, etc.)
+    fade($($element), options);
+}
 export const universalInterfaceActions = {
     toggleShowAnotherElement: (event, options) => {
         let { parentItem, targetClassSelector } = options;
@@ -22,7 +83,9 @@ export const universalInterfaceActions = {
         } else {
             target = parentItem.querySelector(`.${targetClassSelector}`);
         }
-        target?.classList.toggle("hidden");
+        if (target) {
+            handleVisibilityTransitions($(target));
+        }
     },
     toggleActiveStyles: (event) => {
         let el = event.currentTarget;
@@ -51,6 +114,7 @@ export const universalInterfaceActions = {
         }
     },
     renderInlineNotification: renderInlineNotification,
+    fade,
     // showInputNotification: (event, options) => {
     //     //show
     //     let { message, notificationType } = options;

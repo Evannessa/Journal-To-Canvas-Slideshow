@@ -72,6 +72,39 @@
   background: transparent;
 }
 
+@-webkit-keyframes fade {
+  from {
+    opacity: 0%;
+  }
+  to {
+    opacity: 100%;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0%;
+  }
+  to {
+    opacity: 100%;
+  }
+}
+@-webkit-keyframes fadeOut {
+  from {
+    opacity: 100%;
+  }
+  to {
+    opacity: 0%;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 100%;
+  }
+  to {
+    opacity: 0%;
+  }
+}
 :root {
   --bg-color-hover: var(--color-border-dark-primary);
   --bg-color: hsla(0, 0%, 20%, 0.9);
@@ -206,6 +239,11 @@
   box-shadow: 0 0 10px var(--shadow-color-hover);
   border: 1px solid var(--border-color-hover);
   color: var(--color-text-secondary-hover);
+}
+
+.fade-to-hidden {
+  opacity: 0%;
+  transition: opacity 500ms ease-out;
 }
 
 .hidden, .input-span[data-variant=visible-tick] input[type=radio], input:is([type=radio], [type=checkbox]).hidden-input {

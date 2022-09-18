@@ -1,6 +1,8 @@
 @use "variables" as *;
 @use "mixins" as *;
+@use "animations" as *;
 @use "sass:string";
+
 :root {
     //foundry colors
 
@@ -25,7 +27,9 @@
 }
 
 .popover {
+    // animation: fade 0.3s linear;
     position: absolute;
+
     padding: var(--padding-small);
     background-color: var(--bg-color);
     color: var(--color-text-light-0);
@@ -133,7 +137,17 @@
         color: var(--color-text-secondary-hover);
     }
 }
+.toggle-visible {
+    // opacity: 100%;
+    // transition: opacity 500ms ease-in;
+}
+.fade-to-hidden {
+    opacity: 0%;
+    transition: opacity 500ms ease-out;
+}
 .hidden {
+    // opacity: 0%;
+    // transition: opacity 500ms ease-out;
     transform: scale(0);
     position: absolute;
     overflow: hidden;

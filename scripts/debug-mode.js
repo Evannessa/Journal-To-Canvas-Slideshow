@@ -23,7 +23,7 @@ Hooks.on("canvasReady", ({}) => {
         });
         Object.keys(autoRenderDocs).forEach((collectionName) => {
             autoRenderDocs[collectionName].forEach((name) => {
-                game[collectionName].getName(name).render();
+                game[collectionName].getName(name).sheet.render(true);
             });
         });
 

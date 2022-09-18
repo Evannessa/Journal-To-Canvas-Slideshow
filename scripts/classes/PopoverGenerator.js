@@ -1,5 +1,6 @@
 "use strict";
 import { HelperFunctions } from "./HelperFunctions.js";
+import { universalInterfaceActions as UIA } from "../data/Universal-Actions.js";
 export class Popover {
     static defaultElementData = {
         popoverElement: {
@@ -155,6 +156,7 @@ export class Popover {
             let renderedHTML = await renderTemplate(popoverTemplate, templateData);
             parentElement.append(renderedHTML);
             popoverElement = parentElement.find(`.popover[data-popover-id="${templateData.dataset.popoverId}"`);
+            UIA.fade(popoverElement);
         }
 
         let popoverData = elementDataArray.find((data) => data.name === "popoverElement");
@@ -229,15 +231,13 @@ export class Popover {
 
     static async hideAndDeletePopover(popoverElement) {
         // popoverElement.addClass("hidden");
-        //TODO: Put some sort of fading animation here
         if (popoverElement.timeout) {
             //if the popover is already counting down to a timeout, cancel it
             clearTimeout(popoverElement.timeout);
         }
         let popoverTimeout = setTimeout(() => {
-            //set a new timeout to remove the popover
-            popoverElement.remove();
-        }, 900);
+            UIA.fade(popoverElement, { isFadeOut: true });
+        }, 400);
         //save that timeout's id on the popover
         popoverElement.timeout = popoverTimeout;
     }
