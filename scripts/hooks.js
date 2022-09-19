@@ -114,10 +114,6 @@ export const setupHookHandlers = async () => {
             hooks: ["getSceneControlButtons"],
             handlerFunction: addJTCSControls,
         },
-        addCustomDialogClass: {
-            hooks: ["renderDialog"],
-            handlerFunction: addCustomDialogClass,
-        },
     };
 
     async function registerHooks() {

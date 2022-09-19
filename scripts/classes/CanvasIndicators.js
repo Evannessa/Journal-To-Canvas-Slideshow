@@ -33,8 +33,11 @@ export class CanvasIndicators {
             y: tileDocument.data.y,
         };
         let tileObject = tileDocument.object;
+        if (!tileObject) {
+            return;
+        }
 
-        if (tileObject.overlayContainer) {
+        if (tileObject && tileObject.overlayContainer) {
             //destroy the overlayContainer PIXI Container stored on the tileObject
             tileObject.overlayContainer.destroy();
 

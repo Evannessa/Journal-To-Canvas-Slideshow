@@ -24,8 +24,9 @@ export class ImageDisplayManager {
             frameTileID: frameTileID,
         };
     }
-    static async updateTileObjectTexture(artTileID, frameTileID, url, method) {
-        let ourScene = game.scenes.viewed;
+    static async updateTileObjectTexture(artTileID, frameTileID, url, method, sceneID = "") {
+        let ourScene = game.scenes.get(sceneID);
+        if (!ourScene) ourScene = game.scenes.viewed;
         if (method == "artScene") {
             let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
             ourScene = artSceneData.ourScene;
@@ -33,8 +34,8 @@ export class ImageDisplayManager {
             frameTileID = artSceneData.frameTileID;
         }
 
-        let artTile = game.scenes.viewed.tiles.get(artTileID);
-        let frameTile = game.scenes.viewed.tiles.get(frameTileID);
+        let artTile = ourScene.tiles.get(artTileID);
+        let frameTile = ourScene.tiles.get(frameTileID);
 
         //load the texture from the source
         if (!artTile || !url) {
@@ -226,6 +227,30 @@ export class ImageDisplayManager {
         //on click, this method will determine if the image should open in a scene or in a display journal
         switch (method) {
             case "artScene":
+                //TODO: - get default tile from art scene
+                let artSceneID = await game.JTCS.utils.getSettingValue(
+                    "artGallerySettings",
+                    "dedicatedDisplayData.scene.value"
+                );
+                let artScene = game.scenes.get(artSceneID);
+                if (artScene) {
+                    let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(artScene);
+                    let frameTileID = await ArtTileManager.getGalleryTileDataFromID(
+                        defaultArtTileID,
+                        "linkedBoundingTile",
+                        artSceneID
+                    );
+                    console.log("Our art tile is", defaultArtTileID);
+                    console.log("Our frame tile is", frameTileID);
+                    await ImageDisplayManager.updateTileObjectTexture(
+                        defaultArtTileID,
+                        frameTileID,
+                        url,
+                        method,
+                        artSceneID
+                    );
+                }
+                break;
             case "anyScene":
                 let { artTileID, frameTileID } = sheetImageData;
                 //if the setting is to display it in a scene, proceed as normal

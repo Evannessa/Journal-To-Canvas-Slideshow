@@ -277,13 +277,25 @@ export class ArtTileManager {
         let defaultArtTileID = await currentScene.getFlag(MODULE_ID, "defaultArtTileID");
         if (!defaultArtTileID) {
             //if you can't find it, default to the first tile in the scene
-            defaultArtTileID = currentScene.tiles.contents[0]?.id;
+            //TODO: This should make sure the tile is in the scene
+            let artTiles = (
+                await ArtTileManager.getSceneSlideshowTiles("art", true, {
+                    currentSceneID: currentScene.id,
+                })
+            ).filter((item) => !item.missing);
+
+            if (artTiles.length > 0) {
+                defaultArtTileID = artTiles[0].id;
+            } else {
+                ui.notifications.warn("No art or frame tiles found in this scene");
+            }
+            // defaultArtTileID = currentScene.tiles.contents[0]?.id;
         }
         return defaultArtTileID;
     }
 
-    static async getGalleryTileDataFromID(tileID, property = "") {
-        let flaggedTiles = await this.getSceneSlideshowTiles();
+    static async getGalleryTileDataFromID(tileID, property = "", currentSceneID = "") {
+        let flaggedTiles = await this.getSceneSlideshowTiles("", false, { currentSceneID });
         let ourTile = flaggedTiles.find((data) => data.id === tileID);
         console.log("Did we find our tile?", ourTile);
         if (property) {

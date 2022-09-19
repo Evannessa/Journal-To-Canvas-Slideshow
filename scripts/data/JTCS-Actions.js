@@ -1,8 +1,9 @@
 import { MODULE_ID } from "../debug-mode.js";
+import { ImageDisplayManager } from "../classes/ImageDisplayManager.js";
 export class JTCSActions {
     static async onDisplayActionClick(event, options = {}) {
         let { method, url } = options;
-        await game.JTCS.imageUtils.manager.determineDisplayMethod({
+        await ImageDisplayManager.determineDisplayMethod({
             method: method,
             url: url,
         });
