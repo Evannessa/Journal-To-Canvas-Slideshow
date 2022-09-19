@@ -26,10 +26,18 @@ export class HelperFunctions {
     static async setFlagValue(document, flagName, updateData, nestedKey = "") {
         await document.setFlag(MODULE_ID, flagName, updateData);
     }
-    static async getFlagValue(document, flagName, nestedKey = "") {
+    /**
+     * Get the value of a document's flag
+     * @param {Object} document - the document whose flags we want to set (Scene, Actor, Item, etc)
+     * @param {String} flagName - the name of the flag
+     * @param {String} nestedKey - a string of nested properties separated by dot notation that we want to set
+     * @param {*} returnIfEmpty - a value to return if the flag is undefined
+     * @returns
+     */
+    static async getFlagValue(document, flagName, nestedKey = "", returnIfEmpty = []) {
         let flagData = await document.getFlag(MODULE_ID, flagName);
         if (!flagData) {
-            flagData = [];
+            flagData = returnIfEmpty;
         }
         return flagData;
     }
@@ -241,10 +249,18 @@ export class HelperFunctions {
         popoverElement.timeout = popoverTimeout;
     }
 
+    /**
+     * Create a dialog
+     * @param {String} title - the title of the dialog
+     * @param {String} templatePath - the path to the template being used for this dialog
+     * @param {Object} data - the data object
+     * @param {Object} data.buttons - the buttons at the bottom of the prompt
+     */
     static async createDialog(title, templatePath, data) {
         const options = {
             width: 600,
-            height: 250,
+            // height: 250,
+            id: "JTCS-custom-dialog",
         };
         let renderedHTML = await renderTemplate(templatePath, data);
         let d = new Dialog(

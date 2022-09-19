@@ -21,6 +21,7 @@ const templateBaseNames = [
     `item-menu.hbs`,
     `sheet-wide-controls.hbs`,
     `badge.hbs`,
+    `delete-confirmation-prompt.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

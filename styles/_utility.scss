@@ -229,16 +229,19 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
         input[type="checkbox"] {
             @extend .hidden;
             + label {
-                --bg-color: transparent;
+                --border-color: var(--foundry-purple-shadow-hover);
                 background-color: transparent;
                 color: var(--color-text-dark-primary);
+                transition: color 200ms ease-out, border-color 200ms ease-out, background-color 200ms ease-out;
+                &:hover {
+                    --bg-color: var(--foundry-purple-shadow-hover);
+                }
                 @extend .hover-bg-dynamic;
                 @extend .border-full;
                 // border: 2px solid var(--border-color);
                 .tick-circle,
                 .tick-box {
-                    --border-color: transparent;
-                    border: 2px solid var(--border-color);
+                    border: 1px solid var(--border-color);
                     display: inline-flex;
                     width: 1rem;
                     height: 1rem;
@@ -250,10 +253,15 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
             }
             &:checked {
                 + label {
-                    --bg-color: var(--accent-color-1);
-                    @extend .hover-bg-dynamic;
+                    --bg-color: var(--foundry-purple-border);
+                    &:hover {
+                        --border-color: var(--foundry-purple-shadow-hover);
+                        --text-color: var(--foundry-purple-shadow-hover);
+                    }
+                    // @extend .hover-bg-dynamic;
                     @extend .bg-fill;
                     border: 2px solid var(--border-color);
+                    transition: color 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out;
                     // background-color: var(--accent-color);
                     .tick-circle,
                     .tick-box {
@@ -1114,5 +1122,37 @@ button.icon-button {
         height: 100%;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+    }
+}
+.capitalize {
+    text-transform: capitalize;
+}
+
+#JTCS-custom-dialog {
+    height: fit-content;
+    .dialog-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dialog-buttons {
+        flex: 0;
+    }
+    .dialog-buttons .dialog-button[data-button="delete"] {
+        background: var(--color-danger-base);
+        color: white;
+        font-weight: bold;
+    }
+    .destructive-action-prompt {
+        flex: 1 0 0;
+        h1 {
+            display: inline-flex;
+            gap: 1rem;
+        }
+        h1,
+        .destructive-action-text {
+            color: var(--color-danger-base);
+            font-weight: 700;
+        }
     }
 }

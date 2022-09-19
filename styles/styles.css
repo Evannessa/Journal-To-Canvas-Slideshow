@@ -323,16 +323,20 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 }
 .input-span[data-variant=visible-tick] input[type=radio] + label,
 .input-span[data-variant=visible-tick] input[type=checkbox] + label {
-  --bg-color: transparent;
+  --border-color: var(--foundry-purple-shadow-hover);
   background-color: transparent;
   color: var(--color-text-dark-primary);
+  transition: color 200ms ease-out, border-color 200ms ease-out, background-color 200ms ease-out;
+}
+.input-span[data-variant=visible-tick] input[type=radio] + label:hover,
+.input-span[data-variant=visible-tick] input[type=checkbox] + label:hover {
+  --bg-color: var(--foundry-purple-shadow-hover);
 }
 .input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle,
 .input-span[data-variant=visible-tick] input[type=radio] + label .tick-box,
 .input-span[data-variant=visible-tick] input[type=checkbox] + label .tick-circle,
 .input-span[data-variant=visible-tick] input[type=checkbox] + label .tick-box {
-  --border-color: transparent;
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   display: inline-flex;
   width: 1rem;
   height: 1rem;
@@ -344,8 +348,14 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 }
 .input-span[data-variant=visible-tick] input[type=radio]:checked + label,
 .input-span[data-variant=visible-tick] input[type=checkbox]:checked + label {
-  --bg-color: var(--accent-color-1);
+  --bg-color: var(--foundry-purple-border);
   border: 2px solid var(--border-color);
+  transition: color 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out;
+}
+.input-span[data-variant=visible-tick] input[type=radio]:checked + label:hover,
+.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label:hover {
+  --border-color: var(--foundry-purple-shadow-hover);
+  --text-color: var(--foundry-purple-shadow-hover);
 }
 .input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle,
 .input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-box,
@@ -646,8 +656,7 @@ button.icon-button[data-variant=small] {
 }
 
 .hover-bg-dynamic, .input-span[data-variant=visible-tick] input[type=radio] + label,
-.input-span[data-variant=visible-tick] input[type=checkbox] + label, .input-span[data-variant=visible-tick] input[type=radio]:checked + label,
-.input-span[data-variant=visible-tick] input[type=checkbox]:checked + label {
+.input-span[data-variant=visible-tick] input[type=checkbox] + label {
   transition: background-color 150ms ease-in;
 }
 .hover-bg-dynamic:hover, .input-span[data-variant=visible-tick] input[type=radio] + label:hover,
@@ -1213,6 +1222,41 @@ button.icon-button[data-variant=small] {
   border-bottom-right-radius: 0;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
+#JTCS-custom-dialog {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+#JTCS-custom-dialog .dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#JTCS-custom-dialog .dialog-buttons {
+  flex: 0;
+}
+#JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete] {
+  background: var(--color-danger-base);
+  color: white;
+  font-weight: bold;
+}
+#JTCS-custom-dialog .destructive-action-prompt {
+  flex: 1 0 0;
+}
+#JTCS-custom-dialog .destructive-action-prompt h1 {
+  display: inline-flex;
+  gap: 1rem;
+}
+#JTCS-custom-dialog .destructive-action-prompt h1,
+#JTCS-custom-dialog .destructive-action-prompt .destructive-action-text {
+  color: var(--color-danger-base);
+  font-weight: 700;
+}
+
 :root {
   --foundry-dark-gray: rgba(52, 52, 52, 0.85);
   --foundry-purple-background-hover: rgba(60, 0, 120, 0.5);
@@ -1284,6 +1328,7 @@ button.icon-button[data-variant=small] {
 }
 
 #JTCSSettingsApplication {
+  min-height: 50vh;
   max-width: 50vw;
 }
 #JTCSSettingsApplication .color-picker-group {
@@ -1292,6 +1337,16 @@ button.icon-button[data-variant=small] {
 #JTCSSettingsApplication .color-picker-group .picker_wrapper {
   position: absolute;
   z-index: 800;
+}
+#JTCSSettingsApplication .window-content form {
+  display: flex;
+  flex-direction: column;
+}
+#JTCSSettingsApplication .window-content form .form-content {
+  flex: 1 1 0;
+}
+#JTCSSettingsApplication .window-content form .sheet-footer {
+  flex: 0;
 }
 
 #slideshow-config {
@@ -1315,21 +1370,22 @@ button.icon-button[data-variant=small] {
   height: 100%;
 }
 #slideshow-config .window-content .tilesInScene {
-  height: 80%;
+  height: 95%;
   position: relative;
 }
 #slideshow-config .window-content .tilesInScene .item-wrapper {
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: 93% 7%;
-  position: relative;
-  min-height: 80%;
-  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+#slideshow-config .window-content .tilesInScene .item-wrapper ul {
+  flex: 1 0 0;
 }
 #slideshow-config .window-content .tilesInScene .item-wrapper .new-tile-list-item {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  flex: 0;
+  height: 100%;
+}
+#slideshow-config .window-content .tilesInScene .item-wrapper .new-tile-list-item button {
+  height: 100%;
 }
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);
@@ -1363,6 +1419,7 @@ button.icon-button[data-variant=small] {
   border-right: none;
 }
 .clickableImageContainer .clickableImageControls {
+  opacity: 0%;
   position: absolute;
   top: 0;
   left: 0;

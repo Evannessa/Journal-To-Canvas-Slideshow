@@ -3,6 +3,7 @@ import { JTCSSettingsApplication } from "../classes/JTCSSettingsApplication.js";
 import { JTCSActions } from "./JTCS-Actions.js";
 import { Popover } from "../classes/PopoverGenerator.js";
 import { universalInterfaceActions as UIA } from "./Universal-Actions.js";
+import { HelperFunctions } from "../classes/HelperFunctions.js";
 import { ImageDisplayManager } from "../classes/ImageDisplayManager.js";
 import { ArtTileManager } from "../classes/ArtTileManager.js";
 
@@ -50,9 +51,37 @@ const extraActions = {
         }
     },
     deleteTileData: async (event, options = {}) => {
-        let { app, tileID } = options;
-        await game.JTCS.tileUtils.deleteSceneTileData(tileID);
-        await app.renderWithData();
+        const { app, tileID, parentLI } = options;
+        console.log("This is our current target for delete", parentLI);
+        let type = parentLI.dataset.type;
+        let displayName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
+        console.log("This is our display name", displayName, type);
+        const templatePath = game.JTCS.templates["delete-confirmation-prompt"];
+        const buttons = {
+            cancel: {
+                label: "Cancel",
+                icon: "<i class='fas fa-undo'></i>",
+            },
+            delete: {
+                label: "Delete Gallery Tile",
+                icon: "<i class='fas fa-trash'></i>",
+                callback: async () => {
+                    await game.JTCS.tileUtils.deleteSceneTileData(tileID);
+                    await app.renderWithData();
+                },
+            },
+        };
+        type = type.charAt(0).toUpperCase() + type.slice(1);
+        const data = {
+            icon: "fas fa-trash",
+            heading: "Delete Art Tile Data?",
+            destructiveActionText: `delete this ${type} tile data?`,
+            explanation: `This will permanently delete`,
+            lossDataList: [`${type} Tile '${displayName}'`],
+            explanation2: `With no way to get it back`,
+            buttons,
+        };
+        await HelperFunctions.createDialog("Delete Art Tile", templatePath, data);
     },
     highlightItemAndTile: async (event, options = {}) => {
         let { parentLI, tileID } = options;
@@ -410,6 +439,7 @@ export const slideshowDefaultSettingsData = {
                 },
                 showUnlinkedTiles: {
                     icon: "fas fa-link",
+                    tooltipText: "Show tiles objects on canvas that aren't linked to any art or frame tile data",
                     onClick: async (event, options = {}) => {
                         let { app, tileID, parentLI } = options;
 
@@ -501,6 +531,7 @@ export const slideshowDefaultSettingsData = {
                     tooltipText: "Select the tile object in this scene",
                     icon: "fas fa-vector-square",
                     overflow: true,
+                    renderOnMissing: false,
                     onClick: async (event, options = {}) => await extraActions.selectTile(event, options),
                 },
                 renderTileConfig: {
@@ -509,6 +540,7 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-cog",
                     overflow: true,
                     onClick: async (event, options = {}) => await extraActions.renderTileConfig(event, options),
+                    renderOnMissing: false,
                 },
                 deleteTileData: {
                     icon: "fas fa-trash",

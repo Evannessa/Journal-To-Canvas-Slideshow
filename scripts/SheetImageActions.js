@@ -46,13 +46,16 @@ export const sheetImageActions = {
                 onClick: async (event, options) => {
                     let { app } = options;
                     let journalEntry = app.object;
-                    let currentSetting = HelperFunctions.getFlagValue(journalEntry, "showControls");
+                    let currentSetting = await HelperFunctions.getFlagValue(journalEntry, "showControls", "", false);
+                    console.log("Current setting", currentSetting);
                     //if current setting is false, or doesn't exist, set it to true
-                    if (!currentSetting) {
+                    if (!currentSetting || currentSetting.length === 0) {
                         await HelperFunctions.setFlagValue(journalEntry, "showControls", true);
                     } else {
                         await HelperFunctions.setFlagValue(journalEntry, "showControls", false);
                     }
+                    //re-render the application
+                    app.render();
                 },
             },
             openSlideshowConfig: {

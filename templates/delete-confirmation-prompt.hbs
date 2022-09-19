@@ -1,0 +1,11 @@
+<div class="destructive-action-prompt JTCS-custom-dialog">
+    <h1 class="capitalize"><i class="{{this.icon}}"></i>{{this.heading}}</h1>
+    {{!-- <p>Are you sure you want to <span class="destructive-action-text">{{this.destructiveActionText}}</span></p> --}}
+    <p class="destructive-action-text">{{this.explanation}}</p>
+    <ul>
+        {{#each lossDataList as |item|}}
+            <li>{{item}}</li>
+        {{/each}}
+    </ul>
+    <p>{{explanation2}}</p>
+</div>

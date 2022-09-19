@@ -39,20 +39,24 @@ export class SheetImageApp {
                 "artGallerySettings",
                 "sheetSettings.modularChoices"
             );
-            let documentName = app.document.documentName;
+            let doc = app.document;
+            let onThisSheet = await game.JTCS.utils.manager.getFlagValue(doc, "showControls", "", false);
+
+            let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
             let selectorString = "img, video, .lightbox-image";
             if (whichSheets[documentName]) {
-                if (documentName === "journalEntry") {
-                    html.find(selectorString).addClass("clickableImage");
-                } else {
-                    //for journal sheets, we want to right-click
-                    html.find(selectorString).addClass("rightClickableImage");
+                if (onThisSheet) {
+                    if (documentName === "journalEntry") {
+                        html.find(selectorString).addClass("clickableImage");
+                    } else {
+                        html.find(selectorString).addClass("rightClickableImage");
+                    }
+                    //inject the controls into every image that has the clickableImage or rightClickableImage classes
+                    Array.from(html[0].querySelectorAll(".clickableImage, .rightClickableImage")).forEach((img) =>
+                        SheetImageApp.injectImageControls(img, app)
+                    );
                 }
-                //inject the controls into every image that has the clickableImage or rightClickableImage classes
-                Array.from(html[0].querySelectorAll(".clickableImage, .rightClickableImage")).forEach((img) =>
-                    SheetImageApp.injectImageControls(img, app)
-                );
                 //inject controls onto the sheet itself too
                 SheetImageApp.injectSheetWideControls(app);
             }

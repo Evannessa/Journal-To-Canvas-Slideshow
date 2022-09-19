@@ -15,19 +15,7 @@ export const setupHookHandlers = async () => {
      * Show a toggle in the journal sheet's header to toggle whether the journal
      * has controls on or off
      */
-    async function renderSheetHeaderButton(app, html) {
-        //get the global toggle "all sheets" or "toggle individual"
-        let settingsToggle = JTCSModules.HelperFunctions.getSettingValue(
-            "artGallerySettings",
-            "sheetSettings.globalChoices.chosen"
-        );
-        //get the modular toggle for "journal sheets", "actor sheets", "item sheets"
-        //this will be an array
-        let individualToggles = JTCSModules.HelperFunctions.getSettingValue(
-            "artGallerySettings",
-            "sheetSettings.modularChoices"
-        );
-    }
+
     async function renderImageControls(app, html) {
         if (!game.user.isGM) {
             return;
@@ -125,6 +113,10 @@ export const setupHookHandlers = async () => {
         addJTCSControls: {
             hooks: ["getSceneControlButtons"],
             handlerFunction: addJTCSControls,
+        },
+        addCustomDialogClass: {
+            hooks: ["renderDialog"],
+            handlerFunction: addCustomDialogClass,
         },
     };
 

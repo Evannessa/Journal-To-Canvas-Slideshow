@@ -1,72 +1,66 @@
-<form class="flexcol flow">
-    <div class="form-group-stacked" id="JTCSsheetSettings">
-        {{#with sheetSettings}}
+<form class="flexcol">
+    <div class="form-content overflow-scroll-y overflow-hidden-x flow">
+        <div class="form-group-stacked" id="JTCSsheetSettings">
+            {{#with sheetSettings}}
+                <h2>{{this.name}}</h2>
+                <p>{{this.hint}}</p>
+                {{> (dynamicPartial "fieldset-button-group")
+                    type="checkbox"
+                    variant="visible-tick"
+                    choices=this.modularChoices
+                    propertyString="sheetSettings.modularChoices"
+                }}
+            {{/with}}
+        </div>
+        <div class="form-group-stacked" id="JTCSsheetFadeData">
+            {{#with fadeSheetImagesData}}
             <h2>{{this.name}}</h2>
-            <p>{{this.hint}}</p>
-            {{> (dynamicPartial "fieldset-button-group")
-                type="radio"
-                variant="visible-tick"
-                choices=this.globalChoices.choices
-                chosen=this.globalChoices.chosen
-                propertyString="sheetSettings.globalChoices.chosen"
-            }}
-            {{> (dynamicPartial "fieldset-button-group") 
-                type="checkbox"
-                variant="visible-tick"
-                choices=this.modularChoices 
-                propertyString="sheetSettings.modularChoices"
-                isDisabled=(eq this.globalChoices.chosen "toggleEach")
-            }}
-        {{/with}}
-    </div>
-    <div class="form-group-stacked" id="JTCSsheetFadeData">
-        {{#with fadeSheetImagesData}}
-        <h2>{{this.name}}</h2>
-        <p class="notes">{{this.hint}}</p>
-            {{> (dynamicPartial "fieldset-button-group")
-                type="radio"
-                choices=this.choices 
-                chosen=this.chosen
-                variant="visible-tick"
-                propertyString="fadeSheetImagesData.chosen"
-            }}
-        {{/with}}
-    </div>
-    <div class="form-group-stacked" id="JTCSindicatorColorData">
-        {{#with indicatorColorData}}
-            <h2>{{this.name}}</h2>
-            <p>{{this.hint}}</p>
-            <div class="form-group-stacked">
-            {{#each this.colors}}
-                <div class="form-group color-picker-group">
-                    <label for="artTileColor">{{camelCaseToArray @key}}</label>
-                    {{log (lookup ../colors @key)}}
-                    <input
-                        id="{{@key}}"
-                        type="text"
-                        name={{concat "indicatorColorData.colors" "." @key}}
-                        is="colorpicker-input"
-                        data-responsive-color
-                        value={{lookup ../colors @key}}
-                    />
+            <p class="notes">{{this.hint}}</p>
+                {{> (dynamicPartial "fieldset-button-group")
+                    type="radio"
+                    choices=this.choices
+                    chosen=this.chosen
+                    variant="visible-tick"
+                    propertyString="fadeSheetImagesData.chosen"
+                }}
+            {{/with}}
+        </div>
+        <div class="form-group-stacked" id="JTCSindicatorColorData">
+            {{#with indicatorColorData}}
+                <h2>{{this.name}}</h2>
+                <p>{{this.hint}}</p>
+                <div class="form-group-stacked">
+                {{#each this.colors}}
+                    <div class="form-group color-picker-group">
+                        <label for="artTileColor">{{camelCaseToCapitalString @key}}</label>
+                        <input
+                            id="{{@key}}"
+                            type="text"
+                            name={{concat "indicatorColorData.colors" "." @key}}
+                            is="colorpicker-input"
+                            data-responsive-color
+                            value={{lookup ../colors @key}}
+                        />
+                    </div>
+                {{/each}}
                 </div>
-            {{/each}}
-            </div>
-    {{/with}}
-    </div>
-    <div class="form-group-stacked" id="JTCSdefaultImages">
-        {{#with defaultTileImages}}
-        <h2>{{this.name}}</h2>
-        <p>{{this.hint}}</p>
-        {{#each this.paths}}
-           <div class="form-group">
-                <label for="{{@key}}">{{camelCaseToArray @key true}}</label>
-               <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
-               {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}
-           </div>
-        {{/each}}
         {{/with}}
-
+        </div>
+        <div class="form-group-stacked" id="JTCSdefaultImages">
+            {{#with defaultTileImages}}
+            <h2>{{this.name}}</h2>
+            <p>{{this.hint}}</p>
+            {{#each this.paths}}
+               <div class="form-group">
+                    <label for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
+                   <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
+                   {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}
+               </div>
+            {{/each}}
+            {{/with}}
+        </div>
     </div>
-    <input type="submit" />
+    <footer class="sheet-footer">
+        <button type="submit" name="submit"> <i class="far fa-save"></i> Save Changes </button>
+    </footer>
 </form>

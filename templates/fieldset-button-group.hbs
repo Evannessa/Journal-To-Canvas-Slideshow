@@ -38,7 +38,7 @@
             {{#if (eq ../type "radio")}}
                     {{this}}
                 {{else}}
-                   {{@key}}
+                   {{camelCaseToCapitalString @key}}
             {{/if}}
           </label>
       </span>

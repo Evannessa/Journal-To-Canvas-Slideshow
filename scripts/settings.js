@@ -6,20 +6,21 @@ const assetFolderBasePath = `modules/${MODULE_ID}/assets/`;
 export const artGalleryDefaultSettings = {
     sheetSettings: {
         name: "Sheet Types",
-        hint: "Which types of sheets do you want to have clickable images?",
-        globalChoices: {
-            //these will be radio buttons that control the checkboxes below
-            chosen: "toggleType",
-            onChange: (event, options = { value: "" }) => {
-                let { value, app, html } = options;
-                let areDisabled = value === "toggleType" ? false : true;
-                html && html.find("#JTCSsheetSettings input[type='checkbox']").prop("disabled", areDisabled);
-            },
-            choices: {
-                toggleType: "Toggle Sheets By Type",
-                toggleEach: "Toggle Each Sheet Individually",
-            },
-        },
+        // globalChoices: {
+        //     //these will be radio buttons that control the checkboxes below
+        //     hint: "Should we toggle which sheets show the image controls by their type (Actor, Item, Journal Entry), or would you like to toggle the controls on each individual sheet",
+        //     chosen: "toggleType",
+        //     onChange: (event, options = { value: "" }) => {
+        //         let { value, app, html } = options;
+        //         let areDisabled = value === "toggleType" ? false : true;
+        //         html && html.find("#JTCSsheetSettings input[type='checkbox']").prop("disabled", areDisabled);
+        //     },
+        //     choices: {
+        //         toggleType: "Toggle Sheets By Type",
+        //         toggleEach: "Toggle Each Sheet Individually",
+        //     },
+        // },
+        hint: "Which types of sheets would you like to show clickable image controls?",
         modularChoices: {
             journalEntry: true,
             actor: true,

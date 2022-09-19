@@ -282,6 +282,17 @@ export class ArtTileManager {
         return defaultArtTileID;
     }
 
+    static async getGalleryTileDataFromID(tileID, property = "") {
+        let flaggedTiles = await this.getSceneSlideshowTiles();
+        let ourTile = flaggedTiles.find((data) => data.id === tileID);
+        console.log("Did we find our tile?", ourTile);
+        if (property) {
+            return ourTile[property];
+        } else {
+            return ourTile;
+        }
+    }
+
     /**
      * get tiles that have been stored by this module in a flag on this scene
      * @returns array of display tile data stored in "slideshowTiles" tag

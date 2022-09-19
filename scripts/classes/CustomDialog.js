@@ -1,0 +1,1 @@
+class CustomDialog extends Dialog {}
