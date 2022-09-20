@@ -5,7 +5,7 @@
           <input
             type="{{../type}}"
             class="accent-input"
-            id="{{@key}}"
+            id="{{concat ../propertyString "." @key}}"
 
             {{#if (eq ../type "radio")}}
                 value="{{@key}}"
@@ -27,7 +27,7 @@
 
             {{/if}}
           />
-          <label class="flex-row slight-rounded gap-small padding-small interactive" for="{{@key}}" data-title="">
+          <label class="flex-row slight-rounded gap-small padding-small interactive" for="{{concat ../propertyString "." @key}}" data-title="">
             {{#if (eq ../variant "visible-tick") }}
                 {{#if (eq ../type "radio")}}
                     <span class="tick-circle"></span> 

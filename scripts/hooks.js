@@ -66,16 +66,40 @@ export const setupHookHandlers = async () => {
             button: true,
         });
     }
-    function rerenderImageSheet() {
-        let shouldRender = HelperFunctions.getSettingValue("artGallerySettings", "sheetSettings.modularChoices");
+    /**
+     * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
+     * @param {Object} options - option arguments to be passed to this
+     * @param {String} options.origin - the origin of the Hook - was it the settings, or a flag update for the current scene's slideshow settings?
+     * @param {Object} options.currentScene - the scene, usually the current scene
+     * @param {String} options.tileID - the ID of the tile, if updated
+     */
+    function rerenderImageSheet(options) {
+        const { origin, currentScene, updateData } = options;
+        if (typeof updateData === "object") {
+        }
+
+        const sheetsWithControls = HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            "sheetSettings.modularChoices"
+        );
+
+        let renderAnyway = false; //should the sheet render anyway, regardless of if the settings have it turned off?
+
+        if (origin && origin === "JTCSSettings") {
+            renderAnyway = true;
+        }
 
         let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
         renderedSheets.forEach((sheet) => {
-            let docType = sheet.document.documentName.toLowerCase();
+            const docType = sheet.document.documentName.toLowerCase();
+
             //if our type of document is set to "true" as rendering controls in the settings
             //and it's not currently being edited
-            if (shouldRender[docType] && !HelperFunctions.editorsActive(sheet)) {
-                sheet.render(true);
+            //and we're not telling it to render anyway
+            let editorsActive = HelperFunctions.editorsActive(sheet);
+
+            if ((sheetsWithControls[docType] || renderAnyway) && !editorsActive) {
+                sheet.render();
             }
         });
     }
@@ -83,7 +107,7 @@ export const setupHookHandlers = async () => {
     const hookHandlers = {
         rerenderImageSheet: {
             //when the art gallery tiles update, re-render the sheets
-            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile"],
+            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile", "updateJTCSSettings"],
             handlerFunction: rerenderImageSheet,
         },
         renderImageControls: {
@@ -117,16 +141,18 @@ export const setupHookHandlers = async () => {
                 },
                 {
                     hookName: "updateJTCSSettings",
-                    handlerFunction: async () => {
-                        let scene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(scene);
+                    handlerFunction: async (options) => {
+                        // let { currentScene } = options;
+                        let currentScene = game.scenes.viewed;
+                        await updateAllGalleryIndicators(currentScene);
                     },
                 },
                 {
                     hookName: "updateArtGalleryTiles",
-                    handlerFunction: async (scene) => {
-                        scene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(scene);
+                    handlerFunction: async (options) => {
+                        // let { currentScene } = options;
+                        let currentScene = game.scenes.viewed;
+                        await updateAllGalleryIndicators(currentScene);
                     },
                 },
             ],

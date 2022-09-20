@@ -1,6 +1,7 @@
 "use strict";
 import { MODULE_ID, log } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
+import { HelperFunctions } from "./classes/HelperFunctions.js";
 const assetFolderBasePath = `modules/${MODULE_ID}/assets/`;
 
 export const artGalleryDefaultSettings = {
@@ -96,8 +97,9 @@ export const registerSettings = async function () {
         config: false, // we will use the menu above to edit this setting
         type: Object,
         default: artGalleryDefaultSettings,
-        onChange: (event) => {
-            Hooks.callAll("updateJTCSSettings", event.currentTarget);
+        onChange: async (event) => {
+            const updateData = await HelperFunctions.getSettingValue("artGallerySettings");
+            Hooks.callAll("updateJTCSSettings", { origin: "JTCSSettings", updateData });
         },
     });
 

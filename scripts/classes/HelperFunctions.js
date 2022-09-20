@@ -280,8 +280,8 @@ export class HelperFunctions {
         };
     }
 
-    static async editorsActive(sheet) {
-        let hasActiveEditors = sheet.editors.some((editor) => editor.active);
+    static editorsActive(sheet) {
+        let hasActiveEditors = Object.values(sheet.editors).some((editor) => editor.active);
         return hasActiveEditors;
     }
 }

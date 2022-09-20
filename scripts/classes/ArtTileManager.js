@@ -266,7 +266,7 @@ export class ArtTileManager {
     static async setDefaultArtTileID(tileID, currentScene) {
         if (!currentScene) currentScene = game.scenes.viewed;
         await currentScene.setFlag(MODULE_ID, "defaultArtTileID", tileID);
-        Hooks.callAll("updateDefaultArtTile", tileID, currentScene);
+        Hooks.callAll("updateDefaultArtTile", { updateData: tileID, currentScene });
     }
     /**
      * Gets the default art gallery tile in this scene, or returns the first tile in scene if not found
@@ -450,10 +450,11 @@ export class ArtTileManager {
      * Replace the slideshow tileData array stored in scene flags with the array passed in
      * @param {Array} tiles - the tiles array we want to update our flag with
      */
-    static async updateAllSceneTileFlags(tiles) {
-        let currentScene = game.scenes.viewed;
+    static async updateAllSceneTileFlags(tiles, currentSceneID = "") {
+        let currentScene = game.scenes.get(currentSceneID);
+        if (!currentScene) currentScene = game.scenes.viewed;
         await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
-        Hooks.callAll("updateArtGalleryTiles", currentScene, tiles);
+        Hooks.callAll("updateArtGalleryTiles", { currentScene, updateData: tiles });
     }
     static async deleteSceneTileData(tileID) {
         let tiles = await ArtTileManager.getSceneSlideshowTiles();
@@ -463,7 +464,6 @@ export class ArtTileManager {
         await ArtTileManager.updateAllSceneTileFlags(tiles);
 
         //call hook to delete the art tile data
-        // Hooks.callAll("deleteArtTileData", tileID);
     }
 
     static async getAllScenesWithSlideshowData() {

@@ -1,3 +1,6 @@
+import { ArtTileManager } from "./ArtTileManager.js";
+import { HelperFunctions } from "./HelperFunctions.js";
+
 export class CanvasIndicators {
     static async setUpIndicators(foundTileData, tileDoc) {
         if (!tileDoc) {
@@ -7,6 +10,10 @@ export class CanvasIndicators {
         let type = "unlinked";
         if (foundTileData) {
             type = foundTileData.isBoundingTile ? "frame" : "art";
+            const defaultTileID = await ArtTileManager.getDefaultArtTileID();
+            if (foundTileData.id === defaultTileID) {
+                type = "default";
+            }
         }
         await CanvasIndicators.createTileIndicator(tileDoc, type);
         await CanvasIndicators.hideTileIndicator(tileDoc);
@@ -14,11 +21,11 @@ export class CanvasIndicators {
 
     static async getColors() {
         let colors = {};
-        let settingsColors = await game.JTCS.utils.getSettingValue("artGallerySettings", "indicatorColorData.colors");
-        // let colors = { ...game.settings.get("journal-to-canvas-slideshow", "tileIndicatorColors") };
+        let settingsColors = await HelperFunctions.getSettingValue("artGallerySettings", "indicatorColorData.colors");
         colors.frameTileColor = settingsColors.frameTileColor || "#ff3300";
         colors.artTileColor = settingsColors.artTileColor || "#2f2190";
         colors.unlinkedTileColor = settingsColors.unlinkedTileColor || "#a2ff00";
+        colors.defaultTileColor = settingsColors.defaultTileColor || "#e75eff";
         return colors;
     }
     static async createTileIndicator(tileDocument, type = "art") {
@@ -64,26 +71,24 @@ export class CanvasIndicators {
                 fillAlpha = 0.5;
                 lineWidth = 15;
             case "default":
+                color = colors.defaultTileColor;
+                fillAlpha = 0.5;
+                lineWidth = 15;
                 break;
         }
-        // console.warn("Our color is ", colors);
-        // color = 0xff0000;
-        // color =
-        // fillAlpha = 0.2;
         color = color.substring(1);
         if (color.length === 8) {
             color = color.substring(-2);
         }
         color = `0x${color}`;
         color = parseInt(color);
-        // console.warn("Color is", color);
-        // color = PIXI.utils.string2hex(color); //convert string hex format
 
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
-        let overlayGraphic = new PIXI.Graphics();
-        let whiteColor = 0xffffff;
+
+        const overlayGraphic = new PIXI.Graphics();
+        const whiteColor = 0xffffff;
+
         overlayGraphic.beginFill(whiteColor, fillAlpha);
-        // overlayGraphic.fillStyle(color, fillAlpha);
         overlayGraphic.lineStyle(lineWidth, color, 1);
         overlayGraphic.tint = color;
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
