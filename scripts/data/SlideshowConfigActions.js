@@ -142,10 +142,24 @@ const extraActions = {
         }
     },
     setDefaultTileInScene: async (event, options = {}) => {
-        let { tileID } = options;
-        await ArtTileManager.setDefaultArtTileID(tileID, game.scenes.viewed);
-        //get it to check that it was successful
-        let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
+        if (event.ctrlKey || event.metaKey) {
+            //if the ctrl or meta (cmd) key on mac is pressed
+            let { tileID, parentLI } = options;
+            let type = parentLI.dataset.type;
+            let tileInScene = await ArtTileManager.getTileObjectByID(tileID);
+            let displayName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
+
+            if (tileInScene) {
+                await ArtTileManager.setDefaultArtTileID(tileID, game.scenes.viewed);
+            } else {
+                ui.notifications.warn(
+                    `Gallery ${HelperFunctions.capitalizeEachWord(type)} 
+                    Tile "${displayName}"
+                    must be linked to a tile in this scene 
+                    before it can be set as default`
+                );
+            }
+        }
     },
 };
 export const slideshowDefaultSettingsData = {

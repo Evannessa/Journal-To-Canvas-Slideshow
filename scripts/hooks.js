@@ -155,6 +155,14 @@ export const setupHookHandlers = async () => {
                         await updateAllGalleryIndicators(currentScene);
                     },
                 },
+                {
+                    hookName: "updateDefaultArtTile",
+                    handlerFunction: async (options) => {
+                        let currentScene = game.scenes.viewed;
+                        console.log("Default art tile updated, updating indicators");
+                        await updateAllGalleryIndicators(currentScene);
+                    },
+                },
             ],
         },
         addJTCSControls: {

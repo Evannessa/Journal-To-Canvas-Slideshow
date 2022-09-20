@@ -298,7 +298,6 @@ export class ArtTileManager {
     static async getGalleryTileDataFromID(tileID, property = "", currentSceneID = "") {
         let flaggedTiles = await this.getSceneSlideshowTiles("", false, { currentSceneID });
         let ourTile = flaggedTiles.find((data) => data.id === tileID);
-        console.log("Did we find our tile?", ourTile);
         if (property) {
             return ourTile[property];
         } else {
@@ -417,7 +416,7 @@ export class ArtTileManager {
     }
 
     static displayTileNotFoundError(tileID, sceneID = "") {
-        ui.notifications.error("JTCS can't find tile in scene with ID " + tileID);
+        console.error("JTCS can't find tile in scene with ID " + tileID);
     }
 
     /**

@@ -3,6 +3,29 @@ import { artGalleryDefaultSettings } from "../settings.js";
 export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";
 
+    /**
+     * pass in a string and capitalize each word in the string
+     * @param {String} string - the string whose words we want to capitalize
+     * @param {String} delimiter - a delimiter separating each word
+     * @returns A string with each word capitalized and the same delimiters
+     */
+    static capitalizeEachWord(string, delimiter = " ") {
+        let sentenceArray;
+        let capitalizedString;
+
+        if (!delimiter) {
+            // if the delimiter is an empty string, split it by capital letters, as if camelCase
+            sentenceArray = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
+            capitalizedString = sentenceArray.map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ");
+        } else {
+            sentenceArray = string.split(delimiter);
+
+            capitalizedString = sentenceArray
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(delimiter);
+        }
+        return capitalizedString;
+    }
     static async resetArtGallerySettings() {
         await HelperFunctions.setSettingValue("artGallerySettings", {}, "", false);
         await HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);

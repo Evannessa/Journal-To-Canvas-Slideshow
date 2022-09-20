@@ -1,3 +1,4 @@
+import { HelperFunctions } from "../classes/HelperFunctions.js";
 export const registerHelpers = function () {
     Handlebars.registerHelper("applyTemplate", function (subTemplateId, context) {
         var subTemplate = Handlebars.compile($("#" + subTemplateId).html());
@@ -20,10 +21,11 @@ export const registerHelpers = function () {
         return Handlebars.SafeString(string);
     });
     Handlebars.registerHelper("camelCaseToCapitalString", function (string) {
-        let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
-        sentence = sentence.map((s) => s.charAt(0).toUpperCase() + s.slice(1));
-        sentence = sentence.join(" ");
-        return sentence;
+        return HelperFunctions.capitalizeEachWord(string);
+        // let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
+        // sentence = sentence.map((s) => s.charAt(0).toUpperCase() + s.slice(1));
+        // sentence = sentence.join(" ");
+        // return sentence;
     });
 
     Handlebars.registerHelper("camelCaseToArray", function (string, shouldJoin = false) {

@@ -93,7 +93,6 @@ export const sheetImageActions = {
                     //get the default art tile in this scene
                     let tileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
                     let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
-                    console.log("Our default tile id is", tileID);
                     let tile = await ArtTileManager.getTileObjectByID(tileID);
                     if (isLeave) {
                         await game.JTCS.indicatorUtils.hideTileIndicator(tile);
