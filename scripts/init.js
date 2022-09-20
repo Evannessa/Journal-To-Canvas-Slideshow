@@ -134,10 +134,6 @@ Hooks.once("renderSlideshowConfig", (app) => {
     game.JTCSlideshowConfig = app;
 });
 
-Hooks.on("getSceneControlButtons", (controls) => {
-    //controls refers to all of the controls
-});
-
 async function insertImageIntoJournal(file, editor) {
     if (typeof ForgeVTT != "undefined" && ForgeVTT.usingTheForge) {
         source = "forgevtt";
@@ -165,12 +161,12 @@ async function insertImageIntoJournal(file, editor) {
 Hooks.on("canvasReady", async (canvas) => {
     //get tile data from scene flags
 
-    let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
+    let artTileDataArray = (await ArtTileManager.getSceneSlideshowTiles("", true)).filter((item) => !item.missing);
 
     game.scenes.viewed.tiles.forEach(async (tileDoc) => {
         let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
 
-        await game.JTCS.indicatorUtils.setUpIndicators(foundTileData, tileDoc);
+        await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     });
 });
 

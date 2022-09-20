@@ -143,9 +143,9 @@ const extraActions = {
     },
     setDefaultTileInScene: async (event, options = {}) => {
         let { tileID } = options;
-        await game.JTCS.tileUtils.manager.setDefaultArtTileID(tileID, game.scenes.viewed);
+        await ArtTileManager.setDefaultArtTileID(tileID, game.scenes.viewed);
         //get it to check that it was successful
-        let defaultArtTileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID(game.scenes.viewed);
+        let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
     },
 };
 export const slideshowDefaultSettingsData = {
@@ -368,6 +368,7 @@ export const slideshowDefaultSettingsData = {
             actions: {
                 setAsDefault: {
                     onClick: async (event, options = {}) => {
+                        console.log("Setting ", event.currentTarget, "as default");
                         await extraActions.setDefaultTileInScene(event, options);
                     },
                 },
@@ -498,11 +499,19 @@ export const slideshowDefaultSettingsData = {
                     onClick: async (event, options = {}) => {
                         let { app, tileID, parentLI } = options;
                         if (!tileID) tileID = parentLI.dataset.tileID;
+                        let parentItemMissing = parentLI.dataset.missing ? true : false;
 
                         let actions = slideshowDefaultSettingsData.itemActions.click.actions;
+
                         let overflowActions = {};
                         for (let actionKey in actions) {
-                            if (actions[actionKey].overflow) {
+                            let { overflow, renderOnMissing, renderAlways } = actions[actionKey];
+                            if (!renderOnMissing) renderOnMissing = false; //if render on missing is undefined, set it to false
+
+                            let shouldRender = renderOnMissing === parentItemMissing; //fif the parent item's missing status and the button's conditional rendering status are equal
+
+                            if (overflow && (shouldRender || renderAlways)) {
+                                //if it's an action to renderon the overflow menu
                                 overflowActions[actionKey] = actions[actionKey];
                             }
                         }
@@ -548,6 +557,7 @@ export const slideshowDefaultSettingsData = {
                                         "(this will not delete the tile object in the scene itself)`,
 
                     overflow: true,
+                    renderAlways: true,
                     extraClass: "danger-text",
                     onClick: async (event, options = {}) => extraActions.deleteTileData(event, options),
                 },

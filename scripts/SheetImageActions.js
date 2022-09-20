@@ -3,6 +3,8 @@ import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
 import { SheetImageApp } from "./SheetImageApp.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
+import { ArtTileManager } from "./classes/ArtTileManager.js";
+import { ImageDisplayManager } from "./classes/ImageDisplayManager.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 import { universalInterfaceActions as UIA } from "./data/Universal-Actions.js";
 
@@ -89,9 +91,10 @@ export const sheetImageActions = {
                 onHover: async (event, options) => {
                     //!get the default tile
                     //get the default art tile in this scene
-                    let tileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID();
+                    let tileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
                     let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
-                    let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
+                    console.log("Our default tile id is", tileID);
+                    let tile = await ArtTileManager.getTileObjectByID(tileID);
                     if (isLeave) {
                         await game.JTCS.indicatorUtils.hideTileIndicator(tile);
                     } else {

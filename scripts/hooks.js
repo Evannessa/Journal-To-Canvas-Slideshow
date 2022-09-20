@@ -1,4 +1,5 @@
 import { JTCSModules } from "./init.js";
+import { HelperFunctions } from "./classes/HelperFunctions.js";
 /**
  * This sets up most hooks we want to respond to in our code,
  * grouping hooks with identical
@@ -65,10 +66,28 @@ export const setupHookHandlers = async () => {
             button: true,
         });
     }
+    function rerenderImageSheet() {
+        let shouldRender = HelperFunctions.getSettingValue("artGallerySettings", "sheetSettings.modularChoices");
+
+        let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
+        renderedSheets.forEach((sheet) => {
+            let docType = sheet.document.documentName.toLowerCase();
+            //if our type of document is set to "true" as rendering controls in the settings
+            //and it's not currently being edited
+            if (shouldRender[docType] && !HelperFunctions.editorsActive(sheet)) {
+                sheet.render(true);
+            }
+        });
+    }
 
     const hookHandlers = {
+        rerenderImageSheet: {
+            //when the art gallery tiles update, re-render the sheets
+            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile"],
+            handlerFunction: rerenderImageSheet,
+        },
         renderImageControls: {
-            hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet"],
+            hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet", "update"],
             handlerFunction: renderImageControls,
         },
         renderSlideshowConfig: {
@@ -81,6 +100,8 @@ export const setupHookHandlers = async () => {
                 "updateJournalEntry",
                 "deleteJournalEntry",
                 "updateJTCSSettings",
+                // "updateArtGalleryTiles"
+                "updateDefaultArtTile",
             ],
             handlerFunction: renderSlideshowConfig,
         },

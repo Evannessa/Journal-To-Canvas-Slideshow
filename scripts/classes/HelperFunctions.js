@@ -279,4 +279,9 @@ export class HelperFunctions {
             shouldRenderAppOnAction: shouldRenderAppOnAction,
         };
     }
+
+    static async editorsActive(sheet) {
+        let hasActiveEditors = sheet.editors.some((editor) => editor.active);
+        return hasActiveEditors;
+    }
 }

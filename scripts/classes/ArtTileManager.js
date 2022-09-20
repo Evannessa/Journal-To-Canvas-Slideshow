@@ -266,6 +266,7 @@ export class ArtTileManager {
     static async setDefaultArtTileID(tileID, currentScene) {
         if (!currentScene) currentScene = game.scenes.viewed;
         await currentScene.setFlag(MODULE_ID, "defaultArtTileID", tileID);
+        Hooks.callAll("updateDefaultArtTile", tileID, currentScene);
     }
     /**
      * Gets the default art gallery tile in this scene, or returns the first tile in scene if not found
