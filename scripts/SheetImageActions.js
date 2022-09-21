@@ -1,8 +1,10 @@
 "use strict";
+
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
 import { SheetImageApp } from "./SheetImageApp.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
+import { extraActions } from "./data/SlideshowConfigActions.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
 import { ImageDisplayManager } from "./classes/ImageDisplayManager.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
@@ -13,11 +15,14 @@ export const sheetControls = [
         action: "sheet.click.fadeJournal",
         icon: "fas fa-eye-slash",
         tooltip: "Fade sheet background to see canvas",
+        // toggle: true,
     },
     {
         action: "sheet.click.toggleImageControls",
         tooltip: "Toggle the image controls on this sheet",
         icon: "fas fa-sliders-h",
+        toggle: true,
+        activeOn: "showControls",
     },
     {
         action: "sheet.click.openSlideshowConfig",
@@ -29,6 +34,11 @@ export const sheetControls = [
         tooltip: "open Journal to Canvas Slideshow Settings",
         icon: "fas fa-cog",
     },
+    {
+        action: "sheet.click.showURLShareDialog",
+        tooltip: "Share a URL Image with your players",
+        icon: "fas fa-external-link",
+    },
 ];
 export const sheetImageActions = {
     sheet: {
@@ -36,6 +46,7 @@ export const sheetImageActions = {
             fadeJournal: {
                 onClick: async (event, options) => {
                     await SheetImageApp.addFadeStylesToSheet(event);
+                    UIA.toggleActiveStyles(event);
                 },
             },
             setDefaultTileInScene: {
@@ -49,15 +60,13 @@ export const sheetImageActions = {
                     let { app } = options;
                     let journalEntry = app.object;
                     let currentSetting = await HelperFunctions.getFlagValue(journalEntry, "showControls", "", false);
-                    console.log("Current setting", currentSetting);
                     //if current setting is false, or doesn't exist, set it to true
                     if (!currentSetting || currentSetting.length === 0) {
                         await HelperFunctions.setFlagValue(journalEntry, "showControls", true);
                     } else {
                         await HelperFunctions.setFlagValue(journalEntry, "showControls", false);
                     }
-                    //re-render the application
-                    app.render();
+                    UIA.toggleActiveStyles(event);
                 },
             },
             openSlideshowConfig: {
@@ -69,6 +78,9 @@ export const sheetImageActions = {
                 onClick: async () => {
                     UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
                 },
+            },
+            showURLShareDialog: {
+                onClick: async (event, options) => await extraActions.showURLShareDialog(event, options),
             },
         },
     },

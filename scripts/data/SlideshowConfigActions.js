@@ -7,7 +7,7 @@ import { HelperFunctions } from "../classes/HelperFunctions.js";
 import { ImageDisplayManager } from "../classes/ImageDisplayManager.js";
 import { ArtTileManager } from "../classes/ArtTileManager.js";
 
-const extraActions = {
+export const extraActions = {
     renderTileConfig: async (event, options = {}) => {
         let { tileID } = options;
         await game.JTCS.tileUtils.renderTileConfig(tileID);
@@ -161,6 +161,41 @@ const extraActions = {
             }
         }
     },
+    showURLShareDialog: async (event, options = {}) => {
+        let wrappedActions = {};
+        let { displayActions } = JTCSActions;
+        for (let actionName in displayActions) {
+            wrappedActions[actionName] = displayActions[actionName];
+            //converting properties to fit the dialog's schema
+            wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
+            wrappedActions[actionName].label = HelperFunctions.capitalizeEachWord(actionName, "");
+            wrappedActions[actionName].callback = async (html) => {
+                let urlInput = html.find("input[name='urlInput']");
+                let url = urlInput.val();
+                if (url !== "") {
+                    await game.JTCS.imageUtils.manager.determineDisplayMethod({
+                        method: actionName,
+                        url: url,
+                    });
+                }
+            };
+        }
+        delete wrappedActions.fadeJournal;
+        delete wrappedActions.anyScene;
+        let buttons = {
+            ...wrappedActions,
+            cancel: {
+                label: "Cancel",
+            },
+        };
+        let templatePath = game.JTCS.templates["share-url-partial"];
+
+        await game.JTCS.utils.createDialog("Share URL", templatePath, {
+            buttons: buttons,
+            partials: game.JTCS.templates,
+            value: "",
+        });
+    },
 };
 export const slideshowDefaultSettingsData = {
     globalActions: {
@@ -170,41 +205,7 @@ export const slideshowDefaultSettingsData = {
                 showURLShareDialog: {
                     icon: "fas fa-external-link-alt",
                     tooltipText: "Share a URL link with your players",
-                    onClick: async (event, options = {}) => {
-                        let wrappedActions = {};
-                        let { displayActions } = JTCSActions;
-                        for (let actionName in displayActions) {
-                            wrappedActions[actionName] = displayActions[actionName];
-                            //converting properties to fit the dialog's schema
-                            wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
-                            wrappedActions[actionName].label = actionName;
-                            wrappedActions[actionName].callback = async (html) => {
-                                let urlInput = html.find("input[name='urlInput']");
-                                let url = urlInput.val();
-                                if (url !== "") {
-                                    await game.JTCS.imageUtils.manager.determineDisplayMethod({
-                                        method: actionName,
-                                        url: url,
-                                    });
-                                }
-                            };
-                        }
-                        delete wrappedActions.fadeJournal;
-                        delete wrappedActions.anyScene;
-                        let buttons = {
-                            ...wrappedActions,
-                            cancel: {
-                                label: "Cancel",
-                            },
-                        };
-                        let templatePath = game.JTCS.templates["share-url-partial"];
-
-                        await game.JTCS.utils.createDialog("Share URL", templatePath, {
-                            buttons: buttons,
-                            partials: game.JTCS.templates,
-                            value: "",
-                        });
-                    },
+                    onClick: extraActions.showURLShareDialog,
                 },
                 showModuleSettings: {
                     icon: "fas fa-cog",
@@ -382,9 +383,9 @@ export const slideshowDefaultSettingsData = {
             actions: {
                 setAsDefault: {
                     onClick: async (event, options = {}) => {
-                        console.log("Setting ", event.currentTarget, "as default");
                         await extraActions.setDefaultTileInScene(event, options);
                     },
+                    renderNever: true,
                 },
                 shareURLOnTile: {
                     icon: "fas fa-external-link-alt",
@@ -427,7 +428,8 @@ export const slideshowDefaultSettingsData = {
                         };
 
                         let popover = await Popover.processPopoverData(
-                            event.currentTarget,
+                            // event.currentTarget,
+                            event.target,
                             app.element,
                             templateData,
                             elementData
@@ -445,7 +447,7 @@ export const slideshowDefaultSettingsData = {
                     onClick: async (event, options = {}) => {
                         let { tileID, parentLI, app } = options;
                         let isFrameTile = parentLI.dataset.type === "frame";
-                        await game.JTCS.tileUtils.createAndLinkSceneTile({
+                        await ArtTileManager.createAndLinkSceneTile({
                             unlinkedDataID: tileID,
                             isFrameTile: isFrameTile,
                         });
@@ -470,14 +472,15 @@ export const slideshowDefaultSettingsData = {
                         let templateData = Popover.createTemplateData(parentLI, "tile-link-partial", context);
 
                         let elementData = { ...Popover.defaultElementData };
-                        elementData["popoverElement"].hideEvents.push({
-                            eventName: "change",
-                            selector: "input, input + label",
-                            wrapperFunction: async (event) => {},
-                        });
+                        // elementData["popoverElement"].hideEvents.push({
+                        //     eventName: "change",
+                        //     selector: "input, input + label",
+                        //     wrapperFunction: async (event) => {},
+                        // });
                         // -- RENDER THE POPOVER
+                        console.log("Our current target is", event.currentTarget, event.target);
                         let popover = await Popover.processPopoverData(
-                            event.currentTarget,
+                            event.target,
                             app.element,
                             templateData,
                             elementData
@@ -537,8 +540,10 @@ export const slideshowDefaultSettingsData = {
 
                         let elementData = { ...Popover.defaultElementData };
 
+                        console.log("Overflow menu targets", event.currentTarget, event.target);
                         let popover = await Popover.processPopoverData(
-                            event.currentTarget,
+                            // event.currentTarget,
+                            event.target,
                             app.element,
                             templateData,
                             elementData

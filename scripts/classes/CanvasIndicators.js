@@ -14,6 +14,8 @@ export class CanvasIndicators {
             if (foundTileData.id === defaultTileID) {
                 type = "default";
             }
+        } else {
+            console.log("Unlinked!", type);
         }
         await CanvasIndicators.createTileIndicator(tileDoc, type);
         await CanvasIndicators.hideTileIndicator(tileDoc);
@@ -70,6 +72,7 @@ export class CanvasIndicators {
                 color = colors.unlinkedTileColor;
                 fillAlpha = 0.5;
                 lineWidth = 15;
+                break;
             case "default":
                 color = colors.defaultTileColor;
                 fillAlpha = 0.5;
@@ -91,8 +94,11 @@ export class CanvasIndicators {
         overlayGraphic.beginFill(whiteColor, fillAlpha);
         overlayGraphic.lineStyle(lineWidth, color, 1);
         overlayGraphic.tint = color;
+        // overlayGraphic.tint = colors[`${type}TileColor`];
+
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
+
         tileObject.overlayContainer.addChild(overlayGraphic);
         tileObject.overlayContainer.alpha = 0;
     }

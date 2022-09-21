@@ -25,15 +25,51 @@
     --accent-color-2: var(--color-border-highlight);
     --color-accent: var(--foundry-purple-background);
 }
+@mixin text-shadow($shadow-color: black) {
+    text-shadow: -1px 1px 2px $shadow-color, 1px 1px 2px $shadow-color, 1px -1px 0 $shadow-color,
+        -1px -1px 0 $shadow-color;
+}
+
+@mixin JTCS-accent-ghost($primary-color: var(--JTCS-accent-color)) {
+    background-color: transparent;
+    color: $primary-color !important;
+    border: 2px solid $primary-color;
+    transition: background-color 120ms ease-in;
+    &:hover,
+    &:focus {
+        background-color: $primary-color;
+        color: var(--JTCS-text-color-alt);
+    }
+}
+
+@mixin JTCS-accent-fill($primary-color: var(--JTCS-accent-color), $include-shadow: false) {
+    background-color: $primary-color;
+    border: 1px solid #ffffff91;
+    @if $include-shadow {
+        box-shadow: 0px 0px 8px 2px $primary-color;
+    }
+    outline: 0px solid white;
+    outline-offset: 2px;
+    transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+    &:hover,
+    &:focus {
+        outline: 1px solid white;
+        outline-offset: 0px;
+        transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+    }
+}
 
 .popover {
     // animation: fade 0.3s linear;
     position: absolute;
+    border-top: 4px solid var(--JTCS-accent-color);
 
     padding: var(--padding-small);
     background-color: var(--bg-color);
     color: var(--color-text-light-0);
     top: 100%;
+    min-width: max-content;
+    box-shadow: var(--box-shadow);
     select {
         color: var(--color-text-light-0);
     }
@@ -214,8 +250,6 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
     transform-origin: top center;
     transition: transform 100ms ease-out, opacity 100ms ease-out;
 }
-.chip-span {
-}
 
 .input-span {
     --bg-color: var(--accent-color-1);
@@ -387,6 +421,9 @@ fieldset.toggle-button-group {
         border-bottom-right-radius: 8px;
     }
 }
+.full-width {
+    width: 100%;
+}
 
 .interactive {
     cursor: pointer;
@@ -404,11 +441,17 @@ fieldset.toggle-button-group {
 .padding-medium {
     padding: 0.5rem 1rem;
 }
+.padding-large {
+    padding: 1rem 1.5rem;
+}
 .padding-none {
     padding: 0;
 }
 .margin-none {
     margin: 0;
+}
+button {
+    cursor: pointer;
 }
 button.icon-button {
     height: 0;
@@ -431,7 +474,11 @@ button.icon-button {
         width: 5%;
         padding-bottom: 5%;
     }
+    &.active {
+        @include JTCS-accent-fill($include-shadow: true);
+    }
 }
+
 .hover-text-color {
     &:hover {
         color: var(--color-accent);
@@ -799,6 +846,13 @@ button.icon-button {
 .justify-self-right {
     margin-left: auto;
 }
+.justify-self-left {
+    margin-right: auto;
+}
+.justify-self-center {
+    @extend .justify-self-left;
+    @extend .justify-self-right;
+}
 
 .has-floating-label {
     box-sizing: border-box;
@@ -997,11 +1051,6 @@ button.icon-button {
     // border-color: var(--color-primary-base);
 }
 
-.overflow-hidden {
-}
-.overflow-visible {
-}
-
 .sharp-corners {
     border-radius: 0px;
 }
@@ -1127,13 +1176,57 @@ button.icon-button {
 .capitalize {
     text-transform: capitalize;
 }
+.item-menu {
+    @extend .overflow-hidden;
+    display: flex;
+    justify-content: space-between;
+    hr.list-divider {
+        width: 100%;
+        border-bottom: unset;
+        border-top: unset;
+        border: 1px solid hsl(0, 0%, 50%);
+        @extend .reset-margin;
+        margin-top: unset;
+        margin-bottom: unset;
+    }
+    li {
+        background-color: var(--foundry-dark-gray);
+        &:first-child {
+            margin-top: 1em;
+            // padding-top: 2em;
+        }
+        &:last-child {
+            padding-top: 1em;
+            padding-bottom: 1em;
+        }
+        width: 100%;
+        --bg-color: var(--JTCS-accent-color);
+        --text-color: var(--JTCS-text-color);
+        @extend .hover-bg-dynamic;
+        i {
+            display: grid;
+            place-content: center;
+            margin-right: 1.5rem;
+        }
+    }
+}
 
 #JTCS-custom-dialog {
     height: fit-content;
+    .window-content {
+        h1 {
+            font-size: 1.5rem;
+            border-bottom: unset;
+        }
+        input {
+            width: 100%;
+        }
+    }
     .dialog-content {
         display: flex;
         flex-direction: column;
         align-items: center;
+        @extend .padding-large;
     }
     .dialog-buttons {
         flex: 0;
@@ -1143,11 +1236,28 @@ button.icon-button {
         color: white;
         font-weight: bold;
     }
+    .dialog-buttons .dialog-button {
+        $buttonTypes: (
+            delete: var(--color-danger-base),
+            cancel: transparent,
+            "window": pink,
+            journalEntry: rgb(94, 169, 226),
+            artScene: cyan,
+        );
+        @each $type, $color in list {
+            &[data-button="#{$type}"] {
+                background: $color !important;
+            }
+        }
+    }
     .destructive-action-prompt {
         flex: 1 0 0;
         h1 {
             display: inline-flex;
             gap: 1rem;
+        }
+        h1 {
+            font-size: 2rem;
         }
         h1,
         .destructive-action-text {

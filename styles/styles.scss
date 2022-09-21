@@ -1,5 +1,5 @@
 @use "colors" as *;
-@import "_utility";
+@use "utility" as *;
 @import "_variables";
 :root {
     --box-shadow-inset: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
@@ -12,6 +12,7 @@
         position: relative;
         .picker_wrapper {
             position: absolute;
+            top: 100%;
             z-index: 800;
         }
     }
@@ -54,6 +55,55 @@
             // max-height: 80vh;
         }
         .tilesInScene {
+            .wrapper {
+                $tile-types: (
+                    art: "art-tiles",
+                    frame: "frame-tiles",
+                );
+                @each $type, $selector in $tile-types {
+                    &.#{$selector} {
+                        h3 {
+                            color: var(--data-#{$type}-color);
+                            @include text-shadow;
+                        }
+                        .new-tile-list-item {
+                            @include JTCS-accent-ghost($primary-color: var(--data-#{$type}-color));
+                            button {
+                                &:hover,
+                                &:focus {
+                                    box-shadow: unset;
+                                }
+                            }
+                        }
+                    }
+                }
+                h3 {
+                    font-size: 1.25em;
+                }
+                // &.art-tiles {
+                //     h3 {
+                //         color: var(--data-art-color);
+                //         @include text-shadow;
+                //     }
+                //     .new-tile-list-item {
+                //         @include JTCS-accent-ghost($primary-color: var(--data-art-color));
+                //         button{
+                //             &:focus, &:hover{
+                //                 display: flex;
+                //             }
+                //         }
+                //     }
+                // }
+                // &.frame-tiles {
+                //     h3 {
+                //         color: var(--data-frame-color);
+                //         @include text-shadow;
+                //     }
+                //     .new-tile-list-item {
+                //         @include JTCS-accent-ghost($primary-color: var(--data-frame-color));
+                //     }
+                // }
+            }
             // min-height: 50vh;
             // max-height: 80%;
             // height: 80%;
@@ -107,6 +157,7 @@
 }
 
 .clickableImageContainer {
+    width: fit-content;
     &.JTCS {
         label {
             border: 2px solid var(--color-deep-purple-darkest);
@@ -124,11 +175,10 @@
         position: absolute;
         top: 0;
         left: 0;
-        display: grid;
-        width: fit-content;
+        display: flex;
+        align-items: flex-end;
+        width: 100%;
         height: fit-content;
-        grid-template-columns: minmax(20px, auto) minmax(0, 1fr);
-        grid-template-rows: minmax(20px, auto) minmax(0, 1fr) minmax(0, 1fr);
 
         transition: opacity 100ms ease-in;
         pointer-events: none;
@@ -146,8 +196,16 @@
     }
 
     .displayTiles {
-        box-shadow: var(--box-shadow);
         pointer-events: auto;
+        button {
+            max-width: fit-content;
+            border: unset;
+            box-shadow: var(--box-shadow);
+            @include JTCS-accent-fill($primary-color: var(--data-art-color));
+            &[data-is-default] {
+                @include JTCS-accent-fill($primary-color: var(--data-default-color));
+            }
+        }
         * {
             pointer-events: auto;
         }
@@ -257,5 +315,22 @@
         &:hover {
             cursor: not-allowed;
         }
+    }
+}
+.unlinked-tiles-list {
+    padding-block: 2em;
+    ul {
+        background-color: var(--foundry-dark-gray);
+    }
+    li {
+        list-style-type: none;
+        .input-span {
+            width: 100%;
+            input {
+                margin-right: 0.5rem;
+            }
+        }
+        --bg-color: var(--data-unlinked-color);
+        @extend .hover-bg-dynamic;
     }
 }

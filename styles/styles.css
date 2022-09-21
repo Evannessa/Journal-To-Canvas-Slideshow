@@ -54,15 +54,12 @@
   --space-medium: 2rem;
   --space-large: 3rem;
 }
-
 :root body.pink {
   background-color: #dc51ac;
 }
-
 :root body.red {
   background-color: #d64651;
 }
-
 :root body.orange {
   background-color: #e55937;
 }
@@ -127,10 +124,15 @@
 
 .popover {
   position: absolute;
+  border-top: 4px solid var(--JTCS-accent-color);
   padding: var(--padding-small);
   background-color: var(--bg-color);
   color: var(--color-text-light-0);
   top: 100%;
+  min-width: -webkit-max-content;
+  min-width: -moz-max-content;
+  min-width: max-content;
+  box-shadow: var(--box-shadow);
 }
 .popover select {
   color: var(--color-text-light-0);
@@ -147,7 +149,7 @@
   height: 100%;
 }
 
-.reset-margin {
+.reset-margin, .item-menu hr.list-divider {
   margin: 0;
 }
 
@@ -509,6 +511,10 @@ fieldset.toggle-button-group label:last-of-type {
   border-bottom-right-radius: 8px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .interactive {
   cursor: pointer;
 }
@@ -528,12 +534,20 @@ fieldset.toggle-button-group label:last-of-type {
   padding: 0.5rem 1rem;
 }
 
+.padding-large, #JTCS-custom-dialog .dialog-content {
+  padding: 1rem 1.5rem;
+}
+
 .padding-none {
   padding: 0;
 }
 
 .margin-none {
   margin: 0;
+}
+
+button {
+  cursor: pointer;
 }
 
 button.icon-button {
@@ -557,6 +571,19 @@ button.icon-button i {
 button.icon-button[data-variant=small] {
   width: 5%;
   padding-bottom: 5%;
+}
+button.icon-button.active {
+  background-color: var(--JTCS-accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
+  outline: 0px solid white;
+  outline-offset: 2px;
+  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+}
+button.icon-button.active:hover, button.icon-button.active:focus {
+  outline: 1px solid white;
+  outline-offset: 0px;
+  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
 
 .hover-text-color:hover {
@@ -655,11 +682,11 @@ button.icon-button[data-variant=small] {
   background-color: transparent;
 }
 
-.hover-bg-dynamic, .input-span[data-variant=visible-tick] input[type=radio] + label,
+.hover-bg-dynamic, .unlinked-tiles-list li, .item-menu li, .input-span[data-variant=visible-tick] input[type=radio] + label,
 .input-span[data-variant=visible-tick] input[type=checkbox] + label {
   transition: background-color 150ms ease-in;
 }
-.hover-bg-dynamic:hover, .input-span[data-variant=visible-tick] input[type=radio] + label:hover,
+.hover-bg-dynamic:hover, .unlinked-tiles-list li:hover, .item-menu li:hover, .input-span[data-variant=visible-tick] input[type=radio] + label:hover,
 .input-span[data-variant=visible-tick] input[type=checkbox] + label:hover {
   background-color: var(--bg-color);
 }
@@ -758,7 +785,7 @@ button.icon-button[data-variant=small] {
 .overflow-scroll-y {
   overflow-y: scroll;
 }
-.overflow-hidden {
+.overflow-hidden, .item-menu {
   overflow: hidden;
 }
 .overflow-hidden-x {
@@ -941,8 +968,12 @@ button.icon-button[data-variant=small] {
   z-index: 200;
 }
 
-.justify-self-right {
+.justify-self-right, .justify-self-center {
   margin-left: auto;
+}
+
+.justify-self-left, .justify-self-center {
+  margin-right: auto;
 }
 
 .has-floating-label {
@@ -1226,10 +1257,48 @@ button.icon-button[data-variant=small] {
   text-transform: capitalize;
 }
 
+.item-menu {
+  display: flex;
+  justify-content: space-between;
+}
+.item-menu hr.list-divider {
+  width: 100%;
+  border-bottom: unset;
+  border-top: unset;
+  border: 1px solid hsl(0deg, 0%, 50%);
+  margin-top: unset;
+  margin-bottom: unset;
+}
+.item-menu li {
+  background-color: var(--foundry-dark-gray);
+  width: 100%;
+  --bg-color: var(--JTCS-accent-color);
+  --text-color: var(--JTCS-text-color);
+}
+.item-menu li:first-child {
+  margin-top: 1em;
+}
+.item-menu li:last-child {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.item-menu li i {
+  display: grid;
+  place-content: center;
+  margin-right: 1.5rem;
+}
+
 #JTCS-custom-dialog {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
+}
+#JTCS-custom-dialog .window-content h1 {
+  font-size: 1.5rem;
+  border-bottom: unset;
+}
+#JTCS-custom-dialog .window-content input {
+  width: 100%;
 }
 #JTCS-custom-dialog .dialog-content {
   display: flex;
@@ -1244,12 +1313,18 @@ button.icon-button[data-variant=small] {
   color: white;
   font-weight: bold;
 }
+#JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=list] {
+  background: !important;
+}
 #JTCS-custom-dialog .destructive-action-prompt {
   flex: 1 0 0;
 }
 #JTCS-custom-dialog .destructive-action-prompt h1 {
   display: inline-flex;
   gap: 1rem;
+}
+#JTCS-custom-dialog .destructive-action-prompt h1 {
+  font-size: 2rem;
 }
 #JTCS-custom-dialog .destructive-action-prompt h1,
 #JTCS-custom-dialog .destructive-action-prompt .destructive-action-text {
@@ -1336,6 +1411,7 @@ button.icon-button[data-variant=small] {
 }
 #JTCSSettingsApplication .color-picker-group .picker_wrapper {
   position: absolute;
+  top: 100%;
   z-index: 800;
 }
 #JTCSSettingsApplication .window-content form {
@@ -1373,6 +1449,43 @@ button.icon-button[data-variant=small] {
   height: 95%;
   position: relative;
 }
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles h3 {
+  color: var(--data-art-color);
+  text-shadow: -1px 1px 2px black, 1px 1px 2px black, 1px -1px 0 black, -1px -1px 0 black;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item {
+  background-color: transparent;
+  color: var(--data-art-color) !important;
+  border: 2px solid var(--data-art-color);
+  transition: background-color 120ms ease-in;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item:focus {
+  background-color: var(--data-art-color);
+  color: var(--JTCS-text-color-alt);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus {
+  box-shadow: unset;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles h3 {
+  color: var(--data-frame-color);
+  text-shadow: -1px 1px 2px black, 1px 1px 2px black, 1px -1px 0 black, -1px -1px 0 black;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item {
+  background-color: transparent;
+  color: var(--data-frame-color) !important;
+  border: 2px solid var(--data-frame-color);
+  transition: background-color 120ms ease-in;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item:focus {
+  background-color: var(--data-frame-color);
+  color: var(--JTCS-text-color-alt);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus {
+  box-shadow: unset;
+}
+#slideshow-config .window-content .tilesInScene .wrapper h3 {
+  font-size: 1.25em;
+}
 #slideshow-config .window-content .tilesInScene .item-wrapper {
   display: flex;
   flex-direction: column;
@@ -1407,6 +1520,9 @@ button.icon-button[data-variant=small] {
 }
 
 .clickableImageContainer {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
   position: relative;
 }
 .clickableImageContainer.JTCS label {
@@ -1423,15 +1539,12 @@ button.icon-button[data-variant=small] {
   position: absolute;
   top: 0;
   left: 0;
-  display: grid;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  grid-template-columns: minmax(20px, auto) minmax(0, 1fr);
-  grid-template-rows: minmax(20px, auto) minmax(0, 1fr) minmax(0, 1fr);
   transition: opacity 100ms ease-in;
   pointer-events: none;
 }
@@ -1445,7 +1558,6 @@ button.icon-button[data-variant=small] {
   pointer-events: auto;
 }
 .clickableImageContainer .displayTiles {
-  box-shadow: var(--box-shadow);
   pointer-events: auto;
   grid-row: 1/2;
   grid-column: 2/4;
@@ -1455,6 +1567,35 @@ button.icon-button[data-variant=small] {
   color: white;
   padding: 0rem 0rem;
   min-width: 50%;
+}
+.clickableImageContainer .displayTiles button {
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  border: unset;
+  box-shadow: var(--box-shadow);
+  background-color: var(--data-art-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  outline: 0px solid white;
+  outline-offset: 2px;
+  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+}
+.clickableImageContainer .displayTiles button:hover, .clickableImageContainer .displayTiles button:focus {
+  outline: 1px solid white;
+  outline-offset: 0px;
+  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+}
+.clickableImageContainer .displayTiles button[data-is-default] {
+  background-color: var(--data-default-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  outline: 0px solid white;
+  outline-offset: 2px;
+  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+}
+.clickableImageContainer .displayTiles button[data-is-default]:hover, .clickableImageContainer .displayTiles button[data-is-default]:focus {
+  outline: 1px solid white;
+  outline-offset: 0px;
+  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
 .clickableImageContainer .displayTiles * {
   pointer-events: auto;
@@ -1563,4 +1704,21 @@ button.icon-button[data-variant=small] {
 }
 [data-missing=true] button:disabled:hover {
   cursor: not-allowed;
+}
+
+.unlinked-tiles-list {
+  padding-block: 2em;
+}
+.unlinked-tiles-list ul {
+  background-color: var(--foundry-dark-gray);
+}
+.unlinked-tiles-list li {
+  list-style-type: none;
+  --bg-color: var(--data-unlinked-color);
+}
+.unlinked-tiles-list li .input-span {
+  width: 100%;
+}
+.unlinked-tiles-list li .input-span input {
+  margin-right: 0.5rem;
 }/*# sourceMappingURL=styles.css.map */

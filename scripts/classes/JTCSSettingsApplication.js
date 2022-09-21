@@ -59,11 +59,16 @@ export class JTCSSettingsApplication extends FormApplication {
                         break;
                     case "checkbox":
                         value = checked; //if its a checkbox, set its value to whether or not it is checked
+                        break;
+                    case "text":
+                        propertyString = name.split(".").splice(0, 1).join(".");
+                        break;
                     default:
                         propertyString = name;
                         break;
                 }
                 let settingsObject = getProperty(artGalleryDefaultSettings, propertyString);
+                console.log("Our settings object is", settingsObject);
                 if (settingsObject && settingsObject.hasOwnProperty("onChange")) {
                     let ourApp = game.JTCSSettingsApp;
                     settingsObject.onChange(event, { value: value, app: ourApp, html: ourApp.element });

@@ -29,12 +29,24 @@ export const artGalleryDefaultSettings = {
         },
     },
     colorSchemeData: {
-        name: "Color Scheme",
-        hint: "Which color scheme would you like to use?",
-        choices: {
-            foundryDefault: "Default Foundry Color Scheme",
-            jtcsDefault: "A Bluish Dark Theme",
+        name: "Custom Color Scheme",
+        hint: "What colors would you like to use on parts of the JTCS UI? This will affect things like buttons, checkboxes, borders, etc.",
+        colors: {
+            accentColor: "#44c3fd",
+            textColor: "#212121",
+            textColorAlt: "#FFFFFF",
         },
+        // onChange: async (event, options) => {
+        //     let { value, app, html } = options;
+        //     let changedElement = event.currentTarget;
+        //     let propertyName = "--JTCS-accent-color";
+        //     if (changedElement.getAttribute("id") == "textColor") {
+        //         propertyName = "--JTCS-text-color";
+        //     }
+        //     changedElement.closest(".form-group-stacked").style.setProperty(propertyName, value);
+        //     console.log(changedElement.closest(".form-group-stacked").style);
+        //     // await HelperFunctions.setUIColors();
+        // },
     },
     dedicatedDisplayData: {
         journal: {
@@ -48,11 +60,11 @@ export const artGalleryDefaultSettings = {
             hint: "Art Scene",
         },
     },
-    // sheetFadeOpacityData: {
-    //     name: "Sheet Fade Opacity",
-    //     hint: "Change the opacity of the background when the sheet fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
-    //     value: 0.5,
-    // },
+    sheetFadeOpacityData: {
+        name: "Sheet Fade Opacity",
+        hint: "Change the opacity of the background when the sheet fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
+        value: 0.5,
+    },
     fadeSheetImagesData: {
         name: "Fade Sheet Images",
         hint: "When fading a JournalEntry, Actor, or Item sheet, should the images fade as well as the background?",
@@ -101,6 +113,17 @@ export const registerSettings = async function () {
             const updateData = await HelperFunctions.getSettingValue("artGallerySettings");
             Hooks.callAll("updateJTCSSettings", { origin: "JTCSSettings", updateData });
         },
+    });
+    new window.Ardittristan.ColorSetting(MODULE_ID, "JTCSAccentColor", {
+        name: "Accent Color", // The name of the setting in the settings menu
+        hint: "Choose an accent color to use in the JTCS UI", // A description of the registered setting and its behavior
+        label: "Accent Color", // The text label used in the button
+        restricted: true, // Restrict this setting to gamemaster only?
+        defaultColor: "#44c3fdff", // The default color of the setting
+        scope: "client", // The scope of the setting
+        onChange: (value) => {
+            Hooks.callAll("updateJTCSSettings", { origin: "JTCSSettings", updateData: value });
+        }, // A callback function which triggers when the setting is changed
     });
 
     game.settings.register("journal-to-canvas-slideshow", "sheetFadeOpacity", {

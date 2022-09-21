@@ -4,8 +4,19 @@ import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { sheetImageActions, sheetControls } from "./SheetImageActions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
 import { artTileManager, helpers } from "./data/ModuleManager.js";
+import { ArtTileManager } from "./classes/ArtTileManager.js";
 export class SheetImageApp {
     static displayMethods = [
+        {
+            name: "anyScene",
+            icon: "fas fa-vector-square",
+            tooltip: "display image in any scene with a frame tile and display tile",
+        },
+        {
+            name: "artScene",
+            icon: "far fa-image",
+            tooltip: "display image in dedicated scene",
+        },
         {
             name: "window",
             icon: "fas fa-external-link-alt",
@@ -15,16 +26,6 @@ export class SheetImageApp {
             name: "journalEntry",
             icon: "fas fa-book-open",
             tooltip: "display image in a dedicated journal entry",
-        },
-        {
-            name: "artScene",
-            icon: "far fa-image",
-            tooltip: "display image in dedicated scene",
-        },
-        {
-            name: "anyScene",
-            icon: "fas fa-vector-square",
-            tooltip: "display image in any scene with a frame tile and display tile",
         },
     ];
 
@@ -58,7 +59,9 @@ export class SheetImageApp {
                     );
                 }
                 //inject controls onto the sheet itself too
+                // if (!html[0].querySelector("#sheet-controls")) {
                 SheetImageApp.injectSheetWideControls(app);
+                // }
             }
         }
     }
@@ -88,6 +91,7 @@ export class SheetImageApp {
         await SheetImageApp.applySheetFadeSettings(journalSheet);
 
         let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
+        let defaultArtTileID = await ArtTileManager.getDefaultArtTileID();
 
         let imageName = await SheetImageDataController.convertImageSourceToID(imgElement);
         imgElement.dataset.name = imageName;
@@ -107,6 +111,7 @@ export class SheetImageApp {
             currentSceneName: game.scenes.viewed.name,
             displayMethods: SheetImageApp.displayMethods,
             displayTiles: displayTiles,
+            defaultArtTileID: defaultArtTileID,
             imgPath: imageName,
             users: users,
             // ...imageFlagData,
@@ -124,8 +129,12 @@ export class SheetImageApp {
     }
     static async injectSheetWideControls(journalSheet) {
         let template = game.JTCS.templates["sheet-wide-controls"];
+        let isActive = await HelperFunctions.getFlagValue(journalSheet.document, "showControls", "", false);
+        let controlsData = sheetControls.map((control) =>
+            control.toggle ? { ...control, active: isActive } : control
+        );
         let renderHtml = await renderTemplate(template, {
-            controls: sheetControls,
+            controls: controlsData,
         });
         let $editorElement = $(journalSheet.element[0].querySelector(".window-content form"));
         $editorElement.prepend(renderHtml);

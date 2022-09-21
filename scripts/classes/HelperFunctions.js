@@ -88,6 +88,21 @@ export class HelperFunctions {
         }
     }
 
+    static async setUIColors() {
+        let html = document.documentElement;
+        let colorScheme = await HelperFunctions.getSettingValue("artGallerySettings", "colorSchemeData.colors");
+        let colors = await HelperFunctions.getSettingValue("artGallerySettings", "indicatorColorData.colors");
+        let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = colors;
+        let { accentColor, textColor, textColorAlt } = colorScheme;
+        html.style.setProperty("--data-frame-color", frameTileColor);
+        html.style.setProperty("--data-art-color", artTileColor);
+        html.style.setProperty("--data-unlinked-color", unlinkedTileColor);
+        html.style.setProperty("--data-default-color", defaultTileColor);
+
+        html.style.setProperty("--JTCS-accent-color", accentColor);
+        html.style.setProperty("--JTCS-text-color", textColor);
+        html.style.setProperty("--JTCS-text-color-alt", textColorAlt);
+    }
     static async getSettingValue(settingName, nestedKey = "") {
         let settingData = await game.settings.get(HelperFunctions.MODULE_ID, settingName);
         if (settingData) {

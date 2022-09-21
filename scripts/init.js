@@ -27,6 +27,17 @@ export const JTCSModules = {
     SlideshowConfig,
 };
 
+Hooks.once("ready", () => {
+    try {
+        window.Ardittristan.ColorSetting.tester;
+    } catch {
+        ui.notifications.notify(
+            'Journal to Canvas Slideshow requires the "lib - ColorSettings" module. Please make sure you have it installed and enabled.',
+            "error"
+        );
+    }
+});
+
 Hooks.on("init", async () => {
     console.log("Initializing Journal to Canvas Slideshow");
 
@@ -116,7 +127,6 @@ Hooks.on("init", async () => {
 
     //load templates
     loadTemplates(templates);
-
     // now that we've created our API, inform other modules we are ready
     // provide a reference to the module api as the hook arguments for good measure
     Hooks.callAll("journalToCanvasSlideshowReady", game.modules.get("journal-to-canvas-slideshow").api);
@@ -125,6 +135,7 @@ Hooks.on("init", async () => {
 Hooks.on("journalToCanvasSlideshowReady", async (api) => {
     game.JTCS = api;
     await (await setupHookHandlers()).registerHooks();
+    await HelperFunctions.setUIColors();
     // await setupHookHandlers.registerHooks();
     // setUpSheetRenderHooks();
     // setUpIndicatorHooks();

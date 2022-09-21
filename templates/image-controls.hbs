@@ -21,7 +21,7 @@
 		</li>
 	  	{{/each}}
 	</ul>
-	<div class="displayTiles | hidden | flex-row rounded " id="displayTileButtons">
+	<div class="displayTiles | hidden | flex-row flex-wrap | rounded " id="displayTileButtons">
         {{#each displayTiles as |tileData|}}
         <button
             name="{{concat "selectedDisplayTile" @root.imgPath}}"
@@ -30,6 +30,9 @@
             data-hover-action="tileButton.hover.showTileIndicator"
             data-id="{{tileData.tile.id}}"
             id="{{tileData.randomID}}"
+            {{#if (eq tileData.tile.id @root.defaultArtTileID)}}
+                data-is-default="true"
+            {{/if}}
             title='{{combineToString (ternary (eq @root.selectedTileID tileData.tile.id) "This image will be displayed on the selected tile" "Click to display this image on tile") tileData.tile.displayName "in scene"  @root.currentSceneName }}'
         >
             {{tileData.tile.displayName}}

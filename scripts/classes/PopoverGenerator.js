@@ -34,7 +34,6 @@ export class Popover {
         });
 
         let popover = await Popover.createAndPositionPopover(templateData, elementDataArray, sourceEvent);
-        console.log("Popover got rendered", popover);
 
         return popover;
     }

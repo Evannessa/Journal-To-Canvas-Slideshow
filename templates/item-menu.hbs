@@ -1,7 +1,10 @@
-<ul class="flex-col">
+<ul class="item-menu [ flex-col slight-rounded reset-margin reset-padding overflow-hidden ]">
     {{#each items as |item|}}
-        <li class="item [ flex-row flex-justify-space-between bg-primary ]
-                [ interactive hover-bg-primary ] 
+    {{#if @last}}
+        <hr class="list-divider">
+    {{/if}}
+        <li class="item [ flex-row flex-justify-start gap-small ]
+                [ interactive hover-bg-primary padding-medium ] 
         " 
             name="{{concat ../propertyString "." @key}}"
             {{#if item.dataset}}
@@ -12,7 +15,7 @@
             data-action="{{concat ../propertyString "." @key}}"
             >
             <i class="{{item.icon}}"></i>
-            {{@key}}
+            <span class="">{{camelCaseToCapitalString @key}}</span>
         </li>
     {{/each}}
 </ul>

@@ -1,4 +1,5 @@
-<div class="popover padding-medium slight-rounded single-sharp-corner absolute-child {{extraClass}}" 
+<div class="popover slight-rounded 
+            absolute-child {{extraClass}}" 
     data-gallery-item-data="true" 
    {{#each dataset}} 
     {{concat "data-" (camelCaseToDashCase @key)}}="{{this}}"

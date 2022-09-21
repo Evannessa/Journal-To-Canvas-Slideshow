@@ -1,17 +1,17 @@
 <li
     data-flag="ignore-hover"
-    class="new-tile-list-item tile-list-item | interactive flexcol flex-justify-stretch focus-reveal rounded padding-small shadow-base"
+    class="new-tile-list-item tile-list-item | interactive flexcol flex-justify-stretch focus-reveal"
     data-type="{{this.type}}"
 >
     <button
         type="button"
-        class="toggle-hide blank-button slight-rounded interactive"
+        class="blank-button interactive"
         data-action="globalActions.click.actions.createNewTileData"
         name="globalActions.click.actions.createNewTileData"
     >
         <i class="fas fa-plus"></i>
         Create new
-        {{this.type}}
+        {{camelCaseToCapitalString this.type}}
         tile
     </button>
 </li>

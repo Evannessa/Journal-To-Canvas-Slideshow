@@ -21,7 +21,7 @@ export const registerHelpers = function () {
         return Handlebars.SafeString(string);
     });
     Handlebars.registerHelper("camelCaseToCapitalString", function (string) {
-        return HelperFunctions.capitalizeEachWord(string);
+        return HelperFunctions.capitalizeEachWord(string, "");
         // let sentence = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
         // sentence = sentence.map((s) => s.charAt(0).toUpperCase() + s.slice(1));
         // sentence = sentence.join(" ");

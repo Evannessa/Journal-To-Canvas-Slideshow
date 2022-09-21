@@ -2,6 +2,7 @@
 import { log, MODULE_ID } from "./debug-mode.js";
 import { slideshowDefaultSettingsData } from "./data/SlideshowConfigActions.js";
 import { Popover } from "./classes/PopoverGenerator.js";
+import { HelperFunctions } from "./classes/HelperFunctions.js";
 export class SlideshowConfig extends Application {
     constructor(data = {}) {
         // super({ renderData: { ...data } });
@@ -70,19 +71,6 @@ export class SlideshowConfig extends Application {
         }
     }
 
-    /**
-     * Set the accent colors for borders and text in the Slideshow config to match the colors of the indicators on the canvas
-     * @param {JQueryObject} html - the html of the app (window content)
-     */
-    async setUIColors(html) {
-        let colors = await game.JTCS.utils.getSettingValue("artGallerySettings", "indicatorColorData.colors");
-        let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = colors;
-        // let root = document.documentElement;
-        html[0].style.setProperty("--data-frame-color", frameTileColor);
-        html[0].style.setProperty("--data-art-color", artTileColor);
-        html[0].style.setProperty("--data-unlinked-color", unlinkedTileColor);
-        html[0].style.setProperty("--data-default-color", defaultTileColor);
-    }
     async getData() {
         //return data to template
         let ourScene = game.scenes.viewed;
@@ -134,7 +122,7 @@ export class SlideshowConfig extends Application {
     async activateListeners(html) {
         // super.activateListeners(html);
         html = $(html[0].closest(".window-app"));
-        await this.setUIColors(html);
+        // await this.setUIColors(html);
         // this._handleToggle(html);
 
         html.off("click").on("click", "[data-action]", async (event) => await this.handleAction(event, "action", html));

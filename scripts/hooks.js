@@ -18,6 +18,7 @@ export const setupHookHandlers = async () => {
      */
 
     async function renderImageControls(app, html) {
+        console.log("Being re-rendered!!!");
         if (!game.user.isGM) {
             return;
         }
@@ -74,6 +75,7 @@ export const setupHookHandlers = async () => {
      * @param {String} options.tileID - the ID of the tile, if updated
      */
     function rerenderImageSheet(options) {
+        console.log("Re-rendering in response to settings or flags");
         const { origin, currentScene, updateData } = options;
         if (typeof updateData === "object") {
         }
@@ -112,6 +114,7 @@ export const setupHookHandlers = async () => {
         },
         renderImageControls: {
             hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet", "update"],
+            // hooks: ["renderJournalSheet"],
             handlerFunction: renderImageControls,
         },
         renderSlideshowConfig: {
@@ -182,6 +185,7 @@ export const setupHookHandlers = async () => {
             }
             for (let hookName of handler.hooks) {
                 Hooks.on(hookName, handler.handlerFunction);
+                // Hooks.once(hookName, handler.handlerFunction);
             }
         }
     }

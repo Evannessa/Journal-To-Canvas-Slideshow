@@ -240,8 +240,6 @@ export class ImageDisplayManager {
                         "linkedBoundingTile",
                         artSceneID
                     );
-                    console.log("Our art tile is", defaultArtTileID);
-                    console.log("Our frame tile is", frameTileID);
                     await ImageDisplayManager.updateTileObjectTexture(
                         defaultArtTileID,
                         frameTileID,

@@ -28,6 +28,7 @@
             {{#with @root.settingsData}}
                 {{#each (filter itemActions.click.actions "renderOnMissing" ../missing)}}
                     {{#unless (eq overflow true)}}
+                    {{#unless (eq renderNever true)}}
                     {{> (dynamicPartial "icon-button")
                         action=(concat "itemActions.click.actions" "." @key)
                         name=(concat 
@@ -35,7 +36,8 @@
                         icon=this.icon
                         tooltipText=this.tooltipText
                         extraClass=this.extraClass
-                    }}
+                    }} 
+                    {{/unless}}
                     {{/unless}}
                 {{/each}}
             {{/with}}
