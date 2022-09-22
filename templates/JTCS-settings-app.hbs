@@ -1,12 +1,12 @@
 <form class="flexcol">
-    <div class="form-content overflow-scroll-y overflow-hidden-x flow">
-        <div class="form-group-stacked" id="JTCScolorSchemeData">
+    <div class="form-content overflow-scroll-y overflow-hidden-x flow padding-medium">
+        <div class="form-group-stacked flow" id="JTCScolorSchemeData">
             {{#with colorSchemeData}}
                 <h2>{{this.name}}</h2>
-                <p>{{this.hint}}</p>
-                <div class="form-group">
+                <p class="notes">{{this.hint}}</p>
+                <div class="form-group gap-medium">
                     {{#each this.colors}}
-                    <div class="form-group color-picker-group has-floating-label">
+                    <div class="form-group color-picker-group has-floating-label {{@key}}">
                         <label class="floating-label" for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
                         <input
                             id="{{@key}}"
@@ -22,10 +22,10 @@
             
                 {{/with}}
                 </div>
-        <div class="form-group-stacked" id="JTCSsheetSettings">
+        <div class="form-group-stacked flow" id="JTCSsheetSettings">
             {{#with sheetSettings}}
                 <h2>{{this.name}}</h2>
-                <p>{{this.hint}}</p>
+                <p class="notes">{{this.hint}}</p>
                 {{> (dynamicPartial "fieldset-button-group")
                     type="checkbox"
                     variant="visible-tick"
@@ -34,7 +34,7 @@
                 }}
             {{/with}}
         </div>
-        <div class="form-group-stacked" id="JTCSsheetFadeData">
+        <div class="form-group-stacked flow" id="JTCSsheetFadeData">
             {{#with fadeSheetImagesData}}
             <h2>{{this.name}}</h2>
             <p class="notes">{{this.hint}}</p>
@@ -47,11 +47,11 @@
                 }}
             {{/with}}
         </div>
-        <div class="form-group-stacked" id="JTCSindicatorColorData">
+        <div class="form-group-stacked flow" id="JTCSindicatorColorData">
             {{#with indicatorColorData}}
                 <h2>{{this.name}}</h2>
-                <p>{{this.hint}}</p>
-                <div class="form-group">
+                <p class="notes">{{this.hint}}</p>
+                <div class="form-group gap-medium">
                 {{#each this.colors}}
                     <div class="form-group has-floating-label color-picker-group">
                         <label class="floating-label" for="artTileColor">{{camelCaseToCapitalString @key}}</label>
@@ -68,10 +68,10 @@
                 </div>
         {{/with}}
         </div>
-        <div class="form-group-stacked" id="JTCSdefaultImages">
+        <div class="form-group-stacked flow" id="JTCSdefaultImages">
             {{#with defaultTileImages}}
             <h2>{{this.name}}</h2>
-            <p>{{this.hint}}</p>
+            <p class="notes">{{this.hint}}</p>
             {{#each this.paths}}
                <div class="form-group has-floating-label">
                     <label class="floating-label"  for="{{@key}}">{{camelCaseToCapitalString @key}}</label>

@@ -10,7 +10,18 @@
 #slideshow-config,
 #JTCS-custom-dialog {
     .window-content {
+        --flow-space: 2em;
+        .flow {
+            @extend .flow;
+        }
         background: var(--JTCS-background-color);
+        .form-group-stacked {
+            --flow-space: 1em;
+            p.notes {
+                color: var(--JTCS-accent-color-200);
+                opacity: 90%;
+            }
+        }
         select,
         input,
         label,
@@ -32,33 +43,41 @@
         );
         @include printSelectors($selectorList: $selectors, $propertyMap: $properties);
 
+        // remove all border-bottoms on headings
+
         @include printSelectors(
             $selectorList: returnAllHeadings(),
             $propertyMap: (
                 border-bottom: unset,
+                color: var(--JTCS-accent-color),
             )
         );
-        header {
-            .form-group {
-                &:hover {
-                    --accent-color: var(--JTCS-accent-color);
-                    label {
-                        color: var(--accent-color);
-                        // color: var(--JTCS-accent-color);
-                    }
+
+        // have labels highlight with accent color
+        .form-group.has-floating-label {
+            &:hover {
+                --accent-color: var(--JTCS-accent-color);
+                label {
+                    color: var(--accent-color);
                 }
             }
+            &:focus {
+                outline: 1px solid var(--JTCS-accent-color);
+            }
         }
-        span:not(.input-span),
-        li:not(.accent):not([data-is-default]) {
+        // remove borders from spans and list items
+        span:not(.input-span):not(.tick-box):not(.tick-circle) {
             border-color: transparent;
         }
 
         li.tile-list-item {
             background-color: var(--JTCS-background-color-light);
+            &:not(.accent):not([data-is-default]) {
+                border-color: transparent;
+            }
         }
 
-        input[type="text"]:not([data-responsive-color]),
+        input[type="text"],
         select {
             border-color: transparent;
             background-color: var(--JTCS-background-color-dark);
@@ -70,7 +89,7 @@
                 border-radius: 3px;
             }
         }
-        input[data-responsive-color] {
+        input[data-responsive-color]#backgroundColor {
             border-color: var(--JTCS-accent-color-light);
         }
 
@@ -80,8 +99,60 @@
         select {
             color: var(--JTCS-color-neutral);
         }
+        // for the list items in the slideshow config
+        [data-type="art"] {
+            --accent-color: var(--data-art-color);
+        }
+
+        [data-type="frame"] {
+            --accent-color: var(--data-frame-color);
+        }
+        [data-type="unlinked"] {
+            --accent-color: var(--data-unlinked-color);
+        }
+        [data-is-default] {
+            --accent-color: var(--data-default-color);
+            border-color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            .badge {
+                background-color: var(--accent-color);
+            }
+        }
+
+        //for all things with a "data-type" (referring to tile), and an accent class on them
+        [data-type].accent {
+            color: var(--accent-color);
+
+            .badge {
+                color: var(--color-text-dark-primary);
+            }
+            .form-group.has-floating-label {
+                > label.floating-label {
+                    color: var(--accent-color);
+                }
+                > input,
+                > select {
+                    border-color: var(--accent-color);
+                    ::placeholder {
+                        color: var(--accent-color);
+                    }
+                }
+            }
+            &.border-accent {
+                border-color: var(--accent-color);
+            }
+            [data-type="unlinked"] {
+                --accent-color: var(--data-unlinked-color);
+                + label {
+                    --accent-color: var(--data-unlinked-color);
+                }
+            }
+        }
     }
     .primary {
+        @include JTCS-accent-fill();
+    }
+    button.file-picker {
         @include JTCS-accent-fill();
     }
     .secondary {
@@ -316,51 +387,6 @@
     }
     &:active {
         box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
-    }
-}
-
-[data-type="art"] {
-    --accent-color: var(--data-art-color);
-}
-
-[data-type="frame"] {
-    --accent-color: var(--data-frame-color);
-}
-[data-type="unlinked"] {
-    --accent-color: var(--data-unlinked-color);
-}
-[data-is-default] {
-    --accent-color: var(--data-default-color);
-    border-color: var(--accent-color);
-    border: 1px solid var(--accent-color);
-    .badge {
-        background-color: var(--accent-color);
-    }
-}
-
-[data-type].accent {
-    color: var(--accent-color);
-    input,
-    select {
-        border-color: var(--accent-color);
-        ::placeholder {
-            color: var(--accent-color);
-        }
-    }
-    .badge {
-        color: var(--color-text-dark-primary);
-    }
-    label {
-        color: var(--accent-color);
-    }
-    &.border-accent {
-        border-color: var(--accent-color);
-    }
-    [data-type="unlinked"] {
-        --accent-color: var(--data-unlinked-color);
-        + label {
-            --accent-color: var(--data-unlinked-color);
-        }
     }
 }
 

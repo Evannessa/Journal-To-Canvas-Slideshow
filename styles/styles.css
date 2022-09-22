@@ -163,7 +163,9 @@
   height: 100%;
 }
 
-.flow > * + * {
+.flow > * + *, #JTCSSettingsApplication .window-content .flow > * + *,
+#slideshow-config .window-content .flow > * + *,
+#JTCS-custom-dialog .window-content .flow > * + * {
   margin-top: var(--flow-space, 1em);
 }
 
@@ -345,7 +347,7 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
   display: inline-flex;
   width: 1rem;
   height: 1rem;
-  background-color: white;
+  background-color: var(--JTCS-background-color);
 }
 .input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle,
 .input-span[data-variant=visible-tick] input[type=checkbox] + label .tick-circle {
@@ -1408,7 +1410,19 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content,
 #slideshow-config .window-content,
 #JTCS-custom-dialog .window-content {
+  --flow-space: 2em;
   background: var(--JTCS-background-color);
+}
+#JTCSSettingsApplication .window-content .form-group-stacked,
+#slideshow-config .window-content .form-group-stacked,
+#JTCS-custom-dialog .window-content .form-group-stacked {
+  --flow-space: 1em;
+}
+#JTCSSettingsApplication .window-content .form-group-stacked p.notes,
+#slideshow-config .window-content .form-group-stacked p.notes,
+#JTCS-custom-dialog .window-content .form-group-stacked p.notes {
+  color: var(--JTCS-accent-color-200);
+  opacity: 90%;
 }
 #JTCSSettingsApplication .window-content select,
 #JTCSSettingsApplication .window-content input,
@@ -1473,38 +1487,44 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content h1,
 #JTCS-custom-dialog .window-content h1 {
   border-bottom: unset;
+  color: var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content h2,
 #slideshow-config .window-content h2,
 #JTCS-custom-dialog .window-content h2 {
   border-bottom: unset;
+  color: var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content h3,
 #slideshow-config .window-content h3,
 #JTCS-custom-dialog .window-content h3 {
   border-bottom: unset;
+  color: var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content h4,
 #slideshow-config .window-content h4,
 #JTCS-custom-dialog .window-content h4 {
   border-bottom: unset;
+  color: var(--JTCS-accent-color);
 }
-#JTCSSettingsApplication .window-content header .form-group:hover,
-#slideshow-config .window-content header .form-group:hover,
-#JTCS-custom-dialog .window-content header .form-group:hover {
+#JTCSSettingsApplication .window-content .form-group.has-floating-label:hover,
+#slideshow-config .window-content .form-group.has-floating-label:hover,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label:hover {
   --accent-color: var(--JTCS-accent-color);
 }
-#JTCSSettingsApplication .window-content header .form-group:hover label,
-#slideshow-config .window-content header .form-group:hover label,
-#JTCS-custom-dialog .window-content header .form-group:hover label {
+#JTCSSettingsApplication .window-content .form-group.has-floating-label:hover label,
+#slideshow-config .window-content .form-group.has-floating-label:hover label,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label:hover label {
   color: var(--accent-color);
 }
-#JTCSSettingsApplication .window-content span:not(.input-span),
-#JTCSSettingsApplication .window-content li:not(.accent):not([data-is-default]),
-#slideshow-config .window-content span:not(.input-span),
-#slideshow-config .window-content li:not(.accent):not([data-is-default]),
-#JTCS-custom-dialog .window-content span:not(.input-span),
-#JTCS-custom-dialog .window-content li:not(.accent):not([data-is-default]) {
+#JTCSSettingsApplication .window-content .form-group.has-floating-label:focus,
+#slideshow-config .window-content .form-group.has-floating-label:focus,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label:focus {
+  outline: 1px solid var(--JTCS-accent-color);
+}
+#JTCSSettingsApplication .window-content span:not(.input-span):not(.tick-box):not(.tick-circle),
+#slideshow-config .window-content span:not(.input-span):not(.tick-box):not(.tick-circle),
+#JTCS-custom-dialog .window-content span:not(.input-span):not(.tick-box):not(.tick-circle) {
   border-color: transparent;
 }
 #JTCSSettingsApplication .window-content li.tile-list-item,
@@ -1512,11 +1532,16 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content li.tile-list-item {
   background-color: var(--JTCS-background-color-light);
 }
-#JTCSSettingsApplication .window-content input[type=text]:not([data-responsive-color]),
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.accent):not([data-is-default]),
+#slideshow-config .window-content li.tile-list-item:not(.accent):not([data-is-default]),
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.accent):not([data-is-default]) {
+  border-color: transparent;
+}
+#JTCSSettingsApplication .window-content input[type=text],
 #JTCSSettingsApplication .window-content select,
-#slideshow-config .window-content input[type=text]:not([data-responsive-color]),
+#slideshow-config .window-content input[type=text],
 #slideshow-config .window-content select,
-#JTCS-custom-dialog .window-content input[type=text]:not([data-responsive-color]),
+#JTCS-custom-dialog .window-content input[type=text],
 #JTCS-custom-dialog .window-content select {
   border-color: transparent;
   background-color: var(--JTCS-background-color-dark);
@@ -1528,9 +1553,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   padding-inline: 0.15rem;
   border-radius: 3px;
 }
-#JTCSSettingsApplication .window-content input[data-responsive-color],
-#slideshow-config .window-content input[data-responsive-color],
-#JTCS-custom-dialog .window-content input[data-responsive-color] {
+#JTCSSettingsApplication .window-content input[data-responsive-color]#backgroundColor,
+#slideshow-config .window-content input[data-responsive-color]#backgroundColor,
+#JTCS-custom-dialog .window-content input[data-responsive-color]#backgroundColor {
   border-color: var(--JTCS-accent-color-light);
 }
 #JTCSSettingsApplication .window-content input[type=radio],
@@ -1543,6 +1568,85 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content input[type=text],
 #JTCS-custom-dialog .window-content select {
   color: var(--JTCS-color-neutral);
+}
+#JTCSSettingsApplication .window-content [data-type=art],
+#slideshow-config .window-content [data-type=art],
+#JTCS-custom-dialog .window-content [data-type=art] {
+  --accent-color: var(--data-art-color);
+}
+#JTCSSettingsApplication .window-content [data-type=frame],
+#slideshow-config .window-content [data-type=frame],
+#JTCS-custom-dialog .window-content [data-type=frame] {
+  --accent-color: var(--data-frame-color);
+}
+#JTCSSettingsApplication .window-content [data-type=unlinked],
+#slideshow-config .window-content [data-type=unlinked],
+#JTCS-custom-dialog .window-content [data-type=unlinked] {
+  --accent-color: var(--data-unlinked-color);
+}
+#JTCSSettingsApplication .window-content [data-is-default],
+#slideshow-config .window-content [data-is-default],
+#JTCS-custom-dialog .window-content [data-is-default] {
+  --accent-color: var(--data-default-color);
+  border-color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-is-default] .badge,
+#slideshow-config .window-content [data-is-default] .badge,
+#JTCS-custom-dialog .window-content [data-is-default] .badge {
+  background-color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent,
+#slideshow-config .window-content [data-type].accent,
+#JTCS-custom-dialog .window-content [data-type].accent {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent .badge,
+#slideshow-config .window-content [data-type].accent .badge,
+#JTCS-custom-dialog .window-content [data-type].accent .badge {
+  color: var(--color-text-dark-primary);
+}
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > label.floating-label,
+#slideshow-config .window-content [data-type].accent .form-group.has-floating-label > label.floating-label,
+#JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > label.floating-label {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input,
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select,
+#slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input,
+#slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select,
+#JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input,
+#JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select {
+  border-color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select :-ms-input-placeholder {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input ::placeholder,
+#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select ::placeholder,
+#slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input ::placeholder,
+#slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select ::placeholder,
+#JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input ::placeholder,
+#JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select ::placeholder {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent.border-accent,
+#slideshow-config .window-content [data-type].accent.border-accent,
+#JTCS-custom-dialog .window-content [data-type].accent.border-accent {
+  border-color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent [data-type=unlinked],
+#slideshow-config .window-content [data-type].accent [data-type=unlinked],
+#JTCS-custom-dialog .window-content [data-type].accent [data-type=unlinked] {
+  --accent-color: var(--data-unlinked-color);
+}
+#JTCSSettingsApplication .window-content [data-type].accent [data-type=unlinked] + label,
+#slideshow-config .window-content [data-type].accent [data-type=unlinked] + label,
+#JTCS-custom-dialog .window-content [data-type].accent [data-type=unlinked] + label {
+  --accent-color: var(--data-unlinked-color);
 }
 #JTCSSettingsApplication .primary,
 #slideshow-config .primary,
@@ -1559,6 +1663,25 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .primary:focus,
 #JTCS-custom-dialog .primary:hover,
 #JTCS-custom-dialog .primary:focus {
+  outline: 1px solid white;
+  outline-offset: 0px;
+  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+}
+#JTCSSettingsApplication button.file-picker,
+#slideshow-config button.file-picker,
+#JTCS-custom-dialog button.file-picker {
+  background-color: var(--JTCS-accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  color: var(--JTCS-text-color);
+  outline: 0px solid white;
+  outline-offset: 2px;
+  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+}
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus,
+#slideshow-config button.file-picker:hover,
+#slideshow-config button.file-picker:focus,
+#JTCS-custom-dialog button.file-picker:hover,
+#JTCS-custom-dialog button.file-picker:focus {
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -1823,60 +1946,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .clickableImage:active,
 .rightClickableImage:active {
   box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
-}
-
-[data-type=art] {
-  --accent-color: var(--data-art-color);
-}
-
-[data-type=frame] {
-  --accent-color: var(--data-frame-color);
-}
-
-[data-type=unlinked] {
-  --accent-color: var(--data-unlinked-color);
-}
-
-[data-is-default] {
-  --accent-color: var(--data-default-color);
-  border-color: var(--accent-color);
-  border: 1px solid var(--accent-color);
-}
-[data-is-default] .badge {
-  background-color: var(--accent-color);
-}
-
-[data-type].accent {
-  color: var(--accent-color);
-}
-[data-type].accent input,
-[data-type].accent select {
-  border-color: var(--accent-color);
-}
-[data-type].accent input ::-moz-placeholder, [data-type].accent select ::-moz-placeholder {
-  color: var(--accent-color);
-}
-[data-type].accent input :-ms-input-placeholder, [data-type].accent select :-ms-input-placeholder {
-  color: var(--accent-color);
-}
-[data-type].accent input ::placeholder,
-[data-type].accent select ::placeholder {
-  color: var(--accent-color);
-}
-[data-type].accent .badge {
-  color: var(--color-text-dark-primary);
-}
-[data-type].accent label {
-  color: var(--accent-color);
-}
-[data-type].accent.border-accent {
-  border-color: var(--accent-color);
-}
-[data-type].accent [data-type=unlinked] {
-  --accent-color: var(--data-unlinked-color);
-}
-[data-type].accent [data-type=unlinked] + label {
-  --accent-color: var(--data-unlinked-color);
 }
 
 .error::before {

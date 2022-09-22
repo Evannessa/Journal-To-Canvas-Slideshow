@@ -1,14 +1,12 @@
-<div class="form-group form-group-stacked">
-    <div class="input-wrapper has-floating-label">
-        <label class="floating-label" for="{{this.id}}">
-            {{camelCaseToCapitalString this.name}}</label>
-        <input
-            class="flex2"
-            id="{{this.id}}"
-            name="{{this.name}}"
-            type="{{ternary this.type 'text'}}"
-            value="{{this.value}}"
-            data-change-action="{{this.changeAction}}"
-        />
-    </div>
+<div class="form-group has-floating-label">
+    <label class="floating-label" for="{{this.id}}">
+        {{camelCaseToCapitalString this.name}}</label>
+    <input
+        class="flex2"
+        id="{{this.id}}"
+        name="{{this.name}}"
+        type="{{ternary this.type 'text'}}"
+        value="{{this.value}}"
+        data-change-action="{{this.changeAction}}"
+    />
 </div>

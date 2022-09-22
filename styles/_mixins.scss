@@ -44,3 +44,115 @@
         }
     }
 }
+@mixin text-shadow($shadow-color: black) {
+    text-shadow: -1px -1px 0 $shadow-color, 0 -1px 0 $shadow-color, 1px -1px 0 $shadow-color, 1px 0 0 $shadow-color,
+        1px 1px 0 $shadow-color, 0 1px 0 $shadow-color, -1px 1px 0 $shadow-color, -1px 0 0 $shadow-color;
+}
+
+@mixin JTCS-accent-ghost($primary-color: var(--JTCS-accent-color), $border-side: "") {
+    background-color: transparent;
+    color: $primary-color;
+    border#{$border-side}: 2px solid $primary-color;
+    transition: background-color 120ms ease-in, color 120ms ease-in;
+    &:hover,
+    &:focus {
+        transition: background-color 120ms ease-out, color 120ms ease-out;
+        background-color: $primary-color;
+        color: var(--JTCS-color-neutral);
+    }
+}
+@mixin JTCS-accent-ghost-input-span($primary-color: var(--JTCS-accent-color)) {
+    input:disabled + label {
+        opacity: 50%;
+    }
+    display: inline-flex;
+    &[data-variant="visible-tick"] {
+        input[type="radio"],
+        input[type="checkbox"] {
+            @extend .hidden;
+            // &:not(:checked) + label {
+            //     // @include text-shadow($shadow-color: #21212187);
+            // }
+            + label {
+                background-color: transparent;
+                color: $primary-color;
+                border: 2px solid $primary-color;
+
+                transition: background-color 120ms ease-in, color 120ms ease-in;
+                &:hover,
+                &:focus {
+                    transition: background-color 120ms ease-out, color 120ms ease-out;
+                    background-color: $primary-color;
+                    color: var(--JTCS-color-neutral);
+                }
+                .tick-circle,
+                .tick-box {
+                    border: 1px solid $primary-color;
+                    display: inline-flex;
+                    width: 1rem;
+                    height: 1rem;
+                    background-color: var(--JTCS-background-color);
+                }
+                .tick-circle {
+                    border-radius: 50%;
+                }
+            }
+            &:checked {
+                + label {
+                    color: var(--JTCS-text-color);
+                    background-color: $primary-color;
+                    border: 2px solid $primary-color;
+                    outline: 1.5px solid transparent;
+                    outline-offset: -1px;
+                    // transition: color 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out;
+                    transition: outline-color 200ms ease-out, box-shadow 200ms ease-out;
+                    &:hover {
+                        outline-color: white;
+                        box-shadow: 0px 0px 4px 2px $primary-color;
+                        // color: var(--JTCS-color-neutral);
+                    }
+                    // background-color: var(--accent-color);
+                    .tick-circle,
+                    .tick-box {
+                        @include with-absolute-pseudo($isBefore: false);
+                        &:after {
+                            width: 0.5rem;
+                            height: 0.5rem;
+                        }
+                    }
+                    .tick-circle {
+                        &:after {
+                            border-radius: 50%;
+                            background-color: $primary-color;
+                        }
+                    }
+                    .tick-box {
+                        &:after {
+                            content: "✓";
+                            color: $primary-color;
+                            top: unset;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin JTCS-accent-fill($primary-color: var(--JTCS-accent-color), $include-shadow: false) {
+    background-color: $primary-color;
+    border: 1px solid #ffffff91;
+    @if $include-shadow {
+        box-shadow: 0px 0px 8px 2px $primary-color;
+    }
+    color: var(--JTCS-text-color);
+    outline: 0px solid white;
+    outline-offset: 2px;
+    transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+    &:hover,
+    &:focus {
+        outline: 1px solid white;
+        outline-offset: 0px;
+        transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+    }
+}

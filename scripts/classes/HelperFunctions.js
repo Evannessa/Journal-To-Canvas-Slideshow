@@ -119,7 +119,53 @@ export class HelperFunctions {
         var yiq = (r * 299 + g * 587 + b * 114) / 1000;
 
         // Check contrast
-        return yiq >= 128 ? "black" : "white";
+        //@author: slightly modified this
+        return yiq; // >= 128 ? "black" : "white";
+        // return yiq >= 128 ? "black" : "white";
+    }
+    static lighterOrDarker(hexColor) {
+        const HF = HelperFunctions;
+        let yiq = HF.getContrast(hexColor);
+        //the 128 is like a value between 0 and 255, so gray
+        //checking to see if the contrast value is greater than gray (black) or less than gray (white)
+        return yiq >= 128 ? -1 : 1;
+    }
+    /**
+     *
+     * @param {String} backgroundColor - our background color
+     * @param {String} accentColor - the color we're adjusting to find a tint with better contrast
+     * @returns a color lightened to have the right contrast
+     */
+    static getColorWithContrast(backgroundColor, accentColor) {
+        const HF = HelperFunctions;
+
+        backgroundColor = HF.hex8To6(backgroundColor);
+        accentColor = HF.hex8To6(accentColor);
+
+        let direction = HF.lighterOrDarker(accentColor);
+        let adjustedColor = HF.hex8To6(accentColor);
+
+        for (let adjustAmount = 0; adjustAmount < 100; adjustAmount += direction * 10) {
+            console.log("Adjust amount", adjustAmount, "Direction is", direction);
+            adjustedColor = HF.LightenDarkenColor(accentColor, adjustAmount);
+            const hasEnoughContrast = HF.checkIfColorsContrastEnough(backgroundColor, adjustedColor);
+            console.log("Has enough contrast?", backgroundColor, adjustedColor, hasEnoughContrast);
+            if (hasEnoughContrast) {
+                break;
+            }
+        }
+        return adjustedColor;
+    }
+
+    static checkIfColorsContrastEnough(hexColor1, hexColor2) {
+        const HF = HelperFunctions;
+        let contrast1 = HF.getContrast(hexColor1);
+        let contrast2 = HF.getContrast(hexColor2);
+        //the 128 is like a value between 0 and 255, so gray.
+        //if luminance? is grater than 128, it's between gray and white, so return a dark color
+        //if luminance? is less than 128, it's between black and gray, so return a light color
+        let contrastBetween = Math.abs(contrast2 - contrast1);
+        return contrastBetween >= 128 ? true : false;
     }
 
     /**
@@ -154,51 +200,112 @@ export class HelperFunctions {
 
         return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
     }
+
+    /**
+     * set the custom colors for the indicators and color scheme in the JTCS Apps
+     * @param {String} settingPropertyString - the string name of the property in the settings
+     */
+    static async getColorDataFromSettings(settingPropertyString) {
+        const HF = HelperFunctions;
+        let colorData = await HelperFunctions.getSettingValue("artGallerySettings", settingPropertyString);
+        let { colors, propertyNames, colorVariations } = colorData;
+
+        Object.keys(colors).forEach((colorKey) => {
+            const value = HF.hex8To6(colors[colorKey]);
+            const propertyName = propertyNames[colorKey];
+            // let shouldMakeVariants = false;
+            // if (colorVariations) {
+            //     shouldMakeVariants = colorVariations[colorKey];
+            // }
+            HF.setRootStyleProperty(propertyName, value);
+        });
+
+        // add these extra bits on for now
+        if (settingPropertyString === "colorSchemeData") {
+            let { accentColor, backgroundColor } = colors;
+            HF.setRootStyleProperty("--JTCS-color-neutral", HF.getContrast(HF.hex8To6(backgroundColor)));
+            HF.setRootStyleProperty("--JTCS-text-color", HF.getContrast(HF.hex8To6(accentColor)));
+            HF.setRootStyleProperty("--JTCS-accent-color", HF.getColorWithContrast(backgroundColor, accentColor));
+
+            console.log(
+                "Contrast good?",
+                HF.checkIfColorsContrastEnough(HF.hex8To6(accentColor), HF.hex8To6(backgroundColor))
+            );
+        }
+    }
+    /**
+     * set the custom colors for the indicators and color scheme in the JTCS Apps
+     */
     static async setUIColors() {
         let html = document.documentElement;
 
-        let galleryTileColorData = await HelperFunctions.getSettingValue(
-            "artGallerySettings",
-            "indicatorColorData.colors"
-        );
-        let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = galleryTileColorData;
+        await this.getColorDataFromSettings("indicatorColorData");
+        await this.getColorDataFromSettings("colorSchemeData");
+        // let galleryTileColorData = await HelperFunctions.getSettingValue("artGallerySettings", "indicatorColorData");
+        // let { colors, propertyNames } = galleryTileColorData;
+        // Object.keys(colors).forEach((colorKey) => {
+        //     const value = colors[colorKey];
+        //     const propertyName = propertyNames[colorKey];
+        //     console.log(colorKey, value, propertyName);
+        //     HelperFunctions.setRootStyleProperty(propertyName, value);
+        // });
 
-        // tile colors
-        html.style.setProperty("--data-frame-color", frameTileColor);
-        html.style.setProperty("--data-art-color", artTileColor);
-        html.style.setProperty("--data-unlinked-color", unlinkedTileColor);
-        html.style.setProperty("--data-default-color", defaultTileColor);
+        // let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = galleryTileColorData;
 
-        let colorSchemeData = await HelperFunctions.getSettingValue("artGallerySettings", "colorSchemeData.colors");
-        let { accentColor, textColor, textColorAlt, backgroundColor } = colorSchemeData;
+        // // tile colors
+        // html.style.setProperty("--data-frame-color", frameTileColor);
+        // html.style.setProperty("--data-art-color", artTileColor);
+        // html.style.setProperty("--data-unlinked-color", unlinkedTileColor);
+        // html.style.setProperty("--data-default-color", defaultTileColor);
 
-        html.style.setProperty("--JTCS-accent-color", accentColor);
-        html.style.setProperty("--JTCS-text-color", HelperFunctions.getContrast(accentColor));
-        html.style.setProperty("--JTCS-background-color", backgroundColor);
+        // let colorSchemeData = await HelperFunctions.getSettingValue("artGallerySettings", "colorSchemeData");
+        // let { colors, propertyNames } = galleryTileColorData;
+        // Object.keys(colors).forEach((colorKey) => {
+        //     const value = colors[colorKey];
+        //     const propertyName = propertyNames[colorKey];
+        //     console.log(colorKey, value, propertyName);
+        //     HelperFunctions.setRootStyleProperty(propertyName, value);
+        // });
 
-        let bgColorModified = HelperFunctions.hex8To6(backgroundColor);
-        let accentColorModified = HelperFunctions.hex8To6(backgroundColor);
+        // let { accentColor, textColor, textColorAlt, backgroundColor } = colorSchemeData;
 
-        html.style.setProperty(
-            "--JTCS-accent-color-light",
-            HelperFunctions.LightenDarkenColor(accentColorModified, 20)
-        );
+        // html.style.setProperty("--JTCS-accent-color", accentColor);
+        // html.style.setProperty("--JTCS-text-color", HelperFunctions.getContrast(accentColor));
+        // html.style.setProperty("--JTCS-background-color", backgroundColor);
 
-        html.style.setProperty(
-            "--JTCS-background-color-light",
-            HelperFunctions.LightenDarkenColor(bgColorModified, 20)
-        );
-        html.style.setProperty("--JTCS-background-color-dark", HelperFunctions.LightenDarkenColor(bgColorModified, -5));
-        html.style.setProperty("--JTCS-color-neutral", HelperFunctions.getContrast(backgroundColor));
+        // let bgColorModified = HelperFunctions.hex8To6(backgroundColor);
+        // let accentColorModified = HelperFunctions.hex8To6(backgroundColor);
+
+        // html.style.setProperty(
+        //     "--JTCS-accent-color-light",
+        //     HelperFunctions.LightenDarkenColor(accentColorModified, 20)
+        // );
+
+        // html.style.setProperty(
+        //     "--JTCS-background-color-light",
+        //     HelperFunctions.LightenDarkenColor(bgColorModified, 20)
+        // );
+        // html.style.setProperty("--JTCS-background-color-dark", HelperFunctions.LightenDarkenColor(bgColorModified, -5));
+        // html.style.setProperty("--JTCS-color-neutral", HelperFunctions.getContrast(backgroundColor));
     }
 
-    static setRootStyleProperty(propertyName, value, adjustAmount = 0) {
+    /**
+     * Set properties of custom colors on root element for use in our CSS
+     * @param {String} propertyName - the name of the CSS custom property we want to set on the root element
+     * @param {String} value - a value representing a hex code color
+     * @param {*} makeVariations  - whether we should generate light and dark variants on this color for better contrast
+     */
+    static setRootStyleProperty(propertyName, value, makeVariations = false) {
         const html = document.documentElement;
-        let adjustedColorValue = value;
-        if (adjustAmount) {
-            adjustedColorValue = HelperFunctions.LightenDarkenColor(value, adjustAmount);
+        html.style.setProperty(propertyName, value);
+        if (makeVariations) {
+            const lightVariantPropName = `${propertyName}-light`;
+            const lightVariantValue = HelperFunctions.LightenDarkenColor(value, 20);
+            const darkVariantPropName = `${propertyName}-dark`;
+            const darkVariantValue = HelperFunctions.LightenDarkenColor(value, -10);
+            html.style.setProperty(lightVariantPropName, lightVariantValue);
+            html.style.setProperty(darkVariantPropName, darkVariantValue);
         }
-        html.style.setProperty(propertyName, adjustedColorValue);
     }
 
     /**
@@ -207,9 +314,10 @@ export class HelperFunctions {
      * @returns {String}
      */
     static hex8To6(hexColor) {
+        console.log(hexColor);
         let hexColorMod = hexColor;
-        if (color.slice(1).length > 6) {
-            hexColorMod = color.slice(0, -2);
+        if (hexColor.slice(1).length > 6) {
+            hexColorMod = hexColor.slice(0, -2);
         }
         return hexColorMod;
     }

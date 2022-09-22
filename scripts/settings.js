@@ -31,8 +31,7 @@ export const artGalleryDefaultSettings = {
     colorSchemeData: {
         name: "Custom Color Scheme",
         hint: `What colors would you like to use on parts of the JTCS UI? This will affect things like buttons, checkboxes, borders, etc.
-        Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.
-        Hint: Set the "Text Color Alt" in order to fix contrast issues if text colored with your accent color is too hard to read against the background. Recommended to set it to a very light or very dark color depending on the background-color you're using in Foundry.
+         \n Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.
         `,
         colors: {
             accentColor: "#44c3fd",
@@ -41,6 +40,10 @@ export const artGalleryDefaultSettings = {
         propertyNames: {
             accentColor: "--JTCS-accent-color",
             backgroundColor: "--JTCS-background-color",
+        },
+        colorVariations: {
+            accentColor: true,
+            backgroundColor: true,
         },
     },
     dedicatedDisplayData: {
