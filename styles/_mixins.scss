@@ -26,3 +26,21 @@
     margin: unset;
     padding: unset;
 }
+
+@function returnAllHeadings($startLevel: 1, $endLevel: 6) {
+    $selectorList: [];
+    @for $var from $startLevel to $endLevel {
+        $headerSelector: "h#{$var}";
+        $selectorList: join($selectorList, $headerSelector);
+    }
+    @return $selectorList;
+}
+@mixin printSelectors($selectorList, $propertyMap) {
+    @for $i from 1 to length($selectorList) {
+        #{nth($selectorList, $i)} {
+            @each $property, $value in $propertyMap {
+                #{$property}: $value;
+            }
+        }
+    }
+}

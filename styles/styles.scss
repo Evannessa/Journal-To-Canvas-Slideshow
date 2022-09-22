@@ -1,10 +1,95 @@
 @use "colors" as *;
 @use "utility" as *;
+@use "mixins" as *;
 @import "_variables";
 :root {
     --box-shadow-inset: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
+#JTCSSettingsApplication,
+#slideshow-config,
+#JTCS-custom-dialog {
+    .window-content {
+        background: var(--JTCS-background-color);
+        select,
+        input,
+        label,
+        button {
+            cursor: pointer;
+        }
+
+        $selectors: (
+            "p",
+            ".form-group > label",
+            "span:not(.input-span) label",
+            "li:not(.accent) label",
+            ".icon-button"
+        );
+        $selectors: join($selectors, returnAllHeadings());
+        // $headers: returnAllHeadings();
+        $properties: (
+            color: var(--JTCS-color-neutral),
+        );
+        @include printSelectors($selectorList: $selectors, $propertyMap: $properties);
+
+        @include printSelectors(
+            $selectorList: returnAllHeadings(),
+            $propertyMap: (
+                border-bottom: unset,
+            )
+        );
+        header {
+            .form-group {
+                &:hover {
+                    --accent-color: var(--JTCS-accent-color);
+                    label {
+                        color: var(--accent-color);
+                        // color: var(--JTCS-accent-color);
+                    }
+                }
+            }
+        }
+        span:not(.input-span),
+        li:not(.accent):not([data-is-default]) {
+            border-color: transparent;
+        }
+
+        li.tile-list-item {
+            background-color: var(--JTCS-background-color-light);
+        }
+
+        input[type="text"]:not([data-responsive-color]),
+        select {
+            border-color: transparent;
+            background-color: var(--JTCS-background-color-dark);
+        }
+        .color-picker-group {
+            label {
+                background-color: var(--JTCS-background-color);
+                padding-inline: 0.15rem;
+                border-radius: 3px;
+            }
+        }
+        input[data-responsive-color] {
+            border-color: var(--JTCS-accent-color-light);
+        }
+
+        //for neutral text
+        input[type="radio"],
+        input[type="text"],
+        select {
+            color: var(--JTCS-color-neutral);
+        }
+    }
+    .primary {
+        @include JTCS-accent-fill();
+    }
+    .secondary {
+        @include JTCS-accent-ghost();
+        // filter: contrast(200%);
+    }
+}
+
 #JTCSSettingsApplication {
     min-height: 50vh;
     max-width: 50vw;
@@ -120,7 +205,6 @@
             // }
         }
         li {
-            background: hsla(0, 0%, 100%, 0.3);
             --flow-space: 0.25em;
         }
         li .actions {
@@ -248,6 +332,7 @@
 [data-is-default] {
     --accent-color: var(--data-default-color);
     border-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
     .badge {
         background-color: var(--accent-color);
     }

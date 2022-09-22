@@ -87,21 +87,131 @@ export class HelperFunctions {
             await game.settings.set(HelperFunctions.MODULE_ID, settingName, updateData);
         }
     }
+    /**
+     * Get the contrasting color for any hex color
+     * (c) 2019 Chris Ferdinandi, MIT License, https://gomakethings.com
+     * Derived from work by Brian Suda, https://24ways.org/2010/calculating-color-contrast/
+     * @param  {String} A hexcolor value
+     * @return {String} The contrasting color (black or white)
+     **/
+    static getContrast(hexcolor) {
+        // If a leading # is provided, remove it
+        if (hexcolor.slice(0, 1) === "#") {
+            hexcolor = hexcolor.slice(1);
+        }
 
+        // If a three-character hexcode, make six-character
+        if (hexcolor.length === 3) {
+            hexcolor = hexcolor
+                .split("")
+                .map(function (hex) {
+                    return hex + hex;
+                })
+                .join("");
+        }
+
+        // Convert to RGB value
+        var r = parseInt(hexcolor.substr(0, 2), 16);
+        var g = parseInt(hexcolor.substr(2, 2), 16);
+        var b = parseInt(hexcolor.substr(4, 2), 16);
+
+        // Get YIQ ratio
+        var yiq = (r * 299 + g * 587 + b * 114) / 1000;
+
+        // Check contrast
+        return yiq >= 128 ? "black" : "white";
+    }
+
+    /**
+     * Programmatically lighten or darken a color
+     * @author "Pimp Trizkit" on Stackoverflow
+     * @link https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+     * @returns a lightened or darkened color
+     */
+    static LightenDarkenColor(col, amt) {
+        var usePound = false;
+        if (col[0] == "#") {
+            col = col.slice(1);
+            usePound = true;
+        }
+
+        var num = parseInt(col, 16);
+
+        var r = (num >> 16) + amt;
+
+        if (r > 255) r = 255;
+        else if (r < 0) r = 0;
+
+        var b = ((num >> 8) & 0x00ff) + amt;
+
+        if (b > 255) b = 255;
+        else if (b < 0) b = 0;
+
+        var g = (num & 0x0000ff) + amt;
+
+        if (g > 255) g = 255;
+        else if (g < 0) g = 0;
+
+        return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+    }
     static async setUIColors() {
         let html = document.documentElement;
-        let colorScheme = await HelperFunctions.getSettingValue("artGallerySettings", "colorSchemeData.colors");
-        let colors = await HelperFunctions.getSettingValue("artGallerySettings", "indicatorColorData.colors");
-        let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = colors;
-        let { accentColor, textColor, textColorAlt } = colorScheme;
+
+        let galleryTileColorData = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            "indicatorColorData.colors"
+        );
+        let { frameTileColor, artTileColor, unlinkedTileColor, defaultTileColor } = galleryTileColorData;
+
+        // tile colors
         html.style.setProperty("--data-frame-color", frameTileColor);
         html.style.setProperty("--data-art-color", artTileColor);
         html.style.setProperty("--data-unlinked-color", unlinkedTileColor);
         html.style.setProperty("--data-default-color", defaultTileColor);
 
+        let colorSchemeData = await HelperFunctions.getSettingValue("artGallerySettings", "colorSchemeData.colors");
+        let { accentColor, textColor, textColorAlt, backgroundColor } = colorSchemeData;
+
         html.style.setProperty("--JTCS-accent-color", accentColor);
-        html.style.setProperty("--JTCS-text-color", textColor);
-        html.style.setProperty("--JTCS-text-color-alt", textColorAlt);
+        html.style.setProperty("--JTCS-text-color", HelperFunctions.getContrast(accentColor));
+        html.style.setProperty("--JTCS-background-color", backgroundColor);
+
+        let bgColorModified = HelperFunctions.hex8To6(backgroundColor);
+        let accentColorModified = HelperFunctions.hex8To6(backgroundColor);
+
+        html.style.setProperty(
+            "--JTCS-accent-color-light",
+            HelperFunctions.LightenDarkenColor(accentColorModified, 20)
+        );
+
+        html.style.setProperty(
+            "--JTCS-background-color-light",
+            HelperFunctions.LightenDarkenColor(bgColorModified, 20)
+        );
+        html.style.setProperty("--JTCS-background-color-dark", HelperFunctions.LightenDarkenColor(bgColorModified, -5));
+        html.style.setProperty("--JTCS-color-neutral", HelperFunctions.getContrast(backgroundColor));
+    }
+
+    static setRootStyleProperty(propertyName, value, adjustAmount = 0) {
+        const html = document.documentElement;
+        let adjustedColorValue = value;
+        if (adjustAmount) {
+            adjustedColorValue = HelperFunctions.LightenDarkenColor(value, adjustAmount);
+        }
+        html.style.setProperty(propertyName, adjustedColorValue);
+    }
+
+    /**
+     * Checks if color is in hex8 format, and if so slices string to make it hex6
+     * @param {String} hexColor - a hex color code with "#" up front
+     * @returns {String}
+     */
+    static hex8To6(hexColor) {
+        let hexColorMod = hexColor;
+        if (color.slice(1).length > 6) {
+            hexColorMod = color.slice(0, -2);
+        }
+        return hexColorMod;
     }
     static async getSettingValue(settingName, nestedKey = "") {
         let settingData = await game.settings.get(HelperFunctions.MODULE_ID, settingName);

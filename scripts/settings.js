@@ -31,23 +31,17 @@ export const artGalleryDefaultSettings = {
     colorSchemeData: {
         name: "Custom Color Scheme",
         hint: `What colors would you like to use on parts of the JTCS UI? This will affect things like buttons, checkboxes, borders, etc.
-        Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.`,
+        Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.
+        Hint: Set the "Text Color Alt" in order to fix contrast issues if text colored with your accent color is too hard to read against the background. Recommended to set it to a very light or very dark color depending on the background-color you're using in Foundry.
+        `,
         colors: {
             accentColor: "#44c3fd",
-            textColor: "#212121",
-            textColorAlt: "#FFFFFF",
+            backgroundColor: "#ffffffb3",
         },
-        // onChange: async (event, options) => {
-        //     let { value, app, html } = options;
-        //     let changedElement = event.currentTarget;
-        //     let propertyName = "--JTCS-accent-color";
-        //     if (changedElement.getAttribute("id") == "textColor") {
-        //         propertyName = "--JTCS-text-color";
-        //     }
-        //     changedElement.closest(".form-group-stacked").style.setProperty(propertyName, value);
-        //     console.log(changedElement.closest(".form-group-stacked").style);
-        //     // await HelperFunctions.setUIColors();
-        // },
+        propertyNames: {
+            accentColor: "--JTCS-accent-color",
+            backgroundColor: "--JTCS-background-color",
+        },
     },
     dedicatedDisplayData: {
         journal: {
@@ -83,6 +77,12 @@ export const artGalleryDefaultSettings = {
             artTileColor: "#5e97ff",
             unlinkedTileColor: "#aaf3a2",
             defaultTileColor: "#ff458c",
+        },
+        propertyNames: {
+            frameTileColor: "--data-frame-color",
+            artTileColor: "--data-art-color",
+            unlinkedTileColor: "--data-unlinked-color",
+            defaultTileColor: "--data-default-color",
         },
     },
     defaultTileImages: {

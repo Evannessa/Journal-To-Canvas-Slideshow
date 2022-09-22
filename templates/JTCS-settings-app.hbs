@@ -4,10 +4,10 @@
             {{#with colorSchemeData}}
                 <h2>{{this.name}}</h2>
                 <p>{{this.hint}}</p>
-                <div class="form-group-stacked">
+                <div class="form-group">
                     {{#each this.colors}}
-                    <div class="form-group color-picker-group">
-                        <label for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
+                    <div class="form-group color-picker-group has-floating-label">
+                        <label class="floating-label" for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
                         <input
                             id="{{@key}}"
                             type="text"
@@ -19,6 +19,7 @@
                     </div>
                     {{/each}}
                 </div>
+            
                 {{/with}}
                 </div>
         <div class="form-group-stacked" id="JTCSsheetSettings">
@@ -50,10 +51,10 @@
             {{#with indicatorColorData}}
                 <h2>{{this.name}}</h2>
                 <p>{{this.hint}}</p>
-                <div class="form-group-stacked">
+                <div class="form-group">
                 {{#each this.colors}}
-                    <div class="form-group color-picker-group">
-                        <label for="artTileColor">{{camelCaseToCapitalString @key}}</label>
+                    <div class="form-group has-floating-label color-picker-group">
+                        <label class="floating-label" for="artTileColor">{{camelCaseToCapitalString @key}}</label>
                         <input
                             id="{{@key}}"
                             type="text"
@@ -72,8 +73,8 @@
             <h2>{{this.name}}</h2>
             <p>{{this.hint}}</p>
             {{#each this.paths}}
-               <div class="form-group">
-                    <label for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
+               <div class="form-group has-floating-label">
+                    <label class="floating-label"  for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
                    <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
                    {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}
                </div>
@@ -81,12 +82,12 @@
             {{/with}}
         </div>
     </div>
-    <footer class="sheet-footer">
-        <button type="submit" name="submit"> 
+    <footer class="sheet-footer flex-row">
+        <button type="submit" name="submit" class="primary"> 
             <i class="far fa-save"></i> 
                 Save Changes 
         </button>
-        <button type="submit" name="submit" data-action="closeOnSubmit"> 
+        <button type="submit" name="submit" class="secondary" data-action="closeOnSubmit"> 
                 Save Changes & Close
         </button>
 

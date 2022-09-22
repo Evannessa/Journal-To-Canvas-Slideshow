@@ -86,11 +86,12 @@ export class JTCSSettingsApplication extends FormApplication {
         let action = clickedElement.data().action;
         let type = clickedElement[0].type;
         if (type === "submit") {
-            if (action === "closeOnSubmit") {
-                this.element.find("form").on("submit", (e) => {
+            this.element.find("form").on("submit", (e) => {
+                if (action === "closeOnSubmit") {
                     this.close();
-                });
-            }
+                }
+            });
+
             return;
         }
         event.stopPropagation();
