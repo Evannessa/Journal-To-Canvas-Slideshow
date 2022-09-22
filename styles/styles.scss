@@ -66,9 +66,16 @@
                             color: var(--data-#{$type}-color);
                             @include text-shadow;
                         }
+                        .item-wrapper {
+                            border-color: var(--data-#{$type}-color);
+                        }
                         .new-tile-list-item {
-                            @include JTCS-accent-ghost($primary-color: var(--data-#{$type}-color));
                             button {
+                                border-radius: unset;
+                                @include JTCS-accent-ghost(
+                                    $primary-color: var(--data-#{$type}-color),
+                                    $border-side: "-top"
+                                );
                                 &:hover,
                                 &:focus {
                                     box-shadow: unset;
@@ -80,33 +87,8 @@
                 h3 {
                     font-size: 1.25em;
                 }
-                // &.art-tiles {
-                //     h3 {
-                //         color: var(--data-art-color);
-                //         @include text-shadow;
-                //     }
-                //     .new-tile-list-item {
-                //         @include JTCS-accent-ghost($primary-color: var(--data-art-color));
-                //         button{
-                //             &:focus, &:hover{
-                //                 display: flex;
-                //             }
-                //         }
-                //     }
-                // }
-                // &.frame-tiles {
-                //     h3 {
-                //         color: var(--data-frame-color);
-                //         @include text-shadow;
-                //     }
-                //     .new-tile-list-item {
-                //         @include JTCS-accent-ghost($primary-color: var(--data-frame-color));
-                //     }
-                // }
             }
-            // min-height: 50vh;
-            // max-height: 80%;
-            // height: 80%;
+
             height: 95%;
             position: relative;
 

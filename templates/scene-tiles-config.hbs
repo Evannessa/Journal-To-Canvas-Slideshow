@@ -48,6 +48,14 @@
 				padding-medium border-block border-color-shadow
 				flexrow gap-small"
     >
+        {{> (dynamicPartial 
+            type="art"
+            tiles=artTiles
+        )}}
+        {{> (dynamicPartial
+            type="frame"
+            tiles=frameTiles
+        )}}
 		<div class="art-tiles wrapper max-height-full-parent flexcol">
             <h3 class="flex0">Art Tiles in "{{wrapInSpan currentSceneName}}"</h3>
 			<div id="artTileWrapper" class="item-wrapper 

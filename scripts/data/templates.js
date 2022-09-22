@@ -22,6 +22,7 @@ const templateBaseNames = [
     `sheet-wide-controls.hbs`,
     `badge.hbs`,
     `delete-confirmation-prompt.hbs`,
+    `scene-tile-wrapper.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

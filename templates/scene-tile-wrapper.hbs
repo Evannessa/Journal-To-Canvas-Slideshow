@@ -1,0 +1,29 @@
+<div class="{{type}}-tiles wrapper max-height-full-parent flexcol">
+    <h3 class="flex0">{{camelCaseToCapitalString type}} Tiles in "{{wrapInSpan @root.currentSceneName}}"</h3>
+    <div id="{{concat type "tileWrapper"}}" class="item-wrapper 
+        [ border-styled border-hover 
+        slight-rounded ] "
+        >
+        <ul class="[ overflow-auto-y 
+                hidden-overflow-x reset-padding reset-margin 
+                shadow-inset flow
+                ]"
+        >
+            {{#each tiles as |tile|}}
+                {{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
+                    tile 
+                    type=type
+                    currentSceneName=@root.currentSceneName
+                    {{#if (eq type "art")}}
+                        allFrameTiles=@root.frameTiles
+                    {{/if}}
+                }}
+            {{/each}}
+        
+        </ul>
+        {{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
+            type=type
+            allBoundingTiles=tiles
+        }}
+    </div>
+</div>

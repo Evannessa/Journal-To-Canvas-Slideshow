@@ -30,13 +30,14 @@
         -1px -1px 0 $shadow-color;
 }
 
-@mixin JTCS-accent-ghost($primary-color: var(--JTCS-accent-color)) {
+@mixin JTCS-accent-ghost($primary-color: var(--JTCS-accent-color), $border-side: "") {
     background-color: transparent;
-    color: $primary-color !important;
-    border: 2px solid $primary-color;
-    transition: background-color 120ms ease-in;
+    color: $primary-color;
+    border#{$border-side}: 2px solid $primary-color;
+    transition: background-color 120ms ease-in, color 120ms ease-in;
     &:hover,
     &:focus {
+        transition: background-color 120ms ease-out, color 120ms ease-out;
         background-color: $primary-color;
         color: var(--JTCS-text-color-alt);
     }

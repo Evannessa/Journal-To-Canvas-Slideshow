@@ -67,6 +67,8 @@
 .blank-button {
   border: none;
   background: transparent;
+  margin: unset;
+  padding: unset;
 }
 
 @-webkit-keyframes fade {
@@ -1453,13 +1455,18 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: var(--data-art-color);
   text-shadow: -1px 1px 2px black, 1px 1px 2px black, 1px -1px 0 black, -1px -1px 0 black;
 }
-#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item {
-  background-color: transparent;
-  color: var(--data-art-color) !important;
-  border: 2px solid var(--data-art-color);
-  transition: background-color 120ms ease-in;
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper {
+  border-color: var(--data-art-color);
 }
-#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item:focus {
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button {
+  border-radius: unset;
+  background-color: transparent;
+  color: var(--data-art-color);
+  border-top: 2px solid var(--data-art-color);
+  transition: background-color 120ms ease-in, color 120ms ease-in;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus {
+  transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--data-art-color);
   color: var(--JTCS-text-color-alt);
 }
@@ -1470,13 +1477,18 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: var(--data-frame-color);
   text-shadow: -1px 1px 2px black, 1px 1px 2px black, 1px -1px 0 black, -1px -1px 0 black;
 }
-#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item {
-  background-color: transparent;
-  color: var(--data-frame-color) !important;
-  border: 2px solid var(--data-frame-color);
-  transition: background-color 120ms ease-in;
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper {
+  border-color: var(--data-frame-color);
 }
-#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item:focus {
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button {
+  border-radius: unset;
+  background-color: transparent;
+  color: var(--data-frame-color);
+  border-top: 2px solid var(--data-frame-color);
+  transition: background-color 120ms ease-in, color 120ms ease-in;
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus {
+  transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--data-frame-color);
   color: var(--JTCS-text-color-alt);
 }
