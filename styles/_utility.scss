@@ -26,8 +26,8 @@
     --color-accent: var(--foundry-purple-background);
 }
 @mixin text-shadow($shadow-color: black) {
-    text-shadow: -1px 1px 2px $shadow-color, 1px 1px 2px $shadow-color, 1px -1px 0 $shadow-color,
-        -1px -1px 0 $shadow-color;
+    text-shadow: -1px -1px 0 $shadow-color, 0 -1px 0 $shadow-color, 1px -1px 0 $shadow-color, 1px 0 0 $shadow-color,
+        1px 1px 0 $shadow-color, 0 1px 0 $shadow-color, -1px 1px 0 $shadow-color, -1px 0 0 $shadow-color;
 }
 
 @mixin JTCS-accent-ghost($primary-color: var(--JTCS-accent-color), $border-side: "") {
@@ -40,6 +40,75 @@
         transition: background-color 120ms ease-out, color 120ms ease-out;
         background-color: $primary-color;
         color: var(--JTCS-text-color-alt);
+    }
+}
+@mixin JTCS-accent-ghost-input-span($primary-color: var(--JTCS-accent-color)) {
+    input:disabled + label {
+        opacity: 50%;
+    }
+    display: inline-flex;
+    &[data-variant="visible-tick"] {
+        input[type="radio"],
+        input[type="checkbox"] {
+            @extend .hidden;
+            &:not(:checked) + label {
+                @include text-shadow($shadow-color: #21212187);
+            }
+            + label {
+                background-color: transparent;
+                color: $primary-color;
+                border: 2px solid $primary-color;
+
+                transition: background-color 120ms ease-in, color 120ms ease-in;
+                &:hover,
+                &:focus {
+                    transition: background-color 120ms ease-out, color 120ms ease-out;
+                    background-color: $primary-color;
+                    color: var(--JTCS-text-color-alt);
+                }
+                .tick-circle,
+                .tick-box {
+                    border: 1px solid $primary-color;
+                    display: inline-flex;
+                    width: 1rem;
+                    height: 1rem;
+                    background-color: white;
+                }
+                .tick-circle {
+                    border-radius: 50%;
+                }
+            }
+            &:checked {
+                + label {
+                    color: var(--JTCS-text-color-alt);
+                    background-color: $primary-color;
+                    border: 2px solid var(--border-color);
+                    transition: color 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out;
+                    // background-color: var(--accent-color);
+                    .tick-circle,
+                    .tick-box {
+                        @include with-absolute-pseudo($isBefore: false);
+                        &:after {
+                            width: 0.5rem;
+                            height: 0.5rem;
+                        }
+                    }
+                    .tick-circle {
+                        &:after {
+                            border-radius: 50%;
+                            background-color: $primary-color;
+                        }
+                    }
+                    .tick-box {
+                        &:after {
+                            content: "✓";
+                            color: $primary-color;
+                            top: unset;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -253,76 +322,79 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
 }
 
 .input-span {
-    --bg-color: var(--accent-color-1);
-    --border-color: var(--accent-color-1);
-    input:disabled + label {
-        opacity: 50%;
-    }
-    display: inline-flex;
-    &[data-variant="visible-tick"] {
-        input[type="radio"],
-        input[type="checkbox"] {
-            @extend .hidden;
-            + label {
-                --border-color: var(--foundry-purple-shadow-hover);
-                background-color: transparent;
-                color: var(--color-text-dark-primary);
-                transition: color 200ms ease-out, border-color 200ms ease-out, background-color 200ms ease-out;
-                &:hover {
-                    --bg-color: var(--foundry-purple-shadow-hover);
-                }
-                @extend .hover-bg-dynamic;
-                @extend .border-full;
-                // border: 2px solid var(--border-color);
-                .tick-circle,
-                .tick-box {
-                    border: 1px solid var(--border-color);
-                    display: inline-flex;
-                    width: 1rem;
-                    height: 1rem;
-                    background-color: white;
-                }
-                .tick-circle {
-                    border-radius: 50%;
-                }
-            }
-            &:checked {
-                + label {
-                    --bg-color: var(--foundry-purple-border);
-                    &:hover {
-                        --border-color: var(--foundry-purple-shadow-hover);
-                        --text-color: var(--foundry-purple-shadow-hover);
-                    }
-                    // @extend .hover-bg-dynamic;
-                    @extend .bg-fill;
-                    border: 2px solid var(--border-color);
-                    transition: color 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out;
-                    // background-color: var(--accent-color);
-                    .tick-circle,
-                    .tick-box {
-                        @include with-absolute-pseudo($isBefore: false);
-                        &:after {
-                            width: 0.5rem;
-                            height: 0.5rem;
-                        }
-                    }
-                    .tick-circle {
-                        &:after {
-                            border-radius: 50%;
-                            background-color: var(--bg-color);
-                        }
-                    }
-                    .tick-box {
-                        &:after {
-                            content: "✓";
-                            color: var(--bg-color);
-                            top: unset;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    @include JTCS-accent-ghost-input-span();
+    // --bg-color: var(--accent-color-1);
+    // --border-color: var(--accent-color-1);
+    // input:disabled + label {
+    //     opacity: 50%;
+    // }
+    // display: inline-flex;
+    // &[data-variant="visible-tick"] {
+    //     input[type="radio"],
+    //     input[type="checkbox"] {
+    //         @extend .hidden;
+    //         + label {
+    //             --border-color: var(--foundry-purple-shadow-hover);
+    //             background-color: transparent;
+    //             color: var(--color-text-dark-primary);
+    //             transition: color 200ms ease-out, border-color 200ms ease-out, background-color 200ms ease-out;
+    //             @include JTCS-accent-fill;
+    //             &:hover {
+    //                 --bg-color: var(--foundry-purple-shadow-hover);
+    //             }
+    //             @extend .hover-bg-dynamic;
+    //             @extend .border-full;
+    //             // border: 2px solid var(--border-color);
+    //             .tick-circle,
+    //             .tick-box {
+    //                 border: 1px solid var(--border-color);
+    //                 display: inline-flex;
+    //                 width: 1rem;
+    //                 height: 1rem;
+    //                 background-color: white;
+    //             }
+    //             .tick-circle {
+    //                 border-radius: 50%;
+    //             }
+    //         }
+    //         &:checked {
+    //             + label {
+    //                 --bg-color: var(--foundry-purple-border);
+    //                 &:hover {
+    //                     --border-color: var(--foundry-purple-shadow-hover);
+    //                     --text-color: var(--foundry-purple-shadow-hover);
+    //                 }
+    //                 // @extend .hover-bg-dynamic;
+    //                 @extend .bg-fill;
+    //                 border: 2px solid var(--border-color);
+    //                 transition: color 200ms ease-out, background-color 200ms ease-out, border-color 200ms ease-out;
+    //                 // background-color: var(--accent-color);
+    //                 .tick-circle,
+    //                 .tick-box {
+    //                     @include with-absolute-pseudo($isBefore: false);
+    //                     &:after {
+    //                         width: 0.5rem;
+    //                         height: 0.5rem;
+    //                     }
+    //                 }
+    //                 .tick-circle {
+    //                     &:after {
+    //                         border-radius: 50%;
+    //                         background-color: var(--bg-color);
+    //                     }
+    //                 }
+    //                 .tick-box {
+    //                     &:after {
+    //                         content: "✓";
+    //                         color: var(--bg-color);
+    //                         top: unset;
+    //                     }
+    //                 }
+    //             }
+
+    //         }
+    //     }
+    // }
 }
 .inline-notification {
     display: inline-flex;

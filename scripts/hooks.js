@@ -172,6 +172,12 @@ export const setupHookHandlers = async () => {
             hooks: ["getSceneControlButtons"],
             handlerFunction: addJTCSControls,
         },
+        updateUIColors: {
+            hooks: ["updateJTCSSettings"],
+            handlerFunction: async () => {
+                await HelperFunctions.setUIColors();
+            },
+        },
     };
 
     async function registerHooks() {

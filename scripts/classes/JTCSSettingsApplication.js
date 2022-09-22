@@ -20,11 +20,15 @@ export class JTCSSettingsApplication extends FormApplication {
             resizable: true,
             minimizable: true,
             submitOnClose: false,
-            closeOnSubmit: true,
+            closeOnSubmit: false,
             submitOnChange: false,
             template: `modules/${MODULE_ID}/templates/JTCS-settings-app.hbs`,
             id: "JTCSSettingsApplication",
             title: " JTCSSettings Application",
+            scrollY: [".form-content"],
+            onsubmit: (event) => {
+                console.log("Submitting from", event.currentTarget.dataset.action);
+            },
         });
     }
 
@@ -38,6 +42,7 @@ export class JTCSSettingsApplication extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html);
+
         html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
         this._handleChange();
     }
@@ -68,7 +73,6 @@ export class JTCSSettingsApplication extends FormApplication {
                         break;
                 }
                 let settingsObject = getProperty(artGalleryDefaultSettings, propertyString);
-                console.log("Our settings object is", settingsObject);
                 if (settingsObject && settingsObject.hasOwnProperty("onChange")) {
                     let ourApp = game.JTCSSettingsApp;
                     settingsObject.onChange(event, { value: value, app: ourApp, html: ourApp.element });
@@ -79,15 +83,18 @@ export class JTCSSettingsApplication extends FormApplication {
 
     async _handleButtonClick(event) {
         let clickedElement = $(event.currentTarget);
-        if (clickedElement[0].type === "submit") {
+        let action = clickedElement.data().action;
+        let type = clickedElement[0].type;
+        if (type === "submit") {
+            if (action === "closeOnSubmit") {
+                this.element.find("form").on("submit", (e) => {
+                    this.close();
+                });
+            }
             return;
-        } else {
-            console.log(clickedElement[0]);
         }
         event.stopPropagation();
         event.preventDefault();
-        let action = clickedElement.data().action;
-        let type = clickedElement.data().type;
         let name = clickedElement.data().displayName;
 
         switch (action) {

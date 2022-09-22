@@ -48,63 +48,13 @@
 				padding-medium border-block border-color-shadow
 				flexrow gap-small"
     >
-        {{> (dynamicPartial 
+        {{> (dynamicPartial "scene-tile-wrapper") 
             type="art"
             tiles=artTiles
-        )}}
-        {{> (dynamicPartial
+        }}
+        {{> (dynamicPartial "scene-tile-wrapper")
             type="frame"
             tiles=frameTiles
-        )}}
-		<div class="art-tiles wrapper max-height-full-parent flexcol">
-            <h3 class="flex0">Art Tiles in "{{wrapInSpan currentSceneName}}"</h3>
-			<div id="artTileWrapper" class="item-wrapper 
-			    [ border-styled border-hover 
-				slight-rounded ] "
-				>
-			
-            	<ul class="[ overflow-auto-y 
-						hidden-overflow-x reset-padding reset-margin 
-                        shadow-inset flow
-                        ]"
-				>
-					{{#each artTiles as |tile|}}
-						{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
-							tile type="art"
-							currentSceneName=@root.currentSceneName
-							allFrameTiles=@root.frameTiles
-						}}
-					{{/each}}
-				
-				</ul>
-				{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
-                    type="art"
-                    allBoundingTiles=artTiles
-                }}
-			</div>
-		</div>
-		<div class="frame-tiles wrapper max-height-full-parent flexcol">
-			<h3 class="flex0">Frame Tiles in "{{wrapInSpan currentSceneName}}"</h3>
-			<div id="frameTileWrapper" class="item-wrapper
-						[ border-styled border-hover 
-						slight-rounded ]"
-			>
-			
-				<ul class="[ overflow-auto-y ]
-						   [ hidden-overflow-x reset-padding reset-margin shadow-inset flow ]" 
-					>
-					{{#each frameTiles as |tile|}}
-						{{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
-							type="frame"
-							currentSceneName=@root.currentSceneName
-						}}
-					{{/each}}
-				
-				</ul>
-				{{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"
-						type="frame"
-				}}
-			</div>
-		</div>
+        }}
     </section>
 </form>
