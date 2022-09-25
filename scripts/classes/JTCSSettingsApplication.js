@@ -1,11 +1,19 @@
 import { log, MODULE_ID } from "../debug-mode.js";
 import { artGalleryDefaultSettings } from "../settings.js";
+import { universalInterfaceActions as UIA } from "../data/Universal-Actions.js";
+import { HelperFunctions as HF } from "./HelperFunctions.js";
+
+const settingsActions = {
+    global: {
+        resetColors: {
+            onClick: () => {},
+        },
+    },
+    item: {},
+};
 /**
  * Form app to handle JTCS settings
  */
-// Hooks.on("renderJTCSSettingsApplication", (app) => {
-//     game.JTCSSettingsApp = app;
-// });
 export class JTCSSettingsApplication extends FormApplication {
     constructor(data = {}) {
         super();
@@ -96,29 +104,87 @@ export class JTCSSettingsApplication extends FormApplication {
         }
         event.stopPropagation();
         event.preventDefault();
-        let name = clickedElement.data().displayName;
 
-        switch (action) {
-            case "add":
-                //create
-                break;
-            case "open":
-                //read
-                break;
-            case "edit":
-                //update
-                break;
-            case "delete":
-                //delete
-                break;
+        let backgroundColor = this.element.find("#backgroundColor").val();
+        let outerWrapper = clickedElement.closest(".outer-wrapper");
+
+        const accentElement = outerWrapper.find("[data-responsive-color]");
+        let accentColor = accentElement.val();
+
+        let contrastNotification = outerWrapper.find(".inline-notification");
+
+        if (action === "checkContrast") {
+            let hasEnoughContrast = HF.checkIfColorsContrastEnough(backgroundColor, accentColor);
+            if (!hasEnoughContrast && contrastNotification.length === 0) {
+                await UIA.renderInlineNotification(event, "outer-wrapper", {
+                    message:
+                        "This color does not have enough contrast with the background color you've chosen. Text and buttons might be unreadable.",
+                    notificationType: "warning",
+                });
+            } else if (hasEnoughContrast && contrastNotification.length > 0) {
+                contrastNotification.remove();
+            }
+        } else if (action === "toggleAutoContrastOff") {
+            const templatePath = game.JTCS.templates["delete-confirmation-prompt"];
+            const buttons = {
+                cancel: {
+                    label: "Cancel",
+                    icon: "<i class='fas fa-undo'></i>",
+                },
+                delete: {
+                    label: "Turn Off Auto-Contrast",
+                    icon: "<i class='fas fa-power-off'></i>",
+                    callback: async () => {
+                        await HF.setSettingValue("artGallerySettings", false, "colorSchemeData.autoContrast");
+                        this.render(true);
+                    },
+                },
+            };
+            const data = {
+                icon: "fas fa-exclamation",
+                heading: "Turn off Auto-Contrast?",
+                destructiveActionText: `Turn off auto contrast`,
+                explanation: `This will make it so your chosen colors aren't automatically adjusted to contrast with your background color; 
+                <br/> However you risk choosing colors that make text illegible`,
+                buttons,
+            };
+            await HF.createDialog("Turn Off Auto Contrast", templatePath, data);
+        } else if (action === "toggleAutoContrastOn") {
+            await HF.setSettingValue("artGallerySettings", true, "colorSchemeData.autoContrast");
+            this.render(true);
+        } else if (action === "resetColor") {
+            let key = accentElement.attr("name");
+            let defaultValue = getProperty(artGalleryDefaultSettings, key);
+            console.log("Key and default", key, defaultValue);
+            await HF.setSettingValue("artGallerySettings", defaultValue, key);
+            accentElement.val(defaultValue);
         }
     }
 
     async _updateObject(event, formData) {
-        console.log("Settings changing?", formData);
+        const autoContrast = await HF.getSettingValue("artGallerySettings", "colorSchemeData.autoContrast");
+        if (autoContrast) {
+            //if auto-contrast is turned on
+            const bgColorKey = "colorSchemeData.colors.backgroundColor";
+            for (const key in formData) {
+                if (key.includes(".colors.") && !key.includes(bgColorKey)) {
+                    //for all the colors, convert the colors
+                    // console.log("Before", key, formData[key]);
+                    const bgColor = formData[bgColorKey];
+                    const fgColor = formData[key];
+                    const hasEnoughContrast = HF.checkIfColorsContrastEnough(bgColor, fgColor);
+                    //only alter the contrast if there isn't enough already
+                    if (!hasEnoughContrast) {
+                        formData[key] = HF.getColorWithContrast(bgColor, fgColor);
+                    }
+                    // console.log("after", key, formData[key]);
+                }
+            }
+        }
+
+        // await HF.setSettingValue("artGallerySettings", )
         await game.JTCS.utils.setSettingValue("artGallerySettings", formData, "", true);
         await game.JTCSSettingsApp.render(true);
-        // this.render(true);
     }
 }
 

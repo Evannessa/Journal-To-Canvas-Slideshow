@@ -5,7 +5,24 @@ const notificationIcons = {
     danger: "fas fa-exclamation-circle",
     warning: "fas fa-exclamation-triangle",
 };
+/**
+ * Insert a notification inline
+ * @param {*} event - the event that triggered this notification
+ * @param {*} ancestorSelector - the ancestor element into which we want to insert this notification element
+ * @param {Object} options - options to customize this notification
+ * @param {String} options.message - the notification message
+ * @param {String} options.notificationType - the type of notification, to affect its icon and styling
+ */
 async function renderInlineNotification(event, ancestorSelector = "formGroup", options = {}) {
+    let { notificationType, icon } = options;
+    if (!icon) {
+        if (notificationType) {
+            options.icon = notificationIcons[notificationType];
+        } else {
+            notificationType = "error";
+            options.icon = notificationIcons[notificationType];
+        }
+    }
     const parentItem = event.currentTarget.closest(`.${ancestorSelector}`);
     let template = game.JTCS.templates["notification-badge"];
     let renderHTML = await renderTemplate(template, options);

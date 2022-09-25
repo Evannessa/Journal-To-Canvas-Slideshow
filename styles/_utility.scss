@@ -1171,7 +1171,7 @@ button.icon-button {
         }
         width: 100%;
         --bg-color: var(--JTCS-accent-color);
-        --text-color: var(--JTCS-text-color);
+        --text-color: var(--JTCS-text-color-on-fill);
         @extend .hover-bg-dynamic;
         i {
             display: grid;

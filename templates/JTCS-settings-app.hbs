@@ -1,27 +1,85 @@
 <form class="flexcol">
-    <div class="form-content overflow-scroll-y overflow-hidden-x flow padding-medium">
+    <div class="form-content overflow-scroll-y overflow-auto-x flow padding-medium">
+
+        <!-- for the color-scheme information-->
         <div class="form-group-stacked flow" id="JTCScolorSchemeData">
             {{#with colorSchemeData}}
                 <h2>{{this.name}}</h2>
-                <p class="notes">{{this.hint}}</p>
-                <div class="form-group gap-medium">
+                <p class="notes">{{{this.hint}}}</p>
+                <div class="form-group-stacked gap-medium">
                     {{#each this.colors}}
-                    <div class="form-group color-picker-group has-floating-label {{@key}}">
-                        <label class="floating-label" for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
-                        <input
-                            id="{{@key}}"
-                            type="text"
-                            name={{concat "colorSchemeData.colors" "." @key}}
-                            is="colorpicker-input"
-                            data-responsive-color
-                            value={{lookup ../colors @key}}
-                        />
+                    <div class="outer-wrapper">
+                        {{> (dynamicPartial "color-picker")
+                            this 
+                            value=(lookup ../colors @key)
+                            parentObjectName="colorSchemeData"
+                        }}
                     </div>
                     {{/each}}
                 </div>
-            
                 {{/with}}
+         
+            </div>
+
+    <!-- for the tile indicators and matching highlight colors-->
+    <div class="form-group-stacked flow" id="JTCSindicatorColorData">
+            {{#with indicatorColorData}}
+                <h2>{{this.name}}</h2>
+                <p class="notes">{{this.hint}}</p>
+                <div class="form-group-stacked gap-medium">
+                {{#each this.colors}}
+                    <div class="outer-wrapper">
+                        {{> (dynamicPartial "color-picker")
+                            this 
+                            value=(lookup ../colors @key)
+                            parentObjectName="indicatorColorData"
+                        }}
+                        <!-- <div class="form-group color-picker-container">
+                            <div class="has-floating-label color-picker-group">
+                                <label class="floating-label" for="artTileColor">{{camelCaseToCapitalString @key}}</label>
+                                <input
+                                    id="{{@key}}"
+                                    type="text"
+                                    name={{concat "indicatorColorData.colors" "." @key}}
+                                    is="colorpicker-input"
+                                    data-responsive-color
+                                    value={{lookup ../colors @key}}
+                                />
+                            </div>
+                              {{#unless (eq @key "backgroundColor")}}
+                                    <div class="color-actions flex-row gap-small flex-0">
+                                        <button data-action="checkContrast" type="button" title="check to see if this color contrasts with your chosen background color">
+                                        <i class="fas fa-adjust"></i> 
+                                            </button>
+                                        <!-- <button data-action="autoContrast" type="button" title="automatically generate a lighter or darker version of your color that contrasts well with your background color">
+                                        <i class="fas fa-eye-dropper"></i> 
+                                        </button> 
+                                    </div>
+                                {{/unless}}
+                                    </div> -->
+                    </div>
+                {{/each}}
                 </div>
+        {{/with}}
+    </div>
+
+        <!-- button for turning off auto-contrast setting-->
+        {{#with colorSchemeData}}
+        <div class="form-group-stacked">
+            {{#if (eq this.autoContrast true)}}
+            <p class="notes">
+                This will make it so your chosen accent and gallery tile colors aren't automatically adjusted to contrast with your background color; however you risk choosing colors that make text illegible.
+            </p>
+            <button class="blank-button danger" type="button" data-action="toggleAutoContrastOff"><i class="fas fa-adjust"></i> Turn Off Auto-Contrast</button>
+            {{else}}
+            <p class="notes">This will cause your chosen accent and gallery tile colors to automatically adjust in brightness to contrast with your chosen background color.</p>
+            <button class="blank-button" type="button" data-action="toggleAutoContrastOn"><i class="fas fa-adjust"></i> Turn On Auto-Contrast</button>
+            {{/if}}
+        </div>
+        {{/with}}
+   
+
+        <!-- settings for which sheets should have the image controls -->
         <div class="form-group-stacked flow" id="JTCSsheetSettings">
             {{#with sheetSettings}}
                 <h2>{{this.name}}</h2>
@@ -31,9 +89,11 @@
                     variant="visible-tick"
                     choices=this.modularChoices
                     propertyString="sheetSettings.modularChoices"
+                    extraClass="flex-wrap"
                 }}
             {{/with}}
         </div>
+        <!-- for fading the journal sheet -->
         <div class="form-group-stacked flow" id="JTCSsheetFadeData">
             {{#with fadeSheetImagesData}}
             <h2>{{this.name}}</h2>
@@ -47,33 +107,13 @@
                 }}
             {{/with}}
         </div>
-        <div class="form-group-stacked flow" id="JTCSindicatorColorData">
-            {{#with indicatorColorData}}
-                <h2>{{this.name}}</h2>
-                <p class="notes">{{this.hint}}</p>
-                <div class="form-group gap-medium">
-                {{#each this.colors}}
-                    <div class="form-group has-floating-label color-picker-group">
-                        <label class="floating-label" for="artTileColor">{{camelCaseToCapitalString @key}}</label>
-                        <input
-                            id="{{@key}}"
-                            type="text"
-                            name={{concat "indicatorColorData.colors" "." @key}}
-                            is="colorpicker-input"
-                            data-responsive-color
-                            value={{lookup ../colors @key}}
-                        />
-                    </div>
-                {{/each}}
-                </div>
-        {{/with}}
-        </div>
+    
         <div class="form-group-stacked flow" id="JTCSdefaultImages">
             {{#with defaultTileImages}}
             <h2>{{this.name}}</h2>
             <p class="notes">{{this.hint}}</p>
             {{#each this.paths}}
-               <div class="form-group has-floating-label">
+               <div class="flex-row file-picker-group has-floating-label">
                     <label class="floating-label"  for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
                    <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
                    {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}

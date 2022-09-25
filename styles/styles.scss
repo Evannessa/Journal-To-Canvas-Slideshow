@@ -15,11 +15,49 @@
             @extend .flow;
         }
         background: var(--JTCS-background-color);
+        .form-group,
+        .form-group-stacked {
+            button.danger {
+                width: 100%;
+                max-width: 300px;
+            }
+            &.has-floating-label {
+                input {
+                    width: 100%;
+                    max-width: 300px;
+                }
+            }
+            .file-picker-group {
+                align-items: stretch;
+                input {
+                    flex: 1;
+                    width: 100%;
+                    max-width: 450px;
+                }
+                button {
+                    flex: 0;
+                }
+            }
+            &.color-picker-container {
+                input {
+                    width: 100%;
+                    max-width: 300px;
+                }
+                align-items: stretch;
+                .color-picker-group {
+                    flex: 0;
+                    min-width: fit-content;
+                }
+                .color-actions {
+                    flex: 0;
+                }
+            }
+        }
+
         .form-group-stacked {
             --flow-space: 1em;
             p.notes {
-                color: var(--JTCS-accent-color-200);
-                opacity: 90%;
+                color: var(--JTCS-text-color-on-bg);
             }
         }
         select,
@@ -31,7 +69,8 @@
 
         $selectors: (
             "p",
-            ".form-group > label",
+            ".file-picker-group > label",
+            ".color-picker-group > label",
             "span:not(.input-span) label",
             "li:not(.accent) label",
             ".icon-button"
@@ -39,7 +78,7 @@
         $selectors: join($selectors, returnAllHeadings());
         // $headers: returnAllHeadings();
         $properties: (
-            color: var(--JTCS-color-neutral),
+            color: var(--JTCS-text-color-on-bg),
         );
         @include printSelectors($selectorList: $selectors, $propertyMap: $properties);
 
@@ -54,15 +93,22 @@
         );
 
         // have labels highlight with accent color
-        .form-group.has-floating-label {
-            &:hover {
-                --accent-color: var(--JTCS-accent-color);
-                label {
-                    color: var(--accent-color);
+        .form-group,
+        .color-picker-group,
+        .file-picker-group {
+            &.has-floating-label {
+                input {
+                    height: 100%;
                 }
-            }
-            &:focus {
-                outline: 1px solid var(--JTCS-accent-color);
+                &:hover {
+                    --accent-color: var(--JTCS-accent-color);
+                    label {
+                        color: var(--accent-color);
+                    }
+                }
+                &:focus {
+                    outline: 1px solid var(--JTCS-accent-color);
+                }
             }
         }
         // remove borders from spans and list items
@@ -71,7 +117,7 @@
         }
 
         li.tile-list-item {
-            background-color: var(--JTCS-background-color-light);
+            background-color: var(--JTCS-background-color-20);
             &:not(.accent):not([data-is-default]) {
                 border-color: transparent;
             }
@@ -80,7 +126,7 @@
         input[type="text"],
         select {
             border-color: transparent;
-            background-color: var(--JTCS-background-color-dark);
+            background-color: var(--JTCS-background-color-40);
         }
         .color-picker-group {
             label {
@@ -90,14 +136,14 @@
             }
         }
         input[data-responsive-color]#backgroundColor {
-            border-color: var(--JTCS-accent-color-light);
+            border-color: var(--JTCS-accent-color-20);
         }
 
         //for neutral text
         input[type="radio"],
         input[type="text"],
         select {
-            color: var(--JTCS-color-neutral);
+            color: var(--JTCS-text-color-on-bg);
         }
         // for the list items in the slideshow config
         [data-type="art"] {
@@ -152,8 +198,11 @@
     .primary {
         @include JTCS-accent-fill();
     }
-    button.file-picker {
-        @include JTCS-accent-fill();
+    button {
+        &.file-picker,
+        &[type="button"]:not(.danger) {
+            @include JTCS-accent-fill();
+        }
     }
     .secondary {
         @include JTCS-accent-ghost();
@@ -168,8 +217,10 @@
         position: relative;
         .picker_wrapper {
             position: absolute;
-            top: 100%;
+            /* top: -50%; */
             z-index: 800;
+            transform: translateY(-50%);
+            left: 100%;
         }
     }
     .window-content {
@@ -179,6 +230,10 @@
             flex-direction: column;
             .form-content {
                 flex: 1 1 0;
+                > .form-group,
+                > .form-group-stacked {
+                    background-color: var(--JTCS-background-color-10);
+                }
             }
             .sheet-footer {
                 flex: 0;

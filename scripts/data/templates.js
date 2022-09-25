@@ -23,6 +23,7 @@ const templateBaseNames = [
     `badge.hbs`,
     `delete-confirmation-prompt.hbs`,
     `scene-tile-wrapper.hbs`,
+    `color-picker.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray

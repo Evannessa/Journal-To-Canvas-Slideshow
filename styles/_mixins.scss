@@ -58,7 +58,8 @@
     &:focus {
         transition: background-color 120ms ease-out, color 120ms ease-out;
         background-color: $primary-color;
-        color: var(--JTCS-color-neutral);
+        // color: var(--JTCS-text-color-on-bg);
+        color: var(--JTCS-text-color-on-fill);
     }
 }
 @mixin JTCS-accent-ghost-input-span($primary-color: var(--JTCS-accent-color)) {
@@ -83,7 +84,7 @@
                 &:focus {
                     transition: background-color 120ms ease-out, color 120ms ease-out;
                     background-color: $primary-color;
-                    color: var(--JTCS-color-neutral);
+                    color: var(--JTCS-text-color-on-fill);
                 }
                 .tick-circle,
                 .tick-box {
@@ -99,7 +100,7 @@
             }
             &:checked {
                 + label {
-                    color: var(--JTCS-text-color);
+                    color: var(--JTCS-text-color-on-fill);
                     background-color: $primary-color;
                     border: 2px solid $primary-color;
                     outline: 1.5px solid transparent;
@@ -109,7 +110,8 @@
                     &:hover {
                         outline-color: white;
                         box-shadow: 0px 0px 4px 2px $primary-color;
-                        // color: var(--JTCS-color-neutral);
+                        color: var(--JTCS-text-color-on-fill);
+                        // color: var(--JTCS-text-color-on-bg);
                     }
                     // background-color: var(--accent-color);
                     .tick-circle,
@@ -145,7 +147,7 @@
     @if $include-shadow {
         box-shadow: 0px 0px 8px 2px $primary-color;
     }
-    color: var(--JTCS-text-color);
+    color: var(--JTCS-text-color-on-fill);
     outline: 0px solid white;
     outline-offset: 2px;
     transition: outline 120ms ease-in, outline-offset 150ms ease-in;

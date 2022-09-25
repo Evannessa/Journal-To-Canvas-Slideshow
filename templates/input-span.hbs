@@ -1,0 +1,41 @@
+    <span class="input-span slight-rounded fit-content-width interactive" data-variant="{{this.variant}}">
+          <input
+            type="{{this.type}}"
+            class="accent-input"
+            id="{{this.id}}"
+
+            {{#if (eq this.type "radio")}}
+                value="{{this.key}}"
+                name="{{this.propertyString}}"
+                {{#if (eq this.chosen this.key)}}
+                        checked	
+                {{/if}}
+
+            {{else}}
+                name="{{concat this.propertyString "." this.key}}"
+
+                {{#if (eq this.isDisabled true)}} 
+                    disabled
+                {{/if}}
+
+                {{#if (eq this true)}}
+                    checked 
+                {{/if}} 
+
+            {{/if}}
+          />
+          <label class="flex-row slight-rounded gap-small padding-small interactive" for="{{concat this.propertyString "." this.key}}" data-title="">
+            {{#if (eq this.variant "visible-tick") }}
+                {{#if (eq this.type "radio")}}
+                    <span class="tick-circle"></span> 
+                {{else}}
+                    <span class="tick-box"></span> 
+                {{/if}}
+            {{/if}}
+            {{#if (eq this.type "radio")}}
+                    {{this}}
+                {{else}}
+                   {{camelCaseToCapitalString this.key}}
+            {{/if}}
+          </label>
+      </span>

@@ -52,10 +52,8 @@ export const extraActions = {
     },
     deleteTileData: async (event, options = {}) => {
         const { app, tileID, parentLI } = options;
-        console.log("This is our current target for delete", parentLI);
         let type = parentLI.dataset.type;
         let displayName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
-        console.log("This is our display name", displayName, type);
         const templatePath = game.JTCS.templates["delete-confirmation-prompt"];
         const buttons = {
             cancel: {

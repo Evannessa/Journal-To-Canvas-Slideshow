@@ -1,6 +1,6 @@
 <div class="form-group has-floating-label">
     <label class="floating-label" for="{{this.id}}">
-        {{camelCaseToCapitalString this.name}}</label>
+        {{ternary this.label (camelCaseToCapitalString this.name)}}</label>
     <input
         class="flex2"
         id="{{this.id}}"

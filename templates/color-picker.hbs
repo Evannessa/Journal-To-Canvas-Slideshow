@@ -1,0 +1,30 @@
+<div class="form-group color-picker-container">
+    <div class="color-picker-group has-floating-label">
+        <label class="floating-label" for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
+        <input
+            id="{{@key}}"
+            type="text"
+            name={{concat this.parentObjectName ".colors." @key}}
+            is="colorpicker-input"
+            data-responsive-color
+            value={{this.value}}
+        />
+    </div>
+    {{#unless (eq @key "backgroundColor")}}
+        <div class="color-actions flex-row gap-small flex-0">
+            <button
+                data-action="checkContrast"
+                type="button"
+                title="check to see if this color contrasts with your chosen background color"
+            >
+                <i class="fas fa-adjust"></i>
+            </button>
+            <button data-action="resetColor" type="button" title="reset this color to its default">
+                <i class="fas fa-reset"></i>
+            </button>
+            <!--   <button data-action="setAutoContrast" type="button"title="automatically generate a lighter or darker version of your color that contrasts well with your background color">
+                                    <i class="fas fa-eye-dropper"></i> 
+                                    </button> -->
+        </div>
+    {{/unless}}
+</div>

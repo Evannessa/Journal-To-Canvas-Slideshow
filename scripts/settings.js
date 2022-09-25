@@ -31,11 +31,11 @@ export const artGalleryDefaultSettings = {
     colorSchemeData: {
         name: "Custom Color Scheme",
         hint: `What colors would you like to use on parts of the JTCS UI? This will affect things like buttons, checkboxes, borders, etc.
-         \n Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.
+        <br/> Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.
         `,
         colors: {
             accentColor: "#44c3fd",
-            backgroundColor: "#ffffffb3",
+            backgroundColor: "#ffffff",
         },
         propertyNames: {
             accentColor: "--JTCS-accent-color",
@@ -45,6 +45,7 @@ export const artGalleryDefaultSettings = {
             accentColor: true,
             backgroundColor: true,
         },
+        autoContrast: true,
     },
     dedicatedDisplayData: {
         journal: {

@@ -337,7 +337,7 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 .input-span[data-variant=visible-tick] input[type=checkbox] + label:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--JTCS-accent-color);
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-fill);
 }
 .input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle,
 .input-span[data-variant=visible-tick] input[type=radio] + label .tick-box,
@@ -355,7 +355,7 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 }
 .input-span[data-variant=visible-tick] input[type=radio]:checked + label,
 .input-span[data-variant=visible-tick] input[type=checkbox]:checked + label {
-  color: var(--JTCS-text-color);
+  color: var(--JTCS-text-color-on-fill);
   background-color: var(--JTCS-accent-color);
   border: 2px solid var(--JTCS-accent-color);
   outline: 1.5px solid transparent;
@@ -366,6 +366,7 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 .input-span[data-variant=visible-tick] input[type=checkbox]:checked + label:hover {
   outline-color: white;
   box-shadow: 0px 0px 4px 2px var(--JTCS-accent-color);
+  color: var(--JTCS-text-color-on-fill);
 }
 .input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-circle,
 .input-span[data-variant=visible-tick] input[type=radio]:checked + label .tick-box,
@@ -584,7 +585,7 @@ button.icon-button.active {
   background-color: var(--JTCS-accent-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
-  color: var(--JTCS-text-color);
+  color: var(--JTCS-text-color-on-fill);
   outline: 0px solid white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
@@ -1278,7 +1279,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: var(--foundry-dark-gray);
   width: 100%;
   --bg-color: var(--JTCS-accent-color);
-  --text-color: var(--JTCS-text-color);
+  --text-color: var(--JTCS-text-color-on-fill);
 }
 .item-menu li:first-child {
   margin-top: 1em;
@@ -1413,6 +1414,86 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   --flow-space: 2em;
   background: var(--JTCS-background-color);
 }
+#JTCSSettingsApplication .window-content .form-group button.danger,
+#JTCSSettingsApplication .window-content .form-group-stacked button.danger,
+#slideshow-config .window-content .form-group button.danger,
+#slideshow-config .window-content .form-group-stacked button.danger,
+#JTCS-custom-dialog .window-content .form-group button.danger,
+#JTCS-custom-dialog .window-content .form-group-stacked button.danger {
+  width: 100%;
+  max-width: 300px;
+}
+#JTCSSettingsApplication .window-content .form-group.has-floating-label input,
+#JTCSSettingsApplication .window-content .form-group-stacked.has-floating-label input,
+#slideshow-config .window-content .form-group.has-floating-label input,
+#slideshow-config .window-content .form-group-stacked.has-floating-label input,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label input,
+#JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label input {
+  width: 100%;
+  max-width: 300px;
+}
+#JTCSSettingsApplication .window-content .form-group .file-picker-group,
+#JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group,
+#slideshow-config .window-content .form-group .file-picker-group,
+#slideshow-config .window-content .form-group-stacked .file-picker-group,
+#JTCS-custom-dialog .window-content .form-group .file-picker-group,
+#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group {
+  align-items: stretch;
+}
+#JTCSSettingsApplication .window-content .form-group .file-picker-group input,
+#JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group input,
+#slideshow-config .window-content .form-group .file-picker-group input,
+#slideshow-config .window-content .form-group-stacked .file-picker-group input,
+#JTCS-custom-dialog .window-content .form-group .file-picker-group input,
+#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group input {
+  flex: 1;
+  width: 100%;
+  max-width: 450px;
+}
+#JTCSSettingsApplication .window-content .form-group .file-picker-group button,
+#JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group button,
+#slideshow-config .window-content .form-group .file-picker-group button,
+#slideshow-config .window-content .form-group-stacked .file-picker-group button,
+#JTCS-custom-dialog .window-content .form-group .file-picker-group button,
+#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group button {
+  flex: 0;
+}
+#JTCSSettingsApplication .window-content .form-group.color-picker-container,
+#JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container,
+#slideshow-config .window-content .form-group.color-picker-container,
+#slideshow-config .window-content .form-group-stacked.color-picker-container,
+#JTCS-custom-dialog .window-content .form-group.color-picker-container,
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container {
+  align-items: stretch;
+}
+#JTCSSettingsApplication .window-content .form-group.color-picker-container input,
+#JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container input,
+#slideshow-config .window-content .form-group.color-picker-container input,
+#slideshow-config .window-content .form-group-stacked.color-picker-container input,
+#JTCS-custom-dialog .window-content .form-group.color-picker-container input,
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container input {
+  width: 100%;
+  max-width: 300px;
+}
+#JTCSSettingsApplication .window-content .form-group.color-picker-container .color-picker-group,
+#JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container .color-picker-group,
+#slideshow-config .window-content .form-group.color-picker-container .color-picker-group,
+#slideshow-config .window-content .form-group-stacked.color-picker-container .color-picker-group,
+#JTCS-custom-dialog .window-content .form-group.color-picker-container .color-picker-group,
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-picker-group {
+  flex: 0;
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+}
+#JTCSSettingsApplication .window-content .form-group.color-picker-container .color-actions,
+#JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container .color-actions,
+#slideshow-config .window-content .form-group.color-picker-container .color-actions,
+#slideshow-config .window-content .form-group-stacked.color-picker-container .color-actions,
+#JTCS-custom-dialog .window-content .form-group.color-picker-container .color-actions,
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-actions {
+  flex: 0;
+}
 #JTCSSettingsApplication .window-content .form-group-stacked,
 #slideshow-config .window-content .form-group-stacked,
 #JTCS-custom-dialog .window-content .form-group-stacked {
@@ -1421,8 +1502,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content .form-group-stacked p.notes,
 #slideshow-config .window-content .form-group-stacked p.notes,
 #JTCS-custom-dialog .window-content .form-group-stacked p.notes {
-  color: var(--JTCS-accent-color-200);
-  opacity: 90%;
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content select,
 #JTCSSettingsApplication .window-content input,
@@ -1441,47 +1521,52 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content p,
 #slideshow-config .window-content p,
 #JTCS-custom-dialog .window-content p {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
-#JTCSSettingsApplication .window-content .form-group > label,
-#slideshow-config .window-content .form-group > label,
-#JTCS-custom-dialog .window-content .form-group > label {
-  color: var(--JTCS-color-neutral);
+#JTCSSettingsApplication .window-content .file-picker-group > label,
+#slideshow-config .window-content .file-picker-group > label,
+#JTCS-custom-dialog .window-content .file-picker-group > label {
+  color: var(--JTCS-text-color-on-bg);
+}
+#JTCSSettingsApplication .window-content .color-picker-group > label,
+#slideshow-config .window-content .color-picker-group > label,
+#JTCS-custom-dialog .window-content .color-picker-group > label {
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content span:not(.input-span) label,
 #slideshow-config .window-content span:not(.input-span) label,
 #JTCS-custom-dialog .window-content span:not(.input-span) label {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content li:not(.accent) label,
 #slideshow-config .window-content li:not(.accent) label,
 #JTCS-custom-dialog .window-content li:not(.accent) label {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content .icon-button,
 #slideshow-config .window-content .icon-button,
 #JTCS-custom-dialog .window-content .icon-button {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content h1,
 #slideshow-config .window-content h1,
 #JTCS-custom-dialog .window-content h1 {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content h2,
 #slideshow-config .window-content h2,
 #JTCS-custom-dialog .window-content h2 {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content h3,
 #slideshow-config .window-content h3,
 #JTCS-custom-dialog .window-content h3 {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content h4,
 #slideshow-config .window-content h4,
 #JTCS-custom-dialog .window-content h4 {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content h1,
 #slideshow-config .window-content h1,
@@ -1506,20 +1591,49 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content h4 {
   border-bottom: unset;
   color: var(--JTCS-accent-color);
+}
+#JTCSSettingsApplication .window-content .form-group.has-floating-label input,
+#JTCSSettingsApplication .window-content .color-picker-group.has-floating-label input,
+#JTCSSettingsApplication .window-content .file-picker-group.has-floating-label input,
+#slideshow-config .window-content .form-group.has-floating-label input,
+#slideshow-config .window-content .color-picker-group.has-floating-label input,
+#slideshow-config .window-content .file-picker-group.has-floating-label input,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label input,
+#JTCS-custom-dialog .window-content .color-picker-group.has-floating-label input,
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label input {
+  height: 100%;
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:hover,
+#JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:hover,
+#JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:hover,
 #slideshow-config .window-content .form-group.has-floating-label:hover,
-#JTCS-custom-dialog .window-content .form-group.has-floating-label:hover {
+#slideshow-config .window-content .color-picker-group.has-floating-label:hover,
+#slideshow-config .window-content .file-picker-group.has-floating-label:hover,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label:hover,
+#JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:hover,
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover {
   --accent-color: var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:hover label,
+#JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:hover label,
+#JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:hover label,
 #slideshow-config .window-content .form-group.has-floating-label:hover label,
-#JTCS-custom-dialog .window-content .form-group.has-floating-label:hover label {
+#slideshow-config .window-content .color-picker-group.has-floating-label:hover label,
+#slideshow-config .window-content .file-picker-group.has-floating-label:hover label,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label:hover label,
+#JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:hover label,
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover label {
   color: var(--accent-color);
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:focus,
+#JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:focus,
+#JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:focus,
 #slideshow-config .window-content .form-group.has-floating-label:focus,
-#JTCS-custom-dialog .window-content .form-group.has-floating-label:focus {
+#slideshow-config .window-content .color-picker-group.has-floating-label:focus,
+#slideshow-config .window-content .file-picker-group.has-floating-label:focus,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label:focus,
+#JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:focus,
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:focus {
   outline: 1px solid var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content span:not(.input-span):not(.tick-box):not(.tick-circle),
@@ -1530,7 +1644,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content li.tile-list-item,
 #slideshow-config .window-content li.tile-list-item,
 #JTCS-custom-dialog .window-content li.tile-list-item {
-  background-color: var(--JTCS-background-color-light);
+  background-color: var(--JTCS-background-color-20);
 }
 #JTCSSettingsApplication .window-content li.tile-list-item:not(.accent):not([data-is-default]),
 #slideshow-config .window-content li.tile-list-item:not(.accent):not([data-is-default]),
@@ -1544,7 +1658,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content input[type=text],
 #JTCS-custom-dialog .window-content select {
   border-color: transparent;
-  background-color: var(--JTCS-background-color-dark);
+  background-color: var(--JTCS-background-color-40);
 }
 #JTCSSettingsApplication .window-content .color-picker-group label,
 #slideshow-config .window-content .color-picker-group label,
@@ -1556,7 +1670,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content input[data-responsive-color]#backgroundColor,
 #slideshow-config .window-content input[data-responsive-color]#backgroundColor,
 #JTCS-custom-dialog .window-content input[data-responsive-color]#backgroundColor {
-  border-color: var(--JTCS-accent-color-light);
+  border-color: var(--JTCS-accent-color-20);
 }
 #JTCSSettingsApplication .window-content input[type=radio],
 #JTCSSettingsApplication .window-content input[type=text],
@@ -1567,7 +1681,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content input[type=radio],
 #JTCS-custom-dialog .window-content input[type=text],
 #JTCS-custom-dialog .window-content select {
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content [data-type=art],
 #slideshow-config .window-content [data-type=art],
@@ -1653,7 +1767,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .primary {
   background-color: var(--JTCS-accent-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
-  color: var(--JTCS-text-color);
+  color: var(--JTCS-text-color-on-fill);
   outline: 0px solid white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
@@ -1667,21 +1781,27 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
-#JTCSSettingsApplication button.file-picker,
+#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger),
 #slideshow-config button.file-picker,
-#JTCS-custom-dialog button.file-picker {
+#slideshow-config button[type=button]:not(.danger),
+#JTCS-custom-dialog button.file-picker,
+#JTCS-custom-dialog button[type=button]:not(.danger) {
   background-color: var(--JTCS-accent-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
-  color: var(--JTCS-text-color);
+  color: var(--JTCS-text-color-on-fill);
   outline: 0px solid white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
-#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus,
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):hover, #JTCSSettingsApplication button[type=button]:not(.danger):focus,
 #slideshow-config button.file-picker:hover,
 #slideshow-config button.file-picker:focus,
+#slideshow-config button[type=button]:not(.danger):hover,
+#slideshow-config button[type=button]:not(.danger):focus,
 #JTCS-custom-dialog button.file-picker:hover,
-#JTCS-custom-dialog button.file-picker:focus {
+#JTCS-custom-dialog button.file-picker:focus,
+#JTCS-custom-dialog button[type=button]:not(.danger):hover,
+#JTCS-custom-dialog button[type=button]:not(.danger):focus {
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -1701,7 +1821,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .secondary:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--JTCS-accent-color);
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-fill);
 }
 
 #JTCSSettingsApplication {
@@ -1713,8 +1833,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCSSettingsApplication .color-picker-group .picker_wrapper {
   position: absolute;
-  top: 100%;
+  /* top: -50%; */
   z-index: 800;
+  transform: translateY(-50%);
+  left: 100%;
 }
 #JTCSSettingsApplication .window-content form {
   display: flex;
@@ -1722,6 +1844,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCSSettingsApplication .window-content form .form-content {
   flex: 1 1 0;
+}
+#JTCSSettingsApplication .window-content form .form-content > .form-group,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked {
+  background-color: var(--JTCS-background-color-10);
 }
 #JTCSSettingsApplication .window-content form .sheet-footer {
   flex: 0;
@@ -1768,7 +1894,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--data-art-color);
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-fill);
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus {
   box-shadow: unset;
@@ -1790,7 +1916,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--data-frame-color);
-  color: var(--JTCS-color-neutral);
+  color: var(--JTCS-text-color-on-fill);
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus {
   box-shadow: unset;
@@ -1887,7 +2013,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: var(--box-shadow);
   background-color: var(--data-art-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
-  color: var(--JTCS-text-color);
+  color: var(--JTCS-text-color-on-fill);
   outline: 0px solid white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
@@ -1900,7 +2026,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .clickableImageContainer .displayTiles button[data-is-default] {
   background-color: var(--data-default-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
-  color: var(--JTCS-text-color);
+  color: var(--JTCS-text-color-on-fill);
   outline: 0px solid white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
