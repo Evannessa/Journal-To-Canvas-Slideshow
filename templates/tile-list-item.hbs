@@ -51,10 +51,17 @@
                             <select name="linkedBoundingTile" id="linkedBoundingTile" data-change-action="itemActions.change.actions.setFrameTile">
                                 <option value=""> Use Canvas As Frame </option>
                                 {{#each this.allFrameTiles as |boundingTile|}}
-                                    <option data-hover-action="highlightTile" data-id="{{boundingTile.id}}" value="{{boundingTile.id}}"
+                                    <option data-hover-action="highlightTile" data-id="{{boundingTile.id}}" 
+                                    {{#if (eq boundingTile.missing true)}} 
+                                        disabled
+                                    {{/if}}
+                                    value="{{boundingTile.id}}"
                                     {{#if (eq ../linkedBoundingTile boundingTile.id)}}
                                         selected
                                     {{/if}}>
+                                        {{#if (eq boundingTile.missing true)}}
+                                            <i class="fas fa-chain-broken"></i>
+                                        {{/if}}
                                         {{boundingTile.displayName}}
                                     </option>
                                 {{/each}}

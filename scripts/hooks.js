@@ -1,5 +1,6 @@
 import { JTCSModules } from "./init.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
+import { ArtTileManager } from "./classes/ArtTileManager.js";
 /**
  * This sets up most hooks we want to respond to in our code,
  * grouping hooks with identical
@@ -12,6 +13,7 @@ export const setupHookHandlers = async () => {
             game.JTCSlideshowConfig.render(false);
         }
     }
+
     /**
      * Show a toggle in the journal sheet's header to toggle whether the journal
      * has controls on or off
@@ -26,9 +28,16 @@ export const setupHookHandlers = async () => {
     }
 
     async function updateGalleryTileIndicator(tileDoc) {
-        let tileID = tileDoc.id;
-        let sceneTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
-        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(tileID, sceneTiles);
+        let tileID = tileDoc.id; //this gets the id from the tile's document itself
+        let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
+        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(tileID, sceneGalleryTiles); //this is looking for tiles that are already linked
+        console.log(
+            "%chooks.js line:32 tileDoc,foundTileData",
+            "color: #26bfa5;",
+            tileDoc,
+            foundTileData,
+            sceneGalleryTiles
+        );
         await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     }
 
@@ -176,6 +185,15 @@ export const setupHookHandlers = async () => {
             hooks: ["updateJTCSSettings"],
             handlerFunction: async () => {
                 await HelperFunctions.setUIColors();
+            },
+        },
+        updateDefaultArtTile: {
+            hooks: ["deleteTile"],
+            handlerFunction: async (tileDoc) => {
+                // let tiles = (await ArtTileManager.getSceneSlideshowTiles("art", true)).filter((item)=> !item.missing)
+                // if(tiles){
+                // }
+                // await ArtTileManager.updateDefaultArtTile(tileDoc);
             },
         },
     };

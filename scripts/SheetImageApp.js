@@ -46,7 +46,7 @@ export class SheetImageApp {
             let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
             let selectorString = "img, video, .lightbox-image";
-            if (whichSheets[documentName]) {
+            if (whichSheets[documentName] || onThisSheet === true) {
                 if (onThisSheet) {
                     if (documentName === "journalEntry") {
                         html.find(selectorString).addClass("clickableImage");
@@ -61,8 +61,8 @@ export class SheetImageApp {
                 //inject controls onto the sheet itself too
                 // if (!html[0].querySelector("#sheet-controls")) {
                 // }
-                SheetImageApp.injectSheetWideControls(app);
             }
+            SheetImageApp.injectSheetWideControls(app);
         }
     }
 

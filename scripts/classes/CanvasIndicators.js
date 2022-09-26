@@ -8,14 +8,13 @@ export class CanvasIndicators {
             return;
         }
         let type = "unlinked";
+
         if (foundTileData) {
             type = foundTileData.isBoundingTile ? "frame" : "art";
             const defaultTileID = await ArtTileManager.getDefaultArtTileID();
             if (foundTileData.id === defaultTileID) {
                 type = "default";
             }
-        } else {
-            console.log("Unlinked!", type);
         }
         await CanvasIndicators.createTileIndicator(tileDoc, type);
         await CanvasIndicators.hideTileIndicator(tileDoc);
@@ -103,7 +102,7 @@ export class CanvasIndicators {
     }
 
     static async showTileIndicator(tileDocument, alpha = 1) {
-        if (!tileDocument) {
+        if (!tileDocument || !tileDocument.object) {
             console.warn("Tile document not supplied.");
             return;
         }
@@ -115,13 +114,13 @@ export class CanvasIndicators {
         }
     }
     static async hideTileIndicator(tileDocument) {
-        if (!tileDocument) {
+        if (!tileDocument || !tileDocument.object) {
             console.warn("No tile document supplied");
             return;
         }
         let tileObject = tileDocument.object;
 
-        if (tileObject.overlayContainer) {
+        if (tileObject && tileObject.overlayContainer) {
             tileObject.overlayContainer.alpha = 0;
         } else {
             console.error("No overlay container found");

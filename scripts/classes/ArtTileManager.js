@@ -1,4 +1,6 @@
 import { MODULE_ID } from "../debug-mode.js";
+import { HelperFunctions as HF } from "./HelperFunctions.js";
+import { ImageDisplayManager } from "./ImageDisplayManager.js";
 /**
  * This class manages the Art and Bounding Tiles, creating them, showing them in the Config, and
  * getting and setting their values
@@ -15,16 +17,18 @@ export class ArtTileManager {
         let tileDataArray = await ArtTileManager.getSceneSlideshowTiles("", false);
 
         //find object with id
-        let tileObject = tileDataArray.find((tileData) => tileData.id === oldTileID);
-        let index = tileDataArray.indexOf(tileObject);
+
+        let index = tileDataArray.findIndex((tileData) => tileData.id === oldTileID);
+        let tileObject = tileDataArray[index]; //.find((tileData) => tileData.id === oldTileID);
         tileObject = { ...tileObject, id: newTileID };
 
         //replace the object at its original index with the object w/ the new id
-        if (tileObject && index) {
+        if (tileObject && index !== undefined) {
             tileDataArray.splice(index, 1, tileObject);
+            await ArtTileManager.updateAllSceneTileFlags(tileDataArray);
+        } else {
+            console.log("No index or object?");
         }
-
-        await ArtTileManager.updateAllSceneTileFlags(tileDataArray);
     }
     static async getDefaultData(isBoundingTile, linkedBoundingTile = "") {
         //determine its default name based on whether it's a bounding or display tile
@@ -60,12 +64,9 @@ export class ArtTileManager {
     static async createTileInScene(isFrameTile) {
         let ourScene = game.scenes.viewed;
         let pathProperty = isFrameTile ? "frameTilePath" : "artTilePath";
-        let imageManager = game.JTCS.imageUtils.manager;
+        let imageManager = ImageDisplayManager; //game.JTCS.imageUtils.manager;
 
-        let imgPath = await game.JTCS.utils.getSettingValue(
-            "artGallerySettings",
-            `defaultTileImages.paths.${pathProperty}`
-        );
+        let imgPath = await HF.getSettingValue("artGallerySettings", `defaultTileImages.paths.${pathProperty}`);
         if (!imgPath) {
             return;
         }
@@ -76,13 +77,14 @@ export class ArtTileManager {
             ourScene.data.width,
             ourScene.data.height
         );
+
         let newTile = await ourScene.createEmbeddedDocuments("Tile", [
             {
                 img: imgPath,
                 width: dimensionObject.width,
                 height: dimensionObject.height,
-                x: 0,
-                y: ourScene.data.height / 2 - dimensionObject.height / 2,
+                x: ourScene.data.width / 2 - tex.width / 2, // - dimensionObject.width / 2,
+                y: ourScene.data.height / 2 - tex.height / 2, // - dimensionObject.height / 2,
             },
         ]);
         return newTile;
@@ -142,8 +144,11 @@ export class ArtTileManager {
 
     /**
      * Create a Tile in the current scene that is linked to the Tile Data we're passing in
-     * @param {Object} options
-     * @returns
+     * @param {Object} options - the options object
+     * @param {Boolean} options.isFrameTile - whether or not its a frame tile or an art tile
+     * @param {String} options.linkedFrameTileID - the ID of the linked frame tile
+     * @param {String} options.unlinkedDataID - the ID of the unlinked art gallery tile we want to link to a tile in the scene
+     * @returns the new tile object in the scene that is linked to our previously unlinked data
      */
     static async createAndLinkSceneTile(
         options = {
@@ -161,12 +166,14 @@ export class ArtTileManager {
 
             //
             if (!unlinkedDataID) {
+                console.log("Creating new tile data");
                 await ArtTileManager.createTileData(linkedFrameTileID, tileObjectID, false);
             } else {
+                console.log("updating already created tile data, and linking it");
                 await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
             }
         } else {
-            ui.notifications.error("New display tile couldn't be created");
+            ui.notifications.error("New art gallery tile couldn't be created");
         }
         return newTile;
     }
@@ -275,29 +282,42 @@ export class ArtTileManager {
      */
     static async getDefaultArtTileID(currentScene) {
         if (!currentScene) currentScene = game.scenes.viewed;
+
+        //get all the art tiles in the scene, filtering out the ones that aren't unlinked/missing
+        let artTiles = (
+            await ArtTileManager.getSceneSlideshowTiles("art", true, {
+                currentSceneID: currentScene.id,
+            })
+        ).filter((item) => !item.missing);
         let defaultArtTileID = await currentScene.getFlag(MODULE_ID, "defaultArtTileID");
-        if (!defaultArtTileID) {
-            //if you can't find it, default to the first tile in the scene
-            //TODO: This should make sure the tile is in the scene
-            let artTiles = (
-                await ArtTileManager.getSceneSlideshowTiles("art", true, {
-                    currentSceneID: currentScene.id,
-                })
-            ).filter((item) => !item.missing);
+
+        // if the defaultArtTileID stored in our flags is
+        let shouldReplaceID = false;
+        const found = artTiles.find((tileData) => tileData.id === defaultArtTileID);
+
+        if (!found) {
+            //a tile with this ID wasn't in the scene, so replace it with a the first art tile that IS linked, or if there are none, replace it with an empty string
+            shouldReplaceID = true;
 
             if (artTiles.length > 0) {
                 defaultArtTileID = artTiles[0].id;
             } else {
-                ui.notifications.warn("No art or frame tiles found in this scene");
+                defaultArtTileID = "";
             }
-            // defaultArtTileID = currentScene.tiles.contents[0]?.id;
         }
+        // should
+        if (shouldReplaceID) {
+            await currentScene.setFlag(MODULE_ID, "defaultArtTileID", defaultArtTileID);
+        }
+
         return defaultArtTileID;
     }
 
     static async getGalleryTileDataFromID(tileID, property = "", currentSceneID = "") {
-        let flaggedTiles = await this.getSceneSlideshowTiles("", false, { currentSceneID });
+        if (!currentSceneID) currentSceneID = game.scenes.viewed.current;
+        let flaggedTiles = await ArtTileManager.getSceneSlideshowTiles("", false, { currentSceneID });
         let ourTile = flaggedTiles.find((data) => data.id === tileID);
+        console.log("%cArtTileManager.js line:319 flaggedTiles, ourTile", "color: #26bfa5;", flaggedTiles, ourTile);
         if (property) {
             return ourTile[property];
         } else {
@@ -430,7 +450,6 @@ export class ArtTileManager {
         }
         let currentScene = game.scenes.viewed;
         let tiles = (await ArtTileManager.getSceneSlideshowTiles()) || [];
-        // let tiles = (await currentScene.getFlag("journal-to-canvas-slideshow", "slideshowTiles")) || [];
 
         if (tiles.find((tile) => tile.id === tileID)) {
             tiles = tiles.map((tileData) => {
@@ -442,7 +461,6 @@ export class ArtTileManager {
         }
 
         await ArtTileManager.updateAllSceneTileFlags(tiles);
-        // await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
     }
 
     /**
@@ -452,6 +470,12 @@ export class ArtTileManager {
     static async updateAllSceneTileFlags(tiles, currentSceneID = "") {
         let currentScene = game.scenes.get(currentSceneID);
         if (!currentScene) currentScene = game.scenes.viewed;
+        console.log(
+            "%cArtTileManager.js line:456 tiles, currentScene",
+            "color: white; background-color: #007acc;",
+            tiles,
+            currentScene
+        );
         await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
         Hooks.callAll("updateArtGalleryTiles", { currentScene, updateData: tiles });
     }

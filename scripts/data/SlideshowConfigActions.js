@@ -50,7 +50,7 @@ export const extraActions = {
                 [name]: value,
                 ...(isNewTile ? { isBoundingTile: isBoundingTile } : {}),
             };
-            await game.JTCS.tileUtils.updateSceneTileFlags(updateData, tileID);
+            await ArtTileManager.updateSceneTileFlags(updateData, tileID);
             await app.renderWithData();
         }
     },
@@ -234,6 +234,11 @@ export const extraActions = {
                 break;
         }
         if (missing) {
+            console.log(
+                "%cSlideshowConfigActions.js line:237 tileID",
+                "color: white; background-color: #007acc;",
+                tileID
+            );
             const tileName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
             let suffix = `<span class='${type}-color'>${HelperFunctions.capitalizeEachWord(
                 type
@@ -452,7 +457,7 @@ export const slideshowDefaultSettingsData = {
                         if (!app) app = game.JTCSlideshowConfig;
 
                         let selectedID = targetElement.value;
-                        await game.JTCS.tileUtils.updateTileDataID(tileID, selectedID);
+                        await ArtTileManager.updateTileDataID(tileID, selectedID);
                         if (app.rendered) {
                             await app.renderWithData();
                         }
