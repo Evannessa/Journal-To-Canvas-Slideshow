@@ -103,10 +103,7 @@ export const universalInterfaceActions = {
      * @param {String} options.targetClassSelector - the class of the item we want to show
      */
     toggleShowAnotherElement: (event, options) => {
-        let { parentItem, targetClassSelector } = options;
-        if (parentItem.jquery) {
-            console.log(parentItem);
-        }
+        let { parentItem, targetClassSelector, fadeIn = true } = options;
         let el = event.currentTarget;
         let targetID = el?.dataset.targetId;
         let target;
@@ -116,7 +113,11 @@ export const universalInterfaceActions = {
             target = parentItem.querySelector(`.${targetClassSelector}`);
         }
         if (target) {
-            handleVisibilityTransitions($(target));
+            if (fadeIn) {
+                handleVisibilityTransitions($(target));
+            } else {
+                $(target).removeClass("hidden");
+            }
         }
     },
     toggleActiveStyles: (event) => {

@@ -81,10 +81,9 @@ export class CanvasIndicators {
         }
         color = color.substring(1);
         if (color.length === 8) {
-            color = color.substring(-2);
+            color = HelperFunctions.hex8To6(color); //.substring(-2);
         }
         color = `0x${color}`;
-        color = parseInt(color);
 
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
 

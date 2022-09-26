@@ -212,12 +212,7 @@ export const extraActions = {
             //return
             return;
         }
-        // let contentTypes = ["noFrameTile", "missing", "isFrameTile", "isArtTile", "isDefaultTile"];
-        // const currentContent = {};
-        // contentTypes.forEach((type) => {
-        //     let contentElement = instructionsElement[0].querySelector(`#{type}`);
-        //     currentContent[type] = contentElement ? true : false;
-        // });
+
         let instructionsContent = "<div class='instructions__content hidden'>";
         // add different instruction content depending on the tile's type (art or frame), whether it's unlinked/missing, and whether, if it's an art tile, it's currently set to the default art tile.
         switch (type) {
@@ -241,17 +236,32 @@ export const extraActions = {
             instructionsContent += `<p id="noFrameTile">This ${type} tile will be bound by the scene's canvas.</p>`;
         instructionsContent += "</div>";
         let content = instructionsElement.find(".instructions__content");
+        instructionsElement.contentHidden = true;
+        console.log(
+            '%cSlideshowConfigActions.js line:240 content.css("height")',
+            "color: white; background-color: #007acc;",
+            content.css("height")
+        );
         if (!isLeave) {
             content.replaceWith(`${instructionsContent}`);
             let element = instructionsElement[0];
-            UIA.toggleShowAnotherElement(event, { parentItem: element, targetClassSelector: "instructions__content" });
+            UIA.toggleShowAnotherElement(event, {
+                parentItem: element,
+                targetClassSelector: "instructions__content",
+                fadeIn: false,
+            });
 
-            // instructionsElement[0].ourAnimation = await UIA.fade(content, {
-            //     duration: 200,
-            //     isFadeOut: false,
-            //     onFadeOut: "",
-            // });
+            // if (element.contentHidden) {
+            //     UIA.toggleShowAnotherElement(event, {
+            //         parentItem: element,
+            //         targetClassSelector: "instructions__content",
+            //     });
+            //     element.contentHidden = false;
+            // }
         } else {
+            if (!instructionsElement.contentHidden) {
+                instructionsElement.contentHidden = true;
+            }
             if (instructionsElement.timeout) {
                 clearTimeout(instructionsElement.timeout);
             }
@@ -261,6 +271,8 @@ export const extraActions = {
                     isFadeOut: true,
                     onFadeOut: async () => {
                         content.replaceWith(`<div class="instructions__content hidden"></div>`);
+                        instructionsElement.contentHidden = true;
+                        // content.addClass("hidden");
                     },
                 });
             }, 300);
