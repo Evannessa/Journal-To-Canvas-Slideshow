@@ -1,4 +1,5 @@
 <form class="flexcol">
+
     <div class="form-content overflow-scroll-y overflow-auto-x flow padding-medium">
 
         <!-- for the color-scheme information-->
@@ -25,7 +26,7 @@
     <div class="form-group-stacked flow" id="JTCSindicatorColorData">
             {{#with indicatorColorData}}
                 <h2>{{this.name}}</h2>
-                <p class="notes">{{this.hint}}</p>
+                <p class="notes">{{{this.hint}}}</p>
                 <div class="form-group-stacked gap-medium">
                 {{#each this.colors}}
                     <div class="outer-wrapper">
@@ -83,7 +84,7 @@
         <div class="form-group-stacked flow" id="JTCSsheetSettings">
             {{#with sheetSettings}}
                 <h2>{{this.name}}</h2>
-                <p class="notes">{{this.hint}}</p>
+                <p class="notes">{{{this.hint}}}</p>
                 {{> (dynamicPartial "fieldset-button-group")
                     type="checkbox"
                     variant="visible-tick"
@@ -97,7 +98,7 @@
         <div class="form-group-stacked flow" id="JTCSsheetFadeData">
             {{#with fadeSheetImagesData}}
             <h2>{{this.name}}</h2>
-            <p class="notes">{{this.hint}}</p>
+            <p class="notes">{{{this.hint}}}</p>
                 {{> (dynamicPartial "fieldset-button-group")
                     type="radio"
                     choices=this.choices
@@ -111,7 +112,7 @@
         <div class="form-group-stacked flow" id="JTCSdefaultImages">
             {{#with defaultTileImages}}
             <h2>{{this.name}}</h2>
-            <p class="notes">{{this.hint}}</p>
+            <p class="notes">{{{this.hint}}}</p>
             {{#each this.paths}}
                <div class="flex-row file-picker-group has-floating-label">
                     <label class="floating-label"  for="{{@key}}">{{camelCaseToCapitalString @key}}</label>

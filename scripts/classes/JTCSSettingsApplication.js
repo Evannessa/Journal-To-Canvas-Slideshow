@@ -157,7 +157,8 @@ export class JTCSSettingsApplication extends FormApplication {
             let defaultValue = getProperty(artGalleryDefaultSettings, key);
             console.log("Key and default", key, defaultValue);
             await HF.setSettingValue("artGallerySettings", defaultValue, key);
-            accentElement.val(defaultValue);
+            this.render(true);
+            // accentElement.val(defaultValue);
         }
     }
 

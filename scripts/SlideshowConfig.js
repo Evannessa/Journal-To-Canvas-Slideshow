@@ -128,8 +128,8 @@ export class SlideshowConfig extends Application {
         html.off("click").on("click", "[data-action]", async (event) => await this.handleAction(event, "action", html));
 
         let hoverEventString = "mouseenter mouseleave";
-        let hoverActionSelectorString = `[data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']), 
-            [data-hover-action]:not([data-missing='true'], [data-flag='ignore-hover']) + label`;
+        let hoverActionSelectorString = `[data-hover-action], 
+            [data-hover-action] + label`;
 
         html.off(hoverEventString, hoverActionSelectorString).on(
             hoverEventString,

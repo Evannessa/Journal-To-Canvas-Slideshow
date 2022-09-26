@@ -291,21 +291,18 @@ export class HelperFunctions {
         if (makeVariations) {
             const direction = HF.lighterOrDarker(value);
             const shouldDarken = direction < 0 ? true : false;
+            // const text = contrastValue < 0 ? "We should darken color" : "we should lighten color";
 
             for (var number = 0; number < 90; number += 10) {
                 const variantPropName = `${propertyName}-${number.toString().padStart(2, "0")}`;
-                let variantValue;
                 const amount = shouldDarken ? number * -1 : number;
-                variantValue = HelperFunctions.LightenDarkenColor(value, amount);
-                // if (number < 50) {
-                //     variantValue = HelperFunctions.LightenDarkenColor(value, number);
-                // } else {
-                //     number = 0;
-
-                //     variantValue = HelperFunctions.LightenDarkenColor(value, -1 * number);
-                // }
-                // console.log("Color variants for", variantPropName, variantValue);
+                const variantValue = HelperFunctions.LightenDarkenColor(value, amount);
                 html.style.setProperty(variantPropName, variantValue);
+                if (number === 50) {
+                    //get a good box shadow color
+                    let color = shouldDarken ? variantValue : "transparent";
+                    html.style.setProperty("--JTCS-box-shadow-color", color);
+                }
             }
         }
     }
@@ -324,7 +321,7 @@ export class HelperFunctions {
     }
     static async getSettingValue(settingName, nestedKey = "") {
         let settingData = await game.settings.get(HelperFunctions.MODULE_ID, settingName);
-        if (settingData) {
+        if (settingData !== undefined && settingData !== null) {
             if (nestedKey) {
                 let nestedSettingData = getProperty(settingData, nestedKey);
 

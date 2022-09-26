@@ -7,6 +7,10 @@ import { HelperFunctions } from "../classes/HelperFunctions.js";
 import { ImageDisplayManager } from "../classes/ImageDisplayManager.js";
 import { ArtTileManager } from "../classes/ArtTileManager.js";
 
+/**
+ * Show instructions
+ */
+
 export const extraActions = {
     renderTileConfig: async (event, options = {}) => {
         let { tileID } = options;
@@ -82,7 +86,10 @@ export const extraActions = {
         await HelperFunctions.createDialog("Delete Art Tile", templatePath, data);
     },
     highlightItemAndTile: async (event, options = {}) => {
-        let { parentLI, tileID } = options;
+        let { parentLI, tileID, missing } = options;
+        // if (missing) {
+        //     return;
+        // }
         let { type, frameId: frameID } = $(parentLI).data();
         let isLeave = event.type === "mouseleave" ? true : false;
         // we want every hover over a tile to highlight the tiles it is linked to
@@ -124,19 +131,19 @@ export const extraActions = {
                 return match;
             });
         }
-        if (!tileID) {
-            return;
-        }
-
-        let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
+        // if (!tileID) {
+        //     return;
+        // }
+        let tile;
+        if (!missing) tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
         if (isLeave) {
             hoveredElement.removeClass("accent border-accent");
             $(otherListItems).removeClass("accent border-accent");
-            game.JTCS.indicatorUtils.hideTileIndicator(tile);
+            if (!missing) game.JTCS.indicatorUtils.hideTileIndicator(tile);
         } else {
             hoveredElement.addClass("accent border-accent");
             $(otherListItems).addClass("accent border-accent");
-            game.JTCS.indicatorUtils.showTileIndicator(tile);
+            if (!missing) game.JTCS.indicatorUtils.showTileIndicator(tile);
         }
     },
     setDefaultTileInScene: async (event, options = {}) => {
@@ -194,6 +201,99 @@ export const extraActions = {
             value: "",
         });
     },
+    showInstructions: async (event, options = {}) => {
+        const { html, type, isDefault, missing, frameId } = options;
+        const areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
+        const instructionsElement = html.find("#JTCS-config-instructions");
+        const isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
+
+        if ((!instructionsElement && !isLeave) || !areVisible) {
+            //if the instructions element already exists and we're mousing over, or the instruction visibility has been toggled off
+            //return
+            return;
+        }
+        // let contentTypes = ["noFrameTile", "missing", "isFrameTile", "isArtTile", "isDefaultTile"];
+        // const currentContent = {};
+        // contentTypes.forEach((type) => {
+        //     let contentElement = instructionsElement[0].querySelector(`#{type}`);
+        //     currentContent[type] = contentElement ? true : false;
+        // });
+        let instructionsContent = "<div class='instructions__content hidden'>";
+        // add different instruction content depending on the tile's type (art or frame), whether it's unlinked/missing, and whether, if it's an art tile, it's currently set to the default art tile.
+        switch (type) {
+            case "art":
+                instructionsContent += `<p id="isArtTile"><code>Ctr + Click</code> on this Art Tile to set it to <span class='accent' data-is-default="true">Default</span>.
+                <br/> 
+                This means that if you click on an image in Journal, Actor, 
+                or Item sheet without specifying where it will display, it will automatically display on the Art Tile you chose as default.
+                </p>`;
+                if (isDefault) instructionsContent += `<p id="isDefaultTile">This Art Tile is already Default.</p>`;
+                break;
+            case "frame":
+                instructionsContent += `<p id="isFrameTile" >Frame tiles act as "boundaries" for art tiles, like a 'picture frame'. <br/>
+                When you link an Art Tile to a Frame tile, the Art Tile will get no larger than the Frame Tile.</p>`;
+                break;
+        }
+        if (missing)
+            instructionsContent += `<p id="missing">This ${type} tile data is unlinked to any tile on the canvas in this scene.</p>`;
+        //TODO: attach pictures to this one
+        if (type === "art" && !frameId)
+            instructionsContent += `<p id="noFrameTile">This ${type} tile will be bound by the scene's canvas.</p>`;
+        instructionsContent += "</div>";
+        let content = instructionsElement.find(".instructions__content");
+        if (!isLeave) {
+            content.replaceWith(`${instructionsContent}`);
+            let element = instructionsElement[0];
+            UIA.toggleShowAnotherElement(event, { parentItem: element, targetClassSelector: "instructions__content" });
+
+            // instructionsElement[0].ourAnimation = await UIA.fade(content, {
+            //     duration: 200,
+            //     isFadeOut: false,
+            //     onFadeOut: "",
+            // });
+        } else {
+            if (instructionsElement.timeout) {
+                clearTimeout(instructionsElement.timeout);
+            }
+            instructionsElement.timeout = setTimeout(async () => {
+                await UIA.fade(content, {
+                    duration: 200,
+                    isFadeOut: true,
+                    onFadeOut: async () => {
+                        content.replaceWith(`<div class="instructions__content hidden"></div>`);
+                    },
+                });
+            }, 300);
+            // let anim = instructionsElement[0].ourAnimation;
+            // if (anim && !anim.finished) {
+            // anim.finish();
+            // anim.pause();
+            // anim.reverse();
+            // anim.addEventListener("oncancel", async () => {
+            //     instructionsElement[0].ourAnimation = await UIA.fade(instructionsElement, {
+            //         duration: 200,
+            //         isFadeOut: true,
+            //         onFadeOut: () => {
+            //             instructionsElement.empty();
+            //         },
+            //     });
+            // });
+            // } else if (anim && anim.finished) {
+            //     instructionsElement[0].ourAnimation = await UIA.fade(instructionsElement, {
+            //         duration: 200,
+            //         isFadeOut: true,
+            //         onFadeOut: () => {
+            //             instructionsElement.empty();
+            //         },
+            //     });
+        }
+
+        // instructionsElement.empty();
+    },
+    toggleInstructionsVisible: async (event, options = {}) => {
+        let areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
+        await HelperFunctions.setSettingValue("areConfigInstructionsVisible", !areVisible);
+    },
 };
 export const slideshowDefaultSettingsData = {
     globalActions: {
@@ -211,6 +311,12 @@ export const slideshowDefaultSettingsData = {
                     onClick: (event, options = {}) => {
                         UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
                     },
+                },
+                toggleInstructionsVisible: {
+                    icon: "fas fa-eye-slash",
+                    tooltipText: "toggle instruction visibility",
+                    renderedInTemplate: true,
+                    onClick: async (event, options) => await extraActions.toggleInstructionsVisible(event, options),
                 },
                 // showArtScenes: {
                 //     icon: "fas fa-map",
@@ -371,7 +477,12 @@ export const slideshowDefaultSettingsData = {
                     },
                 },
                 highlightItemAndTile: {
-                    onHover: async (event, options = {}) => await extraActions.highlightItemAndTile(event, options),
+                    //TODO: refactor the name of this property to include the "showInstructions" method
+                    onHover: async (event, options = {}) => {
+                        const dataset = $(options.parentLI).data();
+                        await extraActions.highlightItemAndTile(event, { ...options, ...dataset });
+                        await extraActions.showInstructions(event, { ...options, ...dataset });
+                    },
                 },
             },
         },

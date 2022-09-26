@@ -49,8 +49,7 @@ function setAnimDefaults(animOptions) {
  * @param {Function} options.onFadeOut - the callback to handle what happens when the fade animation is complete
  */
 async function fade($element, options = {}) {
-    let { duration, isFadeOut, onFadeOut } = setAnimDefaults(options);
-    console.log("Fading", $element, "With", options);
+    let { duration, isFadeOut, onFadeOut, onCancel } = setAnimDefaults(options);
 
     let fadeAnim = $element[0].animate(
         [
@@ -68,6 +67,12 @@ async function fade($element, options = {}) {
             onFadeOut($element, event);
         }
     });
+    fadeAnim.addEventListener("cancel", (event) => {
+        if (onCancel) {
+            onCancel($element, event);
+        }
+    });
+    return fadeAnim;
 }
 /**
  * Handle the adding and removal of classes and triggering of animations to hide and fade elements
@@ -90,10 +95,20 @@ async function handleVisibilityTransitions($element) {
     fade($($element), options);
 }
 export const universalInterfaceActions = {
+    /**
+     * Show or hide another element
+     * @param {HTMLEvent} event - the event that provoked this
+     * @param {Object} options - options object
+     * @param {HTMLElement} options.parentItem - the parent item in which to find the element we want to hide/show
+     * @param {String} options.targetClassSelector - the class of the item we want to show
+     */
     toggleShowAnotherElement: (event, options) => {
         let { parentItem, targetClassSelector } = options;
+        if (parentItem.jquery) {
+            console.log(parentItem);
+        }
         let el = event.currentTarget;
-        let targetID = el.dataset.targetId;
+        let targetID = el?.dataset.targetId;
         let target;
         if (targetID) {
             target = parentItem.querySelector(`#${targetID}`);

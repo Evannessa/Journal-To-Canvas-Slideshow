@@ -61,11 +61,7 @@
                             
                             </select>
                         </div>
-                        {{> (dynamicPartial "tooltip" @root.partials)
-                                content=(combineToString 
-                                "Choose a tile to frame this tile's art," 
-                                "<br/>" "or let it scale to the canvas.")
-                        }}
+                   
                 </div>	
 		{{/if}}
         {{#if (eq this.missing true)}}
