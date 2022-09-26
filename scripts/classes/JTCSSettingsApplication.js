@@ -155,7 +155,6 @@ export class JTCSSettingsApplication extends FormApplication {
         } else if (action === "resetColor") {
             let key = accentElement.attr("name");
             let defaultValue = getProperty(artGalleryDefaultSettings, key);
-            console.log("Key and default", key, defaultValue);
             await HF.setSettingValue("artGallerySettings", defaultValue, key);
             this.render(true);
             // accentElement.val(defaultValue);

@@ -202,7 +202,7 @@ export const extraActions = {
         });
     },
     showInstructions: async (event, options = {}) => {
-        const { html, type, isDefault, missing, frameId } = options;
+        const { html, type, isDefault, missing, frameId, tileID } = options;
         const areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
         const instructionsElement = html.find("#JTCS-config-instructions");
         const isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
@@ -215,33 +215,49 @@ export const extraActions = {
 
         let instructionsContent = "<div class='instructions__content hidden'>";
         // add different instruction content depending on the tile's type (art or frame), whether it's unlinked/missing, and whether, if it's an art tile, it's currently set to the default art tile.
+        const defaultVariantText = isDefault ? "<em>another</em>" : "this";
         switch (type) {
             case "art":
-                instructionsContent += `<p id="isArtTile"><code>Ctr + Click</code> on this Art Tile to set it to <span class='accent' data-is-default="true">Default</span>.
+                instructionsContent += `<p id="isArtTile">
+                ${isDefault ? "This art tile is set as Default." : ""}
+                <code>Ctr + Click</code> on ${defaultVariantText} <span class="art-color">Art Tile</span> to set it to <span class='default-color'>Default</span>.
                 <br/> 
-                This means that if you click on an image in Journal, Actor, 
-                or Item sheet without specifying where it will display, it will automatically display on the Art Tile you chose as default.
+                If you don't specify where a Sheet Image will display, it will automatically display on the <span class="default-color">"Default"</span>
+                 <span class="art-color">Art Tile</span> in a scene.
                 </p>`;
-                if (isDefault) instructionsContent += `<p id="isDefaultTile">This Art Tile is already Default.</p>`;
                 break;
             case "frame":
-                instructionsContent += `<p id="isFrameTile" >Frame tiles act as "boundaries" for art tiles, like a 'picture frame'. <br/>
-                When you link an Art Tile to a Frame tile, the Art Tile will get no larger than the Frame Tile.</p>`;
+                if (!missing) {
+                    instructionsContent += `<p id="isFrameTile"><span class="frame-color">Frame tiles</span> act as "boundaries" for <span class="art-color">Art Tiles</span>, like a 'picture frame'. <br/>
+                When you link an <span class="art-color">Art Tile</span> to a <span class="frame-color">Frame tile</span>, the <span class="art-color">Art Tile</span> will get no larger than the <span class="frame-color">Frame Tile</span>.</p>`;
+                }
                 break;
         }
-        if (missing)
-            instructionsContent += `<p id="missing">This ${type} tile data is unlinked to any tile on the canvas in this scene.</p>`;
-        //TODO: attach pictures to this one
+        if (missing) {
+            const tileName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
+            let suffix = `<span class='${type}-color'>${HelperFunctions.capitalizeEachWord(
+                type
+            )} Tile "${tileName}"</span>`;
+            instructionsContent += `<p id="missing">This <span class='${type}-color'>${HelperFunctions.capitalizeEachWord(
+                type
+            )} Tile</span> tile is <b>unlinked</b> to any tile on the canvas in this scene.</p>
+            <ul>
+                <li>Click on <i class="fas fa-plus"></i> to add a new Tile object to the canvas, linked to ${suffix}</li>
+                <li>Click on <i class="fas fa-link"></i> to link a pre-existing Tile object on the canvas to ${suffix}</li>
+            </ul>
+            
+            `;
+        }
         if (type === "art" && !frameId)
-            instructionsContent += `<p id="noFrameTile">This ${type} tile will be bound by the scene's canvas.</p>`;
+            instructionsContent += `<p id="noFrameTile">This <span class="art-color">Art Tile</span> will be bound by the scene's canvas.</p>`;
+        else if (type === "art" && frameId) {
+            const frameTileName = await ArtTileManager.getGalleryTileDataFromID(frameId, "displayName");
+            instructionsContent += `<p id="hasFrameTile">This <span class="art-color">Art Tile</span> will be bound by frame tile <span class="frame-color">${frameTileName}</span> </p>`;
+        }
         instructionsContent += "</div>";
         let content = instructionsElement.find(".instructions__content");
         instructionsElement.contentHidden = true;
-        console.log(
-            '%cSlideshowConfigActions.js line:240 content.css("height")',
-            "color: white; background-color: #007acc;",
-            content.css("height")
-        );
+
         if (!isLeave) {
             content.replaceWith(`${instructionsContent}`);
             let element = instructionsElement[0];
@@ -250,14 +266,6 @@ export const extraActions = {
                 targetClassSelector: "instructions__content",
                 fadeIn: false,
             });
-
-            // if (element.contentHidden) {
-            //     UIA.toggleShowAnotherElement(event, {
-            //         parentItem: element,
-            //         targetClassSelector: "instructions__content",
-            //     });
-            //     element.contentHidden = false;
-            // }
         } else {
             if (!instructionsElement.contentHidden) {
                 instructionsElement.contentHidden = true;
@@ -305,6 +313,7 @@ export const extraActions = {
     toggleInstructionsVisible: async (event, options = {}) => {
         let areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
         await HelperFunctions.setSettingValue("areConfigInstructionsVisible", !areVisible);
+        UIA.toggleActiveStyles(event);
     },
 };
 export const slideshowDefaultSettingsData = {

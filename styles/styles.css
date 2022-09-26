@@ -1894,12 +1894,29 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   flex-shrink: 0;
   position: absolute;
   top: 100%;
+  left: -2px;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content {
   border-radius: 5px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
   background-color: transparent;
+}
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content .art-color {
+  color: var(--data-art-color);
+  font-weight: bold;
+}
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content .frame-color {
+  color: var(--data-frame-color);
+  font-weight: bold;
+}
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content .unlinked-color {
+  color: var(--data-unlinked-color);
+  font-weight: bold;
+}
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content .default-color {
+  color: var(--data-default-color);
+  font-weight: bold;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content:before {
   content: "";
@@ -1915,25 +1932,34 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   opacity: 60%;
   -webkit-backdrop-filter: blur(12px);
           backdrop-filter: blur(12px);
+  border-radius: 5px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.hidden) {
   padding: 1rem;
   height: 10em;
 }
 #slideshow-config .window-content #JTCS-config-instructions button {
-  background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
-  color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  background-color: var(--JTCS-background-color-10);
+  border: 2px solid var(--JTCS-accent-color);
+  color: var(--JTCS-accent-color);
   position: absolute;
   bottom: 100%;
   left: 0;
   max-width: 2rem;
   max-height: 2rem;
 }
-#slideshow-config .window-content #JTCS-config-instructions button:hover, #slideshow-config .window-content #JTCS-config-instructions button:focus {
+#slideshow-config .window-content #JTCS-config-instructions button.active {
+  background-color: var(--JTCS-accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
+  color: var(--JTCS-text-color-on-fill);
+  outline: 0px solid white;
+  outline-offset: 2px;
+  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+}
+#slideshow-config .window-content #JTCS-config-instructions button.active:hover, #slideshow-config .window-content #JTCS-config-instructions button.active:focus {
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;

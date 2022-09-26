@@ -60,8 +60,8 @@ export class SheetImageApp {
                 }
                 //inject controls onto the sheet itself too
                 // if (!html[0].querySelector("#sheet-controls")) {
-                SheetImageApp.injectSheetWideControls(app);
                 // }
+                SheetImageApp.injectSheetWideControls(app);
             }
         }
     }

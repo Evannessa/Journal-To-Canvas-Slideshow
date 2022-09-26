@@ -83,6 +83,7 @@ export class SlideshowConfig extends Application {
             ...artTileDataArray,
             ...frameTileDataArray,
         ]);
+        let areConfigInstructionsVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
 
         let allJournals = game.journal.contents;
         let artJournal = await game.JTCS.utils.getSettingValue(
@@ -114,6 +115,7 @@ export class SlideshowConfig extends Application {
             artSceneData: artSceneData,
             artJournalData: artJournalData,
             partials: game.JTCS.templates,
+            areConfigInstructionsVisible,
             settingsData: slideshowDefaultSettingsData,
             ...this.data,
         };

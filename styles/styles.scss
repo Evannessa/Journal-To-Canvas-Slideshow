@@ -286,11 +286,19 @@
             flex-shrink: 0;
             position: absolute;
             top: 100%;
+            left: -2px;
             .instructions__content {
                 border-radius: 5px;
                 border-top-left-radius: 0px;
                 border-top-right-radius: 0px;
                 background-color: transparent;
+                $list: ("art", "frame", "unlinked", "default");
+                @each $var in $list {
+                    .#{$var}-color {
+                        color: var(--data-#{$var}-color);
+                        font-weight: bold;
+                    }
+                }
 
                 &:before {
                     content: "";
@@ -305,6 +313,10 @@
                     background-color: var(--JTCS-background-color-10);
                     opacity: 60%;
                     backdrop-filter: blur(12px);
+
+                    border-radius: 5px;
+                    border-top-left-radius: 0px;
+                    border-top-right-radius: 0px;
                     // filter: blur(3px);
                 }
                 &:not(.hidden) {
@@ -315,7 +327,14 @@
                 //     opacity: 0%;
             }
             button {
-                @include JTCS-accent-fill;
+                background-color: var(--JTCS-background-color-10);
+                border: 2px solid var(--JTCS-accent-color);
+                color: var(--JTCS-accent-color);
+                &.active {
+                    @include JTCS-accent-fill($include-shadow: true);
+                }
+
+                // @include JTCS-accent-fill($include-shadow: true);
                 position: absolute;
                 // top: 0;
                 bottom: 100%;
