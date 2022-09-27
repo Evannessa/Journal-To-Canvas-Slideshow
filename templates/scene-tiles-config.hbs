@@ -1,10 +1,11 @@
 <form autocomplete="off" class="flex-col flow">
-    <header class="flex-col">
+    <header class="flex-col padding-medium">
     
         <div class="wrapper flex-row flex-justify-space-evenly flex-align-center gap-small">
 			<div class="form-group has-floating-label">
 				<label class="floating-label" for="artScene">Art Scene</label>
 				<select name="artScene" id="artScene" data-change-action="globalActions.change.actions.setArtScene">
+                    <option value="">---</option>
 					{{#each artSceneData.options as |scene|}}
 						<option value="{{scene.id}}"
 							{{#if (eq @root.artSceneData.value scene.id)}}
@@ -19,6 +20,7 @@
 			<div class="form-group has-floating-label">
 				<label class="floating-label" for="artScene">Art Journal</label>
 				<select name="artJournal" id="artJournal" data-change-action="globalActions.change.actions.setArtJournal">
+                    <option value="">---</option>
 					{{#each artJournalData.options as |journal|}}
 						<option value="{{journal.id}}"
 									{{#if (eq @root.artJournalData.value journal.id)}}
@@ -45,7 +47,7 @@
     </header>
     <section class="tilesInScene 
                 hidden-overflow-x hidden-overflow-y 
-				padding-medium border-block border-color-shadow
+				padding-medium 
 				flexrow gap-small"
     >
         {{> (dynamicPartial "scene-tile-wrapper") 

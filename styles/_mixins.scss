@@ -153,6 +153,7 @@
     transition: outline 120ms ease-in, outline-offset 150ms ease-in;
     &:hover,
     &:focus {
+        box-shadow: unset;
         outline: 1px solid white;
         outline-offset: 0px;
         transition: outline 120ms ease-out, outline-offset 120ms ease-out;

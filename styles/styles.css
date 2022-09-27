@@ -591,6 +591,7 @@ button.icon-button.active {
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
 button.icon-button.active:hover, button.icon-button.active:focus {
+  box-shadow: unset;
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -702,9 +703,23 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid transparent;
   transition: border-color 150ms ease-in;
 }
+.hover-border[data-variant=bottom] {
+  border: unset;
+  transition: border-color 150ms ease-in;
+  border-bottom: 2px solid var(--JTCS-background-color-10);
+}
 .hover-border:hover {
   border-color: var(--accent-color);
   transition: border-color 150ms ease-out;
+}
+.hover-border:hover[data-variant=bottom] {
+  border: unset;
+  border-bottom: 2px solid;
+}
+
+.border-bottom {
+  border: unset;
+  border-bottom: 2px solid var(--JTCS-background-color-20);
 }
 
 .focus-border {
@@ -997,7 +1012,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 .has-floating-label input,
 .has-floating-label select {
-  padding-top: 1em;
+  padding-top: 1.25em;
   padding-bottom: 0.25em;
 }
 
@@ -1193,6 +1208,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 
 .border-styled {
   border: 2px solid var(--border-color);
+}
+.border-styled[data-variant=bottom] {
+  border: unset;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .border-primary {
@@ -1412,6 +1431,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content,
 #JTCS-custom-dialog .window-content {
   --flow-space: 2em;
+  background: var(--JTCS-background-color-10);
+}
+#JTCSSettingsApplication .window-content .container,
+#slideshow-config .window-content .container,
+#JTCS-custom-dialog .window-content .container {
+  border-radius: 5px;
+  border: 1px solid var(--JTCS-background-color-30);
+}
+#JTCSSettingsApplication .window-content .elevation-1,
+#slideshow-config .window-content .elevation-1,
+#JTCS-custom-dialog .window-content .elevation-1 {
   background: var(--JTCS-background-color);
 }
 #JTCSSettingsApplication .window-content .form-group button.danger,
@@ -1544,9 +1574,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content li:not(.accent) label {
   color: var(--JTCS-text-color-on-bg);
 }
-#JTCSSettingsApplication .window-content .icon-button,
-#slideshow-config .window-content .icon-button,
-#JTCS-custom-dialog .window-content .icon-button {
+#JTCSSettingsApplication .window-content .icon-button:not(.danger):not(.danger-text),
+#slideshow-config .window-content .icon-button:not(.danger):not(.danger-text),
+#JTCS-custom-dialog .window-content .icon-button:not(.danger):not(.danger-text) {
   color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content h1,
@@ -1604,6 +1634,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content .file-picker-group.has-floating-label input {
   height: 100%;
 }
+#JTCSSettingsApplication .window-content .form-group.has-floating-label label,
+#JTCSSettingsApplication .window-content .color-picker-group.has-floating-label label,
+#JTCSSettingsApplication .window-content .file-picker-group.has-floating-label label,
+#slideshow-config .window-content .form-group.has-floating-label label,
+#slideshow-config .window-content .color-picker-group.has-floating-label label,
+#slideshow-config .window-content .file-picker-group.has-floating-label label,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label label,
+#JTCS-custom-dialog .window-content .color-picker-group.has-floating-label label,
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label label {
+  white-space: nowrap;
+}
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:hover,
 #JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:hover,
 #JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:hover,
@@ -1624,6 +1665,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content .form-group.has-floating-label:hover label,
 #JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:hover label,
 #JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover label {
+  white-space: nowrap;
   color: var(--accent-color);
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:focus,
@@ -1642,15 +1684,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content span:not(.input-span):not(.tick-box):not(.tick-circle) {
   border-color: transparent;
 }
-#JTCSSettingsApplication .window-content li.tile-list-item,
-#slideshow-config .window-content li.tile-list-item,
-#JTCS-custom-dialog .window-content li.tile-list-item {
-  background-color: var(--JTCS-background-color-20);
-}
-#JTCSSettingsApplication .window-content li.tile-list-item:not(.accent):not([data-is-default]),
-#slideshow-config .window-content li.tile-list-item:not(.accent):not([data-is-default]),
-#JTCS-custom-dialog .window-content li.tile-list-item:not(.accent):not([data-is-default]) {
-  border-color: transparent;
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item),
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item),
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) {
+  box-shadow: var(--JTCS-background-color-50) 0px 1px 3px;
 }
 #JTCSSettingsApplication .window-content input[type=text],
 #JTCSSettingsApplication .window-content select,
@@ -1658,8 +1695,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content select,
 #JTCS-custom-dialog .window-content input[type=text],
 #JTCS-custom-dialog .window-content select {
-  border-color: transparent;
-  background-color: var(--JTCS-background-color-40);
+  font-family: Arial, Helvetica, sans-serif;
+  border-color: var(--JTCS-background-color-70);
+  background-color: var(--JTCS-background-color);
+}
+#JTCSSettingsApplication .window-content input[type=text]:hover,
+#JTCSSettingsApplication .window-content select:hover,
+#slideshow-config .window-content input[type=text]:hover,
+#slideshow-config .window-content select:hover,
+#JTCS-custom-dialog .window-content input[type=text]:hover,
+#JTCS-custom-dialog .window-content select:hover {
+  border-color: var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content .color-picker-group label,
 #slideshow-config .window-content .color-picker-group label,
@@ -1688,16 +1734,19 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content [data-type=art],
 #JTCS-custom-dialog .window-content [data-type=art] {
   --accent-color: var(--data-art-color);
+  transition: border-color 150ms ease-in;
 }
 #JTCSSettingsApplication .window-content [data-type=frame],
 #slideshow-config .window-content [data-type=frame],
 #JTCS-custom-dialog .window-content [data-type=frame] {
   --accent-color: var(--data-frame-color);
+  transition: border-color 150ms ease-in;
 }
 #JTCSSettingsApplication .window-content [data-type=unlinked],
 #slideshow-config .window-content [data-type=unlinked],
 #JTCS-custom-dialog .window-content [data-type=unlinked] {
   --accent-color: var(--data-unlinked-color);
+  transition: border-color 150ms ease-in;
 }
 #JTCSSettingsApplication .window-content [data-is-default],
 #slideshow-config .window-content [data-is-default],
@@ -1705,6 +1754,13 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   --accent-color: var(--data-default-color);
   border-color: var(--accent-color);
   border: 2px solid var(--accent-color);
+  transition: border-color 150ms ease-in, border-style 150ms ease-in;
+}
+#JTCSSettingsApplication .window-content [data-is-default]:not(.accent),
+#slideshow-config .window-content [data-is-default]:not(.accent),
+#JTCS-custom-dialog .window-content [data-is-default]:not(.accent) {
+  border: 2px solid var(--accent-color);
+  transition: border-color 150ms ease-out, border-style 150ms ease-in;
 }
 #JTCSSettingsApplication .window-content [data-is-default] .badge,
 #slideshow-config .window-content [data-is-default] .badge,
@@ -1720,6 +1776,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content [data-type].accent,
 #JTCS-custom-dialog .window-content [data-type].accent {
   color: var(--accent-color);
+  transition: color 150ms ease-in, border-color 150 ease-in;
 }
 #JTCSSettingsApplication .window-content [data-type].accent .badge,
 #slideshow-config .window-content [data-type].accent .badge,
@@ -1729,6 +1786,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > label.floating-label,
 #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > label.floating-label,
 #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > label.floating-label {
+  transition: color 150ms ease-in;
   color: var(--accent-color);
 }
 #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input,
@@ -1737,7 +1795,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select,
 #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input,
 #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select {
+  font-family: Arial, Helvetica, sans-serif;
   border-color: var(--accent-color);
+  transition: border-color 150ms ease-out;
 }
 #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder {
   color: var(--accent-color);
@@ -1757,6 +1817,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content [data-type].accent.border-accent,
 #JTCS-custom-dialog .window-content [data-type].accent.border-accent {
   border-color: var(--accent-color);
+  transition: border-color 150ms ease-out;
 }
 #JTCSSettingsApplication .window-content [data-type].accent [data-type=unlinked],
 #slideshow-config .window-content [data-type].accent [data-type=unlinked],
@@ -1783,6 +1844,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .primary:focus,
 #JTCS-custom-dialog .primary:hover,
 #JTCS-custom-dialog .primary:focus {
+  box-shadow: unset;
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -1808,6 +1870,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog button.file-picker:focus,
 #JTCS-custom-dialog button[type=button]:not(.danger):hover,
 #JTCS-custom-dialog button[type=button]:not(.danger):focus {
+  box-shadow: unset;
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -1853,6 +1916,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCSSettingsApplication .window-content form .form-content > .form-group,
 #JTCSSettingsApplication .window-content form .form-content > .form-group-stacked {
+  border-radius: 8px;
   background-color: var(--JTCS-background-color-10);
   box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
   padding: 1rem;
@@ -1960,6 +2024,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
 #slideshow-config .window-content #JTCS-config-instructions button.active:hover, #slideshow-config .window-content #JTCS-config-instructions button.active:focus {
+  box-shadow: unset;
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -1972,7 +2037,13 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   position: relative;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles h3 {
-  color: var(--data-art-color);
+  background-color: var(--data-art-color);
+  width: 100%;
+  color: var(--JTCS-text-color-on-fill);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  white-space: nowrap;
+  text-align: center;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper {
   border-color: var(--data-art-color);
@@ -1983,6 +2054,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: var(--data-art-color);
   border-top: 2px solid var(--data-art-color);
   transition: background-color 120ms ease-in, color 120ms ease-in;
+  border-width: 1px;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
@@ -1993,7 +2065,13 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: unset;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles h3 {
-  color: var(--data-frame-color);
+  background-color: var(--data-frame-color);
+  width: 100%;
+  color: var(--JTCS-text-color-on-fill);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  white-space: nowrap;
+  text-align: center;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper {
   border-color: var(--data-frame-color);
@@ -2004,6 +2082,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: var(--data-frame-color);
   border-top: 2px solid var(--data-frame-color);
   transition: background-color 120ms ease-in, color 120ms ease-in;
+  border-width: 1px;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
@@ -2014,7 +2093,13 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: unset;
 }
 #slideshow-config .window-content .tilesInScene .wrapper h3 {
-  font-size: 1.25em;
+  font-size: min(1.25em, 100%);
+}
+#slideshow-config .window-content .tilesInScene .wrapper {
+  overflow: hidden;
+}
+#slideshow-config .window-content .tilesInScene .wrapper .item-wrapper {
+  overflow: hidden;
 }
 #slideshow-config .window-content .tilesInScene .item-wrapper {
   display: flex;
@@ -2111,6 +2196,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
 .clickableImageContainer .displayTiles button:hover, .clickableImageContainer .displayTiles button:focus {
+  box-shadow: unset;
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
@@ -2124,6 +2210,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
 .clickableImageContainer .displayTiles button[data-is-default]:hover, .clickableImageContainer .displayTiles button[data-is-default]:focus {
+  box-shadow: unset;
   outline: 1px solid white;
   outline-offset: 0px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;

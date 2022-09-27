@@ -234,11 +234,12 @@ export const extraActions = {
                 break;
         }
         if (missing) {
-            console.log(
-                "%cSlideshowConfigActions.js line:237 tileID",
-                "color: white; background-color: #007acc;",
-                tileID
-            );
+            // console.log(
+            //     "%cSlideshowConfigActions.js line:237 tileID",
+            //     "color: white; background-color: #007acc;",
+            //     tileID,
+            //     frameId
+            // );
             const tileName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
             let suffix = `<span class='${type}-color'>${HelperFunctions.capitalizeEachWord(
                 type
@@ -256,6 +257,13 @@ export const extraActions = {
         if (type === "art" && !frameId)
             instructionsContent += `<p id="noFrameTile">This <span class="art-color">Art Tile</span> will be bound by the scene's canvas.</p>`;
         else if (type === "art" && frameId) {
+            // let frameExists = await ArtTileManager.getSceneSlideshowTiles("frame", )
+            // console.log(
+            //     "%cSlideshowConfigActions.js line:237 tileID",
+            //     "color: white; background-color: #cc5800;",
+            //     tileID,
+            //     frameId
+            // );
             const frameTileName = await ArtTileManager.getGalleryTileDataFromID(frameId, "displayName");
             instructionsContent += `<p id="hasFrameTile">This <span class="art-color">Art Tile</span> will be bound by frame tile <span class="frame-color">${frameTileName}</span> </p>`;
         }
@@ -320,6 +328,17 @@ export const extraActions = {
         await HelperFunctions.setSettingValue("areConfigInstructionsVisible", !areVisible);
         UIA.toggleActiveStyles(event);
     },
+    toggleTilesOpacity: async (event, options = {}) => {
+        const { tileID } = options;
+        const otherTiles = game.scenes.viewed.tiles.contents.filter((tile) => tile.id !== tileID);
+        const updates = otherTiles.map((tile) => {
+            // return { _id: tile.id, object: { tile: { alpha: 0.5 } } };
+            return { _id: tile.id, object: { worldAlpha: 0.5 } };
+        });
+        console.log("updating with", updates);
+        updates.push({ _id: tileID, object: { tile: { alpha: 1 } } });
+        await game.scenes.viewed.updateEmbeddedDocuments("Tile", updates);
+    },
 };
 export const slideshowDefaultSettingsData = {
     globalActions: {
@@ -344,6 +363,7 @@ export const slideshowDefaultSettingsData = {
                     renderedInTemplate: true,
                     onClick: async (event, options) => await extraActions.toggleInstructionsVisible(event, options),
                 },
+
                 // showArtScenes: {
                 //     icon: "fas fa-map",
                 //     tooltipText: "Show art scenes",
@@ -705,6 +725,17 @@ export const slideshowDefaultSettingsData = {
                     onClick: async (event, options = {}) => await extraActions.renderTileConfig(event, options),
                     renderOnMissing: false,
                 },
+                toggleTilesOpacity: {
+                    icon: "fas fa-clone",
+                    tooltipText: "fade out tiles in scene",
+                    overflow: true,
+                    onClick: async (event, options = {}) => extraActions.toggleTilesOpacity(event, options),
+                },
+                // bringTileToFront: {
+                //     text: "Bring tile to front",
+                //     tooltipText: "Bring the linked tile to the front"
+                //     icon: "fas fa-arrow-to-top",
+                // },
                 deleteTileData: {
                     icon: "fas fa-trash",
                     tooltipText: `delete this" this.type "tile data?" "<br/>" 

@@ -542,11 +542,24 @@ button.icon-button {
 }
 .hover-border {
     border: 2px solid transparent;
+    &[data-variant="bottom"] {
+        border: unset;
+        transition: border-color 150ms ease-in;
+        border-bottom: 2px solid var(--JTCS-background-color-10);
+    }
     transition: border-color 150ms ease-in;
     &:hover {
         border-color: var(--accent-color);
+        &[data-variant="bottom"] {
+            border: unset;
+            border-bottom: 2px solid;
+        }
         transition: border-color 150ms ease-out;
     }
+}
+.border-bottom {
+    border: unset;
+    border-bottom: 2px solid var(--JTCS-background-color-20);
 }
 .focus-border {
     outline: 3px solid transparent;
@@ -838,7 +851,7 @@ button.icon-button {
     }
     input,
     select {
-        padding-top: 1em;
+        padding-top: 1.25em;
         padding-bottom: 0.25em;
     }
 }
@@ -1066,6 +1079,10 @@ button.icon-button {
 }
 .border-styled {
     border: 2px solid var(--border-color);
+    &[data-variant="bottom"] {
+        border: unset;
+        border-bottom: 2px solid var(--border-color);
+    }
 }
 
 .border-primary {

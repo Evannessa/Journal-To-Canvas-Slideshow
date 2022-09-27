@@ -1,6 +1,6 @@
 <li
     class="tile-list-item | 
-	interactive flexcol flex-justify-stretch padding-small slight-rounded border-full | 
+	interactive flexcol flex-justify-stretch padding-small slight-rounded | 
 	hover-border focus-border focus-reveal hover-reveal flow"
     data-id="{{this.id}}"
     data-type="{{this.type}}"
@@ -15,7 +15,7 @@
         {{/if}}
     {{/if}}
 >
-	<header class="flex-row flex-nowrap flex-justify-space-between">
+	<header class="flex-row flex-nowrap flex-justify-space-between gap-medium">
 		{{> (dynamicPartial "input-with-error")
             name="displayName" 
             label="Display Name"
@@ -43,7 +43,7 @@
             {{/with}}
 		</div>
 	</header>
-        <footer class="footer">
+        <footer class="footer flex-column flex-justify-between gap-small">
 		{{#if (eq this.type "art")}}
                 <div class="connectedTiles flex-row" data-title="">
                         <div class="form-group has-floating-label">
@@ -60,7 +60,7 @@
                                         selected
                                     {{/if}}>
                                         {{#if (eq boundingTile.missing true)}}
-                                            <i class="fas fa-chain-broken"></i>
+                                            <i class="fas fa-unlink"></i>
                                         {{/if}}
                                         {{boundingTile.displayName}}
                                     </option>

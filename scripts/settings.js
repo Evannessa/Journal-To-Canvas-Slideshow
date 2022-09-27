@@ -51,12 +51,12 @@ export const artGalleryDefaultSettings = {
     dedicatedDisplayData: {
         journal: {
             name: "Art Journal",
-            value: "Art",
+            value: "",
             hint: "Art Journal",
         },
         scene: {
             name: "Art Scene",
-            value: "Art",
+            value: "",
             hint: "Art Scene",
         },
     },

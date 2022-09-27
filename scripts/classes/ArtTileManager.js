@@ -22,13 +22,37 @@ export class ArtTileManager {
         let tileObject = tileDataArray[index]; //.find((tileData) => tileData.id === oldTileID);
         tileObject = { ...tileObject, id: newTileID };
 
+        //here we ensure that the info for the linked tiles are also getting updated. Find ones that match our old ID, and update them to our new id
+
         //replace the object at its original index with the object w/ the new id
         if (tileObject && index !== undefined) {
             tileDataArray.splice(index, 1, tileObject);
+
+            if (tileObject.isBoundingTile) {
+                ArtTileManager.updateLinkedArtTiles(oldTileID, newTileID, tileDataArray);
+            }
+
             await ArtTileManager.updateAllSceneTileFlags(tileDataArray);
-        } else {
-            console.log("No index or object?");
         }
+    }
+
+    static async updateLinkedArtTiles(oldFrameID, newFrameID, tileDataArray) {
+        //get art tiles that had us as their bounding tile
+        let linkedArtTiles = [];
+        let updatedLinkedArtTiles = [];
+        linkedArtTiles = tileDataArray.filter((tileData) => tileData.linkedBoundingTile === oldFrameID);
+        //update them with our new ID
+        updatedLinkedArtTiles = linkedArtTiles.map((tileData) => {
+            return {
+                ...tileData,
+                linkedBoundingTile: newFrameID,
+            };
+        });
+        updatedLinkedArtTiles.forEach((atData) => {
+            let atIndex = tileDataArray.findIndex((item) => item.id === atData.id);
+            tileDataArray.splice(atIndex, 1, atData);
+        });
+        return tileDataArray;
     }
     static async getDefaultData(isBoundingTile, linkedBoundingTile = "") {
         //determine its default name based on whether it's a bounding or display tile
@@ -317,9 +341,12 @@ export class ArtTileManager {
         if (!currentSceneID) currentSceneID = game.scenes.viewed.current;
         let flaggedTiles = await ArtTileManager.getSceneSlideshowTiles("", false, { currentSceneID });
         let ourTile = flaggedTiles.find((data) => data.id === tileID);
-        console.log("%cArtTileManager.js line:319 flaggedTiles, ourTile", "color: #26bfa5;", flaggedTiles, ourTile);
         if (property) {
-            return ourTile[property];
+            if (ourTile) {
+                return ourTile[property];
+            } else {
+                return "";
+            }
         } else {
             return ourTile;
         }
@@ -482,8 +509,12 @@ export class ArtTileManager {
     static async deleteSceneTileData(tileID) {
         let tiles = await ArtTileManager.getSceneSlideshowTiles();
         //filter out the tile that matches this
+        let deletedTileData = tiles.find((tileData) => tileData.id === tileID);
         tiles = tiles.filter((tileData) => tileData.id !== tileID);
-        let tilesAfter = tiles.map((tileData) => tileData.id);
+
+        if (deletedTileData.isBoundingTile) {
+            await ArtTileManager.updateLinkedArtTiles(tileID, "", tiles);
+        }
         await ArtTileManager.updateAllSceneTileFlags(tiles);
 
         //call hook to delete the art tile data

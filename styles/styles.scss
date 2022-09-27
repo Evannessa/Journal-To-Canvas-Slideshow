@@ -10,11 +10,19 @@
 #slideshow-config,
 #JTCS-custom-dialog {
     .window-content {
+        .container {
+            border-radius: 5px;
+            border: 1px solid var(--JTCS-background-color-30);
+        }
+
         --flow-space: 2em;
         .flow {
             @extend .flow;
         }
-        background: var(--JTCS-background-color);
+        background: var(--JTCS-background-color-10);
+        .elevation-1 {
+            background: var(--JTCS-background-color);
+        }
         .form-group,
         .form-group-stacked {
             button.danger {
@@ -74,7 +82,7 @@
             ".color-picker-group > label",
             "span:not(.input-span) label",
             "li:not(.accent) label",
-            ".icon-button"
+            ".icon-button:not(.danger):not(.danger-text)"
         );
         $selectors: join($selectors, returnAllHeadings());
         // $headers: returnAllHeadings();
@@ -101,9 +109,13 @@
                 input {
                     height: 100%;
                 }
+                label {
+                    white-space: nowrap;
+                }
                 &:hover {
                     --accent-color: var(--JTCS-accent-color);
                     label {
+                        white-space: nowrap;
                         color: var(--accent-color);
                     }
                 }
@@ -117,17 +129,21 @@
             border-color: transparent;
         }
 
-        li.tile-list-item {
-            background-color: var(--JTCS-background-color-20);
-            &:not(.accent):not([data-is-default]) {
-                border-color: transparent;
-            }
+        li.tile-list-item:not(.new-tile-list-item) {
+            box-shadow: var(--JTCS-background-color-50) 0px 1px 3px;
+            // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
+            // var(--JTCS-background-color-60) 0px 4px 6px -1px, var(--JTCS-background-color-10) 0px 1px 0px inset;
         }
 
         input[type="text"],
         select {
-            border-color: transparent;
-            background-color: var(--JTCS-background-color-40);
+            font-family: Arial, Helvetica, sans-serif;
+            border-color: var(--JTCS-background-color-70);
+            background-color: var(--JTCS-background-color);
+            // background-color: var(--JTCS-background-color-20);
+            &:hover {
+                border-color: var(--JTCS-accent-color);
+            }
         }
         .color-picker-group {
             label {
@@ -149,18 +165,30 @@
         // for the list items in the slideshow config
         [data-type="art"] {
             --accent-color: var(--data-art-color);
+            // border-color: var(--accent-color);
+            transition: border-color 150ms ease-in;
         }
 
         [data-type="frame"] {
             --accent-color: var(--data-frame-color);
+            // border-color: var(--accent-color);
+            transition: border-color 150ms ease-in;
         }
         [data-type="unlinked"] {
             --accent-color: var(--data-unlinked-color);
+            // border-color: var(--accent-color);
+            transition: border-color 150ms ease-in;
         }
         [data-is-default] {
             --accent-color: var(--data-default-color);
             border-color: var(--accent-color);
             border: 2px solid var(--accent-color);
+            transition: border-color 150ms ease-in, border-style 150ms ease-in;
+            &:not(.accent) {
+                // outline: 1px solid var(--accent-color);
+                border: 2px solid var(--accent-color);
+                transition: border-color 150ms ease-out, border-style 150ms ease-in;
+            }
             .badge {
                 background-color: var(--accent-color);
             }
@@ -172,17 +200,24 @@
         //for all things with a "data-type" (referring to tile), and an accent class on them
         [data-type].accent {
             color: var(--accent-color);
+            transition: color 150ms ease-in, border-color 150 ease-in;
 
             .badge {
                 color: var(--color-text-dark-primary);
             }
             .form-group.has-floating-label {
                 > label.floating-label {
+                    transition: color 150ms ease-in;
                     color: var(--accent-color);
                 }
                 > input,
                 > select {
+                    // border: unset;
+                    // border-bottom: 2px solid;
+
+                    font-family: Arial, Helvetica, sans-serif;
                     border-color: var(--accent-color);
+                    transition: border-color 150ms ease-out;
                     ::placeholder {
                         color: var(--accent-color);
                     }
@@ -190,6 +225,7 @@
             }
             &.border-accent {
                 border-color: var(--accent-color);
+                transition: border-color 150ms ease-out;
             }
             [data-type="unlinked"] {
                 --accent-color: var(--data-unlinked-color);
@@ -236,7 +272,11 @@
                 flex: 1 1 0;
                 > .form-group,
                 > .form-group-stacked {
+                    border-radius: 8px;
                     background-color: var(--JTCS-background-color-10);
+                    // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
+                    //     var(--JTCS-background-color-60) 0px 4px 6px -1px,
+                    //     var(--JTCS-background-color-10) 0px 1px 0px inset;
                     box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
                     padding: 1rem;
                 }
@@ -357,7 +397,13 @@
                 @each $type, $selector in $tile-types {
                     &.#{$selector} {
                         h3 {
-                            color: var(--data-#{$type}-color);
+                            background-color: var(--data-#{$type}-color);
+                            width: 100%;
+                            color: var(--JTCS-text-color-on-fill);
+                            border-top-left-radius: 8px;
+                            border-top-right-radius: 8px;
+                            white-space: nowrap;
+                            text-align: center;
                         }
                         .item-wrapper {
                             border-color: var(--data-#{$type}-color);
@@ -369,6 +415,7 @@
                                     $primary-color: var(--data-#{$type}-color),
                                     $border-side: "-top"
                                 );
+                                border-width: 1px;
                                 &:hover,
                                 &:focus {
                                     box-shadow: unset;
@@ -378,16 +425,24 @@
                     }
                 }
                 h3 {
-                    font-size: 1.25em;
+                    font-size: min(1.25em, 100%);
                 }
             }
 
             height: 95%;
             position: relative;
+            .wrapper {
+                overflow: hidden;
+                .item-wrapper {
+                    overflow: hidden;
+                }
+            }
 
             .item-wrapper {
                 display: flex;
                 flex-direction: column;
+                // background-color: var(--JTCS-background-color-10);
+                // box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
                 // max-height: 90%;
                 ul {
                     flex: 1 0 0;
