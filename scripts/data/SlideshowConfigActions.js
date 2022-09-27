@@ -329,15 +329,17 @@ export const extraActions = {
         UIA.toggleActiveStyles(event);
     },
     toggleTilesOpacity: async (event, options = {}) => {
+        const btn = event.currentTarget;
+        const removeFade = btn.classList.contains("active") ? true : false;
+        const alphaValue = removeFade ? 1.0 : 0.5;
         const { tileID } = options;
         const otherTiles = game.scenes.viewed.tiles.contents.filter((tile) => tile.id !== tileID);
-        const updates = otherTiles.map((tile) => {
-            // return { _id: tile.id, object: { tile: { alpha: 0.5 } } };
-            return { _id: tile.id, object: { worldAlpha: 0.5 } };
+        otherTiles.forEach((tile) => {
+            tile.object.alpha = alphaValue;
         });
-        console.log("updating with", updates);
-        updates.push({ _id: tileID, object: { tile: { alpha: 1 } } });
-        await game.scenes.viewed.updateEmbeddedDocuments("Tile", updates);
+        let ourTile = game.scenes.viewed.tiles.get(tileID);
+        ourTile.object.alpha = 1.0;
+        UIA.toggleActiveStyles(event);
     },
 };
 export const slideshowDefaultSettingsData = {
@@ -648,20 +650,11 @@ export const slideshowDefaultSettingsData = {
                     overflow: false,
                     renderOnMissing: true,
                 },
-
-                //a more destructive item that should go second-to-last in the list
-                clearTileImage: {
-                    icon: "fas fa-times-circle",
-                    tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
-                    onClick: async (event, options = {}) => {
-                        let { tileID } = options;
-                        // let tileID = parentElement.dataset.id;
-                        await game.JTCS.imageUtils.manager.clearTile(tileID);
-                    },
-                    extraClass: "danger-text",
-                    overflow: false,
+                toggleTilesOpacity: {
+                    icon: "fas fa-clone",
+                    tooltipText: "fade out other tiles in scene to better see this one",
+                    onClick: async (event, options = {}) => extraActions.toggleTilesOpacity(event, options),
                 },
-
                 // the overflow menu should be last
                 toggleOverflowMenu: {
                     icon: "fas fa-ellipsis-v",
@@ -725,11 +718,17 @@ export const slideshowDefaultSettingsData = {
                     onClick: async (event, options = {}) => await extraActions.renderTileConfig(event, options),
                     renderOnMissing: false,
                 },
-                toggleTilesOpacity: {
-                    icon: "fas fa-clone",
-                    tooltipText: "fade out tiles in scene",
+                clearTileImage: {
+                    icon: "fas fa-times-circle",
+                    text: "Clear Tile Image",
+                    tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
                     overflow: true,
-                    onClick: async (event, options = {}) => extraActions.toggleTilesOpacity(event, options),
+                    onClick: async (event, options = {}) => {
+                        let { tileID } = options;
+                        // let tileID = parentElement.dataset.id;
+                        await ImageDisplayManager.manager.clearTile(tileID);
+                    },
+                    extraClass: "danger-text",
                 },
                 // bringTileToFront: {
                 //     text: "Bring tile to front",
