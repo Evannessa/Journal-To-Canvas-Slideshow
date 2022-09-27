@@ -328,18 +328,42 @@ export const extraActions = {
         await HelperFunctions.setSettingValue("areConfigInstructionsVisible", !areVisible);
         UIA.toggleActiveStyles(event);
     },
+    /**
+     * Lower the opacity of every other tile in the scene, to see this one more clearly
+     * @param {HTMLEvent} event - the triggering event
+     * @param {Object options  - an options object
+     * @param {String} options.tileID - the ID of the Art Gallery tile we're operating upon
+     */
     toggleTilesOpacity: async (event, options = {}) => {
+        const { tileID } = options;
         const btn = event.currentTarget;
+        const clickAction = btn.dataset.action;
         const removeFade = btn.classList.contains("active") ? true : false;
         const alphaValue = removeFade ? 1.0 : 0.5;
-        const { tileID } = options;
+
+        //get other buttons from other Tile Items that may be set to active, and so we can toggle them off
+        let otherToggleFadeButtons = btn
+            .closest(".tilesInScene")
+            .querySelectorAll(`[data-action='${clickAction}'].active`);
+
+        //filter any button that has the same parent tile item out
+        otherToggleFadeButtons = Array.from(otherToggleFadeButtons).filter(
+            (fadeBtn) => fadeBtn.closest(".tile-list-item").dataset.id !== tileID
+        );
+
         const otherTiles = game.scenes.viewed.tiles.contents.filter((tile) => tile.id !== tileID);
+
         otherTiles.forEach((tile) => {
             tile.object.alpha = alphaValue;
         });
-        let ourTile = game.scenes.viewed.tiles.get(tileID);
+
+        const ourTile = game.scenes.viewed.tiles.get(tileID);
         ourTile.object.alpha = 1.0;
+
+        //toggle this button active
         UIA.toggleActiveStyles(event);
+        //toggle any other active buttons to be inactive
+        Array.from(otherToggleFadeButtons).forEach((el) => UIA.toggleActiveStyles(event, el));
     },
 };
 export const slideshowDefaultSettingsData = {
@@ -726,7 +750,7 @@ export const slideshowDefaultSettingsData = {
                     onClick: async (event, options = {}) => {
                         let { tileID } = options;
                         // let tileID = parentElement.dataset.id;
-                        await ImageDisplayManager.manager.clearTile(tileID);
+                        await ImageDisplayManager.clearTile(tileID);
                     },
                     extraClass: "danger-text",
                 },

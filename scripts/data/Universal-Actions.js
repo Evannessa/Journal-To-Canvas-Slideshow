@@ -120,8 +120,8 @@ export const universalInterfaceActions = {
             }
         }
     },
-    toggleActiveStyles: (event) => {
-        let el = event.currentTarget;
+    toggleActiveStyles: (event, el) => {
+        if (!el) el = event.currentTarget;
         el.classList.toggle("active");
     },
     toggleHideSelf: (event) => {
