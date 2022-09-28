@@ -227,7 +227,6 @@ export class ImageDisplayManager {
         //on click, this method will determine if the image should open in a scene or in a display journal
         switch (method) {
             case "artScene":
-                //TODO: - get default tile from art scene
                 let artSceneID = await game.JTCS.utils.getSettingValue(
                     "artGallerySettings",
                     "dedicatedDisplayData.scene.value"
@@ -252,9 +251,14 @@ export class ImageDisplayManager {
             case "anyScene":
                 let { artTileID, frameTileID } = sheetImageData;
                 //if the setting is to display it in a scene, proceed as normal
-                if (method === "anyScene" && (!artTileID || !frameTileID)) {
-                    ui.notifications.error("No gallery tile found");
-                    return;
+
+                if (method === "anyScene" && !artTileID) {
+                    artTileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
+                    if (!artTileID) {
+                        ui.notifications.error("No gallery tile found");
+                        return;
+                    }
+                    frameTileID = await ArtTileManager.getGalleryTileDataFromID(artTileID, "linkedBoundingTile");
                 }
                 await ImageDisplayManager.updateTileObjectTexture(artTileID, frameTileID, url, method);
                 break;

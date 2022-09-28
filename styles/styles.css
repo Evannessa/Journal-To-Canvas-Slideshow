@@ -1365,6 +1365,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .item-menu {
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
 }
 .item-menu hr.list-divider {
   width: 100%;
@@ -1517,7 +1518,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content .container,
 #slideshow-config .window-content .container,
 #JTCS-custom-dialog .window-content .container {
-  border-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   border: 1px solid var(--JTCS-background-color-30);
 }
 #JTCSSettingsApplication .window-content .elevation-1,
@@ -2261,6 +2263,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper ul::-webkit-scrollbar-thumb {
   background-color: var(--data-art-color);
   border-color: var(--data-art-color);
+  box-shadow: 0px 0px 4px var(--data-art-color);
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button {
   border-radius: unset;
@@ -2300,6 +2303,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper ul::-webkit-scrollbar-thumb {
   background-color: var(--data-frame-color);
   border-color: var(--data-frame-color);
+  box-shadow: 0px 0px 4px var(--data-frame-color);
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button {
   border-radius: unset;
@@ -2398,8 +2402,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 .clickableImageContainer .displayTiles {
   pointer-events: auto;
-  grid-row: 1/2;
-  grid-column: 2/4;
+  display: flex;
+  flex-wrap: wrap;
   display: flex;
   flex-direction: row;
   border: none;
@@ -2408,9 +2412,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   min-width: 50%;
 }
 .clickableImageContainer .displayTiles button {
-  max-width: -webkit-fit-content;
-  max-width: -moz-fit-content;
-  max-width: fit-content;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  white-space: nowrap;
   border: unset;
   box-shadow: var(--box-shadow);
   background-color: var(--data-art-color);

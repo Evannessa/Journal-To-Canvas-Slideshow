@@ -125,7 +125,12 @@ async function handleVisibilityTransitions($element) {
 }
 function toggleActiveStyles(event, el) {
     if (!el) el = event.currentTarget;
-    el.classList.toggle("active");
+    if (el.classList.contains("active")) {
+        el.classList.remove("active");
+    } else {
+        el.classList.add("active");
+    }
+    // el.classList.toggle("active");
 }
 /**
  * Turn off other elements that have active styles

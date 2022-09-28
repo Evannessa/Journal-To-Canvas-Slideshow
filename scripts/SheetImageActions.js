@@ -98,12 +98,14 @@ export const sheetImageActions = {
             sendImageDataToDisplay: {
                 onClick: async (event, options) => {
                     // event.stopPropagation();
+                    options.method = "anyScene";
                     // event.stopImmediatePropagation();
 
                     // bundle all the necessary data into an object
                     let sheetImageData = await SheetImageDataController.wrapSheetImageData(options);
+                    console.log("%cSheetImageActions.js line:105 sheetImageData", "color: #26bfa5;", sheetImageData);
 
-                    await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
+                    await ImageDisplayManager.determineDisplayMethod(sheetImageData);
                 },
             },
         },
@@ -145,11 +147,10 @@ export const sheetImageActions = {
                 onClick: async (event, options) => {
                     let { imgElement } = options;
 
-                    let url = game.JTCS.imageUtils.manager.getImageSource(imgElement);
+                    let url = ImageDisplayManager.getImageSource(imgElement);
                     let tileID = event.currentTarget.dataset.id;
-                    let frameID = await game.JTCS.tileUtils.getLinkedFrameID(tileID);
-
-                    await game.JTCS.imageUtils.manager.updateTileObjectTexture(tileID, frameID, url);
+                    const frameID = await ArtTileManager.getGalleryTileDataFromID(tileID, "linkedBoundingTile");
+                    await ImageDisplayManager.updateTileObjectTexture(tileID, frameID, url, "anyScene");
 
                     //once clicked, hide the buttons
                     UIA.toggleHideAncestor(event, { ...options, ancestorSelector: "#displayTileButtons" });
@@ -168,7 +169,8 @@ export const sheetImageActions = {
                         method: method,
                         imgElement,
                     });
-                    await game.JTCS.imageUtils.manager.determineDisplayMethod(sheetImageData);
+                    console.log("%cSheetImageActions.js line:172 sheetImageData", "color: #26bfa5;", sheetImageData);
+                    await ImageDisplayManager.determineDisplayMethod(sheetImageData);
                 },
             },
             revealTileButtons: {

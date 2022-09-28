@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../debug-mode.js";
-import { HelperFunctions as HF } from "./HelperFunctions.js";
+import { HelperFunctions, HelperFunctions as HF } from "./HelperFunctions.js";
 import { ImageDisplayManager } from "./ImageDisplayManager.js";
 /**
  * This class manages the Art and Bounding Tiles, creating them, showing them in the Config, and
@@ -409,12 +409,29 @@ export class ArtTileManager {
         }
     }
 
+    static async toggleTileZ(tileID, toFront = true) {
+        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
+        if (!tile) return;
+
+        const zIndex = tile.object.zIndex;
+        if (toFront) {
+            //save the default z-index
+            tile.defaultZ = zIndex;
+            await game.scenes.viewed.updateEmbeddedDocuments("Tile", { _id: tileID, object: { zIndex: 300 } });
+        } else {
+            await game.scenes.viewed.updateEmbeddedDocuments("Tile", {
+                _id: tileID,
+                object: { zIndex: tile.defaultZ },
+            });
+        }
+    }
+
     static async selectTile(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tile) {
             await game.JTCS.utils.swapTools();
             tile.object.control({
-                releaseOthers: false,
+                releaseOthers: true,
             });
         } else {
             ArtTileManager.displayTileNotFoundError(tileID);

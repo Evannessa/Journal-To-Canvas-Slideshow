@@ -713,6 +713,28 @@ export const slideshowDefaultSettingsData = {
                     renderOnMissing: false,
                     onClick: async (event, options = {}) => await extraActions.selectTile(event, options),
                 },
+                fitTileToFrame: {
+                    icon: "fas fa-expand",
+                    tooltipText: "Fit this art tile to its frame",
+                    onClick: async (event, options = {}) => {
+                        const { parentLI, tileID } = options;
+                        const { type, frameId } = $(parentLI).data();
+                        if (type === "art") {
+                            let path = game.scenes.viewed.tiles.get(tileID).data.img;
+                            // let path = (
+                            //     await HelperFunctions.getSettingValue("artGallerySettings", "defaultTileImages.paths")
+                            // ).artTilePath;
+                            console.log(
+                                "%cSlideshowConfigActions.js line:727 path",
+                                "color: white; background-color: #007acc;",
+                                path
+                            );
+                            await ImageDisplayManager.updateTileObjectTexture(tileID, frameId, path, "anyScene");
+                        }
+                    },
+                    overflow: true,
+                    artTileOnly: true,
+                },
                 renderTileConfig: {
                     text: "Render tile object config",
                     tooltipText: "Render the config for the tile object linked to this tile",

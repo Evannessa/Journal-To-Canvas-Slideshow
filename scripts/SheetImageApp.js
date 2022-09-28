@@ -168,15 +168,21 @@ export class SheetImageApp {
         if (isItem) {
             //if our target element is not an image, get the closest image from our clickableImageContainer parent
             //else just get the current target itself
+
             if (targetElement.prop("nodeName") !== "IMG") {
                 imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img");
             } else {
                 imgElement = targetElement[0];
+                console.log("%cSheetImageApp.js line:163 img?", "color: #26bfa5;", event.currentTarget);
             }
             //if our target element is a label, get the input before it instead
             targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
         }
-
+        console.log(
+            "%cSheetImageApp.js line:180 targetElement.data(",
+            "color: white; background-color: #007acc;",
+            targetElement.data()[actionType]
+        );
         let action = targetElement.data()[actionType];
         let handlerPropertyString = "onClick";
 
@@ -190,7 +196,7 @@ export class SheetImageApp {
         }
         let actionData = getProperty(sheetImageActions, action);
         if (actionType == "action") {
-            console.table({ actionType, actionData });
+            console.log("%cSheetImageApp.js line:195 actionData", "color: #26bfa5;", actionData);
         }
 
         if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
@@ -218,10 +224,10 @@ export class SheetImageApp {
         $(imgElement).attr("data-action", "image.click.sendImageDataToDisplay");
 
         $(controlsContainer)
-            .off("click", ".clickableImageControls [data-action]")
+            .off("click", "[data-action]")
             .on(
                 "click",
-                ".clickableImageControls [data-action]",
+                "[data-action]",
                 async (event) => await SheetImageApp.handleAction(event, journalSheet, "action")
             );
         $(controlsContainer)

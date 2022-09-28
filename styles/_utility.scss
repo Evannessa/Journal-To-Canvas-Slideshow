@@ -1187,6 +1187,7 @@ $text-align-directions: ("left", "center", "right");
     @extend .overflow-hidden;
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     hr.list-divider {
         width: 100%;
         border-bottom: unset;
