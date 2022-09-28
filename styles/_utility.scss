@@ -404,6 +404,19 @@ fieldset.toggle-button-group {
         opacity: var(--journal-fade, 50%);
     }
 }
+$sizes: (
+    "small": 0.5rem,
+    "medium": 1rem,
+    "large": 1.5rem,
+);
+$directions: ("top", "left", "bottom", "right", "inline", "block");
+@each $size, $value in $sizes {
+    @each $direction in $directions {
+        .padding-#{$direction}-#{$size} {
+            padding-#{$direction}: $value;
+        }
+    }
+}
 
 .padding-small {
     padding: 0.25rem 0.5rem;
@@ -446,6 +459,13 @@ button.icon-button {
     }
     &.active {
         @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
+    }
+}
+$text-align-directions: ("left", "center", "right");
+
+@each $direction in $text-align-directions {
+    .text-align-#{$direction} {
+        text-align: #{$direction};
     }
 }
 

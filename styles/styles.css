@@ -535,6 +535,78 @@ fieldset.toggle-button-group label:last-of-type {
   opacity: var(--journal-fade, 50%);
 }
 
+.padding-top-small {
+  padding-top: 0.5rem;
+}
+
+.padding-left-small {
+  padding-left: 0.5rem;
+}
+
+.padding-bottom-small {
+  padding-bottom: 0.5rem;
+}
+
+.padding-right-small {
+  padding-right: 0.5rem;
+}
+
+.padding-inline-small {
+  padding-inline: 0.5rem;
+}
+
+.padding-block-small {
+  padding-block: 0.5rem;
+}
+
+.padding-top-medium {
+  padding-top: 1rem;
+}
+
+.padding-left-medium {
+  padding-left: 1rem;
+}
+
+.padding-bottom-medium {
+  padding-bottom: 1rem;
+}
+
+.padding-right-medium {
+  padding-right: 1rem;
+}
+
+.padding-inline-medium {
+  padding-inline: 1rem;
+}
+
+.padding-block-medium {
+  padding-block: 1rem;
+}
+
+.padding-top-large {
+  padding-top: 1.5rem;
+}
+
+.padding-left-large {
+  padding-left: 1.5rem;
+}
+
+.padding-bottom-large {
+  padding-bottom: 1.5rem;
+}
+
+.padding-right-large {
+  padding-right: 1.5rem;
+}
+
+.padding-inline-large {
+  padding-inline: 1.5rem;
+}
+
+.padding-block-large {
+  padding-block: 1.5rem;
+}
+
 .padding-small {
   padding: 0.25rem 0.5rem;
 }
@@ -591,6 +663,18 @@ button.icon-button.active {
 }
 button.icon-button.active:hover, button.icon-button.active:focus {
   transform: scale(1.12);
+}
+
+.text-align-left {
+  text-align: left;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
 }
 
 .hover-text-color:hover {
@@ -2049,6 +2133,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content {
   --flow-space: 0.5rem;
   color: var(--color-text-primary);
+  scrollbar-color: var(--JTCS-accent-color) var(--JTCS-accent-color-70);
+}
+#slideshow-config .window-content::-webkit-scrollbar-track {
+  background-color: var(--JTCS-accent-color-70);
+}
+#slideshow-config .window-content::-webkit-scrollbar-thumb {
+  background-color: var(--JTCS-accent-color);
+  border-color: var(--JTCS-accent-color-50);
 }
 #slideshow-config .window-content header .wrapper {
   flex-wrap: wrap;
@@ -2064,18 +2156,21 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content #JTCS-config-instructions {
   position: relative;
   margin-top: unset;
-  min-width: 2rem;
+  min-width: 200px;
+  max-width: 250px;
+  font-size: var(--font-size-12);
   background-color: transparent;
   flex-shrink: 0;
   position: absolute;
-  top: 100%;
-  left: -2px;
+  top: 20%;
+  left: 100%;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content {
   border-radius: 5px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
   background-color: transparent;
+  width: 100%;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content .art-color {
   color: var(--data-art-color);
@@ -2104,16 +2199,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   z-index: -1;
   border-top: 2px solid var(--JTCS-box-shadow-color);
   background-color: var(--JTCS-background-color-10);
-  opacity: 60%;
+  opacity: 95%;
   -webkit-backdrop-filter: blur(12px);
           backdrop-filter: blur(12px);
   border-radius: 5px;
   border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
+  border-left: 0.5rem solid var(--JTCS-accent-color);
+  border-bottom-left-radius: 0px;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.hidden) {
   padding: 1rem;
-  height: 10em;
+  min-height: 10em;
 }
 #slideshow-config .window-content #JTCS-config-instructions button {
   background-color: var(--JTCS-background-color-10);
@@ -2151,8 +2247,19 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border-top-right-radius: 8px;
   white-space: nowrap;
   text-align: center;
+  margin-bottom: unset;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper {
+  border-color: var(--data-art-color);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper ul {
+  scrollbar-color: var(--data-art-color) var(--data-art-color);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper ul::-webkit-scrollbar-track {
+  background-color: var(--JTCS-background-color-30);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .item-wrapper ul::-webkit-scrollbar-thumb {
+  background-color: var(--data-art-color);
   border-color: var(--data-art-color);
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button {
@@ -2179,8 +2286,19 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border-top-right-radius: 8px;
   white-space: nowrap;
   text-align: center;
+  margin-bottom: unset;
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper {
+  border-color: var(--data-frame-color);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper ul {
+  scrollbar-color: var(--data-frame-color) var(--data-frame-color);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper ul::-webkit-scrollbar-track {
+  background-color: var(--JTCS-background-color-30);
+}
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .item-wrapper ul::-webkit-scrollbar-thumb {
+  background-color: var(--data-frame-color);
   border-color: var(--data-frame-color);
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button {

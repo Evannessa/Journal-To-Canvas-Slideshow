@@ -393,6 +393,15 @@
     .window-content {
         --flow-space: 0.5rem;
         color: var(--color-text-primary);
+        scrollbar-color: var(--JTCS-accent-color) var(--JTCS-accent-color-70);
+        &::-webkit-scrollbar-track {
+            background-color: var(--JTCS-accent-color-70);
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--JTCS-accent-color);
+            border-color: var(--JTCS-accent-color-50);
+        }
+
         // max-height: calc(100vh - 200px);
         // width: min(600px, 45vw);
         // max-width: min(600px, 45vw);
@@ -409,22 +418,26 @@
             }
         }
         #JTCS-config-instructions {
-            // min-height: 50px;
             position: relative;
             margin-top: unset;
-            min-width: 2rem;
-            // box-shadow: inset 0rem 2px 8px var(--JTCS-box-shadow-color);
-            // padding: 1rem;
+
+            min-width: 200px;
+            max-width: 250px;
+            font-size: var(--font-size-12);
+            // width: clamp(200px, 40ch, 250px);
+
             background-color: transparent;
             flex-shrink: 0;
             position: absolute;
-            top: 100%;
-            left: -2px;
+            top: 20%;
+            left: 100%;
+
             .instructions__content {
                 border-radius: 5px;
                 border-top-left-radius: 0px;
                 border-top-right-radius: 0px;
                 background-color: transparent;
+                width: 100%;
                 $list: ("art", "frame", "unlinked", "default");
                 @each $var in $list {
                     .#{$var}-color {
@@ -444,17 +457,17 @@
                     z-index: -1;
                     border-top: 2px solid var(--JTCS-box-shadow-color);
                     background-color: var(--JTCS-background-color-10);
-                    opacity: 60%;
+                    opacity: 95%;
                     backdrop-filter: blur(12px);
-
                     border-radius: 5px;
                     border-top-left-radius: 0px;
-                    border-top-right-radius: 0px;
+                    border-left: 0.5rem solid var(--JTCS-accent-color);
+                    border-bottom-left-radius: 0px;
                     // filter: blur(3px);
                 }
                 &:not(.hidden) {
                     padding: 1rem;
-                    height: 10em;
+                    min-height: 10em;
                     // max-height
                 }
                 //     opacity: 0%;
@@ -487,6 +500,7 @@
                     art: "art-tiles",
                     frame: "frame-tiles",
                 );
+                $tile-type-colors: ();
                 @each $type, $selector in $tile-types {
                     &.#{$selector} {
                         h3 {
@@ -497,9 +511,20 @@
                             border-top-right-radius: 8px;
                             white-space: nowrap;
                             text-align: center;
+                            margin-bottom: unset;
                         }
                         .item-wrapper {
                             border-color: var(--data-#{$type}-color);
+                            ul {
+                                scrollbar-color: var(--data-#{$type}-color) var(--data-#{$type}-color);
+                                &::-webkit-scrollbar-track {
+                                    background-color: var(--JTCS-background-color-30);
+                                }
+                                &::-webkit-scrollbar-thumb {
+                                    background-color: var(--data-#{$type}-color);
+                                    border-color: var(--data-#{$type}-color);
+                                }
+                            }
                         }
                         .new-tile-list-item {
                             button {

@@ -1,6 +1,5 @@
-<form autocomplete="off" class="flex-col flow" data-fade-all="true">
-    <header class="flex-col padding-medium">
-    
+<form autocomplete="off" class="flexcol flow" data-fade-all="true">
+    <header class="flex-col padding-medium flex0">
         <div class="wrapper flex-row flex-justify-space-end flex-align-center gap-small">
 			<div class="form-group has-floating-label">
 				<label class="floating-label" for="artScene">Art Scene</label>
@@ -45,11 +44,15 @@
 			</div>
 		</div>
     </header>
+    {{!-- <h3 class="text-align-center flex0"><u>{{currentSceneName}}</u> Art Gallery</h3> --}}
     <section class="tilesInScene 
                 hidden-overflow-x hidden-overflow-y 
-				padding-medium 
-				flexrow gap-small"
+				padding-inline-medium 
+				flexrow gap-small
+                flex1
+                "
     >
+
         {{> (dynamicPartial "scene-tile-wrapper") 
             type="art"
             tiles=artTiles
