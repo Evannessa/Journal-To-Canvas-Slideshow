@@ -142,30 +142,74 @@
     }
 }
 
-@mixin JTCS-accent-fill($primary-color: var(--JTCS-accent-color), $include-shadow: false, $is-icon-button: false) {
+@mixin JTCS-accent-fill(
+    $primary-color: var(--JTCS-accent-color),
+    $include-shadow: false,
+    $hoverStyle: "scale",
+    $is-icon-button: false
+) {
     background-color: $primary-color;
-    border: 1px solid #ffffff91;
     @if $include-shadow {
         box-shadow: 0px 0px 8px 2px $primary-color;
+    } @else {
+        box-shadow: unset;
     }
     color: var(--JTCS-text-color-on-fill);
-    @if $is-icon-button == false {
-        outline: 0px double white;
-        outline-offset: 2px;
-        transition: outline 120ms ease-in, outline-offset 150ms ease-in;
-    } @else {
+    border: unset;
+    @if $hoverStyle == "scale" {
         transform: scale(1);
         transition: transform 120ms ease-in-out;
+        transition: transform 120ms ease-in-out;
+    } @else if $hoverStyle == "slide-in" {
+        position: relative;
+        overflow: hidden;
+        i {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 100%;
+            transform: translateX(0);
+            transition: transform 220ms ease-in;
+            background-color: var(--JTCS-accent-color-20);
+            height: 100%;
+            width: 30%;
+        }
+    } @else if $hoverStyle == "border" {
+        position: relative;
+        border: 2px solid transparent;
+        transition: border-color 150ms ease-in;
+        // &:after {
+        //     position: absolute;
+        //     content: "";
+        //     top: 50%;
+        //     left: 50%;
+        //     transform: translate(-50%, -50%);
+        //     width: 100%;
+        //     height: 100%;
+        //     z-index: 1;
+        //     border-radius: 3px;
+        //     border: 2px solid var(--JTCS-accent-color-20);
+        //     opacity: 0;
+        //     transition: opacity 240ms ease-in;
+        // }
     }
     &:hover,
     &:focus {
-        // box-shadow: unset;
-        @if $is-icon-button == false {
-            outline: 1px double white;
-            outline-offset: -2px;
-            transition: outline 120ms ease-out, outline-offset 120ms ease-out;
-        } @else {
+        @if $hoverStyle == "scale" {
             transform: scale(1.12);
+        } @else if $hoverStyle == "slide-in" {
+            i {
+                transform: translateX(100%);
+                transition: transform 220ms ease-out;
+            }
+        } @else if $hoverStyle == "border" {
+            border: 2px solid var(--JTCS-accent-color-80);
+            transition: border-color 150ms ease-out;
+            // &:after {
+            //     opacity: 100%;
+            //     transition: opacity 240ms ease-out;
+            // }
         }
     }
 }

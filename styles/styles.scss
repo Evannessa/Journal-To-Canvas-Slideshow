@@ -10,6 +10,9 @@ $tile-types: ("frame", "art", "unlinked", "default");
 #JTCSSettingsApplication,
 #slideshow-config,
 #JTCS-custom-dialog {
+    button > i {
+        margin-right: unset;
+    }
     .window-content {
         --color-shadow-primary: var(--JTCS-accent-color);
 
@@ -150,9 +153,11 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 }
                 &.active {
                     color: var(--JTCS-accent-color);
+                    filter: drop-shadow(0px 0px 2px var(--JTCS-accent-color));
                     transform: scale(1);
                     transition: transform 150ms ease-in-out;
-                    &:hover {
+                    &:hover,
+                    &:focus {
                         transform: scale(1.12);
                     }
                 }
@@ -212,11 +217,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
             transition: border-color 150ms ease-in, border-style 150ms ease-in;
             &:not(.accent) {
                 // outline: 1px solid var(--accent-color);
-                border: 2px solid var(--accent-color);
+                border: 2px dotted var(--accent-color);
                 transition: border-color 150ms ease-out, border-style 150ms ease-in;
             }
             .badge {
                 background-color: var(--accent-color);
+                color: var(--JTCS-text-color-on-fill);
             }
             &:span {
                 color: var(--accent-color);
@@ -255,9 +261,6 @@ $tile-types: ("frame", "art", "unlinked", "default");
             color: var(--accent-color);
             transition: color 150ms ease-in, border-color 150 ease-in;
 
-            .badge {
-                color: var(--color-text-dark-primary);
-            }
             .form-group.has-floating-label {
                 > label.floating-label {
                     transition: color 150ms ease-in;
@@ -289,16 +292,21 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
     }
     .primary {
-        @include JTCS-accent-fill();
+        @include JTCS-accent-fill($hoverStyle: "border");
     }
+
     button {
         &.file-picker,
-        &[type="button"]:not(.danger):not([data-action="scrollTo"]) {
+        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button) {
             @include JTCS-accent-fill();
         }
     }
     .secondary {
         @include JTCS-accent-ghost();
+    }
+    .primary,
+    .secondary {
+        max-width: 300px;
     }
 }
 
@@ -559,6 +567,8 @@ $tile-types: ("frame", "art", "unlinked", "default");
                         .new-tile-list-item {
                             button {
                                 border-radius: unset;
+                                border-bottom-left-radius: 5px;
+                                border-bottom-right-radius: 5px;
                                 @include JTCS-accent-ghost(
                                     $primary-color: var(--data-#{$type}-color),
                                     $border-side: "-top"
@@ -657,7 +667,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
         // transform: translateY(-50%);
         left: 0;
         display: flex;
-        align-items: flex-end;
+        align-items: flex-start;
         width: 100%;
         height: fit-content;
 

@@ -46,6 +46,53 @@ export class HelperFunctions {
             console.error("Can't find that layer", ourLayer);
         }
     }
+    /**
+     * Scale a tile's size, or one dimension (length or width) of a tile
+     * @param {Number} scale - the ratio to scale the tile by
+     * @param {String} axis - the tile's width or the tile's height or both
+     */
+    static async scaleControlledTiles(scale = 0.5, axis = " ") {
+        const ourScene = game.scenes.viewed;
+
+        const sceneTiles = canvas.background.controlled.filter((obj) => obj.document.documentName === "Tile");
+
+        let updateObjects = [];
+
+        sceneTiles.forEach((tile) => {
+            let width = duplicate(tile.data.width);
+            let height = duplicate(tile.data.height);
+            height *= scale;
+            width *= scale;
+            updateObjects.push({
+                _id: tile.id,
+                ...(axis === " " && { height: height, width: width }),
+                ...(axis === "height" && { height: height }),
+                ...(axis === "width" && { width: width }),
+            });
+        });
+        ourScene.updateEmbeddedDocuments("Tile", updateObjects);
+    }
+
+    // Move tiles
+    // originally By @cole$9640
+    //slightly edited by @Eva into a modular method
+    static async moveControlledTiles(amount = 10, axis = "x") {
+        const ourScene = game.scenes.viewed;
+
+        const tiles =
+            canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+        if (tiles.length) {
+            const updates = tiles
+                .filter((tile) => !tile.data.locked)
+                .map((tile) => ({
+                    _id: tile.id,
+                    [axis]: tile[axis] + amount,
+                }));
+            ourScene.updateEmbeddedDocuments("Tile", updates);
+        } else {
+            ui.notifications.notify("Please select at least one tile.");
+        }
+    }
 
     static async setFlagValue(document, flagName, updateData, nestedKey = "") {
         await document.setFlag(MODULE_ID, flagName, updateData);
@@ -538,4 +585,5 @@ export class HelperFunctions {
         let hasActiveEditors = Object.values(sheet.editors).some((editor) => editor.active);
         return hasActiveEditors;
     }
+    ///
 }

@@ -901,6 +901,9 @@ $text-align-directions: ("left", "center", "right");
     align-items: center;
 }
 .flex-justify {
+    &-center {
+        justify-content: center;
+    }
     &-stretch {
         justify-content: stretch;
     }
@@ -1238,6 +1241,18 @@ $text-align-directions: ("left", "center", "right");
     }
     .dialog-buttons {
         flex: 0;
+    }
+    &.dialog-grid {
+        .dialog-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    &.dialog-grid-3 {
+        .dialog-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
     }
     .dialog-buttons .dialog-button[data-button="delete"] {
         background: var(--color-danger-base);

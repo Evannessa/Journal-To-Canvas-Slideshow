@@ -26,13 +26,15 @@ export class ImageDisplayManager {
     }
     static async updateTileObjectTexture(artTileID, frameTileID, url, method, sceneID = "") {
         let ourScene = game.scenes.get(sceneID);
+        console.log("%cImageDisplayManager.js line:29 arguments", "color: #26bfa5;", arguments, ourScene);
         if (!ourScene) ourScene = game.scenes.viewed;
-        if (method == "artScene") {
-            let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
-            ourScene = artSceneData.ourScene;
-            artTileID = artSceneData.artTileID;
-            frameTileID = artSceneData.frameTileID;
-        }
+
+        // if (method == "artScene") {
+        //     let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
+        //     ourScene = artSceneData.ourScene;
+        //     artTileID = artSceneData.artTileID;
+        //     frameTileID = artSceneData.frameTileID;
+        // }
 
         let artTile = ourScene.tiles.get(artTileID);
         let frameTile = ourScene.tiles.get(frameTileID);
@@ -46,17 +48,18 @@ export class ImageDisplayManager {
         const tex = await loadTexture(url);
         var imageUpdate;
 
-        if (!frameTile || method === "artScene") {
-            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(artTile, tex, url);
+        if (!frameTile) {
+            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(artTile, tex, url, sceneID);
         } else {
-            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url);
+            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url, sceneID);
         }
 
         const updated = await ourScene.updateEmbeddedDocuments("Tile", [imageUpdate]);
     }
 
-    static async scaleArtTileToScene(displayTile, tex, url) {
-        let displayScene = game.scenes.viewed;
+    static async scaleArtTileToScene(displayTile, tex, url, sceneID = "") {
+        let displayScene = game.scenes.get(sceneID);
+        if (!displayScene) displayScene = game.scenes.viewed;
         var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,

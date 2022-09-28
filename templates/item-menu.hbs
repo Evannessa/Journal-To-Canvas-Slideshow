@@ -1,20 +1,19 @@
 <ul class="item-menu [ flex-col slight-rounded reset-margin reset-padding overflow-hidden ]" tabindex="0" role="listbox">
     {{#each items as |item|}}
-    {{#if @last}}
-        <hr class="list-divider">
-    {{/if}}
+        {{#if @last}}
+            <hr class="list-divider">
+        {{/if}}
         <li class="item [ flex-row flex-justify-start gap-small ]
-                [ interactive hover-bg-primary padding-medium ] 
-        " 
-            role="option"
-            name="{{concat ../propertyString "." @key}}"
-            {{#if item.dataset}}
-                {{#each item.dataset as |value|}}
-                    data-{{@key}}="{{value}}"
-                {{/each}}
-            {{/if}}
-            data-action="{{concat ../propertyString "." @key}}"
-            >
+                [ interactive hover-bg-primary padding-medium ]" 
+        role="option"
+        name="{{concat ../propertyString "." @key}}"
+        {{#if item.dataset}}
+            {{#each item.dataset as |value|}}
+                data-{{@key}}="{{value}}"
+            {{/each}}
+        {{/if}}
+        data-action="{{concat ../propertyString "." @key}}"
+        >
             <i class="{{item.icon}}"></i>
             <span class="">{{camelCaseToCapitalString @key}}</span>
         </li>

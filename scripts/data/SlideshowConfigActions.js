@@ -658,31 +658,33 @@ export const slideshowDefaultSettingsData = {
                     overflow: false,
                     renderAlways: true,
                     onClick: async (event, options = {}) => {
-                        let { app, tileID, parentLI } = options;
+                        const { app, tileID, parentLI } = options;
                         if (!tileID) tileID = parentLI.dataset.tileID;
-                        let parentItemMissing = parentLI.dataset.missing ? true : false;
+                        const type = parentLI.dataset.type;
+                        const parentItemMissing = parentLI.dataset.missing ? true : false;
 
-                        let actions = slideshowDefaultSettingsData.itemActions.click.actions;
+                        const actions = slideshowDefaultSettingsData.itemActions.click.actions;
 
                         let overflowActions = {};
                         for (let actionKey in actions) {
-                            let { overflow, renderOnMissing, renderAlways } = actions[actionKey];
+                            let { overflow, renderOnMissing, renderAlways, artTileOnly } = actions[actionKey];
                             if (!renderOnMissing) renderOnMissing = false; //if render on missing is undefined, set it to false
 
-                            let shouldRender = renderOnMissing === parentItemMissing; //fif the parent item's missing status and the button's conditional rendering status are equal
+                            const shouldRender = renderOnMissing === parentItemMissing; //fif the parent item's missing status and the button's conditional rendering status are equal
+                            const mismatchedTypes = type === "frame" && artTileOnly; //if the item should only render on an art tile
 
-                            if (overflow && (shouldRender || renderAlways)) {
+                            if (overflow && (shouldRender || renderAlways) && !mismatchedTypes) {
                                 //if it's an action to renderon the overflow menu
                                 overflowActions[actionKey] = actions[actionKey];
                             }
                         }
-                        let context = {
+                        const context = {
                             propertyString: "itemActions.click.actions",
                             items: overflowActions,
                         };
                         let templateData = Popover.createTemplateData(parentLI, "item-menu", context);
 
-                        let elementData = { ...Popover.defaultElementData };
+                        const elementData = { ...Popover.defaultElementData };
 
                         let popover = await Popover.processPopoverData(
                             event.target,

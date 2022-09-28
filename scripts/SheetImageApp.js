@@ -190,9 +190,6 @@ export class SheetImageApp {
                 break;
         }
         let actionData = getProperty(sheetImageActions, action);
-        if (actionType == "action") {
-            console.log("%cSheetImageApp.js line:195 actionData", "color: #26bfa5;", actionData);
-        }
 
         if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
             //call the event handler stored on this object

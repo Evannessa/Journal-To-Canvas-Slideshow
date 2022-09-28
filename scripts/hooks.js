@@ -31,13 +31,7 @@ export const setupHookHandlers = async () => {
         let tileID = tileDoc.id; //this gets the id from the tile's document itself
         let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
         let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(tileID, sceneGalleryTiles); //this is looking for tiles that are already linked
-        console.log(
-            "%chooks.js line:32 tileDoc,foundTileData",
-            "color: #26bfa5;",
-            tileDoc,
-            foundTileData,
-            sceneGalleryTiles
-        );
+
         await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     }
 

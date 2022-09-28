@@ -24,6 +24,7 @@ export class JTCSSettingsApplication extends FormApplication {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["form"],
+            width: 600,
             popOut: true,
             resizable: true,
             minimizable: true,

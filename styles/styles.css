@@ -655,10 +655,11 @@ button.icon-button[data-variant=small] {
 }
 button.icon-button.active {
   background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
   box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
+  border: unset;
   transform: scale(1);
+  transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
 }
 button.icon-button.active:hover, button.icon-button.active:focus {
@@ -1119,6 +1120,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   align-items: center;
 }
 
+.flex-justify-center {
+  justify-content: center;
+}
 .flex-justify-stretch {
   justify-content: stretch;
 }
@@ -1414,6 +1418,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .dialog-buttons {
   flex: 0;
 }
+#JTCS-custom-dialog.dialog-grid .dialog-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+#JTCS-custom-dialog.dialog-grid-3 .dialog-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
 #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete] {
   background: var(--color-danger-base);
   color: white;
@@ -1508,6 +1520,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
 
+#JTCSSettingsApplication button > i,
+#slideshow-config button > i,
+#JTCS-custom-dialog button > i {
+  margin-right: unset;
+}
 #JTCSSettingsApplication .window-content,
 #slideshow-config .window-content,
 #JTCS-custom-dialog .window-content {
@@ -1795,12 +1812,15 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active,
 #JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active {
   color: var(--JTCS-accent-color);
+  filter: drop-shadow(0px 0px 2px var(--JTCS-accent-color));
   transform: scale(1);
   transition: transform 150ms ease-in-out;
 }
-#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover,
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover, #JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:focus,
 #slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover,
-#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover {
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:focus,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:focus {
   transform: scale(1.12);
 }
 #JTCSSettingsApplication .window-content input[type=text],
@@ -1873,13 +1893,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content [data-is-default]:not(.accent),
 #slideshow-config .window-content [data-is-default]:not(.accent),
 #JTCS-custom-dialog .window-content [data-is-default]:not(.accent) {
-  border: 2px solid var(--accent-color);
+  border: 2px dotted var(--accent-color);
   transition: border-color 150ms ease-out, border-style 150ms ease-in;
 }
 #JTCSSettingsApplication .window-content [data-is-default] .badge,
 #slideshow-config .window-content [data-is-default] .badge,
 #JTCS-custom-dialog .window-content [data-is-default] .badge {
   background-color: var(--accent-color);
+  color: var(--JTCS-text-color-on-fill);
 }
 #JTCSSettingsApplication .window-content [data-is-default]:span,
 #slideshow-config .window-content [data-is-default]:span,
@@ -1966,11 +1987,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: var(--accent-color);
   transition: color 150ms ease-in, border-color 150 ease-in;
 }
-#JTCSSettingsApplication .window-content [data-type].accent .badge,
-#slideshow-config .window-content [data-type].accent .badge,
-#JTCS-custom-dialog .window-content [data-type].accent .badge {
-  color: var(--color-text-dark-primary);
-}
 #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > label.floating-label,
 #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > label.floating-label,
 #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > label.floating-label {
@@ -2021,45 +2037,44 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .primary,
 #JTCS-custom-dialog .primary {
   background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px double white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  border: unset;
+  position: relative;
+  border: 2px solid transparent;
+  transition: border-color 150ms ease-in;
 }
 #JTCSSettingsApplication .primary:hover, #JTCSSettingsApplication .primary:focus,
 #slideshow-config .primary:hover,
 #slideshow-config .primary:focus,
 #JTCS-custom-dialog .primary:hover,
 #JTCS-custom-dialog .primary:focus {
-  outline: 1px double white;
-  outline-offset: -2px;
-  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+  border: 2px solid var(--JTCS-accent-color-80);
+  transition: border-color 150ms ease-out;
 }
-#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]),
+#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button),
 #slideshow-config button.file-picker,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]),
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button),
 #JTCS-custom-dialog button.file-picker,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]) {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button) {
   background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px double white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  border: unset;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+  transition: transform 120ms ease-in-out;
 }
-#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):focus,
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):focus,
 #slideshow-config button.file-picker:hover,
 #slideshow-config button.file-picker:focus,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):hover,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):focus,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):hover,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):focus,
 #JTCS-custom-dialog button.file-picker:hover,
 #JTCS-custom-dialog button.file-picker:focus,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):hover,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):focus {
-  outline: 1px double white;
-  outline-offset: -2px;
-  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):hover,
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):focus {
+  transform: scale(1.12);
 }
 #JTCSSettingsApplication .secondary,
 #slideshow-config .secondary,
@@ -2079,6 +2094,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
+}
+#JTCSSettingsApplication .primary,
+#JTCSSettingsApplication .secondary,
+#slideshow-config .primary,
+#slideshow-config .secondary,
+#JTCS-custom-dialog .primary,
+#JTCS-custom-dialog .secondary {
+  max-width: 300px;
 }
 
 #JTCSSettingsApplication {
@@ -2181,9 +2204,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   height: 36px;
   --color-shadow-primary: var(--JTCS-accent-color);
   background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
+  border: unset;
   transform: scale(1);
+  transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
   background-color: var(--JTCS-accent-color-60);
 }
@@ -2192,10 +2217,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #sheet-controls button.active {
   background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
   box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
+  border: unset;
   transform: scale(1);
+  transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
 }
 #sheet-controls button.active:hover, #sheet-controls button.active:focus {
@@ -2299,10 +2325,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #slideshow-config .window-content #JTCS-config-instructions button.active {
   background-color: var(--JTCS-accent-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
   box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
+  border: unset;
   transform: scale(1);
+  transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
 }
 #slideshow-config .window-content #JTCS-config-instructions button.active:hover, #slideshow-config .window-content #JTCS-config-instructions button.active:focus {
@@ -2341,6 +2368,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button {
   border-radius: unset;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   background-color: transparent;
   color: var(--data-art-color);
   border-top: 2px solid var(--data-art-color);
@@ -2381,6 +2410,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button {
   border-radius: unset;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   background-color: transparent;
   color: var(--data-frame-color);
   border-top: 2px solid var(--data-frame-color);
@@ -2460,7 +2491,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   top: 20%;
   left: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   width: 100%;
   height: -webkit-fit-content;
   height: -moz-fit-content;
@@ -2496,29 +2527,27 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: unset;
   box-shadow: var(--box-shadow);
   background-color: var(--data-art-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px double white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  border: unset;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+  transition: transform 120ms ease-in-out;
 }
 .clickableImageContainer .displayTiles button:hover, .clickableImageContainer .displayTiles button:focus {
-  outline: 1px double white;
-  outline-offset: -2px;
-  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+  transform: scale(1.12);
 }
 .clickableImageContainer .displayTiles button[data-is-default] {
   background-color: var(--data-default-color);
-  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px double white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  border: unset;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+  transition: transform 120ms ease-in-out;
 }
 .clickableImageContainer .displayTiles button[data-is-default]:hover, .clickableImageContainer .displayTiles button[data-is-default]:focus {
-  outline: 1px double white;
-  outline-offset: -2px;
-  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+  transform: scale(1.12);
 }
 .clickableImageContainer .displayTiles * {
   pointer-events: auto;
