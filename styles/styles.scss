@@ -430,7 +430,7 @@
             flex-shrink: 0;
             position: absolute;
             top: 20%;
-            left: 100%;
+            left: calc(100%);
 
             .instructions__content {
                 border-radius: 5px;
@@ -461,7 +461,7 @@
                     backdrop-filter: blur(12px);
                     border-radius: 5px;
                     border-top-left-radius: 0px;
-                    border-left: 0.5rem solid var(--JTCS-accent-color);
+                    border-left: 0.25rem solid var(--JTCS-accent-color);
                     border-bottom-left-radius: 0px;
                     // filter: blur(3px);
                 }

@@ -2204,7 +2204,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
           backdrop-filter: blur(12px);
   border-radius: 5px;
   border-top-left-radius: 0px;
-  border-left: 0.5rem solid var(--JTCS-accent-color);
+  border-left: 0.25rem solid var(--JTCS-accent-color);
   border-bottom-left-radius: 0px;
 }
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.hidden) {
