@@ -6,6 +6,7 @@
     --box-shadow-inset: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
+$tile-types: ("frame", "art", "unlinked", "default");
 #JTCSSettingsApplication,
 #slideshow-config,
 #JTCS-custom-dialog {
@@ -219,6 +220,33 @@
             }
             &:span {
                 color: var(--accent-color);
+            }
+        }
+        [data-type] {
+            &:hover,
+            &:focus,
+            &:focus-within {
+                color: var(--accent-color);
+                transition: color 150ms ease-in, border-color 150 ease-in;
+                .form-group.has-floating-label {
+                    > label.floating-label {
+                        transition: color 150ms ease-in;
+                        color: var(--accent-color);
+                    }
+                    > input,
+                    > select {
+                        font-family: Arial, Helvetica, sans-serif;
+                        border-color: var(--accent-color);
+                        transition: border-color 150ms ease-out;
+                        ::placeholder {
+                            color: var(--accent-color);
+                        }
+                    }
+                }
+                &.border-accent {
+                    border-color: var(--accent-color);
+                    transition: border-color 150ms ease-out;
+                }
             }
         }
 
@@ -579,6 +607,9 @@
         }
 
         .tile-list-item {
+            &:focus-within {
+                outline: 2px solid var(--accent-color);
+            }
             select {
                 height: var(--form-field-height);
             }

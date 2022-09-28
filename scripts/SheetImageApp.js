@@ -173,16 +173,11 @@ export class SheetImageApp {
                 imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img");
             } else {
                 imgElement = targetElement[0];
-                console.log("%cSheetImageApp.js line:163 img?", "color: #26bfa5;", event.currentTarget);
             }
             //if our target element is a label, get the input before it instead
             targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
         }
-        console.log(
-            "%cSheetImageApp.js line:180 targetElement.data(",
-            "color: white; background-color: #007acc;",
-            targetElement.data()[actionType]
-        );
+
         let action = targetElement.data()[actionType];
         let handlerPropertyString = "onClick";
 

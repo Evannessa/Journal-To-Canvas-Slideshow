@@ -103,7 +103,6 @@ export const sheetImageActions = {
 
                     // bundle all the necessary data into an object
                     let sheetImageData = await SheetImageDataController.wrapSheetImageData(options);
-                    console.log("%cSheetImageActions.js line:105 sheetImageData", "color: #26bfa5;", sheetImageData);
 
                     await ImageDisplayManager.determineDisplayMethod(sheetImageData);
                 },
@@ -146,9 +145,23 @@ export const sheetImageActions = {
             displayImageOnTile: {
                 onClick: async (event, options) => {
                     let { imgElement } = options;
+                    let tileID = event.currentTarget.dataset.id;
+                    if (event.ctrlKey) {
+                        const appName = "JTCSlideshowConfig";
+                        UIA.renderAnotherApp(appName, SlideshowConfig);
+                        if (game[appName]) {
+                            const configElement = game[appName].element;
+                            configElement.focus();
+                            const tileItem = configElement.find(`[data-id='${tileID}']`);
+                            if (tileItem) {
+                                tileItem[0].scrollIntoView();
+                                tileItem[0].focus();
+                            }
+                        }
+                        return;
+                    }
 
                     let url = ImageDisplayManager.getImageSource(imgElement);
-                    let tileID = event.currentTarget.dataset.id;
                     const frameID = await ArtTileManager.getGalleryTileDataFromID(tileID, "linkedBoundingTile");
                     await ImageDisplayManager.updateTileObjectTexture(tileID, frameID, url, "anyScene");
 
@@ -169,7 +182,6 @@ export const sheetImageActions = {
                         method: method,
                         imgElement,
                     });
-                    console.log("%cSheetImageActions.js line:172 sheetImageData", "color: #26bfa5;", sheetImageData);
                     await ImageDisplayManager.determineDisplayMethod(sheetImageData);
                 },
             },

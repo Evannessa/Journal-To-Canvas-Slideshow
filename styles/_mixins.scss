@@ -169,3 +169,18 @@
         }
     }
 }
+@mixin generateTypes(
+    $list: (
+        "frame",
+        "art",
+        "unlinked",
+        "default",
+    ),
+    $propertyPrefix: ""
+) {
+    @each $var in $list {
+        .#{$var}-color {
+            #{$propertyPrefix}color: var(--data-#{$var}-color);
+        }
+    }
+}

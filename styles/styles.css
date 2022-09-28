@@ -1886,6 +1886,80 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content [data-is-default]:span {
   color: var(--accent-color);
 }
+#JTCSSettingsApplication .window-content [data-type]:hover, #JTCSSettingsApplication .window-content [data-type]:focus, #JTCSSettingsApplication .window-content [data-type]:focus-within,
+#slideshow-config .window-content [data-type]:hover,
+#slideshow-config .window-content [data-type]:focus,
+#slideshow-config .window-content [data-type]:focus-within,
+#JTCS-custom-dialog .window-content [data-type]:hover,
+#JTCS-custom-dialog .window-content [data-type]:focus,
+#JTCS-custom-dialog .window-content [data-type]:focus-within {
+  color: var(--accent-color);
+  transition: color 150ms ease-in, border-color 150 ease-in;
+}
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > label.floating-label, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > label.floating-label, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > label.floating-label,
+#slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > label.floating-label,
+#slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > label.floating-label,
+#slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > label.floating-label,
+#JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > label.floating-label,
+#JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > label.floating-label,
+#JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > label.floating-label {
+  transition: color 150ms ease-in;
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input,
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input,
+#JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input,
+#JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > select,
+#slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > input,
+#slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > select,
+#slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > input,
+#slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > select,
+#slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > input,
+#slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > select,
+#JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > input,
+#JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > select,
+#JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > input,
+#JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > select,
+#JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > input,
+#JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > select {
+  font-family: Arial, Helvetica, sans-serif;
+  border-color: var(--accent-color);
+  transition: border-color 150ms ease-out;
+}
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > select ::-moz-placeholder {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > select :-ms-input-placeholder {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input ::placeholder,
+#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select ::placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input ::placeholder,
+#JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select ::placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input ::placeholder,
+#JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > select ::placeholder,
+#slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > input ::placeholder,
+#slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > select ::placeholder,
+#slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > input ::placeholder,
+#slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > select ::placeholder,
+#slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > input ::placeholder,
+#slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > select ::placeholder,
+#JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > input ::placeholder,
+#JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > select ::placeholder,
+#JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > input ::placeholder,
+#JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > select ::placeholder,
+#JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > input ::placeholder,
+#JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > select ::placeholder {
+  color: var(--accent-color);
+}
+#JTCSSettingsApplication .window-content [data-type]:hover.border-accent, #JTCSSettingsApplication .window-content [data-type]:focus.border-accent, #JTCSSettingsApplication .window-content [data-type]:focus-within.border-accent,
+#slideshow-config .window-content [data-type]:hover.border-accent,
+#slideshow-config .window-content [data-type]:focus.border-accent,
+#slideshow-config .window-content [data-type]:focus-within.border-accent,
+#JTCS-custom-dialog .window-content [data-type]:hover.border-accent,
+#JTCS-custom-dialog .window-content [data-type]:focus.border-accent,
+#JTCS-custom-dialog .window-content [data-type]:focus-within.border-accent {
+  border-color: var(--accent-color);
+  transition: border-color 150ms ease-out;
+}
 #JTCSSettingsApplication .window-content [data-type].accent,
 #slideshow-config .window-content [data-type].accent,
 #JTCS-custom-dialog .window-content [data-type].accent {
@@ -2343,6 +2417,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #slideshow-config .window-content .tilesInScene .item-wrapper .new-tile-list-item button {
   height: 100%;
+}
+#slideshow-config .window-content .tile-list-item:focus-within {
+  outline: 2px solid var(--accent-color);
 }
 #slideshow-config .window-content .tile-list-item select {
   height: var(--form-field-height);

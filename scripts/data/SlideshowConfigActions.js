@@ -14,11 +14,11 @@ import { ArtTileManager } from "../classes/ArtTileManager.js";
 export const extraActions = {
     renderTileConfig: async (event, options = {}) => {
         let { tileID } = options;
-        await game.JTCS.tileUtils.renderTileConfig(tileID);
+        await ArtTileManager.renderTileConfig(tileID);
     },
     selectTile: async (event, options = {}) => {
         let { tileID } = options;
-        await game.JTCS.tileUtils.selectTile(tileID);
+        await ArtTileManager.selectTile(tileID);
     },
     updateTileData: async (event, options = {}) => {
         let clickedElement = $(event.currentTarget);
@@ -68,7 +68,7 @@ export const extraActions = {
                 label: "Delete Gallery Tile",
                 icon: "<i class='fas fa-trash'></i>",
                 callback: async () => {
-                    await game.JTCS.tileUtils.deleteSceneTileData(tileID);
+                    await ArtTileManager.deleteSceneTileData(tileID);
                     await app.renderWithData();
                 },
             },
@@ -135,7 +135,7 @@ export const extraActions = {
         //     return;
         // }
         let tile;
-        if (!missing) tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
+        if (!missing) tile = await ArtTileManager.getTileObjectByID(tileID);
         if (isLeave) {
             hoveredElement.removeClass("accent border-accent");
             $(otherListItems).removeClass("accent border-accent");
@@ -178,7 +178,7 @@ export const extraActions = {
                 let urlInput = html.find("input[name='urlInput']");
                 let url = urlInput.val();
                 if (url !== "") {
-                    await game.JTCS.imageUtils.manager.determineDisplayMethod({
+                    await ImageDisplayManager.determineDisplayMethod({
                         method: actionName,
                         url: url,
                     });
@@ -195,7 +195,7 @@ export const extraActions = {
         };
         let templatePath = game.JTCS.templates["share-url-partial"];
 
-        await game.JTCS.utils.createDialog("Share URL", templatePath, {
+        await HelperFunctions.createDialog("Share URL", templatePath, {
             buttons: buttons,
             partials: game.JTCS.templates,
             value: "",
@@ -369,8 +369,8 @@ export const slideshowDefaultSettingsData = {
                 //     tooltipText: "Show art scenes",
                 //     onClick: async (event, options = {}) => {
                 //         //display the art scenes (scenes that currently have slideshow data)
-                //         let artScenes = await game.JTCS.tileUtils.getAllScenesWithSlideshowData();
-                //         let chosenArtScene = await game.JTCS.utils.getSettingValue(
+                //         let artScenes = await ArtTileManager.getAllScenesWithSlideshowData();
+                //         let chosenArtScene = await HelperFunctions.getSettingValue(
                 //             "artGallerySettings",
                 //             "dedicatedDisplayData.scene.value"
                 //         );
@@ -398,9 +398,9 @@ export const slideshowDefaultSettingsData = {
                 //                     selector: "input",
                 //                     wrapperFunction: async (event) => {
                 //                         let url = event.currentTarget.value;
-                //                         let valid = game.JTCS.utils.manager.validateInput(url, "image");
+                //                         let valid = HelperFunctions.manager.validateInput(url, "image");
                 //                         if (valid) {
-                //                             await game.JTCS.imageUtils.manager.updateTileObjectTexture(
+                //                             await ImageDisplayManager.updateTileObjectTexture(
                 //                                 tileID,
                 //                                 frameTileID,
                 //                                 url,
@@ -440,7 +440,7 @@ export const slideshowDefaultSettingsData = {
                     onChange: async (event, options = {}) => {
                         let { app } = options;
                         let value = event.currentTarget.value;
-                        await game.JTCS.utils.setSettingValue(
+                        await HelperFunctions.setSettingValue(
                             "artGallerySettings",
                             value,
                             "dedicatedDisplayData.scene.value"
@@ -452,7 +452,7 @@ export const slideshowDefaultSettingsData = {
                     onChange: async (event, options = {}) => {
                         let { app } = options;
                         let value = event.currentTarget.value;
-                        await game.JTCS.utils.setSettingValue(
+                        await HelperFunctions.setSettingValue(
                             "artGallerySettings",
                             value,
                             "dedicatedDisplayData.journal.value"
@@ -514,7 +514,7 @@ export const slideshowDefaultSettingsData = {
                             targetElement = targetElement.previousElementSibling;
                         }
                         let tileID = targetElement.dataset.id;
-                        let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
+                        let tile = await ArtTileManager.getTileObjectByID(tileID);
                         if (!isLeave) {
                             await game.JTCS.indicatorUtils.showTileIndicator(tile);
                         } else {
@@ -565,9 +565,9 @@ export const slideshowDefaultSettingsData = {
                                     selector: "input",
                                     wrapperFunction: async (event) => {
                                         let url = event.currentTarget.value;
-                                        let valid = game.JTCS.utils.manager.validateInput(url, "image");
+                                        let valid = HelperFunctions.manager.validateInput(url, "image");
                                         if (valid) {
-                                            await game.JTCS.imageUtils.manager.updateTileObjectTexture(
+                                            await ImageDisplayManager.updateTileObjectTexture(
                                                 tileID,
                                                 frameTileID,
                                                 url,
@@ -575,7 +575,6 @@ export const slideshowDefaultSettingsData = {
                                             );
                                         } else {
                                             ui.notifications.error("URL not an image");
-                                            //TODO: show error?
                                         }
                                     },
                                 },
@@ -618,8 +617,8 @@ export const slideshowDefaultSettingsData = {
                         let frameTileID;
                         if (!frameTileID) frameTileID = parentLI.dataset.frameId;
 
-                        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-                        let unlinkedTilesIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs(artTileDataArray);
+                        let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
+                        let unlinkedTilesIDs = await ArtTileManager.getUnlinkedTileIDs(artTileDataArray);
                         let context = {
                             artTileDataArray: artTileDataArray,
                             unlinkedTilesIDs: unlinkedTilesIDs,
