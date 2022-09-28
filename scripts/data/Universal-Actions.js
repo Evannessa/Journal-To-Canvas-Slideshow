@@ -78,7 +78,9 @@ function setAnimDefaults(animOptions) {
  * @param {Function} options.onFadeOut - the callback to handle what happens when the fade animation is complete
  */
 async function fade($element, options = {}) {
-    let { duration, isFadeOut, onFadeOut, onCancel } = setAnimDefaults(options);
+    const { duration, isFadeOut, onFadeOut, onCancel } = setAnimDefaults(options);
+
+    if ($element.length === 0) return;
 
     let fadeAnim = $element[0].animate(
         [

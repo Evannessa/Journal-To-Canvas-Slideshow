@@ -298,11 +298,6 @@ export const extraActions = {
      * @param {String} options.tileID - the ID of the Art Gallery tile we're operating upon
      */
     toggleTilesOpacity: async (event, options = {}) => {
-        console.log(
-            "%cSlideshowConfigActions.js line:301 TOGGLING TILES",
-            "color: white; background-color: #007acc;",
-            "TOGGLING TILES"
-        );
         const { tileID } = options;
         const btn = event.currentTarget;
         const clickAction = btn.dataset.action;
@@ -638,7 +633,6 @@ export const slideshowDefaultSettingsData = {
                         //     wrapperFunction: async (event) => {},
                         // });
                         // -- RENDER THE POPOVER
-                        console.log("Our current target is", event.currentTarget, event.target);
                         let popover = await Popover.processPopoverData(
                             event.target,
                             app.element,
@@ -691,9 +685,7 @@ export const slideshowDefaultSettingsData = {
 
                         let elementData = { ...Popover.defaultElementData };
 
-                        console.log("Overflow menu targets", event.currentTarget, event.target);
                         let popover = await Popover.processPopoverData(
-                            // event.currentTarget,
                             event.target,
                             app.element,
                             templateData,
@@ -721,14 +713,6 @@ export const slideshowDefaultSettingsData = {
                         const { type, frameId } = $(parentLI).data();
                         if (type === "art") {
                             let path = game.scenes.viewed.tiles.get(tileID).data.img;
-                            // let path = (
-                            //     await HelperFunctions.getSettingValue("artGallerySettings", "defaultTileImages.paths")
-                            // ).artTilePath;
-                            console.log(
-                                "%cSlideshowConfigActions.js line:727 path",
-                                "color: white; background-color: #007acc;",
-                                path
-                            );
                             await ImageDisplayManager.updateTileObjectTexture(tileID, frameId, path, "anyScene");
                         }
                     },

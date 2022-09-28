@@ -149,7 +149,12 @@ export class Popover {
 
         let popoverTemplate = game.JTCS.templates["popover"];
         // popoverElement = parentElement.find(`.popover[data-popover-id="${templateData.dataset.popoverId}"]`);
+        let another = parentElement.find(`.popover`);
         popoverElement = parentElement.find(`.popover[data-popover-id="${templateData.dataset.popoverId}"]`);
+        let areTheSame = another.is(popoverElement);
+        if (another && !areTheSame) {
+            await Popover.hideAndDeletePopover(another);
+        }
 
         if (popoverElement.length === 0) {
             //if it doesn't already exist, create it
@@ -169,7 +174,6 @@ export class Popover {
 
         //set up a "Click Out" event handler
         let popoverId = templateData.dataset.popoverId;
-        console.log("%cPopoverGenerator.js line:172", "color: #007acc;", `[data-popover-id="${popoverId}"]`);
         // //hideEvents should be list of events to hide the popover on (like blur, change, mouseout, etc)
         // elementDataArray.forEach((data) => {
         //     let targetElement = data.target;
@@ -207,11 +211,10 @@ export class Popover {
         // });
         // let popoverID = popoverElement.data().popoverId;
         $(document)
-            .off("click", `[data-popover-id="${popoverId}"]`)
+            .off("click")
             .on("click", async (event) => {
                 //make sure the button that originated the click wasn't
                 //the same one being handled by this document
-                console.log("Clicking outside of", popoverElement[0].dataset.popoverId);
                 if (Popover.isOutsideClick(event, sourceElement)) {
                     await Popover.hideAndDeletePopover(popoverElement);
                 }
