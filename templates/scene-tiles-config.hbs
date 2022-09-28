@@ -1,7 +1,7 @@
-<form autocomplete="off" class="flex-col flow">
+<form autocomplete="off" class="flex-col flow" data-fade-all="true">
     <header class="flex-col padding-medium">
     
-        <div class="wrapper flex-row flex-justify-space-evenly flex-align-center gap-small">
+        <div class="wrapper flex-row flex-justify-space-end flex-align-center gap-small">
 			<div class="form-group has-floating-label">
 				<label class="floating-label" for="artScene">Art Scene</label>
 				<select name="artScene" id="artScene" data-change-action="globalActions.change.actions.setArtScene">
@@ -32,7 +32,7 @@
 					{{/each}}
 				</select>
 			</div>
-			<div class="actions flex-row flex-wrap flex-align-center">
+			<div class="actions flex-row flex-align-center">
                 {{#with @root.settingsData.globalActions.click}}
                     {{#each (filter actions "renderedInTemplate" undefined) as |action|}}
                         {{> (dynamicPartial "icon-button")
@@ -63,7 +63,7 @@
         <button 
         class="{{ternary areConfigInstructionsVisible "active" ""}}" 
         data-action="globalActions.click.actions.toggleInstructionsVisible" title="toggle instructions on and off">
-            <i class="fas fa-eye-slash"></i>
+            <i class="fas fa-info"></i>
         </button>
         <div class="instructions__content hidden">
 

@@ -1,85 +1,66 @@
-<form class="flexcol">
-
-    <div class="form-content overflow-scroll-y overflow-auto-x flow padding-medium">
-
-        <!-- for the color-scheme information-->
-        <div class="form-group-stacked flow" id="JTCScolorSchemeData">
-            {{#with colorSchemeData}}
-                <h2>{{this.name}}</h2>
-                <p class="notes">{{{this.hint}}}</p>
-                <div class="form-group-stacked gap-medium">
-                    {{#each this.colors}}
-                    <div class="outer-wrapper">
-                        {{> (dynamicPartial "color-picker")
-                            this 
-                            value=(lookup ../colors @key)
-                            parentObjectName="colorSchemeData"
-                        }}
-                    </div>
-                    {{/each}}
+<form class="flex-col">
+    <header id="JTCSsettingsHeader" class="flex-row flex0 padding-small">
+        <button class="secondary active" type="button" data-action="scrollTo" data-target="JTCScolorSchemeData">Custom Colors</button>
+        <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSsheetSettings">Sheet Img Controls</button>
+        <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSsheetFadeData">Fade Settings</button>
+        <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSdefaultImages">Art and Frame Images</button>
+    </header>
+    <div class="form-content overflow-scroll-y overflow-auto-x flow padding-large">
+    <div class="form-group-stacked flow padding-large">
+                <!-- for the color-scheme information-->
+                <div class="form-group-stacked flow" id="JTCScolorSchemeData">
+                    {{#with colorSchemeData}}
+                        <h2>{{this.name}}</h2>
+                        <p class="notes">{{{this.hint}}}</p>
+                        <div class="form-group-stacked gap-medium">
+                            {{#each this.colors}}
+                            <div class="outer-wrapper">
+                                {{> (dynamicPartial "color-picker")
+                                    this
+                                    value=(lookup ../colors @key)
+                                    parentObjectName="colorSchemeData"
+                                }}
+                            </div>
+                            {{/each}}
+                        </div>
+                    {{/with}}
+                </div>
+        
+            <!-- for the tile indicators and matching highlight colors-->
+            <div class="form-group-stacked flow" id="JTCSindicatorColorData">
+                    {{#with indicatorColorData}}
+                        <h3>{{this.name}}</h3>
+                        <p class="notes">{{{this.hint}}}</p>
+                        <div class="form-group-stacked gap-medium">
+                        {{#each this.colors}}
+                            <div class="outer-wrapper">
+                                {{> (dynamicPartial "color-picker")
+                                    this
+                                    value=(lookup ../colors @key)
+                                    parentObjectName="indicatorColorData"
+                                }}
+                            </div>
+                        {{/each}}
+                        </div>
+                {{/with}}
+            </div>
+        
+                <!-- button for turning off auto-contrast setting-->
+                {{#with colorSchemeData}}
+                <div class="form-group-stacked flow">
+                    <h3>Toggle Auto-Contrast</h3>
+                    {{#if (eq this.autoContrast true)}}
+                    <p class="notes">
+                        This will make it so your chosen accent and gallery tile colors aren't automatically adjusted to contrast with your background color; however you risk choosing colors that make text illegible.
+                    </p>
+                    <button class="blank-button danger" type="button" data-action="toggleAutoContrastOff"><i class="fas fa-adjust"></i> Turn Off Auto-Contrast</button>
+                    {{else}}
+                    <p class="notes">This will cause your chosen accent and gallery tile colors to automatically adjust in brightness to contrast with your chosen background color.</p>
+                    <button class="blank-button" type="button" data-action="toggleAutoContrastOn"><i class="fas fa-adjust"></i> Turn On Auto-Contrast</button>
+                    {{/if}}
                 </div>
                 {{/with}}
-         
-            </div>
-
-    <!-- for the tile indicators and matching highlight colors-->
-    <div class="form-group-stacked flow" id="JTCSindicatorColorData">
-            {{#with indicatorColorData}}
-                <h2>{{this.name}}</h2>
-                <p class="notes">{{{this.hint}}}</p>
-                <div class="form-group-stacked gap-medium">
-                {{#each this.colors}}
-                    <div class="outer-wrapper">
-                        {{> (dynamicPartial "color-picker")
-                            this 
-                            value=(lookup ../colors @key)
-                            parentObjectName="indicatorColorData"
-                        }}
-                        <!-- <div class="form-group color-picker-container">
-                            <div class="has-floating-label color-picker-group">
-                                <label class="floating-label" for="artTileColor">{{camelCaseToCapitalString @key}}</label>
-                                <input
-                                    id="{{@key}}"
-                                    type="text"
-                                    name={{concat "indicatorColorData.colors" "." @key}}
-                                    is="colorpicker-input"
-                                    data-responsive-color
-                                    value={{lookup ../colors @key}}
-                                />
-                            </div>
-                              {{#unless (eq @key "backgroundColor")}}
-                                    <div class="color-actions flex-row gap-small flex-0">
-                                        <button data-action="checkContrast" type="button" title="check to see if this color contrasts with your chosen background color">
-                                        <i class="fas fa-adjust"></i> 
-                                            </button>
-                                        <!-- <button data-action="autoContrast" type="button" title="automatically generate a lighter or darker version of your color that contrasts well with your background color">
-                                        <i class="fas fa-eye-dropper"></i> 
-                                        </button> 
-                                    </div>
-                                {{/unless}}
-                                    </div> -->
-                    </div>
-                {{/each}}
-                </div>
-        {{/with}}
     </div>
-
-        <!-- button for turning off auto-contrast setting-->
-        {{#with colorSchemeData}}
-        <div class="form-group-stacked">
-            {{#if (eq this.autoContrast true)}}
-            <p class="notes">
-                This will make it so your chosen accent and gallery tile colors aren't automatically adjusted to contrast with your background color; however you risk choosing colors that make text illegible.
-            </p>
-            <button class="blank-button danger" type="button" data-action="toggleAutoContrastOff"><i class="fas fa-adjust"></i> Turn Off Auto-Contrast</button>
-            {{else}}
-            <p class="notes">This will cause your chosen accent and gallery tile colors to automatically adjust in brightness to contrast with your chosen background color.</p>
-            <button class="blank-button" type="button" data-action="toggleAutoContrastOn"><i class="fas fa-adjust"></i> Turn On Auto-Contrast</button>
-            {{/if}}
-        </div>
-        {{/with}}
-   
-
         <!-- settings for which sheets should have the image controls -->
         <div class="form-group-stacked flow" id="JTCSsheetSettings">
             {{#with sheetSettings}}
@@ -94,19 +75,38 @@
                 }}
             {{/with}}
         </div>
-        <!-- for fading the journal sheet -->
-        <div class="form-group-stacked flow" id="JTCSsheetFadeData">
-            {{#with fadeSheetImagesData}}
-            <h2>{{this.name}}</h2>
-            <p class="notes">{{{this.hint}}}</p>
-                {{> (dynamicPartial "fieldset-button-group")
-                    type="radio"
-                    choices=this.choices
-                    chosen=this.chosen
-                    variant="visible-tick"
-                    propertyString="fadeSheetImagesData.chosen"
-                }}
-            {{/with}}
+        <div class="form-group-stacked flow">
+            <!-- for fading the journal sheet -->
+            <div class="form-group-stacked flow" id="JTCSsheetFadeData">
+                {{#with fadeSheetImagesData}}
+                <h2>{{this.name}}</h2>
+                <p class="notes">{{{this.hint}}}</p>
+                    {{> (dynamicPartial "fieldset-button-group")
+                        type="radio"
+                        choices=this.choices
+                        chosen=this.chosen
+                        variant="visible-tick"
+                        propertyString="fadeSheetImagesData.chosen"
+                    }}
+                {{/with}}
+            </div>
+            <div class="form-group-stacked flow" id="JTCSsheetFadeOpacity">
+                {{#with sheetFadeOpacityData}}
+                    <h3>{{name}}</h3>
+                    <p class="notes">
+                        {{{hint}}}
+                    </p>
+                    <div class="form-group">
+                        {{rangePicker
+                            value=this.value
+                            name="sheetFadeOpacityData.value"
+                            min=20
+                            max=100
+                            step=10
+                        }}
+                    </div>
+                {{/with}}
+            </div>
         </div>
     
         <div class="form-group-stacked flow" id="JTCSdefaultImages">
@@ -123,7 +123,7 @@
             {{/with}}
         </div>
     </div>
-    <footer class="sheet-footer flex-row">
+    <footer class="sheet-footer flex-row padding-small">
         <button type="submit" name="submit" class="primary"> 
             <i class="far fa-save"></i> 
                 Save Changes 

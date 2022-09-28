@@ -586,15 +586,11 @@ button.icon-button.active {
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
 }
 button.icon-button.active:hover, button.icon-button.active:focus {
-  box-shadow: unset;
-  outline: 1px solid white;
-  outline-offset: 0px;
-  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+  transform: scale(1.12);
 }
 
 .hover-text-color:hover {
@@ -1430,6 +1426,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content,
 #slideshow-config .window-content,
 #JTCS-custom-dialog .window-content {
+  --color-shadow-primary: var(--JTCS-accent-color);
   --flow-space: 2em;
   background: var(--JTCS-background-color-10);
 }
@@ -1689,6 +1686,37 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) {
   box-shadow: var(--JTCS-background-color-50) 0px 1px 3px;
 }
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button,
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button {
+  box-shadow: unset;
+  outline: unset;
+  background-color: unset;
+  color: var(--JTCS-text-color-on-bg);
+  transition: color 150ms ease-in-out;
+}
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button:hover, #JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button:focus,
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button:hover,
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button:focus,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button:hover,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button:focus {
+  box-shadow: unset;
+  outline: unset;
+  background-color: unset;
+  color: var(--JTCS-accent-color);
+}
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active,
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active {
+  color: var(--JTCS-accent-color);
+  transform: scale(1);
+  transition: transform 150ms ease-in-out;
+}
+#JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover,
+#slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover,
+#JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button.active:hover {
+  transform: scale(1.12);
+}
 #JTCSSettingsApplication .window-content input[type=text],
 #JTCSSettingsApplication .window-content select,
 #slideshow-config .window-content input[type=text],
@@ -1835,7 +1863,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: var(--JTCS-accent-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
+  outline: 0px double white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
@@ -1844,35 +1872,33 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .primary:focus,
 #JTCS-custom-dialog .primary:hover,
 #JTCS-custom-dialog .primary:focus {
-  box-shadow: unset;
-  outline: 1px solid white;
-  outline-offset: 0px;
+  outline: 1px double white;
+  outline-offset: -2px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
-#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger),
+#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]),
 #slideshow-config button.file-picker,
-#slideshow-config button[type=button]:not(.danger),
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]),
 #JTCS-custom-dialog button.file-picker,
-#JTCS-custom-dialog button[type=button]:not(.danger) {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]) {
   background-color: var(--JTCS-accent-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
+  outline: 0px double white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
-#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):hover, #JTCSSettingsApplication button[type=button]:not(.danger):focus,
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):focus,
 #slideshow-config button.file-picker:hover,
 #slideshow-config button.file-picker:focus,
-#slideshow-config button[type=button]:not(.danger):hover,
-#slideshow-config button[type=button]:not(.danger):focus,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):hover,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):focus,
 #JTCS-custom-dialog button.file-picker:hover,
 #JTCS-custom-dialog button.file-picker:focus,
-#JTCS-custom-dialog button[type=button]:not(.danger):hover,
-#JTCS-custom-dialog button[type=button]:not(.danger):focus {
-  box-shadow: unset;
-  outline: 1px solid white;
-  outline-offset: 0px;
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):hover,
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):focus {
+  outline: 1px double white;
+  outline-offset: -2px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
 #JTCSSettingsApplication .secondary,
@@ -1883,19 +1909,40 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid var(--JTCS-accent-color);
   transition: background-color 120ms ease-in, color 120ms ease-in;
 }
-#JTCSSettingsApplication .secondary:hover, #JTCSSettingsApplication .secondary:focus,
+#JTCSSettingsApplication .secondary:hover, #JTCSSettingsApplication .secondary:focus, #JTCSSettingsApplication .secondary.active,
 #slideshow-config .secondary:hover,
 #slideshow-config .secondary:focus,
+#slideshow-config .secondary.active,
 #JTCS-custom-dialog .secondary:hover,
-#JTCS-custom-dialog .secondary:focus {
+#JTCS-custom-dialog .secondary:focus,
+#JTCS-custom-dialog .secondary.active {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
 }
 
 #JTCSSettingsApplication {
-  min-height: 50vh;
-  max-width: 50vw;
+  height: clamp(50vh, 530px, 80vh);
+  max-width: 60vw;
+}
+#JTCSSettingsApplication header,
+#JTCSSettingsApplication footer {
+  position: relative;
+}
+#JTCSSettingsApplication header:after,
+#JTCSSettingsApplication footer:after {
+  position: absolute;
+  pointer-events: none;
+  content: "";
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 2px 8px var(--JTCS-box-shadow-color);
+}
+#JTCSSettingsApplication footer:after {
+  box-shadow: 0px -2px 8px var(--JTCS-box-shadow-color);
 }
 #JTCSSettingsApplication .color-picker-group {
   position: relative;
@@ -1906,6 +1953,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   z-index: 800;
   transform: translateY(-50%);
   left: 100%;
+}
+#JTCSSettingsApplication .window-content {
+  padding: unset;
 }
 #JTCSSettingsApplication .window-content form {
   display: flex;
@@ -1921,6 +1971,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
   padding: 1rem;
 }
+#JTCSSettingsApplication .window-content form .form-content > .form-group fieldset,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked fieldset {
+  border: unset;
+}
+#JTCSSettingsApplication .window-content form input[type=range]::-webkit-slider-thumb {
+  background-color: var(--JTCS-accent-color);
+}
+#JTCSSettingsApplication .window-content form .range-value {
+  color: var(--JTCS-accent-color);
+  font-weight: bold;
+}
 #JTCSSettingsApplication .window-content form p.notes {
   font-weight: 500;
   margin-bottom: unset;
@@ -1931,6 +1992,54 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCSSettingsApplication .window-content form .sheet-footer {
   flex: 0;
+}
+
+#sheet-controls {
+  z-index: 100;
+  position: absolute;
+  min-width: 65px;
+}
+#sheet-controls[data-position=bottom-right] {
+  bottom: 5px;
+  right: 5px;
+  flex-direction: row-reverse;
+}
+#sheet-controls[data-position=top-left] {
+  top: 5px;
+  left: 5px;
+}
+#sheet-controls[data-position=bottom-left] {
+  bottom: 5px;
+  left: 5px;
+}
+#sheet-controls[data-position=top-right] {
+  bottom: 5px;
+  left: 5px;
+}
+#sheet-controls button {
+  width: 36px;
+  height: 36px;
+  --color-shadow-primary: var(--JTCS-accent-color);
+  background-color: var(--JTCS-accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  color: var(--JTCS-text-color-on-fill);
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+  background-color: var(--JTCS-accent-color-60);
+}
+#sheet-controls button:hover, #sheet-controls button:focus {
+  transform: scale(1.12);
+}
+#sheet-controls button.active {
+  background-color: var(--JTCS-accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.568627451);
+  box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
+  color: var(--JTCS-text-color-on-fill);
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+}
+#sheet-controls button.active:hover, #sheet-controls button.active:focus {
+  transform: scale(1.12);
 }
 
 #slideshow-config {
@@ -1949,6 +2058,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #slideshow-config .window-content header .wrapper .actions {
   flex: 1;
+  min-width: 66px;
+  max-width: 108px;
 }
 #slideshow-config .window-content #JTCS-config-instructions {
   position: relative;
@@ -2019,15 +2130,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   box-shadow: 0px 0px 8px 2px var(--JTCS-accent-color);
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
-  outline-offset: 2px;
-  transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
 }
 #slideshow-config .window-content #JTCS-config-instructions button.active:hover, #slideshow-config .window-content #JTCS-config-instructions button.active:focus {
-  box-shadow: unset;
-  outline: 1px solid white;
-  outline-offset: 0px;
-  transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+  transform: scale(1.12);
 }
 #slideshow-config .window-content form {
   height: 100%;
@@ -2056,7 +2163,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: background-color 120ms ease-in, color 120ms ease-in;
   border-width: 1px;
 }
-#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus {
+#slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button:focus, #slideshow-config .window-content .tilesInScene .wrapper.art-tiles .new-tile-list-item button.active {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--data-art-color);
   color: var(--JTCS-text-color-on-fill);
@@ -2084,7 +2191,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: background-color 120ms ease-in, color 120ms ease-in;
   border-width: 1px;
 }
-#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus {
+#slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:hover, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button:focus, #slideshow-config .window-content .tilesInScene .wrapper.frame-tiles .new-tile-list-item button.active {
   transition: background-color 120ms ease-out, color 120ms ease-out;
   background-color: var(--data-frame-color);
   color: var(--JTCS-text-color-on-fill);
@@ -2151,7 +2258,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .clickableImageContainer .clickableImageControls {
   opacity: 0%;
   position: absolute;
-  top: 0;
+  top: 20%;
   left: 0;
   display: flex;
   align-items: flex-end;
@@ -2191,28 +2298,26 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: var(--data-art-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
+  outline: 0px double white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
 .clickableImageContainer .displayTiles button:hover, .clickableImageContainer .displayTiles button:focus {
-  box-shadow: unset;
-  outline: 1px solid white;
-  outline-offset: 0px;
+  outline: 1px double white;
+  outline-offset: -2px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
 .clickableImageContainer .displayTiles button[data-is-default] {
   background-color: var(--data-default-color);
   border: 1px solid rgba(255, 255, 255, 0.568627451);
   color: var(--JTCS-text-color-on-fill);
-  outline: 0px solid white;
+  outline: 0px double white;
   outline-offset: 2px;
   transition: outline 120ms ease-in, outline-offset 150ms ease-in;
 }
 .clickableImageContainer .displayTiles button[data-is-default]:hover, .clickableImageContainer .displayTiles button[data-is-default]:focus {
-  box-shadow: unset;
-  outline: 1px solid white;
-  outline-offset: 0px;
+  outline: 1px double white;
+  outline-offset: -2px;
   transition: outline 120ms ease-out, outline-offset 120ms ease-out;
 }
 .clickableImageContainer .displayTiles * {

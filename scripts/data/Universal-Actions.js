@@ -5,6 +5,35 @@ const notificationIcons = {
     danger: "fas fa-exclamation-circle",
     warning: "fas fa-exclamation-triangle",
 };
+
+/**
+ * Hide (or show) all of an element's sibling elements
+ * @param {event} event - the event that triggered this
+ */
+function toggleHideAllSiblings(event, currentTarget) {
+    if (!currentTarget) currentTarget = event.currentTarget;
+
+    const siblings = Array.from(currentTarget.parentNode.children).filter((item) => !item.isSameNode(currentTarget));
+
+    if (currentTarget.classList.contains("active")) {
+        siblings.forEach((el) => el.classList.remove("hidden"));
+    } else {
+        siblings.forEach((el) => el.classList.add("hidden"));
+    }
+}
+
+function fadeSheetOpacity(event, selector = ".window-content") {
+    event.preventDefault();
+
+    const windowContent = event.currentTarget.closest(selector);
+    const faded = windowContent.classList.contains("fade") || windowContent.classList.contains("fade-all");
+
+    if (faded) {
+        windowContent.classList.remove("fade");
+    } else {
+        windowContent.classList.add("fade");
+    }
+}
 /**
  * Insert a notification inline
  * @param {*} event - the event that triggered this notification
@@ -94,8 +123,29 @@ async function handleVisibilityTransitions($element) {
     //? Fade will handle the opacity, while our "hidden" class handles everything else (transform, clip rect, position absolute, etc.)
     fade($($element), options);
 }
+function toggleActiveStyles(event, el) {
+    if (!el) el = event.currentTarget;
+    el.classList.toggle("active");
+}
+/**
+ * Turn off other elements that have active styles
+ * @param {HTMLEvent} event - the triggering event
+ * @param {Element} el - the element on which to apply the active styles
+ * @param {String} otherSelector - a selector to find other elements that are set to "active"
+ */
+function clearOtherActiveStyles(event, el, otherSelector, parentSelector) {
+    const parentItem = el.closest(parentSelector);
+    let others = Array.from(parentItem.querySelectorAll(otherSelector)).filter((item) => !item.isSameNode(el));
+    others.forEach((other) => console.log(other, el, other.isSameNode(el)));
+    others = others.filter((other) => other.classList.contains("active"));
+
+    console.log("%cUniversal-Actions.js line:119 others", "color: white; background-color: #007acc;", others);
+
+    others.forEach((other) => toggleActiveStyles(event, other));
+}
 export const universalInterfaceActions = {
     /**
+     *
      * Show or hide another element
      * @param {HTMLEvent} event - the event that provoked this
      * @param {Object} options - options object
@@ -120,10 +170,9 @@ export const universalInterfaceActions = {
             }
         }
     },
-    toggleActiveStyles: (event, el) => {
-        if (!el) el = event.currentTarget;
-        el.classList.toggle("active");
-    },
+    toggleActiveStyles: toggleActiveStyles,
+    clearOtherActiveStyles: clearOtherActiveStyles,
+    fadeSheetOpacity: fadeSheetOpacity,
     toggleHideSelf: (event) => {
         let el = event.currentTarget;
         el.classList.toggle("hidden");
@@ -133,6 +182,16 @@ export const universalInterfaceActions = {
         let el = event.currentTarget;
         el.closest(ancestorSelector).classList.toggle("hidden");
         // parentItem.classList.toggle("hidden");
+    },
+    toggleHideAllSiblings,
+    scrollOtherElementIntoView: (event, options) => {
+        const { parentItem: $parentItem } = options;
+        let currentTarget = event.currentTarget;
+        let scrollTargetID = currentTarget.dataset.target;
+        let scrollTarget = $parentItem.find(`#${scrollTargetID}`);
+        scrollTarget[0].scrollIntoView();
+        clearOtherActiveStyles(event, currentTarget, "[data-action='scrollTo']", "#JTCSsettingsHeader");
+        toggleActiveStyles(event, currentTarget);
     },
     renderAnotherApp: (appName, constructor) => {
         //if global variable's not initialized, initialize it
@@ -148,16 +207,7 @@ export const universalInterfaceActions = {
     },
     renderInlineNotification: renderInlineNotification,
     fade,
-    // showInputNotification: (event, options) => {
-    //     //show
-    //     let { message, notificationType } = options;
-    //     const parentItem = event.currentTarget.closest(".form-group");
-    //     let options = {
-    //         parentItem,
-    //         targetClassSelector: "notification",
-    //     };
-    //     toggleShowAnotherElement(event, options);
-    // },
+
     validateInput: async (
         event,
         validators = {

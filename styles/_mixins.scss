@@ -55,7 +55,8 @@
     border#{$border-side}: 2px solid $primary-color;
     transition: background-color 120ms ease-in, color 120ms ease-in;
     &:hover,
-    &:focus {
+    &:focus,
+    &.active {
         transition: background-color 120ms ease-out, color 120ms ease-out;
         background-color: $primary-color;
         // color: var(--JTCS-text-color-on-bg);
@@ -141,21 +142,30 @@
     }
 }
 
-@mixin JTCS-accent-fill($primary-color: var(--JTCS-accent-color), $include-shadow: false) {
+@mixin JTCS-accent-fill($primary-color: var(--JTCS-accent-color), $include-shadow: false, $is-icon-button: false) {
     background-color: $primary-color;
     border: 1px solid #ffffff91;
     @if $include-shadow {
         box-shadow: 0px 0px 8px 2px $primary-color;
     }
     color: var(--JTCS-text-color-on-fill);
-    outline: 0px solid white;
-    outline-offset: 2px;
-    transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+    @if $is-icon-button == false {
+        outline: 0px double white;
+        outline-offset: 2px;
+        transition: outline 120ms ease-in, outline-offset 150ms ease-in;
+    } @else {
+        transform: scale(1);
+        transition: transform 120ms ease-in-out;
+    }
     &:hover,
     &:focus {
-        box-shadow: unset;
-        outline: 1px solid white;
-        outline-offset: 0px;
-        transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+        // box-shadow: unset;
+        @if $is-icon-button == false {
+            outline: 1px double white;
+            outline-offset: -2px;
+            transition: outline 120ms ease-out, outline-offset 120ms ease-out;
+        } @else {
+            transform: scale(1.12);
+        }
     }
 }

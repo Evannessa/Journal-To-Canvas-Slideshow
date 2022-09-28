@@ -35,7 +35,7 @@ export const artGalleryDefaultSettings = {
         <br/> <br/> <span class="accent"> Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.</accent>
         `,
         colors: {
-            accentColor: "#44c3fd",
+            accentColor: "#582eff",
             backgroundColor: "#ffffff",
         },
         propertyNames: {
@@ -62,8 +62,8 @@ export const artGalleryDefaultSettings = {
     },
     sheetFadeOpacityData: {
         name: "Sheet Fade Opacity",
-        hint: "Change the opacity of the background when the sheet fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
-        value: 0.5,
+        hint: "Change the opacity of the background when the sheet fades. The minimum is 20, nearly completely transparent, 100 means completely opaque. <br/> You must refresh any open journals after changing this value to see the difference.",
+        value: 60,
     },
     fadeSheetImagesData: {
         name: "Fade Sheet Images",
@@ -78,10 +78,10 @@ export const artGalleryDefaultSettings = {
         name: "Tile Indicator Colors",
         hint: "Choose colors for the tile indicators, and the tile accent colors in the settings",
         colors: {
-            frameTileColor: "#cf8f40",
-            artTileColor: "#5e97ff",
-            unlinkedTileColor: "#aaf3a2",
-            defaultTileColor: "#ff458c",
+            frameTileColor: "#ed3000",
+            artTileColor: "#009ec5",
+            unlinkedTileColor: "#33ac4b",
+            defaultTileColor: "#df00b2",
         },
         propertyNames: {
             frameTileColor: "--data-frame-color",
@@ -139,21 +139,6 @@ export const registerSettings = async function () {
         config: true,
         type: Boolean,
         default: true,
-    });
-
-    game.settings.register("journal-to-canvas-slideshow", "sheetFadeOpacity", {
-        name: "Sheet Fade Opacity",
-        hint: "Change the opacity of the background when the sheet fades. 0 means completely transparent, 100 means completely opaque. You must refresh any open journals after changing this value to see the difference.",
-        scope: "client",
-        config: true,
-        type: Number,
-        default: 50,
-        range: {
-            // range turns the UI input into a slider input
-            min: 0,
-            max: 100,
-            step: 10,
-        },
     });
 
     game.settings.register("journal-to-canvas-slideshow", "useActorSheetImages", {

@@ -158,6 +158,9 @@ export class JTCSSettingsApplication extends FormApplication {
             await HF.setSettingValue("artGallerySettings", defaultValue, key);
             this.render(true);
             // accentElement.val(defaultValue);
+        } else if (action === "scrollTo") {
+            const parentItem = clickedElement.closest("form");
+            UIA.scrollOtherElementIntoView(event, { parentItem });
         }
     }
 

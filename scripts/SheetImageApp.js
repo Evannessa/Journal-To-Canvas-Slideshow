@@ -5,6 +5,7 @@ import { sheetImageActions, sheetControls } from "./SheetImageActions.js";
 import { SheetImageDataController } from "./SheetImageDataController.js";
 import { artTileManager, helpers } from "./data/ModuleManager.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
+import { universalInterfaceActions } from "./data/Universal-Actions.js";
 export class SheetImageApp {
     static displayMethods = [
         {
@@ -68,7 +69,7 @@ export class SheetImageApp {
 
     static async applySheetFadeSettings(journalSheet) {
         //get opacity, and whether or not journals should be faded
-        let opacityValue = await game.JTCS.utils.getSettingValue("sheetFadeOpacity");
+        let opacityValue = await game.JTCS.utils.getSettingValue("artGallerySettings", "sheetFadeOpacityData");
         let shouldFadeImages = (await game.JTCS.utils.getSettingValue("artGallerySettings", "fadeSheetImagesData"))
             .chosen;
         //set a CSS variable on the journal sheet to grab the opacity in css
@@ -135,16 +136,16 @@ export class SheetImageApp {
         );
         let renderHtml = await renderTemplate(template, {
             controls: controlsData,
+            isActive,
         });
-        let $editorElement = $(journalSheet.element[0].querySelector(".window-content form"));
+        let $editorElement = $(journalSheet.element[0].querySelector(".window-content .editor"));
         $editorElement.prepend(renderHtml);
         let controlsContainer = $("#sheet-controls");
-        await SheetImageApp.activateSheetWideEventListeners({ controlsContainer, journalSheet });
+        await SheetImageApp.activateSheetWideEventListeners({ controlsContainer, journalSheet, isActive });
     }
 
     static async activateSheetWideEventListeners(options) {
-        let { controlsContainer, journalSheet } = options;
-        console.log("Conainer is", controlsContainer);
+        let { controlsContainer, journalSheet, isActive } = options;
         $(controlsContainer)
             .off("click", "[data-action]")
             .on(
@@ -152,6 +153,9 @@ export class SheetImageApp {
                 "[data-action]",
                 async (event) => await SheetImageApp.handleAction(event, journalSheet, "action", false)
             );
+        const controlsToggleButton = $(controlsContainer).find("[data-action='sheet.click.toggleImageControls']")[0];
+
+        universalInterfaceActions.toggleHideAllSiblings(null, controlsToggleButton);
     }
 
     // handle any interaction event

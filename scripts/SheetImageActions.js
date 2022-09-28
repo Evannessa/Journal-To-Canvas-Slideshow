@@ -12,17 +12,17 @@ import { universalInterfaceActions as UIA } from "./data/Universal-Actions.js";
 
 export const sheetControls = [
     {
-        action: "sheet.click.fadeJournal",
-        icon: "fas fa-eye-slash",
-        tooltip: "Fade sheet background to see canvas",
-        // toggle: true,
-    },
-    {
         action: "sheet.click.toggleImageControls",
         tooltip: "Toggle the image controls on this sheet",
         icon: "fas fa-sliders-h",
         toggle: true,
         activeOn: "showControls",
+    },
+    {
+        action: "sheet.click.fadeJournal",
+        icon: "fas fa-eye-slash",
+        tooltip: "Fade sheet background to see canvas",
+        // toggle: true,
     },
     {
         action: "sheet.click.openSlideshowConfig",
@@ -34,11 +34,11 @@ export const sheetControls = [
         tooltip: "open Journal to Canvas Slideshow Settings",
         icon: "fas fa-cog",
     },
-    {
-        action: "sheet.click.showURLShareDialog",
-        tooltip: "Share a URL Image with your players",
-        icon: "fas fa-external-link",
-    },
+    // {
+    //     action: "sheet.click.showURLShareDialog",
+    //     tooltip: "Share a URL Image with your players",
+    //     icon: "fas fa-external-link",
+    // },
 ];
 export const sheetImageActions = {
     sheet: {
@@ -66,7 +66,16 @@ export const sheetImageActions = {
                     } else {
                         await HelperFunctions.setFlagValue(journalEntry, "showControls", false);
                     }
+
+                    UIA.toggleHideAllSiblings(event);
                     UIA.toggleActiveStyles(event);
+                },
+            },
+            changeControlsPosition: {
+                onClick: async (event, options) => {
+                    let positions = ["top-left", "top-right", "bottom-left", "bottom-right"];
+                    await HelperFunctions.getFlagValue(journalEntry, "controlsPosition");
+                    await HelperFunctions.setFlagValue(journalEntry, "controlsPosition", true);
                 },
             },
             openSlideshowConfig: {

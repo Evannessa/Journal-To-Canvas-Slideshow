@@ -10,6 +10,8 @@
 #slideshow-config,
 #JTCS-custom-dialog {
     .window-content {
+        --color-shadow-primary: var(--JTCS-accent-color);
+
         .container {
             border-radius: 5px;
             border: 1px solid var(--JTCS-background-color-30);
@@ -131,6 +133,28 @@
 
         li.tile-list-item:not(.new-tile-list-item) {
             box-shadow: var(--JTCS-background-color-50) 0px 1px 3px;
+            .actions .icon-button {
+                box-shadow: unset;
+                outline: unset;
+                background-color: unset;
+                color: var(--JTCS-text-color-on-bg);
+                transition: color 150ms ease-in-out;
+                &:hover,
+                &:focus {
+                    box-shadow: unset;
+                    outline: unset;
+                    background-color: unset;
+                    color: var(--JTCS-accent-color);
+                }
+                &.active {
+                    color: var(--JTCS-accent-color);
+                    transform: scale(1);
+                    transition: transform 150ms ease-in-out;
+                    &:hover {
+                        transform: scale(1.12);
+                    }
+                }
+            }
             // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
             // var(--JTCS-background-color-60) 0px 4px 6px -1px, var(--JTCS-background-color-10) 0px 1px 0px inset;
         }
@@ -240,19 +264,39 @@
     }
     button {
         &.file-picker,
-        &[type="button"]:not(.danger) {
+        &[type="button"]:not(.danger):not([data-action="scrollTo"]) {
             @include JTCS-accent-fill();
         }
     }
     .secondary {
         @include JTCS-accent-ghost();
-        // filter: contrast(200%);
     }
 }
 
 #JTCSSettingsApplication {
-    min-height: 50vh;
-    max-width: 50vw;
+    // min-height: 50vh;
+    height: clamp(50vh, 530px, 80vh);
+    max-width: 60vw;
+    header,
+    footer {
+        position: relative;
+        &:after {
+            position: absolute;
+            pointer-events: none;
+            content: "";
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0px 2px 8px var(--JTCS-box-shadow-color);
+        }
+    }
+    footer {
+        &:after {
+            box-shadow: 0px -2px 8px var(--JTCS-box-shadow-color);
+        }
+    }
     .color-picker-group {
         position: relative;
         .picker_wrapper {
@@ -264,6 +308,7 @@
         }
     }
     .window-content {
+        padding: unset;
         // overflow: hidden;
         form {
             display: flex;
@@ -272,6 +317,9 @@
                 flex: 1 1 0;
                 > .form-group,
                 > .form-group-stacked {
+                    fieldset {
+                        border: unset;
+                    }
                     border-radius: 8px;
                     background-color: var(--JTCS-background-color-10);
                     // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
@@ -280,6 +328,13 @@
                     box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
                     padding: 1rem;
                 }
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                background-color: var(--JTCS-accent-color);
+            }
+            .range-value {
+                color: var(--JTCS-accent-color);
+                font-weight: bold;
             }
             p.notes {
                 font-weight: 500;
@@ -295,6 +350,42 @@
         }
     }
 }
+
+#sheet-controls {
+    z-index: 100;
+    position: absolute;
+    &[data-position="bottom-right"] {
+        bottom: 5px;
+        right: 5px;
+        flex-direction: row-reverse;
+    }
+    &[data-position="top-left"] {
+        top: 5px;
+        left: 5px;
+    }
+    &[data-position="bottom-left"] {
+        bottom: 5px;
+        left: 5px;
+    }
+    &[data-position="top-right"] {
+        bottom: 5px;
+        left: 5px;
+    }
+
+    // transform: translateX(-50%);
+    min-width: 65px;
+    button {
+        width: 36px;
+        height: 36px;
+        --color-shadow-primary: var(--JTCS-accent-color);
+        @include JTCS-accent-fill($include-shadow: false, $is-icon-button: true);
+        background-color: var(--JTCS-accent-color-60);
+        &.active {
+            @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
+        }
+    }
+}
+
 #slideshow-config {
     width: min(600px, 45vw);
     max-width: min(600px, 55vw);
@@ -313,6 +404,8 @@
             }
             .actions {
                 flex: 1;
+                min-width: 66px;
+                max-width: 108px;
             }
         }
         #JTCS-config-instructions {
@@ -371,7 +464,7 @@
                 border: 2px solid var(--JTCS-accent-color);
                 color: var(--JTCS-accent-color);
                 &.active {
-                    @include JTCS-accent-fill($include-shadow: true);
+                    @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
                 }
 
                 // @include JTCS-accent-fill($include-shadow: true);
@@ -502,7 +595,8 @@
     .clickableImageControls {
         opacity: 0%;
         position: absolute;
-        top: 0;
+        top: 20%;
+        // transform: translateY(-50%);
         left: 0;
         display: flex;
         align-items: flex-end;

@@ -9,6 +9,7 @@ export class SlideshowConfig extends Application {
         // super(data);
         super();
         this.data = data;
+        this.element.find(".window-content").attr("data-fade-all");
     }
 
     static get defaultOptions() {
@@ -124,6 +125,7 @@ export class SlideshowConfig extends Application {
     async activateListeners(html) {
         // super.activateListeners(html);
         html = $(html[0].closest(".window-app"));
+        html.find(".window-content").attr("data-fade-all", true);
         // await this.setUIColors(html);
         // this._handleToggle(html);
 

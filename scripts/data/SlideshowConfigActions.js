@@ -234,12 +234,6 @@ export const extraActions = {
                 break;
         }
         if (missing) {
-            // console.log(
-            //     "%cSlideshowConfigActions.js line:237 tileID",
-            //     "color: white; background-color: #007acc;",
-            //     tileID,
-            //     frameId
-            // );
             const tileName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
             let suffix = `<span class='${type}-color'>${HelperFunctions.capitalizeEachWord(
                 type
@@ -257,13 +251,6 @@ export const extraActions = {
         if (type === "art" && !frameId)
             instructionsContent += `<p id="noFrameTile">This <span class="art-color">Art Tile</span> will be bound by the scene's canvas.</p>`;
         else if (type === "art" && frameId) {
-            // let frameExists = await ArtTileManager.getSceneSlideshowTiles("frame", )
-            // console.log(
-            //     "%cSlideshowConfigActions.js line:237 tileID",
-            //     "color: white; background-color: #cc5800;",
-            //     tileID,
-            //     frameId
-            // );
             const frameTileName = await ArtTileManager.getGalleryTileDataFromID(frameId, "displayName");
             instructionsContent += `<p id="hasFrameTile">This <span class="art-color">Art Tile</span> will be bound by frame tile <span class="frame-color">${frameTileName}</span> </p>`;
         }
@@ -297,31 +284,7 @@ export const extraActions = {
                     },
                 });
             }, 300);
-            // let anim = instructionsElement[0].ourAnimation;
-            // if (anim && !anim.finished) {
-            // anim.finish();
-            // anim.pause();
-            // anim.reverse();
-            // anim.addEventListener("oncancel", async () => {
-            //     instructionsElement[0].ourAnimation = await UIA.fade(instructionsElement, {
-            //         duration: 200,
-            //         isFadeOut: true,
-            //         onFadeOut: () => {
-            //             instructionsElement.empty();
-            //         },
-            //     });
-            // });
-            // } else if (anim && anim.finished) {
-            //     instructionsElement[0].ourAnimation = await UIA.fade(instructionsElement, {
-            //         duration: 200,
-            //         isFadeOut: true,
-            //         onFadeOut: () => {
-            //             instructionsElement.empty();
-            //         },
-            //     });
         }
-
-        // instructionsElement.empty();
     },
     toggleInstructionsVisible: async (event, options = {}) => {
         let areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
@@ -335,6 +298,11 @@ export const extraActions = {
      * @param {String} options.tileID - the ID of the Art Gallery tile we're operating upon
      */
     toggleTilesOpacity: async (event, options = {}) => {
+        console.log(
+            "%cSlideshowConfigActions.js line:301 TOGGLING TILES",
+            "color: white; background-color: #007acc;",
+            "TOGGLING TILES"
+        );
         const { tileID } = options;
         const btn = event.currentTarget;
         const clickAction = btn.dataset.action;
@@ -361,9 +329,16 @@ export const extraActions = {
         ourTile.object.alpha = 1.0;
 
         //toggle this button active
+        if (otherToggleFadeButtons.length > 0) {
+            UIA.clearOtherActiveStyles(event, btn, `[data-action='${clickAction}']`, ".tilesInScene");
+        }
         UIA.toggleActiveStyles(event);
         //toggle any other active buttons to be inactive
-        Array.from(otherToggleFadeButtons).forEach((el) => UIA.toggleActiveStyles(event, el));
+        // Array.from(otherToggleFadeButtons).forEach((el) => UIA.toggleActiveStyles(event, el));
+    },
+    toggleSheetOpacity: async (event, options = {}) => {
+        UIA.fadeSheetOpacity(event);
+        UIA.toggleActiveStyles(event);
     },
 };
 export const slideshowDefaultSettingsData = {
@@ -389,7 +364,11 @@ export const slideshowDefaultSettingsData = {
                     renderedInTemplate: true,
                     onClick: async (event, options) => await extraActions.toggleInstructionsVisible(event, options),
                 },
-
+                toggleSheetOpacity: {
+                    icon: "fas fa-eye-slash",
+                    tooltipText: "fade this application to better see the canvas",
+                    onClick: async (event, options) => await extraActions.toggleSheetOpacity(event, options),
+                },
                 // showArtScenes: {
                 //     icon: "fas fa-map",
                 //     tooltipText: "Show art scenes",

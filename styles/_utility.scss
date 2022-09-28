@@ -445,7 +445,7 @@ button.icon-button {
         padding-bottom: 5%;
     }
     &.active {
-        @include JTCS-accent-fill($include-shadow: true);
+        @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
     }
 }
 
