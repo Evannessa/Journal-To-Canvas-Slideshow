@@ -44,9 +44,17 @@
                         </div>
                 {{/with}}
             </div>
-        
+                Warning: The actions below are destructive or risky. Please proceed carefully. 
                 <!-- button for turning off auto-contrast setting-->
                 {{#with colorSchemeData}}
+                <div class="form-group-stacked flow">
+                    <h3>Set Default Theme</h3>
+                    <p class="notes">
+                        Reset your colors to one of the default themes, in a dark or light scheme.
+                    </p>
+                    <button type="button" data-action="setDarkTheme"><i class="fas fa-moon"></i> Dark Theme</button>
+                    <button type="button" data-action="setLightTheme"> <i class="fas fa-sun"></i> Light Theme</button>
+                </div>
                 <div class="form-group-stacked flow">
                     <h3>Toggle Auto-Contrast</h3>
                     {{#if (eq this.autoContrast true)}}

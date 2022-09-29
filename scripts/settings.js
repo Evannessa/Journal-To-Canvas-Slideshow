@@ -3,7 +3,40 @@ import { MODULE_ID, log } from "./debug-mode.js";
 import { JTCSSettingsApplication } from "./classes/JTCSSettingsApplication.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 const assetFolderBasePath = `modules/${MODULE_ID}/assets/`;
-
+export const colorThemes = {
+    dark: {
+        colorSchemeData: {
+            colors: {
+                backgroundColor: "#010527",
+                accentColor: "#9876ff",
+            },
+        },
+        indicatorColorData: {
+            colors: {
+                frameTileColor: "#2ec4b6",
+                unlinkedTileColor: "#ff5369",
+                artTileColor: "#ff9f1c",
+                defaultTileColor: "#ff60f4",
+            },
+        },
+    },
+    light: {
+        colorSchemeData: {
+            colors: {
+                accentColor: "#582eff",
+                backgroundColor: "#ffffff",
+            },
+        },
+        indicatorColorData: {
+            colors: {
+                frameTileColor: "#b44b00",
+                artTileColor: "#009ec5",
+                unlinkedTileColor: "#33ac4b",
+                defaultTileColor: "#df00b2",
+            },
+        },
+    },
+};
 export const artGalleryDefaultSettings = {
     sheetSettings: {
         name: "Sheet Types",
@@ -30,12 +63,13 @@ export const artGalleryDefaultSettings = {
         },
     },
     colorSchemeData: {
+        theme: "light",
         name: "Custom Color Scheme",
         hint: `What colors would you like to use on parts of the JTCS UI? This will affect things like buttons, checkboxes, borders, etc.
         <br/> <br/> <span class="accent"> Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.</accent>
         `,
         colors: {
-            backgroundColor: "#011627",
+            backgroundColor: "#010527",
             accentColor: "#6c4eff",
             // accentColor: "#582eff",
             // backgroundColor: "#ffffff",
@@ -125,17 +159,6 @@ export const registerSettings = async function () {
             const updateData = await HelperFunctions.getSettingValue("artGallerySettings");
             Hooks.callAll("updateJTCSSettings", { origin: "JTCSSettings", updateData });
         },
-    });
-    new window.Ardittristan.ColorSetting(MODULE_ID, "JTCSAccentColor", {
-        name: "Accent Color", // The name of the setting in the settings menu
-        hint: "Choose an accent color to use in the JTCS UI", // A description of the registered setting and its behavior
-        label: "Accent Color", // The text label used in the button
-        restricted: true, // Restrict this setting to gamemaster only?
-        defaultColor: "#44c3fdff", // The default color of the setting
-        scope: "client", // The scope of the setting
-        onChange: (value) => {
-            Hooks.callAll("updateJTCSSettings", { origin: "JTCSSettings", updateData: value });
-        }, // A callback function which triggers when the setting is changed
     });
 
     await game.settings.register("journal-to-canvas-slideshow", "areConfigInstructionsVisible", {

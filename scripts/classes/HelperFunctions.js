@@ -259,7 +259,6 @@ export class HelperFunctions {
             col = col.slice(1);
             usePound = true;
         }
-
         var num = parseInt(col, 16);
 
         var r = (num >> 16) + amt;
@@ -276,8 +275,9 @@ export class HelperFunctions {
 
         if (g > 255) g = 255;
         else if (g < 0) g = 0;
-
-        return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+        var string = "000000" + (g | (b << 8) | (r << 16)).toString(16);
+        return (usePound ? "#" : "") + string.substring(string.length - 6);
+        // return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
     }
 
     /**
@@ -339,24 +339,35 @@ export class HelperFunctions {
         if (makeVariations) {
             const direction = HF.lighterOrDarker(value);
             const shouldDarken = direction < 0 ? true : false;
-            // const text = contrastValue < 0 ? "We should darken color" : "we should lighten color";
+            const text = direction < 0 ? "We should darken color" : "we should lighten color";
+            console.log(text);
 
-            for (var number = 0; number < 90; number += 10) {
+            let startNumber = !shouldDarken ? 80 : 0;
+            let step = !shouldDarken ? -10 : 10;
+
+            for (var number = startNumber; Math.abs(number) < 90; number += step) {
                 const variantPropName = `${propertyName}-${number.toString().padStart(2, "0")}`;
+                // const amount = number;
                 const amount = shouldDarken ? number * -1 : number;
-                const variantValue = HelperFunctions.LightenDarkenColor(value, amount);
-                console.log(
-                    "%cHelperFunctions.js line:347 variantPropName, variantValue",
-                    "color: #26bfa5;",
-                    variantPropName,
-                    variantValue
-                );
+                const variantValue = HF.LightenDarkenColor(value, amount);
                 html.style.setProperty(variantPropName, variantValue);
-                if (number === 50) {
-                    //get a good box shadow color
-                    let color = shouldDarken ? variantValue : "transparent";
-                    html.style.setProperty("--JTCS-box-shadow-color", color);
+            }
+            if (propertyName.includes("background-color")) {
+                const htmlStyle = getComputedStyle(html);
+                let inputBG = htmlStyle.getPropertyValue("--JTCS-background-color-20");
+                let elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color");
+                let borderColor = htmlStyle.getPropertyValue("--JTCS-background-color-70");
+                let shadowColor = htmlStyle.getPropertyValue("--JTCS-background-color-50");
+                if (!shouldDarken) {
+                    inputBG = getComputedStyle(html).getPropertyValue("--JTCS-background-color-20");
+                    borderColor = "transparent"; //getComputedStyle(html).getPropertyValue("--JTCS-background-color");
+                    shadowColor = "transparent";
+                    elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color-10");
                 }
+                html.style.setProperty("--JTCS-box-shadow-color", shadowColor);
+                html.style.setProperty("--JTCS-input-background-color", inputBG);
+                html.style.setProperty("--JTCS-border-color", borderColor);
+                html.style.setProperty("--JTCS-elevation-BG-color", elevationBG);
             }
         }
     }

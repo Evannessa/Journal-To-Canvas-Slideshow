@@ -1,5 +1,5 @@
 import { log, MODULE_ID } from "../debug-mode.js";
-import { artGalleryDefaultSettings } from "../settings.js";
+import { artGalleryDefaultSettings, colorThemes } from "../settings.js";
 import { universalInterfaceActions as UIA } from "../data/Universal-Actions.js";
 import { HelperFunctions as HF } from "./HelperFunctions.js";
 
@@ -155,7 +155,9 @@ export class JTCSSettingsApplication extends FormApplication {
             this.render(true);
         } else if (action === "resetColor") {
             let key = accentElement.attr("name");
-            let defaultValue = getProperty(artGalleryDefaultSettings, key);
+            let theme = await HF.getSettingValue("artGallerySettings", "colorSchemeData.theme");
+            // const newScheme = mergeObject(currentSettings, colorThemes[theme]);
+            const defaultValue = getProperty(colorThemes[theme], key);
             await HF.setSettingValue("artGallerySettings", defaultValue, key);
             this.render(true);
             // accentElement.val(defaultValue);
@@ -163,7 +165,6 @@ export class JTCSSettingsApplication extends FormApplication {
             const parentItem = clickedElement.closest("form");
             UIA.scrollOtherElementIntoView(event, { parentItem });
         } else if (action === "applyChanges") {
-            // let defaultValue = getProperty(artGalleryDefaultSettings, key);
             const form = event.currentTarget.closest("form");
             const formData = {};
             Array.from(form.querySelectorAll("input, select")).forEach((input) => {
@@ -173,9 +174,17 @@ export class JTCSSettingsApplication extends FormApplication {
                 }
                 formData[input.name] = value;
             });
-            console.log("%cJTCSSettingsApplication.js line:177 ", "color: #26bfa5;", formData);
-            // return;
             await HF.setSettingValue("artGallerySettings", formData, "", true);
+            this.render(true);
+        } else if (action === "setDarkTheme" || action === "setLightTheme") {
+            const theme = action === "setDarkTheme" ? "dark" : "light";
+
+            //store the chosen theme as a setting
+            await HF.setSettingValue("artGallerySettings", theme, "colorSchemeData.theme");
+            const currentSettings = await HF.getSettingValue("artGallerySettings");
+
+            const newScheme = mergeObject(currentSettings, colorThemes[theme]);
+            await HF.setSettingValue("artGallerySettings", newScheme);
             this.render(true);
         }
     }

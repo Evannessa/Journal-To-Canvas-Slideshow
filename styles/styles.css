@@ -1532,8 +1532,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #slideshow-config .window-content,
 #JTCS-custom-dialog .window-content {
   --color-shadow-primary: var(--JTCS-accent-color);
+  background: var(--JTCS-background-color);
   --flow-space: 2em;
-  background: var(--JTCS-background-color-10);
 }
 #JTCSSettingsApplication .window-content .container,
 #slideshow-config .window-content .container,
@@ -1564,6 +1564,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label input {
   width: 100%;
   max-width: 300px;
+}
+#JTCSSettingsApplication .window-content .form-group.has-floating-label label,
+#JTCSSettingsApplication .window-content .form-group-stacked.has-floating-label label,
+#slideshow-config .window-content .form-group.has-floating-label label,
+#slideshow-config .window-content .form-group-stacked.has-floating-label label,
+#JTCS-custom-dialog .window-content .form-group.has-floating-label label,
+#JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label label {
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content .form-group .file-picker-group,
 #JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group,
@@ -1833,8 +1841,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content input[type=text],
 #JTCS-custom-dialog .window-content select {
   font-family: Arial, Helvetica, sans-serif;
-  border-color: var(--JTCS-background-color-70);
-  background-color: var(--JTCS-background-color);
+  border: 1px solid var(--JTCS-border-color);
+  background-color: var(--JTCS-input-background-color);
 }
 #JTCSSettingsApplication .window-content input[type=text]:hover,
 #JTCSSettingsApplication .window-content select:hover,
@@ -2153,7 +2161,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content form .form-content > .form-group,
 #JTCSSettingsApplication .window-content form .form-content > .form-group-stacked {
   border-radius: 8px;
-  background-color: var(--JTCS-background-color-10);
+  background-color: var(--JTCS-elevation-BG-color);
   box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
   padding: 1rem;
 }
@@ -2303,7 +2311,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   pointer-events: none;
   z-index: -1;
   border-top: 2px solid var(--JTCS-box-shadow-color);
-  background-color: var(--JTCS-background-color-10);
+  background-color: var(--JTCS-background-color-00);
   opacity: 95%;
   -webkit-backdrop-filter: blur(12px);
           backdrop-filter: blur(12px);
@@ -2317,7 +2325,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   min-height: 10em;
 }
 #slideshow-config .window-content #JTCS-config-instructions button {
-  background-color: var(--JTCS-background-color-10);
+  background-color: var(--JTCS-background-color);
   border: 2px solid var(--JTCS-accent-color);
   color: var(--JTCS-accent-color);
   position: absolute;

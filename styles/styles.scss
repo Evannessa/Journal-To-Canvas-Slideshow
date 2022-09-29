@@ -7,6 +7,7 @@
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
 $tile-types: ("frame", "art", "unlinked", "default");
+
 #JTCSSettingsApplication,
 #slideshow-config,
 #JTCS-custom-dialog {
@@ -15,7 +16,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
     }
     .window-content {
         --color-shadow-primary: var(--JTCS-accent-color);
-
+        background: var(--JTCS-background-color);
         .container {
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
@@ -26,7 +27,6 @@ $tile-types: ("frame", "art", "unlinked", "default");
         .flow {
             @extend .flow;
         }
-        background: var(--JTCS-background-color-10);
         .elevation-1 {
             background: var(--JTCS-background-color);
         }
@@ -40,6 +40,9 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 input {
                     width: 100%;
                     max-width: 300px;
+                }
+                label {
+                    color: var(--JTCS-text-color-on-bg);
                 }
             }
             .file-picker-group {
@@ -169,9 +172,10 @@ $tile-types: ("frame", "art", "unlinked", "default");
         input[type="text"],
         select {
             font-family: Arial, Helvetica, sans-serif;
-            border-color: var(--JTCS-background-color-70);
-            background-color: var(--JTCS-background-color);
-            // background-color: var(--JTCS-background-color-20);
+            // border-color: var(--JTCS-border-color);
+            border: 1px solid var(--JTCS-border-color);
+            // background-color: var(--JTCS-background-color);
+            background-color: var(--JTCS-input-background-color);
             &:hover {
                 border-color: var(--JTCS-accent-color);
             }
@@ -358,10 +362,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
                         border: unset;
                     }
                     border-radius: 8px;
-                    background-color: var(--JTCS-background-color-10);
-                    // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
-                    //     var(--JTCS-background-color-60) 0px 4px 6px -1px,
-                    //     var(--JTCS-background-color-10) 0px 1px 0px inset;
+                    background-color: var(--JTCS-elevation-BG-color);
                     box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
                     padding: 1rem;
                 }
@@ -493,7 +494,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     pointer-events: none;
                     z-index: -1;
                     border-top: 2px solid var(--JTCS-box-shadow-color);
-                    background-color: var(--JTCS-background-color-10);
+                    background-color: var(--JTCS-background-color-00);
                     opacity: 95%;
                     backdrop-filter: blur(12px);
                     border-radius: 5px;
@@ -510,7 +511,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 //     opacity: 0%;
             }
             button {
-                background-color: var(--JTCS-background-color-10);
+                background-color: var(--JTCS-background-color);
                 border: 2px solid var(--JTCS-accent-color);
                 color: var(--JTCS-accent-color);
                 &.active {
