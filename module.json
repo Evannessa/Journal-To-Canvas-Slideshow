@@ -16,6 +16,12 @@
             "entity": "Scene"
         },
         {
+            "name": "jtcs-premade-journals",
+            "label": "JTCS Premade Journal Entries",
+            "path": "./packs/jtcs-premade-journal-entries.db",
+            "entity": "Journal"
+        },
+        {
             "name": "jtcs-utility-macros",
             "label": "JTCS Utility Macros",
             "path": "./packs/jtcs-utility-macros.db",
@@ -44,8 +50,9 @@
         "scripts/hooks.js",
         "scripts/data/ModuleManager.js"
     ],
+    "dependencies": ["lib - ColorSettings"],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
-    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/master.zip"
+    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/v9-overhaul-experimental/module.json",
+    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/v9-overhaul-experimental.zip"
 }

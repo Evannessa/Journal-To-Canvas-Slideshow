@@ -14,6 +14,7 @@ import { generateTemplates, createTemplatePathString, mapTemplates } from "./dat
 import { registerHelpers } from "./handlebars/register-helpers.js";
 import { registerSettings } from "./settings.js";
 import { setupHookHandlers } from "./hooks.js";
+import { universalInterfaceActions as UIA } from "./data/Universal-Actions.js";
 
 export const JTCSModules = {
     ArtTileManager,
@@ -181,6 +182,9 @@ Hooks.on("canvasReady", async (canvas) => {
     });
 });
 
+/**
+ * For rendering a button in the Tile Config that shows the linked Art Tile
+ */
 Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;
 
@@ -198,20 +202,22 @@ Hooks.on("renderTileConfig", async (app, element) => {
     if (element[0] && !element[0]?.querySelector("#displayTileData")) {
         //if we don't have this data
         // let template = "modules/journal-to-canvas-slideshow/templates/display-tile-config.hbs";
-        let showConfigButton = document.createElement("button");
+        const showConfigButton = document.createElement("button");
+        showConfigButton.textContent = "Open Gallery Config";
         showConfigButton.setAttribute("id", defaultData.id);
+        showConfigButton.setAttribute("type", "button");
 
         const target = $(element).find(`[name="tint"]`).parent().parent();
         target.after(showConfigButton);
-        $(showConfigButton).on("click", (event) => {
-            let btn = event.currentTarget;
-            if (game.JTCSlideshowConfig) {
-                game.JTCSlideshowConfig.render(true);
-            } else {
-                game.JTCSlideshowConfig = new SlideshowConfig().render(true);
-            }
-            // if(game.JTCSlideshowConfig.rendered)
+        $(showConfigButton).on("click", async (event) => {
+            event.preventDefault();
+            await UIA.renderAnotherApp("JTCSlideshowConfig", SlideshowConfig);
+            // let btn = event.currentTarget;
+            // if (game.JTCSlideshowConfig) {
+            //     game.JTCSlideshowConfig.render(true);
+            // } else {
+            //     game.JTCSlideshowConfig = new SlideshowConfig().render(true);
+            // }
         });
-        // let renderHtml = await renderTemplate(template, defaultData);
     }
 });
