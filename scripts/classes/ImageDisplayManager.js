@@ -26,15 +26,7 @@ export class ImageDisplayManager {
     }
     static async updateTileObjectTexture(artTileID, frameTileID, url, method, sceneID = "") {
         let ourScene = game.scenes.get(sceneID);
-        console.log("%cImageDisplayManager.js line:29 arguments", "color: #26bfa5;", arguments, ourScene);
         if (!ourScene) ourScene = game.scenes.viewed;
-
-        // if (method == "artScene") {
-        //     let artSceneData = await ImageDisplayManager.getTilesFromArtScene();
-        //     ourScene = artSceneData.ourScene;
-        //     artTileID = artSceneData.artTileID;
-        //     frameTileID = artSceneData.frameTileID;
-        // }
 
         let artTile = ourScene.tiles.get(artTileID);
         let frameTile = ourScene.tiles.get(frameTileID);
@@ -54,7 +46,12 @@ export class ImageDisplayManager {
             imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url, sceneID);
         }
 
-        const updated = await ourScene.updateEmbeddedDocuments("Tile", [imageUpdate]);
+        const updated = await ourScene
+            .updateEmbeddedDocuments("Tile", [imageUpdate])
+            .catch((error) => ui.notifications.error(`Default art tile in ${ourScene.name} couldn't be updated`));
+        if (updated && method === "artScene") {
+            ui.notifications.info(`Default Tile in Art Scene ${ourScene.name}  successfully updated`);
+        }
     }
 
     static async scaleArtTileToScene(displayTile, tex, url, sceneID = "") {

@@ -69,7 +69,7 @@ export class SheetImageApp {
 
     static async applySheetFadeSettings(journalSheet) {
         //get opacity, and whether or not journals should be faded
-        let opacityValue = await game.JTCS.utils.getSettingValue("artGallerySettings", "sheetFadeOpacityData");
+        let opacityValue = (await game.JTCS.utils.getSettingValue("artGallerySettings", "sheetFadeOpacityData")).value;
         let shouldFadeImages = (await game.JTCS.utils.getSettingValue("artGallerySettings", "fadeSheetImagesData"))
             .chosen;
         //set a CSS variable on the journal sheet to grab the opacity in css

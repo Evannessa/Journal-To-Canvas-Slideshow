@@ -33,10 +33,11 @@
             {{#if (eq tileData.tile.id @root.defaultArtTileID)}}
                 data-is-default="true"
             {{/if}}
-            title='{{combineToString (ternary (eq @root.selectedTileID tileData.tile.id) "This image will be displayed on the selected tile" "Click to display this image on tile") tileData.tile.displayName "in scene"  @root.currentSceneName }}'
+            title='{{combineToString "Show image on " tileData.tile.displayName " | Ctrl/Cmd + Click to go to Art Tile config"}}'
         >
             {{tileData.tile.displayName}}
         </button>
         {{/each}}
+     
     </div>
 </div>

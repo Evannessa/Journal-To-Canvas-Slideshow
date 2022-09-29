@@ -534,6 +534,9 @@ fieldset.toggle-button-group label:last-of-type {
 .fade[data-fade-all] {
   opacity: var(--journal-fade, 50%);
 }
+.fade[data-fade-all] .editor-content img {
+  opacity: var(--journal-fade, 50%) !important;
+}
 
 .padding-top-small {
   padding-top: 0.5rem;
@@ -2052,11 +2055,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid var(--JTCS-accent-color-80);
   transition: border-color 150ms ease-out;
 }
-#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button),
+#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary),
 #slideshow-config button.file-picker,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button),
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary),
 #JTCS-custom-dialog button.file-picker,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button) {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary) {
   background-color: var(--JTCS-accent-color);
   box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
@@ -2065,15 +2068,15 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
 }
-#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):focus,
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):focus,
 #slideshow-config button.file-picker:hover,
 #slideshow-config button.file-picker:focus,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):hover,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):focus,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):hover,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):focus,
 #JTCS-custom-dialog button.file-picker:hover,
 #JTCS-custom-dialog button.file-picker:focus,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):hover,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):focus {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):hover,
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):focus {
   transform: scale(1.12);
 }
 #JTCSSettingsApplication .secondary,

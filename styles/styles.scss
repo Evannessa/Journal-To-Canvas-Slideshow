@@ -297,7 +297,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
 
     button {
         &.file-picker,
-        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button) {
+        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary) {
             @include JTCS-accent-fill();
         }
     }

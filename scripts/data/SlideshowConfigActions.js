@@ -170,7 +170,8 @@ export const extraActions = {
         let wrappedActions = {};
         let { displayActions } = JTCSActions;
         for (let actionName in displayActions) {
-            wrappedActions[actionName] = displayActions[actionName];
+            wrappedActions[actionName] = { ...displayActions[actionName] };
+
             //converting properties to fit the dialog's schema
             wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
             wrappedActions[actionName].label = HelperFunctions.capitalizeEachWord(actionName, "");
@@ -500,6 +501,19 @@ export const slideshowDefaultSettingsData = {
                         }
                     },
                 },
+                shareURL: {
+                    onChange: async (event, options = {}) => {
+                        const { tileID, parentLI } = options;
+                        const frameTileID = parentLI.dataset.frameId;
+                        const url = event.currentTarget.value;
+                        const valid = HelperFunctions.validateInput(url, "image");
+                        if (valid) {
+                            await ImageDisplayManager.updateTileObjectTexture(tileID, frameTileID, url, "anyScene");
+                        } else {
+                            ui.notifications.error("URL not an image");
+                        }
+                    },
+                },
             },
         },
         hover: {
@@ -549,8 +563,10 @@ export const slideshowDefaultSettingsData = {
                         let { tileID, parentLI, app, html } = options;
                         let frameTileID = parentLI.dataset.frameId;
                         let context = {
-                            name: "Share Url",
+                            name: "shareUrl",
                             id: "shareURL",
+                            changeAction: "itemActions.change.actions.shareURL",
+                            label: "Share URL",
                         };
 
                         let templateData = Popover.createTemplateData(parentLI, "input-with-error", context);
@@ -559,26 +575,26 @@ export const slideshowDefaultSettingsData = {
 
                         elementData["popoverElement"] = {
                             targetElement: null,
-                            hideEvents: [
-                                {
-                                    eventName: "change",
-                                    selector: "input",
-                                    wrapperFunction: async (event) => {
-                                        let url = event.currentTarget.value;
-                                        let valid = HelperFunctions.manager.validateInput(url, "image");
-                                        if (valid) {
-                                            await ImageDisplayManager.updateTileObjectTexture(
-                                                tileID,
-                                                frameTileID,
-                                                url,
-                                                "anyTile"
-                                            );
-                                        } else {
-                                            ui.notifications.error("URL not an image");
-                                        }
-                                    },
-                                },
-                            ],
+                            // hideEvents: [
+                            //     {
+                            //         eventName: "change",
+                            //         selector: "input",
+                            //         wrapperFunction: async (event) => {
+                            //             let url = event.currentTarget.value;
+                            //             let valid = HelperFunctions.manager.validateInput(url, "image");
+                            //             if (valid) {
+                            //                 await ImageDisplayManager.updateTileObjectTexture(
+                            //                     tileID,
+                            //                     frameTileID,
+                            //                     url,
+                            //                     "anyScene"
+                            //                 );
+                            //             } else {
+                            //                 ui.notifications.error("URL not an image");
+                            //             }
+                            //         },
+                            //     },
+                            // ],
                         };
 
                         let popover = await Popover.processPopoverData(
@@ -589,6 +605,7 @@ export const slideshowDefaultSettingsData = {
                             elementData
                         );
                         popover[0].querySelector("input").focus({ focusVisible: true });
+                        await app.activateListeners(app.element);
                     },
                     overflow: false,
                 },

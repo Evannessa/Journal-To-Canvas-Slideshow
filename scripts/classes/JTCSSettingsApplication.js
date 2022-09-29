@@ -29,7 +29,7 @@ export class JTCSSettingsApplication extends FormApplication {
             resizable: true,
             minimizable: true,
             submitOnClose: false,
-            closeOnSubmit: false,
+            closeOnSubmit: true,
             submitOnChange: false,
             template: `modules/${MODULE_ID}/templates/JTCS-settings-app.hbs`,
             id: "JTCSSettingsApplication",
@@ -162,6 +162,21 @@ export class JTCSSettingsApplication extends FormApplication {
         } else if (action === "scrollTo") {
             const parentItem = clickedElement.closest("form");
             UIA.scrollOtherElementIntoView(event, { parentItem });
+        } else if (action === "applyChanges") {
+            // let defaultValue = getProperty(artGalleryDefaultSettings, key);
+            const form = event.currentTarget.closest("form");
+            const formData = {};
+            Array.from(form.querySelectorAll("input, select")).forEach((input) => {
+                let value = input.value;
+                if (input.type === "checkbox") {
+                    value = input.checked;
+                }
+                formData[input.name] = value;
+            });
+            console.log("%cJTCSSettingsApplication.js line:177 ", "color: #26bfa5;", formData);
+            // return;
+            await HF.setSettingValue("artGallerySettings", formData, "", true);
+            this.render(true);
         }
     }
 

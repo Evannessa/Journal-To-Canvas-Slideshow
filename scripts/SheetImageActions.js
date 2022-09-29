@@ -35,6 +35,11 @@ export const sheetControls = [
         icon: "fas fa-cog",
     },
     // {
+    //     action: "sheet.click.toggleInstructions",
+    //     tooltip: "show or hide contextual instructions",
+    //     icon: "fas fa-info",
+    // },
+    // {
     //     action: "sheet.click.showURLShareDialog",
     //     tooltip: "Share a URL Image with your players",
     //     icon: "fas fa-external-link",
@@ -80,16 +85,25 @@ export const sheetImageActions = {
             },
             openSlideshowConfig: {
                 onClick: async () => {
-                    UIA.renderAnotherApp("JTCSlideshowConfig", SlideshowConfig);
+                    await UIA.renderAnotherApp("JTCSlideshowConfig", SlideshowConfig);
                 },
             },
             openSettingsApp: {
                 onClick: async () => {
-                    UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
+                    await UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
                 },
             },
             showURLShareDialog: {
                 onClick: async (event, options) => await extraActions.showURLShareDialog(event, options),
+            },
+            toggleInstructions: {
+                onClick: (event, option) => {
+                    const parentElement = event.currentTarget.closest("editor");
+                    UIA.toggleShowAnotherElement(event, {
+                        parentItem: parentElement,
+                        targetClassSelector: "instructions",
+                    });
+                },
             },
         },
     },
@@ -148,12 +162,13 @@ export const sheetImageActions = {
                     let tileID = event.currentTarget.dataset.id;
                     if (event.ctrlKey) {
                         const appName = "JTCSlideshowConfig";
-                        UIA.renderAnotherApp(appName, SlideshowConfig);
+                        await UIA.renderAnotherApp(appName, SlideshowConfig);
                         if (game[appName]) {
                             const configElement = game[appName].element;
                             configElement.focus();
+
                             const tileItem = configElement.find(`[data-id='${tileID}']`);
-                            if (tileItem) {
+                            if (tileItem && tileItem[0]) {
                                 tileItem[0].scrollIntoView();
                                 tileItem[0].focus();
                             }

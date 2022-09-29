@@ -35,8 +35,10 @@ export const artGalleryDefaultSettings = {
         <br/> <br/> <span class="accent"> Hint: Click 'Apply Changes' to refresh this window and immediately see how your chosen colors look.</accent>
         `,
         colors: {
-            accentColor: "#582eff",
-            backgroundColor: "#ffffff",
+            backgroundColor: "#011627",
+            accentColor: "#6c4eff",
+            // accentColor: "#582eff",
+            // backgroundColor: "#ffffff",
         },
         propertyNames: {
             accentColor: "--JTCS-accent-color",
@@ -78,10 +80,14 @@ export const artGalleryDefaultSettings = {
         name: "Tile Indicator Colors",
         hint: "Choose colors for the tile indicators, and the tile accent colors in the settings",
         colors: {
-            frameTileColor: "#ed3000",
-            artTileColor: "#009ec5",
-            unlinkedTileColor: "#33ac4b",
-            defaultTileColor: "#df00b2",
+            frameTileColor: "#2ec4b6",
+            unlinkedTileColor: "#e71d36",
+            artTileColor: "#ff9f1c",
+            defaultTileColor: "#b260ff",
+            // frameTileColor: "#ed3000",
+            // artTileColor: "#009ec5",
+            // unlinkedTileColor: "#33ac4b",
+            // defaultTileColor: "#df00b2",
         },
         propertyNames: {
             frameTileColor: "--data-frame-color",

@@ -1,4 +1,11 @@
 <section class="flex-row gap-small" id="sheet-controls" data-controls-active="{{this.isActive}}" data-position="bottom-right">
+   {{!-- <div id="JTCS-sheet-image-instructions" class="instructions">
+            <ul class="reset-margin reset-padding instructions__content">
+                <p>These buttons represent each Art Tile in the current scene.</p>
+                <li>Click a button display this image on the Art Tile</li>
+                <li>Ctrl + Click or Cmd + Click to navigate to the Art Tile in the Scene Tile Config</li>
+            </ul>
+        </div> --}}
     {{#each controls as |control|}}
         {{> (dynamicPartial "icon-button")
             action=control.action

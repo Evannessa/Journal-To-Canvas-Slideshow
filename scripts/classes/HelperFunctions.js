@@ -333,6 +333,7 @@ export class HelperFunctions {
         const html = document.documentElement;
         const HF = HelperFunctions;
         value = HF.hex8To6(value);
+
         html.style.setProperty(propertyName, value);
 
         if (makeVariations) {
@@ -344,6 +345,12 @@ export class HelperFunctions {
                 const variantPropName = `${propertyName}-${number.toString().padStart(2, "0")}`;
                 const amount = shouldDarken ? number * -1 : number;
                 const variantValue = HelperFunctions.LightenDarkenColor(value, amount);
+                console.log(
+                    "%cHelperFunctions.js line:347 variantPropName, variantValue",
+                    "color: #26bfa5;",
+                    variantPropName,
+                    variantValue
+                );
                 html.style.setProperty(variantPropName, variantValue);
                 if (number === 50) {
                     //get a good box shadow color

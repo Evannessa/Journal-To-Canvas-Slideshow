@@ -10,8 +10,8 @@
             value={{this.value}}
         />
     </div>
-    {{#unless (eq @key "backgroundColor")}}
-        <div class="color-actions flex-row gap-small flex-0">
+    <div class="color-actions flex-row gap-small flex-0">
+        {{#unless (eq @key "backgroundColor")}}
             <button
                 data-action="checkContrast"
                 type="button"
@@ -19,12 +19,12 @@
             >
                 <i class="fas fa-adjust"></i>
             </button>
-            <button data-action="resetColor" type="button" title="reset this color to its default">
-                <i class="fas fa-undo"></i>
-            </button>
-            <!--   <button data-action="setAutoContrast" type="button"title="automatically generate a lighter or darker version of your color that contrasts well with your background color">
+        {{/unless}}
+        <button data-action="resetColor" type="button" title="reset this color to its default">
+            <i class="fas fa-undo"></i>
+        </button>
+        <!--   <button data-action="setAutoContrast" type="button"title="automatically generate a lighter or darker version of your color that contrasts well with your background color">
                                     <i class="fas fa-eye-dropper"></i> 
                                     </button> -->
-        </div>
-    {{/unless}}
+    </div>
 </div>

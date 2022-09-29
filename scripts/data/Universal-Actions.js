@@ -200,16 +200,16 @@ export const universalInterfaceActions = {
         clearOtherActiveStyles(event, currentTarget, "[data-action='scrollTo']", "#JTCSsettingsHeader");
         toggleActiveStyles(event, currentTarget);
     },
-    renderAnotherApp: (appName, constructor) => {
+    renderAnotherApp: async (appName, constructor) => {
         //if global variable's not initialized, initialize it
         if (!game[appName]) game[appName] = new constructor();
         //if it's not rendered, render it
         if (!game[appName].rendered) {
-            game[appName].render(true);
+            await game[appName].render(true);
             // window[appName] = constructor;
         } else {
             //if it is rendered, bring it to the top
-            game[appName].bringToTop();
+            await game[appName].bringToTop();
         }
     },
     renderInlineNotification: renderInlineNotification,

@@ -402,6 +402,11 @@ fieldset.toggle-button-group {
     background: rgba(255, 255, 255, var(--journal-fade, 50%)) !important;
     &[data-fade-all] {
         opacity: var(--journal-fade, 50%);
+        .editor-content {
+            img {
+                opacity: var(--journal-fade, 50%) !important;
+            }
+        }
     }
 }
 $sizes: (
