@@ -178,14 +178,34 @@ export class JTCSSettingsApplication extends FormApplication {
             this.render(true);
         } else if (action === "setDarkTheme" || action === "setLightTheme") {
             const theme = action === "setDarkTheme" ? "dark" : "light";
+            const templatePath = game.JTCS.templates["delete-confirmation-prompt"];
+            const buttons = {
+                cancel: {
+                    label: "Cancel",
+                    icon: "<i class='fas fa-undo'></i>",
+                },
+                reset: {
+                    label: `Apply Default ${HF.capitalizeEachWord(theme)} Theme`,
+                    icon: "<i class='fas fa-power-off'></i>",
+                    callback: async () => {
+                        //store the chosen theme as a setting
+                        await HF.setSettingValue("artGallerySettings", theme, "colorSchemeData.theme");
+                        const currentSettings = await HF.getSettingValue("artGallerySettings");
 
-            //store the chosen theme as a setting
-            await HF.setSettingValue("artGallerySettings", theme, "colorSchemeData.theme");
-            const currentSettings = await HF.getSettingValue("artGallerySettings");
-
-            const newScheme = mergeObject(currentSettings, colorThemes[theme]);
-            await HF.setSettingValue("artGallerySettings", newScheme);
-            this.render(true);
+                        const newScheme = mergeObject(currentSettings, colorThemes[theme]);
+                        await HF.setSettingValue("artGallerySettings", newScheme);
+                        this.render(true);
+                    },
+                },
+            };
+            const data = {
+                icon: "fas fa-exclamation",
+                heading: `Apply Default ${HF.capitalizeEachWord(theme)} Theme?`,
+                destructiveActionText: `Apply Default ${HF.capitalizeEachWord(theme)} Theme`,
+                explanation: `This will overwrite any custom colors you've picked out`,
+                buttons,
+            };
+            await HF.createDialog("Apply Default Theme", templatePath, data);
         }
     }
 

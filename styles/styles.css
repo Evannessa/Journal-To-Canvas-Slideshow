@@ -64,7 +64,7 @@
   background-color: #e55937;
 }
 
-.blank-button {
+.blank-button, #JTCS-custom-dialog .dialog-buttons .dialog-button {
   border: none;
   background: transparent;
   margin: unset;
@@ -1429,7 +1429,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
-#JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete] {
+#JTCS-custom-dialog .dialog-buttons .dialog-button [data-button=delete],
+#JTCS-custom-dialog .dialog-buttons .dialog-button [data-button=reset] {
   background: var(--color-danger-base);
   color: white;
   font-weight: bold;
@@ -1547,14 +1548,20 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content .elevation-1 {
   background: var(--JTCS-background-color);
 }
-#JTCSSettingsApplication .window-content .form-group button.danger,
+#JTCSSettingsApplication .window-content .form-group button.danger, #JTCSSettingsApplication .window-content .form-group button.theme,
 #JTCSSettingsApplication .window-content .form-group-stacked button.danger,
+#JTCSSettingsApplication .window-content .form-group-stacked button.theme,
 #slideshow-config .window-content .form-group button.danger,
+#slideshow-config .window-content .form-group button.theme,
 #slideshow-config .window-content .form-group-stacked button.danger,
+#slideshow-config .window-content .form-group-stacked button.theme,
 #JTCS-custom-dialog .window-content .form-group button.danger,
-#JTCS-custom-dialog .window-content .form-group-stacked button.danger {
+#JTCS-custom-dialog .window-content .form-group button.theme,
+#JTCS-custom-dialog .window-content .form-group-stacked button.danger,
+#JTCS-custom-dialog .window-content .form-group-stacked button.theme {
   width: 100%;
   max-width: 300px;
+  margin-inline: auto;
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label input,
 #JTCSSettingsApplication .window-content .form-group-stacked.has-floating-label input,
@@ -1843,6 +1850,28 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   font-family: Arial, Helvetica, sans-serif;
   border: 1px solid var(--JTCS-border-color);
   background-color: var(--JTCS-input-background-color);
+}
+#JTCSSettingsApplication .window-content input[type=text] option,
+#JTCSSettingsApplication .window-content select option,
+#slideshow-config .window-content input[type=text] option,
+#slideshow-config .window-content select option,
+#JTCS-custom-dialog .window-content input[type=text] option,
+#JTCS-custom-dialog .window-content select option {
+  background-color: var(--JTCS-input-background-color);
+}
+#JTCSSettingsApplication .window-content input[type=text] option:hover, #JTCSSettingsApplication .window-content input[type=text] option:focus,
+#JTCSSettingsApplication .window-content select option:hover,
+#JTCSSettingsApplication .window-content select option:focus,
+#slideshow-config .window-content input[type=text] option:hover,
+#slideshow-config .window-content input[type=text] option:focus,
+#slideshow-config .window-content select option:hover,
+#slideshow-config .window-content select option:focus,
+#JTCS-custom-dialog .window-content input[type=text] option:hover,
+#JTCS-custom-dialog .window-content input[type=text] option:focus,
+#JTCS-custom-dialog .window-content select option:hover,
+#JTCS-custom-dialog .window-content select option:focus {
+  background-color: var(--JTCS-accent-color);
+  color: var(--JTCS-text-color-on-fill);
 }
 #JTCSSettingsApplication .window-content input[type=text]:hover,
 #JTCSSettingsApplication .window-content select:hover,

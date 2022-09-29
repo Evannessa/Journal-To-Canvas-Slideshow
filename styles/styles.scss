@@ -32,9 +32,14 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
         .form-group,
         .form-group-stacked {
-            button.danger {
-                width: 100%;
-                max-width: 300px;
+            button {
+                &.danger,
+                &.theme {
+                    width: 100%;
+                    max-width: 300px;
+                    margin-inline: auto;
+                    // margin-right: auto;
+                }
             }
             &.has-floating-label {
                 input {
@@ -172,10 +177,16 @@ $tile-types: ("frame", "art", "unlinked", "default");
         input[type="text"],
         select {
             font-family: Arial, Helvetica, sans-serif;
-            // border-color: var(--JTCS-border-color);
             border: 1px solid var(--JTCS-border-color);
-            // background-color: var(--JTCS-background-color);
             background-color: var(--JTCS-input-background-color);
+            option {
+                background-color: var(--JTCS-input-background-color);
+                &:hover,
+                &:focus {
+                    background-color: var(--JTCS-accent-color);
+                    color: var(--JTCS-text-color-on-fill);
+                }
+            }
             &:hover {
                 border-color: var(--JTCS-accent-color);
             }

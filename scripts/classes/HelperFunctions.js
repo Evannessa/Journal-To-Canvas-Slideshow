@@ -354,7 +354,7 @@ export class HelperFunctions {
             }
             if (propertyName.includes("background-color")) {
                 const htmlStyle = getComputedStyle(html);
-                let inputBG = htmlStyle.getPropertyValue("--JTCS-background-color-20");
+                let inputBG = htmlStyle.getPropertyValue("--JTCS-background-color");
                 let elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color");
                 let borderColor = htmlStyle.getPropertyValue("--JTCS-background-color-70");
                 let shadowColor = htmlStyle.getPropertyValue("--JTCS-background-color-50");

@@ -1259,12 +1259,16 @@ $text-align-directions: ("left", "center", "right");
             grid-template-columns: repeat(3, 1fr);
         }
     }
-    .dialog-buttons .dialog-button[data-button="delete"] {
-        background: var(--color-danger-base);
-        color: white;
-        font-weight: bold;
+    .dialog-buttons .dialog-button {
+        [data-button="delete"],
+        [data-button="reset"] {
+            background: var(--color-danger-base);
+            color: white;
+            font-weight: bold;
+        }
     }
     .dialog-buttons .dialog-button {
+        @extend .blank-button;
         $buttonTypes: (
             delete: var(--color-danger-base),
             cancel: transparent,
