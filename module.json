@@ -57,5 +57,5 @@
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
     "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/v9-overhaul-experimental/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/v9-overhaul-experimental.zip"
+    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/v9-overhaul-experimental.zip"
 }
