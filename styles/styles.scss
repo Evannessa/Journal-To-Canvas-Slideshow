@@ -657,10 +657,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
     }
     // --color-text-primary: ;
 }
-
+// .editor-content {
+//     p {
+//         display: flex;
+//         align-items: center;
+//         justify-content: center;
+//         flex-wrap: wrap;
+//     }
+// }
 .clickableImageContainer {
     display: inline-flex;
     @extend .padding-medium;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
     align-items: center;
     // align-items: center;
     // justify-content: center;
@@ -688,10 +698,10 @@ $tile-types: ("frame", "art", "unlinked", "default");
         top: 50%;
         transform: translateY(-50%);
         z-index: 400;
-        left: 0;
+        left: 5px;
         display: flex;
         align-items: flex-start;
-        width: 100%;
+        // width: 100%;
         height: fit-content;
 
         transition: opacity 100ms ease-in;
@@ -766,6 +776,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
     box-shadow: inset 0px 0px 2px transparent;
     outline: 2px dotted transparent;
     transition: all 100ms ease-out;
+    flex: 1;
     &:hover {
         border: 2px solid var(--JTCS-accent-color);
         box-shadow: inset 2px 2px 8px rgba(50, 51, 59, 0.5);

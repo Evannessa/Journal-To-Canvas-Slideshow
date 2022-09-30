@@ -2538,9 +2538,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 
 .clickableImageContainer {
   display: inline-flex;
-  align-items: center;
   width: -webkit-fit-content;
   width: -moz-fit-content;
+  width: fit-content;
+  align-items: center;
   width: fit-content;
   position: relative;
 }
@@ -2559,10 +2560,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   top: 50%;
   transform: translateY(-50%);
   z-index: 400;
-  left: 0;
+  left: 5px;
   display: flex;
   align-items: flex-start;
-  width: 100%;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
@@ -2638,6 +2638,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: inset 0px 0px 2px transparent;
   outline: 2px dotted transparent;
   transition: all 100ms ease-out;
+  flex: 1;
 }
 .clickableImage:hover,
 .rightClickableImage:hover {
