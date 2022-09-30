@@ -24,6 +24,7 @@ export const setupHookHandlers = async () => {
         if (!game.user.isGM) {
             return;
         }
+
         await JTCSModules.SheetImageApp.applyImageClasses(app, html);
     }
 
@@ -80,19 +81,6 @@ export const setupHookHandlers = async () => {
     function rerenderImageSheet(options) {
         console.log("Re-rendering in response to settings or flags");
         const { origin, currentScene, updateData } = options;
-        if (typeof updateData === "object") {
-        }
-
-        const sheetsWithControls = HelperFunctions.getSettingValue(
-            "artGallerySettings",
-            "sheetSettings.modularChoices"
-        );
-
-        let renderAnyway = false; //should the sheet render anyway, regardless of if the settings have it turned off?
-
-        if (origin && origin === "JTCSSettings") {
-            renderAnyway = true;
-        }
 
         let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
         renderedSheets.forEach((sheet) => {
@@ -102,8 +90,8 @@ export const setupHookHandlers = async () => {
             //and it's not currently being edited
             //and we're not telling it to render anyway
             let editorsActive = HelperFunctions.editorsActive(sheet);
-
-            if ((sheetsWithControls[docType] || renderAnyway) && !editorsActive) {
+            console.log(editorsActive);
+            if (editorsActive !== true) {
                 sheet.render();
             }
         });
@@ -112,7 +100,7 @@ export const setupHookHandlers = async () => {
     const hookHandlers = {
         rerenderImageSheet: {
             //when the art gallery tiles update, re-render the sheets
-            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile", "updateJTCSSettings"],
+            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile", "updateJTCSSettings", "canvasReady"],
             handlerFunction: rerenderImageSheet,
         },
         renderImageControls: {
