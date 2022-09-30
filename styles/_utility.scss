@@ -1268,9 +1268,18 @@ $text-align-directions: ("left", "center", "right");
         }
     }
     .dialog-buttons .dialog-button {
+        @include JTCS-accent-ghost;
         @extend .blank-button;
+        &[data-button="delete"],
+        &[data-button="reset"] {
+            @include JTCS-accent-fill($primary-color: var(--color-danger-base));
+            background: var(--color-danger-base);
+            color: white;
+            font-weight: bold;
+        }
         $buttonTypes: (
             delete: var(--color-danger-base),
+            reset: var(--color-danger-base),
             cancel: transparent,
             "window": pink,
             journalEntry: rgb(94, 169, 226),

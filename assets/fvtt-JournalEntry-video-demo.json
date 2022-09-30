@@ -1,0 +1,15 @@
+{
+  "name": "Video Demo",
+  "content": "<p><video controls=\"controls\" width=\"320\" height=\"240\">\n  <source src=\"DemoImages/Videos/Waterfalls.mp4\" type=\"video/mp4\" />\n</video></p>\n<p><video controls=\"controls\" width=\"320\" height=\"240\">\n  <source src=\"DemoImages/Videos/StarrySparkles.mp4\" type=\"video/mp4\" />\n</video></p>",
+  "flags": {
+    "core": {
+      "sourceId": "JournalEntry.k3tNlbsTTVCKviiK"
+    },
+    "exportSource": {
+      "world": "moduletestworld",
+      "system": "cyphersystem",
+      "coreVersion": "9.269",
+      "systemVersion": "1.32.3"
+    }
+  }
+}

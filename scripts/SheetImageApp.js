@@ -92,12 +92,13 @@ export class SheetImageApp {
         await SheetImageApp.applySheetFadeSettings(journalSheet);
 
         let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
+        // game.JTCS.templates["image-controls"]
         let defaultArtTileID = await ArtTileManager.getDefaultArtTileID();
 
         let imageName = await SheetImageDataController.convertImageSourceToID(imgElement);
         imgElement.dataset.name = imageName;
 
-        let displayTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true);
+        let displayTiles = await ArtTileManager.getSceneSlideshowTiles("art", true);
         displayTiles = displayTiles.filter((tile) => !tile.missing);
         displayTiles = displayTiles.map((tile) => {
             return {

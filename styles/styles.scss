@@ -312,7 +312,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
 
     button {
         &.file-picker,
-        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary) {
+        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary):not([data-button="danger"]):not([data-button="reset"]) {
             @include JTCS-accent-fill();
         }
     }
@@ -659,7 +659,16 @@ $tile-types: ("frame", "art", "unlinked", "default");
 }
 
 .clickableImageContainer {
+    display: inline-flex;
+    @extend .padding-medium;
+    align-items: center;
+    // align-items: center;
+    // justify-content: center;
     width: fit-content;
+    @extend .reset-margin;
+    // img {
+    //     height: auto;
+    // }
     &.JTCS {
         label {
             border: 2px solid var(--color-deep-purple-darkest);
@@ -672,11 +681,13 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
     }
     position: relative;
+
     .clickableImageControls {
         opacity: 0%;
         position: absolute;
-        top: 20%;
-        // transform: translateY(-50%);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 400;
         left: 0;
         display: flex;
         align-items: flex-start;
@@ -692,7 +703,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
     }
 
     .displayLocations {
-        gap: 0.5rem;
+        // li {
+        //     width: 50%;
+
+        //     &:after {
+        //         content: "";
+        //         display: block;
+        //         padding-bottom: 100%;
+        //     }
+        //     > button {
+        //         position: absolute;
+        //         width: 100%;
+        //         height: 100%;
+        //     }
+        // }
         * {
             pointer-events: auto;
         }
@@ -740,10 +764,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
 .rightClickableImage {
     border: 0px solid transparent;
     box-shadow: inset 0px 0px 2px transparent;
+    outline: 2px dotted transparent;
     transition: all 100ms ease-out;
     &:hover {
-        border: 2px solid white;
+        border: 2px solid var(--JTCS-accent-color);
         box-shadow: inset 2px 2px 8px rgba(50, 51, 59, 0.5);
+        // outline: 2px dotted var(--JTCS-accent-color);
         cursor: pointer;
         transition: all 100ms ease-out;
         & ~ .clickableImageControls {

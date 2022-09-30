@@ -151,7 +151,7 @@
   height: 100%;
 }
 
-.reset-margin, .item-menu hr.list-divider {
+.reset-margin, .clickableImageContainer, .item-menu hr.list-divider {
   margin: 0;
 }
 
@@ -614,7 +614,7 @@ fieldset.toggle-button-group label:last-of-type {
   padding: 0.25rem 0.5rem;
 }
 
-.padding-medium {
+.padding-medium, .clickableImageContainer {
   padding: 0.5rem 1rem;
 }
 
@@ -1435,6 +1435,32 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: white;
   font-weight: bold;
 }
+#JTCS-custom-dialog .dialog-buttons .dialog-button {
+  background-color: transparent;
+  color: var(--JTCS-accent-color);
+  border: 2px solid var(--JTCS-accent-color);
+  transition: background-color 120ms ease-in, color 120ms ease-in;
+}
+#JTCS-custom-dialog .dialog-buttons .dialog-button:hover, #JTCS-custom-dialog .dialog-buttons .dialog-button:focus, #JTCS-custom-dialog .dialog-buttons .dialog-button.active {
+  transition: background-color 120ms ease-out, color 120ms ease-out;
+  background-color: var(--JTCS-accent-color);
+  color: var(--JTCS-text-color-on-fill);
+}
+#JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete], #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=reset] {
+  background-color: var(--color-danger-base);
+  box-shadow: unset;
+  color: var(--JTCS-text-color-on-fill);
+  border: unset;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+  transition: transform 120ms ease-in-out;
+  background: var(--color-danger-base);
+  color: white;
+  font-weight: bold;
+}
+#JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete]:hover, #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete]:focus, #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=reset]:hover, #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=reset]:focus {
+  transform: scale(1.12);
+}
 #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=list] {
   background: !important;
 }
@@ -2092,11 +2118,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid var(--JTCS-accent-color-80);
   transition: border-color 150ms ease-out;
 }
-#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary),
+#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]),
 #slideshow-config button.file-picker,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary),
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]),
 #JTCS-custom-dialog button.file-picker,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary) {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]) {
   background-color: var(--JTCS-accent-color);
   box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
@@ -2105,15 +2131,15 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
 }
-#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):focus,
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):focus,
 #slideshow-config button.file-picker:hover,
 #slideshow-config button.file-picker:focus,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):hover,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):focus,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):hover,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):focus,
 #JTCS-custom-dialog button.file-picker:hover,
 #JTCS-custom-dialog button.file-picker:focus,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):hover,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):focus {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):hover,
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):focus {
   transform: scale(1.12);
 }
 #JTCSSettingsApplication .secondary,
@@ -2511,6 +2537,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 
 .clickableImageContainer {
+  display: inline-flex;
+  align-items: center;
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
@@ -2528,7 +2556,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .clickableImageContainer .clickableImageControls {
   opacity: 0%;
   position: absolute;
-  top: 20%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 400;
   left: 0;
   display: flex;
   align-items: flex-start;
@@ -2541,9 +2571,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 .clickableImageContainer .clickableImageControls:hover {
   opacity: 100%;
-}
-.clickableImageContainer .displayLocations {
-  gap: 0.5rem;
 }
 .clickableImageContainer .displayLocations * {
   pointer-events: auto;
@@ -2609,11 +2636,12 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .rightClickableImage {
   border: 0px solid transparent;
   box-shadow: inset 0px 0px 2px transparent;
+  outline: 2px dotted transparent;
   transition: all 100ms ease-out;
 }
 .clickableImage:hover,
 .rightClickableImage:hover {
-  border: 2px solid white;
+  border: 2px solid var(--JTCS-accent-color);
   box-shadow: inset 2px 2px 8px rgba(50, 51, 59, 0.5);
   cursor: pointer;
   transition: all 100ms ease-out;

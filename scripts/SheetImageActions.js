@@ -34,6 +34,7 @@ export const sheetControls = [
         tooltip: "open Journal to Canvas Slideshow Settings",
         icon: "fas fa-cog",
     },
+
     // {
     //     action: "sheet.click.toggleInstructions",
     //     tooltip: "show or hide contextual instructions",
