@@ -2276,7 +2276,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transform: scale(1);
   transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
-  background-color: var(--JTCS-accent-color-60);
 }
 #sheet-controls button:hover, #sheet-controls button:focus {
   transform: scale(1.12);

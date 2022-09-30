@@ -139,7 +139,7 @@ export class SheetImageApp {
             controls: controlsData,
             isActive,
         });
-        let $editorElement = $(journalSheet.element[0].querySelector(".window-content .editor"));
+        let $editorElement = $(journalSheet.element[0].querySelector(".window-content .editor-content"));
         $editorElement.prepend(renderHtml);
         let controlsContainer = $("#sheet-controls");
         await SheetImageApp.activateSheetWideEventListeners({ controlsContainer, journalSheet, isActive });

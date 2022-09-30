@@ -427,8 +427,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
         width: 36px;
         height: 36px;
         --color-shadow-primary: var(--JTCS-accent-color);
-        @include JTCS-accent-fill($include-shadow: false, $is-icon-button: true);
-        background-color: var(--JTCS-accent-color-60);
+        @include JTCS-accent-fill(
+            $include-shadow: false,
+            $is-icon-button: true,
+            $primary-color: var(--JTCS-accent-color)
+        );
+        // background-color: var(--JTCS-accent-color);
         &.active {
             @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
         }

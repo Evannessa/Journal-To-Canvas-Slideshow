@@ -11,6 +11,7 @@ const notificationIcons = {
  * @param {event} event - the event that triggered this
  */
 function toggleHideAllSiblings(event, currentTarget) {
+    if (!event && !currentTarget) return;
     if (!currentTarget) currentTarget = event.currentTarget;
 
     const siblings = Array.from(currentTarget.parentNode.children).filter((item) => !item.isSameNode(currentTarget));
