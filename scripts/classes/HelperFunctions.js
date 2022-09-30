@@ -358,16 +358,25 @@ export class HelperFunctions {
                 let elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color");
                 let borderColor = htmlStyle.getPropertyValue("--JTCS-background-color-70");
                 let shadowColor = htmlStyle.getPropertyValue("--JTCS-background-color-50");
+                let dangerColor = htmlStyle.getPropertyValue("--color-danger-base");
+                let warningColor = htmlStyle.getPropertyValue("--color-warning-base");
+                let tileItemColor = "transparent";
                 if (!shouldDarken) {
                     inputBG = getComputedStyle(html).getPropertyValue("--JTCS-background-color-20");
                     borderColor = "transparent"; //getComputedStyle(html).getPropertyValue("--JTCS-background-color");
                     shadowColor = "transparent";
                     elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color-10");
+                    dangerColor = htmlStyle.getPropertyValue("--color-danger-light");
+                    warningColor = htmlStyle.getPropertyValue("--color-warning-light");
+                    tileItemColor = elevationBG;
                 }
                 html.style.setProperty("--JTCS-box-shadow-color", shadowColor);
                 html.style.setProperty("--JTCS-input-background-color", inputBG);
                 html.style.setProperty("--JTCS-border-color", borderColor);
                 html.style.setProperty("--JTCS-elevation-BG-color", elevationBG);
+                html.style.setProperty("--JTCS-danger-color", dangerColor);
+                html.style.setProperty("--JTCS-warning-color", warningColor);
+                html.style.setProperty("--JTCS-tile-item-bg-color", tileItemColor);
             }
         }
     }

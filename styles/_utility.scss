@@ -32,8 +32,8 @@
     border-top: 4px solid var(--JTCS-accent-color);
 
     padding: var(--padding-small);
-    background-color: var(--bg-color);
-    color: var(--color-text-light-0);
+    background-color: var(--JTCS-elevation-BG-color);
+    color: var(--JTCS-text-color-on-bg);
     top: 100%;
     min-width: max-content;
     box-shadow: var(--box-shadow);
@@ -93,11 +93,11 @@
     }
 }
 .danger {
-    background-color: var(--color-danger-light);
-    color: white;
+    background-color: var(--JTCS-danger-color);
+    color: var(--JTCS-text-color-on-fill);
 }
 .danger-text {
-    color: var(--color-danger-light);
+    color: var(--JTCS-danger-color);
 }
 
 .toggle,
@@ -550,7 +550,7 @@ $text-align-directions: ("left", "center", "right");
 .hover-bg-removable {
     transition: background-color 150ms ease-in;
     &:hover {
-        background-color: var(--color-danger-base);
+        background-color: var(--JTCS-danger-color);
     }
 }
 .hover-bg-none {
@@ -1200,13 +1200,14 @@ $text-align-directions: ("left", "center", "right");
         width: 100%;
         border-bottom: unset;
         border-top: unset;
-        border: 1px solid hsl(0, 0%, 50%);
+        border: 1px solid var(--JTCS-accent-color);
         @extend .reset-margin;
         margin-top: unset;
         margin-bottom: unset;
     }
     li {
-        background-color: var(--foundry-dark-gray);
+        color: var(--JTCS-text-color-on-bg);
+        background-color: var(--JTCS-elevation-BG-color);
         &:first-child {
             margin-top: 1em;
             // padding-top: 2em;
@@ -1219,6 +1220,9 @@ $text-align-directions: ("left", "center", "right");
         --bg-color: var(--JTCS-accent-color);
         --text-color: var(--JTCS-text-color-on-fill);
         @extend .hover-bg-dynamic;
+        &:hover {
+            color: var(--JTCS-text-color-on-fill);
+        }
         i {
             display: grid;
             place-content: center;
@@ -1262,7 +1266,7 @@ $text-align-directions: ("left", "center", "right");
     .dialog-buttons .dialog-button {
         [data-button="delete"],
         [data-button="reset"] {
-            background: var(--color-danger-base);
+            background: var(--JTCS-danger-color);
             color: white;
             font-weight: bold;
         }
@@ -1272,14 +1276,14 @@ $text-align-directions: ("left", "center", "right");
         @extend .blank-button;
         &[data-button="delete"],
         &[data-button="reset"] {
-            @include JTCS-accent-fill($primary-color: var(--color-danger-base));
-            background: var(--color-danger-base);
-            color: white;
+            @include JTCS-accent-fill($primary-color: var(--JTCS-danger-color));
+            // background: var(--JTCS-danger-color);
+            color: var(--JTCS-text-color-on-fill);
             font-weight: bold;
         }
         $buttonTypes: (
-            delete: var(--color-danger-base),
-            reset: var(--color-danger-base),
+            delete: var(--JTCS-danger-color),
+            reset: var(--JTCS-danger-color),
             cancel: transparent,
             "window": pink,
             journalEntry: rgb(94, 169, 226),
@@ -1302,7 +1306,7 @@ $text-align-directions: ("left", "center", "right");
         }
         h1,
         .destructive-action-text {
-            color: var(--color-danger-base);
+            color: var(--JTCS-danger-color);
             font-weight: 700;
         }
     }

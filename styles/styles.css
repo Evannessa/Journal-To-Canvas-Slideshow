@@ -128,8 +128,8 @@
   position: absolute;
   border-top: 4px solid var(--JTCS-accent-color);
   padding: var(--padding-small);
-  background-color: var(--bg-color);
-  color: var(--color-text-light-0);
+  background-color: var(--JTCS-elevation-BG-color);
+  color: var(--JTCS-text-color-on-bg);
   top: 100%;
   min-width: -webkit-max-content;
   min-width: -moz-max-content;
@@ -198,12 +198,12 @@
 }
 
 .danger {
-  background-color: var(--color-danger-light);
-  color: white;
+  background-color: var(--JTCS-danger-color);
+  color: var(--JTCS-text-color-on-fill);
 }
 
 .danger-text {
-  color: var(--color-danger-light);
+  color: var(--JTCS-danger-color);
 }
 
 .toggle,
@@ -768,7 +768,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: background-color 150ms ease-in;
 }
 .hover-bg-removable:hover {
-  background-color: var(--color-danger-base);
+  background-color: var(--JTCS-danger-color);
 }
 
 .hover-bg-none:hover {
@@ -1378,12 +1378,13 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   width: 100%;
   border-bottom: unset;
   border-top: unset;
-  border: 1px solid hsl(0deg, 0%, 50%);
+  border: 1px solid var(--JTCS-accent-color);
   margin-top: unset;
   margin-bottom: unset;
 }
 .item-menu li {
-  background-color: var(--foundry-dark-gray);
+  color: var(--JTCS-text-color-on-bg);
+  background-color: var(--JTCS-elevation-BG-color);
   width: 100%;
   --bg-color: var(--JTCS-accent-color);
   --text-color: var(--JTCS-text-color-on-fill);
@@ -1394,6 +1395,9 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .item-menu li:last-child {
   padding-top: 1em;
   padding-bottom: 1em;
+}
+.item-menu li:hover {
+  color: var(--JTCS-text-color-on-fill);
 }
 .item-menu li i {
   display: grid;
@@ -1431,7 +1435,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCS-custom-dialog .dialog-buttons .dialog-button [data-button=delete],
 #JTCS-custom-dialog .dialog-buttons .dialog-button [data-button=reset] {
-  background: var(--color-danger-base);
+  background: var(--JTCS-danger-color);
   color: white;
   font-weight: bold;
 }
@@ -1447,15 +1451,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   color: var(--JTCS-text-color-on-fill);
 }
 #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete], #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=reset] {
-  background-color: var(--color-danger-base);
+  background-color: var(--JTCS-danger-color);
   box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
   border: unset;
   transform: scale(1);
   transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
-  background: var(--color-danger-base);
-  color: white;
+  color: var(--JTCS-text-color-on-fill);
   font-weight: bold;
 }
 #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete]:hover, #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=delete]:focus, #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=reset]:hover, #JTCS-custom-dialog .dialog-buttons .dialog-button[data-button=reset]:focus {
@@ -1476,7 +1479,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCS-custom-dialog .destructive-action-prompt h1,
 #JTCS-custom-dialog .destructive-action-prompt .destructive-action-text {
-  color: var(--color-danger-base);
+  color: var(--JTCS-danger-color);
   font-weight: 700;
 }
 
@@ -1831,7 +1834,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item),
 #slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item),
 #JTCS-custom-dialog .window-content li.tile-list-item:not(.new-tile-list-item) {
-  box-shadow: var(--JTCS-background-color-50) 0px 1px 3px;
+  box-shadow: var(--JTCS-box-shadow-color) 0px 1px 3px;
+  background-color: var(--JTCS-tile-item-bg-color);
 }
 #JTCSSettingsApplication .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button,
 #slideshow-config .window-content li.tile-list-item:not(.new-tile-list-item) .actions .icon-button,
@@ -2657,14 +2661,14 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 
 .error::before {
   content: "⚠";
-  color: var(--color-danger-base);
+  color: var(--JTCS-danger-color);
 }
 
 [data-missing=true] {
-  color: var(--color-danger-base);
+  color: var(--JTCS-danger-color);
 }
 [data-missing=true]:hover {
-  color: var(--color-warning-base);
+  color: var(--JTCS-warning-color);
 }
 [data-missing=true] button:disabled {
   opacity: 50%;

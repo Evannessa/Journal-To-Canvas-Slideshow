@@ -145,7 +145,8 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
 
         li.tile-list-item:not(.new-tile-list-item) {
-            box-shadow: var(--JTCS-background-color-50) 0px 1px 3px;
+            box-shadow: var(--JTCS-box-shadow-color) 0px 1px 3px;
+            background-color: var(--JTCS-tile-item-bg-color);
             .actions .icon-button {
                 box-shadow: unset;
                 outline: unset;
@@ -800,15 +801,15 @@ $tile-types: ("frame", "art", "unlinked", "default");
 .error {
     &::before {
         content: "⚠";
-        color: var(--color-danger-base);
+        color: var(--JTCS-danger-color);
     }
 }
 
 [data-missing="true"] {
     &:hover {
-        color: var(--color-warning-base);
+        color: var(--JTCS-warning-color);
     }
-    color: var(--color-danger-base);
+    color: var(--JTCS-danger-color);
 
     button:disabled {
         opacity: 50%;
