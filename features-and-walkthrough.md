@@ -20,9 +20,12 @@ https://user-images.githubusercontent.com/13098820/193417360-70ceb7b4-0ab2-4160-
 
 ## Default Tiles
 
+Select a "Default Art Tile" for each scene with Ctrl/Cmd + Click
+
 https://user-images.githubusercontent.com/13098820/193417379-e38485a1-492d-425d-87de-4862e6406131.mp4
 - default Tile demo
 
+Clicking on a sheet image will automatically send it to the "Default" Tile in a scene
 
 https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
 - display on default tile demo 
@@ -85,5 +88,8 @@ You can change the 'default' image for both Gallery tile types in the settings, 
 
 The second method involves linking a Gallery Tile to a canvas tile object that already exists in the scene. 
 
-#TODO (record video) 
+TODO (record video) 
 
+# Utilities and Customization
+
+TODO 
