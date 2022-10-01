@@ -1,8 +1,21 @@
 (Note: Some of the footage below is a teeny bit outdated, with small visual and functional bugs having being fixed since they were recorded; If your interface looks a little bit different than in the videos below, it is due to those updates; but all major functionality should be the same ) 
 
-# Different Display Methods
+# Display Methods
 
-Display images in a window popout, or a dedicated Journal Entry
+- Hovering over an image on an actor, item, or journal entry sheet will display controls that represent different methods by which you can display that image. 
+
+- these controls can be toggled on and off by type or on each individual sheet (see "Cuztomization and Utility Section" for more information)
+
+- You can also click on the image itself, which will send it to whichever tile is selected as "Default" in that scene (see "Default Tiles" section for more information)
+
+https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
+- display on default tile demo 
+
+## Window Popouts, Display Journal and Dedicated Display Scene - (Upgraded Features) 
+
+Two of the options in the controls allow you to display images in a window popout, or a dedicated Journal Entry
+
+(Note: The window popout option will render a new "popout" window each time you click it, allowing multiple windows for multiple different images, while the Journal Entry option will simply change the image in that specific journal, showing one image at a time, and providing more of a "slideshow" effect.
 
 https://user-images.githubusercontent.com/13098820/193417364-234769f5-4feb-4d5f-8b2e-14582dfecda9.mp4
 - journal entry popover demo
@@ -13,26 +26,18 @@ https://user-images.githubusercontent.com/13098820/193417382-25c0aaca-ccc5-4232-
 - art scene demo 
 
 
-Clicking the top button on the controls will display a button list of all of the tiles in the scene, and clicking on one of the buttons will display the specific image on that tile
+## The Art Gallery - (New Features!)
+
+Clicking the top button on the controls will display a button list of all of the tiles in the scene, and clicking on one of those buttons will display the specific image on that tile
 
 https://user-images.githubusercontent.com/13098820/193417360-70ceb7b4-0ab2-4160-afe9-6ee620d22ab5.mp4
-- art gallery demo 
+- art gallery display demo 
 
-## Default Tiles
+### Art Gallery Config
 
-Select a "Default Art Tile" for each scene with Ctrl/Cmd + Click
+Open the Art Gallery Config to see all of the Gallery Tiles a scene. 
 
-https://user-images.githubusercontent.com/13098820/193417379-e38485a1-492d-425d-87de-4862e6406131.mp4
-- default Tile demo
-
-Clicking on a sheet image will automatically send it to the "Default" Tile in a scene
-
-https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
-- display on default tile demo 
-
-## Art Gallery Config
-
-Open the Art Gallery Config to see each Art Tile and Frame Tile in the scene.
+You can open it by clicking on a button in the "Tiles" controls, or via utility buttons on any Journal Entry, Actor, or Item sheet. 
 
 Contextual instructions about each type of tile will show to the right
 
@@ -49,7 +54,22 @@ Upon switching a scene, the Config will update to show that particular scene's A
 https://user-images.githubusercontent.com/13098820/193417372-181cfcd0-06ce-4aaa-b8a6-eb71bb9000d4.mp4
 - change config based on scene
 
-Art Tiles and Frame Tiles
+## Default Tiles
+
+Select a "Default Art Tile" for each scene in the Art Gallery config with Ctrl/Cmd + Click. 
+(The "Default" tile will automatically be set to the first "linked" Art Tile in a scene )
+
+https://user-images.githubusercontent.com/13098820/193417379-e38485a1-492d-425d-87de-4862e6406131.mp4
+- default Tile demo
+
+Clicking on a sheet image itself, rather than any of its controls, will automatically send it to the "Default Art Tile" in the current scene
+
+https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
+- display on default tile demo 
+
+
+
+## Art Tiles and Frame Tiles
 
 - A frame tile acts like an "Frame" for the Art Tile.
 - The "Frame" Tile will contain the Art Tile within it, making sure it gets no larger than the frame, but maintaining the image's original dimensions/aspect ratio.
