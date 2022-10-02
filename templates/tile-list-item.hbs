@@ -28,8 +28,9 @@
 		<div class="[ actions ] [ focus-reveal--child hover-reveal--child ]">
             {{#with @root.settingsData}}
                 {{#each (filter itemActions.click.actions "renderOnMissing" ../missing)}}
-                    {{#unless (eq overflow true)}}
-                    {{#unless (eq renderNever true)}}
+                    {{#unless (checkAll "any" true overflow renderNever)}}
+                    {{!-- {{#unless (eq overflow true)}} --}}
+                    {{!-- {{#unless (eq renderNever true)}} --}}
                     {{> (dynamicPartial "icon-button")
                         action=(concat "itemActions.click.actions" "." @key)
                         name=(concat 
@@ -38,7 +39,6 @@
                         tooltipText=this.tooltipText
                         extraClass=this.extraClass
                     }} 
-                    {{/unless}}
                     {{/unless}}
                 {{/each}}
             {{/with}}

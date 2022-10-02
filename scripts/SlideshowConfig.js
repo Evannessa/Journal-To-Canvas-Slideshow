@@ -29,7 +29,27 @@ export class SlideshowConfig extends Application {
     renderWithData() {
         this.render(true, this.data);
     }
-
+    hideButtons(html) {
+        Array.from(html.querySelectorAll(".tile-list-item .actions .icon-button")).forEach((btn) => {
+            btn = $(btn);
+            let data = btn.data();
+            let parentData = btn.closest(".tile-list-item").data();
+            let type = parentData.type;
+            let action = data.action.split(".").pop();
+            let itemActionsObject = slideshowDefaultSettingsData.itemActions.click.actions;
+            let filteredActionKeys = [];
+            Object.keys(itemActionsObject).forEach((itemAction) => {
+                if (getProperty(itemActionsObject, itemAction).artTileOnly) {
+                    filteredActionKeys.push(itemAction);
+                }
+            });
+            filteredActionKeys.forEach((itemAction) => {
+                if (type === "frame" && itemAction === action) {
+                    btn.css({ display: "none" });
+                }
+            });
+        });
+    }
     /**
      * Handles all types of actions (click, hover, etc.) and finds their relevant functions
      * @param {Event} event - the passed in event that triggered this
@@ -125,6 +145,7 @@ export class SlideshowConfig extends Application {
     async activateListeners(html) {
         // super.activateListeners(html);
         html = $(html[0].closest(".window-app"));
+        this.hideButtons(html[0]);
         html.find(".window-content").attr("data-fade-all", true);
         // await this.setUIColors(html);
         // this._handleToggle(html);

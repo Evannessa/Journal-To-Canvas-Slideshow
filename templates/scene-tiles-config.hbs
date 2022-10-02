@@ -49,8 +49,7 @@
                 hidden-overflow-x hidden-overflow-y 
 				padding-inline-medium 
 				flexrow gap-small
-                flex1
-                "
+                flex1"
     >
 
         {{> (dynamicPartial "scene-tile-wrapper") 
@@ -64,7 +63,7 @@
     </section>
     <section id="JTCS-config-instructions">
         <button 
-        class="{{ternary areConfigInstructionsVisible "active" ""}}" 
+        class="{{ternary areConfigInstructionsVisible "active" ""}} instructions__button" 
         data-action="globalActions.click.actions.toggleInstructionsVisible" title="toggle instructions on and off">
             <i class="fas fa-info"></i>
         </button>

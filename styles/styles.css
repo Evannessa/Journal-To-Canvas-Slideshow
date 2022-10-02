@@ -610,7 +610,8 @@ fieldset.toggle-button-group label:last-of-type {
   padding-block: 1.5rem;
 }
 
-.padding-small {
+.padding-small, #slideshow-config .empty-state,
+.clickableImageContainer .empty-state {
   padding: 0.25rem 0.5rem;
 }
 
@@ -1117,7 +1118,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   flex-wrap: nowrap;
 }
 
-.flex-centered {
+.flex-centered, #JTCS-custom-dialog .destructive-action-prompt {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1421,9 +1422,12 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: var(--JTCS-text-color-on-bg);
 }
 #JTCS-custom-dialog .dialog-buttons {
   flex: 0;
+  display: flex;
+  gap: 0.5rem;
 }
 #JTCS-custom-dialog.dialog-grid .dialog-buttons {
   display: grid;
@@ -1468,6 +1472,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background: !important;
 }
 #JTCS-custom-dialog .destructive-action-prompt {
+  display: flex;
+  flex-direction: column;
   flex: 1 0 0;
 }
 #JTCS-custom-dialog .destructive-action-prompt h1 {
@@ -1551,6 +1557,26 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 :root {
   --box-shadow-inset: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
+}
+
+#slideshow-config .empty-state,
+.clickableImageContainer .empty-state {
+  background-color: var(--JTCS-elevation-BG-color);
+  color: var(--JTCS-text-color-on-bg);
+  text-align: center;
+}
+#slideshow-config .empty-state span.accent,
+.clickableImageContainer .empty-state span.accent {
+  padding-inline: 0.15rem;
+  font-weight: bold;
+}
+#slideshow-config .empty-state[data-type=art] span.accent,
+.clickableImageContainer .empty-state[data-type=art] span.accent {
+  color: var(--data-art-color);
+}
+#slideshow-config .empty-state[data-type=frame] span.accent,
+.clickableImageContainer .empty-state[data-type=frame] span.accent {
+  color: var(--data-frame-color);
 }
 
 #JTCSSettingsApplication button > i,
@@ -2122,11 +2148,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid var(--JTCS-accent-color-80);
   transition: border-color 150ms ease-out;
 }
-#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]),
+#JTCSSettingsApplication button.file-picker, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button),
 #slideshow-config button.file-picker,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]),
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button),
 #JTCS-custom-dialog button.file-picker,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]) {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button) {
   background-color: var(--JTCS-accent-color);
   box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
@@ -2135,15 +2161,15 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: transform 120ms ease-in-out;
   transition: transform 120ms ease-in-out;
 }
-#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):focus,
+#JTCSSettingsApplication button.file-picker:hover, #JTCSSettingsApplication button.file-picker:focus, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button):hover, #JTCSSettingsApplication button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button):focus,
 #slideshow-config button.file-picker:hover,
 #slideshow-config button.file-picker:focus,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):hover,
-#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):focus,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button):hover,
+#slideshow-config button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button):focus,
 #JTCS-custom-dialog button.file-picker:hover,
 #JTCS-custom-dialog button.file-picker:focus,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):hover,
-#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):focus {
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button):hover,
+#JTCS-custom-dialog button[type=button]:not(.danger):not([data-action=scrollTo]):not(.new-tile-button):not(.secondary):not([data-button=danger]):not([data-button=reset]):not(.icon-button):not(.instructions__button):focus {
   transform: scale(1.12);
 }
 #JTCSSettingsApplication .secondary,

@@ -6,6 +6,8 @@
                 padding-small gap-small flow flex-col ]"
             tabindex="0"
         >
+        {{#if tiles.length}}
+            
             {{#each tiles as |tile|}}
                 {{> "modules/journal-to-canvas-slideshow/templates/tile-list-item.hbs"
                     tile 
@@ -14,6 +16,9 @@
                     allFrameTiles=@root.frameTiles
                 }}
             {{/each}}
+            {{else}}
+            <p class="empty-state" data-type="{{type}}">No <span class="accent">{{camelCaseToCapitalString type}} Tiles</span> in Scene</p>
+        {{/if}}
         
         </ul>
         {{> "modules/journal-to-canvas-slideshow/templates/new-tile-list-item.hbs"

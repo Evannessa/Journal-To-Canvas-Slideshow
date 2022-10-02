@@ -7,6 +7,29 @@
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
 $tile-types: ("frame", "art", "unlinked", "default");
+#slideshow-config,
+.clickableImageContainer {
+    .empty-state {
+        @extend .padding-small;
+        background-color: var(--JTCS-elevation-BG-color);
+        color: var(--JTCS-text-color-on-bg);
+        text-align: center;
+        span.accent {
+            padding-inline: 0.15rem;
+            font-weight: bold;
+        }
+        &[data-type="art"] {
+            span.accent {
+                color: var(--data-art-color);
+            }
+        }
+        &[data-type="frame"] {
+            span.accent {
+                color: var(--data-frame-color);
+            }
+        }
+    }
+}
 
 #JTCSSettingsApplication,
 #slideshow-config,
@@ -313,7 +336,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
 
     button {
         &.file-picker,
-        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary):not([data-button="danger"]):not([data-button="reset"]) {
+        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary):not([data-button="danger"]):not([data-button="reset"]):not(.icon-button):not(.instructions__button) {
             @include JTCS-accent-fill();
         }
     }

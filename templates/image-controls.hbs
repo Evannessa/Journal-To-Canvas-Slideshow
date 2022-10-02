@@ -22,6 +22,7 @@
 	  	{{/each}}
 	</ul>
 	<div class="displayTiles | hidden | flex-row flex-wrap | rounded " id="displayTileButtons">
+        {{#if displayTiles.length}}
         {{#each displayTiles as |tileData|}}
         <button
             name="{{concat "selectedDisplayTile" @root.imgPath}}"
@@ -38,6 +39,9 @@
             {{tileData.tile.displayName}}
         </button>
         {{/each}}
+        {{else}}
+            <p class="empty-state slight-rounded" data-type="art">No <span class="accent"> Art Tiles </span> in Scene</p>
+        {{/if}}
      
     </div>
 </div>

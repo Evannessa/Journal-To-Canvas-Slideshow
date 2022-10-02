@@ -474,84 +474,6 @@ export class HelperFunctions {
         return {};
     }
 
-    /**
-     * Generates a popover (tooltip, etc), and positions it from the source element
-     * boundingClientRect data
-     * @param {Object} templateData - the data to be passed to the popover
-     * @param {Application} parentApp - the parent application rendering the popover
-     * @param {HTMLElement} sourceElement - the element that is the "source" of the popover (a button, input, etc.)
-     */
-    static async createAndPositionPopover(templateData, elementDataArray = []) {
-        let elements = elementDataArray.map((data) => data.target);
-        let [popoverElement, sourceElement, parentElement] = elements; //destructure the passed-in elements
-
-        let boundingRect = sourceElement.getBoundingClientRect();
-
-        let popoverTemplate = game.JTCS.templates["popover"];
-        popoverElement = parentElement.find(".popover");
-        if (!popoverElement.length) {
-            //if it doesn't already exist, create it
-            let renderedHTML = await renderTemplate(popoverTemplate, templateData);
-            parentElement.append(renderedHTML);
-            popoverElement = parentElement.find(".popover");
-        }
-
-        let popoverData = elementDataArray.find((data) => data.name === "popoverElement");
-        popoverData.target = popoverElement;
-
-        popoverElement.css({ position: "absolute" });
-
-        popoverElement.offset({ top: boundingRect.top + boundingRect.height, left: boundingRect.left });
-
-        popoverElement.focus({ focusVisible: true });
-
-        //set up a "Click Out" event handler
-        $(document)
-            .off("click")
-            .on("click", async (event) => {
-                if (HelperFunctions.isOutsideClick(event)) {
-                    await HelperFunctions.hideAndDeletePopover(popoverElement);
-                }
-            });
-
-        //hideEvents should be list of events to hide the popover on (like blur, change, mouseout, etc)
-        elementDataArray.forEach((data) => {
-            let targetElement = data.target;
-            data.hideEvents.forEach((eventData) => {
-                let handler;
-                let selector;
-                let eventName;
-                let options;
-                if (typeof eventData === "string") {
-                    //if it's a simple string, just set the handler to immediaetly hide the popover on this event
-                    eventName = eventData;
-                    handler = async (event) => await HelperFunctions.hideAndDeletePopover(popoverElement);
-                    selector = "*";
-                } else if (typeof eventData === "object") {
-                    //if it's an object, we'll want to do something (like validate input) first before hiding
-                    eventName = eventData.eventName;
-                    options = {
-                        ...eventData.options,
-                        popover: popoverElement,
-                        hideFunction: HelperFunctions.hideAndDeletePopover,
-                    };
-                    handler = async (event, options) => {
-                        await eventData.wrapperFunction(event, options);
-                        // if (proceed) {
-                        // await HelperFunctions.hideAndDeletePopover(popoverElement);
-                        // }
-                    };
-                    selector = eventData.selector;
-                }
-                $(targetElement)
-                    .off(eventName)
-                    .on(eventName, selector, async (event) => await handler(event, options));
-            });
-        });
-
-        return popoverElement;
-    }
-
     static isOutsideClick(event) {
         if ($(event.target).closest(".popover").length) {
             //click was on the popover
@@ -559,22 +481,6 @@ export class HelperFunctions {
         }
         //if our click is outside of our popover element
         return true;
-    }
-
-    static async hideAndDeletePopover(popoverElement) {
-        // console.log("Hiding", popoverElement, popoverElement[0].isMouseOver);
-        // popoverElement.addClass("hidden");
-        //TODO: Put some sort of fading animation here
-        if (popoverElement.timeout) {
-            //if the popover is already counting down to a timeout, cancel it
-            clearTimeout(popoverElement.timeout);
-        }
-        let popoverTimeout = setTimeout(() => {
-            //set a new timeout to remove the popover
-            popoverElement.remove();
-        }, 900);
-        //save that timeout's id on the popover
-        popoverElement.timeout = popoverTimeout;
     }
 
     /**

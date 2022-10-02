@@ -1247,9 +1247,12 @@ $text-align-directions: ("left", "center", "right");
         flex-direction: column;
         align-items: center;
         @extend .padding-large;
+        color: var(--JTCS-text-color-on-bg);
     }
     .dialog-buttons {
         flex: 0;
+        display: flex;
+        gap: 0.5rem;
     }
     &.dialog-grid {
         .dialog-buttons {
@@ -1296,6 +1299,9 @@ $text-align-directions: ("left", "center", "right");
         }
     }
     .destructive-action-prompt {
+        @extend .flex-centered;
+        display: flex;
+        flex-direction: column;
         flex: 1 0 0;
         h1 {
             display: inline-flex;

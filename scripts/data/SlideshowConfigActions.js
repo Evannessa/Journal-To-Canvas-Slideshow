@@ -608,6 +608,7 @@ export const slideshowDefaultSettingsData = {
                         await app.activateListeners(app.element);
                     },
                     overflow: false,
+                    artTileOnly: true,
                 },
                 createNewGalleryTile: {
                     icon: "fas fa-plus",
