@@ -115,7 +115,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
 
         $selectors: (
-            "p",
+            "p:not(.inline-notification)",
             ".file-picker-group > label",
             ".color-picker-group > label",
             "span:not(.input-span) label",
@@ -843,8 +843,11 @@ $tile-types: ("frame", "art", "unlinked", "default");
 }
 .unlinked-tiles-list {
     padding-block: 2em;
+    h3 {
+        color: var(--accent-color);
+    }
     ul {
-        background-color: var(--foundry-dark-gray);
+        background-color: var(--JTCS-elevation-BG-color);
     }
     li {
         list-style-type: none;

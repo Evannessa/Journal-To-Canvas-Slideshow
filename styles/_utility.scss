@@ -293,14 +293,14 @@ input:is([type="radio"], [type="checkbox"]).hidden-input {
     //     }
     // }
 }
-.inline-notification {
+p.inline-notification {
     display: inline-flex;
     $variants: (info, warning, danger, success);
-
     @each $type in $variants {
         &[data-variant="#{$type}"] {
-            color: var(--color-#{$type}-dark);
-            background-color: var(--color-#{$type}-light);
+            // color: var(--color-#{$type}-dark);
+            color: var(--JTCS-text-color-on-fill);
+            background-color: var(--JTCS-#{$type}-color); //var(--color-#{$type}-light);
             .icon-span i {
                 color: var(--color-#{$type}-dark);
                 margin-right: 0.25rem;
