@@ -25,10 +25,38 @@ You can also have a dedicated "Art Scene" that images are sent to. Images displa
 https://user-images.githubusercontent.com/13098820/193417382-25c0aaca-ccc5-4232-b53e-95fe7bb06205.mp4
 - art scene demo 
 
+## URL Image Sharing
+
+You can also share images via URLs through the Scene Gallery Config App. 
+
+Clicking on the first button at the top will open up a Dialog window. Here you can paste your image URL, and select whichever display method you would like.
+
+https://user-images.githubusercontent.com/13098820/193662712-8ae3a10d-e917-44a1-8a59-84575101445b.mp4
+
+---
+
+IMPORTANT 
+
+Do be aware that for web security reasons, not all image URLs will work! Some sites do not allow resources like images to be shared "externally".
+- See these WikiPedia article for more information [Same-Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy) 
+- [Cross-Origin Resource Sharing | Wikipedia](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+
+---
+## URL Image Sharing (Cont.) 
+
+The display methods in the URL Image Sharing Dialog work pretty much identically those available when hovering over a Journal Entry, Actor or Item Sheet. 
+
+The below options are included in both:
+
+- Window - will render a new "popout" window each time you click it, allowing multiple windows for multiple different images
+- Art Journal - will simply change the image in your Art Journal, showing one image at a time, and providing a "slideshow" effect.
+- Art Scene - will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
+
+Note: A fourth option to Share URLs on specific tiles will be explained below in the Art Gallery section.
 
 ## The Art Gallery - (New Features!)
 
-Clicking the top button on the controls will display a button list of all of the tiles in the scene, and clicking on one of those buttons will display the specific image on that tile
+Clicking the top button on the Sheet Image controls will display a button list of all of the tiles in the scene, and clicking on one of those buttons will display the specific image on that tile
 
 https://user-images.githubusercontent.com/13098820/193417360-70ceb7b4-0ab2-4160-afe9-6ee620d22ab5.mp4
 - art gallery display demo 
@@ -79,6 +107,8 @@ If there is no Art Tile that fits these conditions, you will receieve a notifica
 - While an "Art Tile" can only have one "Frame Tile", a "Frame" tile can have more than one "Art Tile" linked to it, which can be useful for many reasons.
 
 ---
+
+## Helpful Tips and Information
 
 Tip: Clicking the button with two overlapping squares on a Gallery Tile item in the config will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other. 
 
@@ -142,6 +172,9 @@ https://user-images.githubusercontent.com/13098820/193632443-f18bc1aa-14f2-486b-
 
 This works the same for both Art and Frame Tiles.
 
+## URL Image Sharing on Specific Art Tiles
+
+#TODO
 
 # Utilities, Settings and Customization
 
