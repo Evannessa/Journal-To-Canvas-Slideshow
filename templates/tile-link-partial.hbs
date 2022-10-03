@@ -12,10 +12,10 @@
         <ul class="reset-margin reset-padding">
             {{#if this.unlinkedTilesIDs.length}}
                 {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
-                    <li class="padding-medium interactive full-width" data-type="unlinked" data-id="{{unlinkedTileID}}">
-                        <div class="input-span interactive flex-justify-start">
+                    <li class="interactive full-width" data-type="unlinked" data-id="{{unlinkedTileID}}">
+                        <div class="input-span interactive flex-justify-start" data-variant="visible-tick">
                             <input
-                                class="justify-self-left"
+                                class="hidden justify-self-left"
                                 data-type="unlinked"
                                 type="radio"
                                 data-change-action="itemActions.change.actions.setLinkedTile"
@@ -24,7 +24,9 @@
                                 id="{{unlinkedTileID}}"
                                 data-id="{{unlinkedTileID}}"
                             />
-                            <label class="interactive" for="{{unlinkedTileID}}">Tile {{unlinkedTileID}}</label>
+                            <label class="interactive" for="{{unlinkedTileID}}">
+                                <span class="tick-circle"></span>
+                                Tile: "{{unlinkedTileID}}"</label>
                         </div>
                     </li>
                 {{/each}}

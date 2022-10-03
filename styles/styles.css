@@ -777,10 +777,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: transparent;
 }
 
-.hover-bg-dynamic, .unlinked-tiles-list li, .item-menu li {
+.hover-bg-dynamic, .item-menu li {
   transition: background-color 150ms ease-in;
 }
-.hover-bg-dynamic:hover, .unlinked-tiles-list li:hover, .item-menu li:hover {
+.hover-bg-dynamic:hover, .item-menu li:hover {
   background-color: var(--bg-color);
 }
 
@@ -2713,12 +2713,45 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: var(--JTCS-elevation-BG-color);
 }
 .unlinked-tiles-list li {
+  margin: unset;
   list-style-type: none;
-  --bg-color: var(--data-unlinked-color);
+  padding: unset;
 }
-.unlinked-tiles-list li .input-span {
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] {
+  display: flex;
+  height: 100%;
   width: 100%;
+  align-items: center;
 }
-.unlinked-tiles-list li .input-span input {
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] {
   margin-right: 0.5rem;
+  padding: 1rem;
+}
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] + label {
+  display: flex;
+  gap: 1rem;
+  color: var(--JTCS-text-color-on-bg);
+  border: unset;
+  border-bottom: 1px solid var(--JTCS-accent-color);
+  --border-color: var(--data-unlinked-color);
+  transition: color 150ms ease-in, background-color 150ms ease-in, border-color 150ms ease-in;
+}
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] + label .tick-box,
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] + label .tick-circle {
+  border-color: var(--JTCS-accent-color);
+}
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] + label:hover {
+  background-color: var(--data-unlinked-color);
+  color: var(--JTCS-text-color-on-fill);
+  border-color: var(--data-unlinked-color);
+}
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] + label:hover .tick-box,
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] input[type=radio] + label:hover .tick-circle {
+  transition: border-color 150ms ease-in;
+  border-color: var(--data-unlinked-color);
+}
+.unlinked-tiles-list li .input-span[data-variant=visible-tick] label {
+  padding: 1rem;
+  height: 100%;
+  width: 100%;
 }/*# sourceMappingURL=styles.css.map */

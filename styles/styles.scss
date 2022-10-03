@@ -841,6 +841,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
     }
 }
+
 .unlinked-tiles-list {
     padding-block: 2em;
     h3 {
@@ -850,14 +851,46 @@ $tile-types: ("frame", "art", "unlinked", "default");
         background-color: var(--JTCS-elevation-BG-color);
     }
     li {
+        margin: unset;
         list-style-type: none;
-        .input-span {
+        padding: unset;
+        .input-span[data-variant="visible-tick"] {
+            display: flex;
+            height: 100%;
             width: 100%;
-            input {
+            align-items: center;
+            input[type="radio"] {
                 margin-right: 0.5rem;
+                padding: 1rem;
+                & + label {
+                    display: flex;
+                    gap: 1rem;
+                    color: var(--JTCS-text-color-on-bg);
+                    border: unset;
+                    border-bottom: 1px solid var(--JTCS-accent-color);
+                    --border-color: var(--data-unlinked-color);
+                    transition: color 150ms ease-in, background-color 150ms ease-in, border-color 150ms ease-in;
+                    .tick-box,
+                    .tick-circle {
+                        border-color: var(--JTCS-accent-color);
+                    }
+                    &:hover {
+                        background-color: var(--data-unlinked-color);
+                        color: var(--JTCS-text-color-on-fill);
+                        border-color: var(--data-unlinked-color);
+                        .tick-box,
+                        .tick-circle {
+                            transition: border-color 150ms ease-in;
+                            border-color: var(--data-unlinked-color);
+                        }
+                    }
+                }
+            }
+            label {
+                padding: 1rem;
+                height: 100%;
+                width: 100%;
             }
         }
-        --bg-color: var(--data-unlinked-color);
-        @extend .hover-bg-dynamic;
     }
 }
