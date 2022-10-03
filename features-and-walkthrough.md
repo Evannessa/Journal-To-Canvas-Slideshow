@@ -156,7 +156,16 @@ Here is what the JTCS Art Gallery Settings App looks like
 
 ### Custom Colors
 
-#TODO
+You can change the colors of various UI elements in the JTCS Art Gallery.
+
+
+https://user-images.githubusercontent.com/13098820/193647498-54f13886-6206-47d9-891c-585421e1cd2b.mp4
+(Selecting a new color, and clicking "Apply" to see how it appears. )
+
+The "Accent Color" property affects the colors of buttons, controls and inputs.
+
+![ColorChangeControls](https://user-images.githubusercontent.com/13098820/193647516-718d0c16-b386-4fb6-abb4-cea865b29396.png)
+
 
 ### Default Dark and Light Theme
 
