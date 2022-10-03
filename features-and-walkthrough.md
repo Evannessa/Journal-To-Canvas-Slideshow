@@ -204,7 +204,17 @@ This works the same for both Art and Frame Tiles.
 
 ## URL Image Sharing on Specific Art Tiles
 
-#TODO
+- Clicking the icon highlighted below on a Gallery Tile item in the Scene Gallery Tile Config will bring up a small textbox. 
+
+<img alt="share url on tile icon" src="https://user-images.githubusercontent.com/13098820/193692119-81cd5cde-19ba-46fa-ae9b-fbc12dfef015.png" width="200" height="auto"/>
+
+<img alt="share url on tile textbox" src="https://user-images.githubusercontent.com/13098820/193694983-58a64c65-89d0-4dd7-a5f7-63c361dd37ca.png" width="200" height="auto"/>
+
+- Here you can paste your Image URL and press Enter/Return (or click outside of the text box), and the image pointed to by the URL will be shared on the specific Art Tile. 
+
+
+https://user-images.githubusercontent.com/13098820/193691106-490f4dc6-88fe-4875-9184-b11f2a522ddc.mp4
+
 
 # Utilities, Settings and Customization
 
@@ -212,11 +222,12 @@ You can configure and customize various settings for this module.
 
 The JTCS Art Gallery settings application can either be accessed as usual through the "Module Settings" tab in Foundry's default settings, or by clicking on this Gear icon in the Art Gallery Config app or on a sheet that has the controls toggled on.
 
-![Launching Settings App](https://user-images.githubusercontent.com/13098820/193644403-03a3c076-7848-487f-9703-e2c1c7a26edb.png)
+<img alt="launching settings app" src="https://user-images.githubusercontent.com/13098820/193644403-03a3c076-7848-487f-9703-e2c1c7a26edb.png" width="500" height="auto"/>
 
-Here is what the JTCS Art Gallery Settings App looks like
 
-![JTCS Settings App Window](https://user-images.githubusercontent.com/13098820/193644547-9af4fdef-a68f-4d10-ae77-c225b018f4c1.png)
+<img alt="JTCS Settings App Window" src="https://user-images.githubusercontent.com/13098820/193644547-9af4fdef-a68f-4d10-ae77-c225b018f4c1.png" width="500" height="auto"/>
+> Here is what the JTCS Art Gallery Settings App looks like
+
 
 ## Color Theme and Color Customization
 
