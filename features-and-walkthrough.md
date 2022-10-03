@@ -131,7 +131,10 @@ If you have pre-existing canvas tiles you wish to turn *into* Gallery Tiles, you
 
 The second method involves linking a Gallery Tile to a canvas tile object that already exists in the scene. 
 
-TODO (record video) 
+
+
+https://user-images.githubusercontent.com/13098820/193489930-41e3b0e0-ad00-485f-bb53-c782230f4290.mp4
+
 
 # Utilities and Customization
 
