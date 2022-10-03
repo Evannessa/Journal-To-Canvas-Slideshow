@@ -73,6 +73,26 @@ https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-
 
 - A frame tile acts like an "Frame" for the Art Tile.
 - The "Frame" Tile will contain the Art Tile within it, making sure it gets no larger than the frame, but maintaining the image's original dimensions/aspect ratio.
+- While an "Art Tile" can only have one "Frame Tile", a "Frame" tile can have more than one "Art Tile" linked to it, which can be useful for many reasons.
+
+---
+
+Tip: Clicking the button with two overlapping squares on a Gallery Tile item in the config will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other. 
+
+![Frame Tile Highlight](https://user-images.githubusercontent.com/13098820/193483999-c455fab0-c7b8-47c7-8884-0c4255da3e94.png) 
+
+
+Tip: Frame Tiles are completely transparent by default, and are used specifically for sizing and positioning Art Tiles, not really meant for displaying anything themselves. If you want the visual of a "Frame" (like a picture frame, a door, a window, etc.) overlayed on top of your Art Tiles, like is demonstrated in the included "Premade Gallery Scene", you could either use 'decorative tiles', tiles on the canvas that are not linked to an Art or Frame tile, and position them manually, or use two Art Tiles bound to the same Frame Tile, with one on top to represent the actual visual "Frame", and another below to repesent the "Art". 
+
+Here's an example of how you could layer the various Gallery tile types with decorative tiles and/or scene foreground/background images
+
+![TileOverlayDemo](https://user-images.githubusercontent.com/13098820/193488971-98cd1084-e597-451f-a42c-a8dc8b90bb26.png)
+
+
+
+---
+## Art and Frame Tiles (Cont.)
+
 - By default after an Art Tile is created, or if you select "Use Canvas as Frame", the Art Tile will treat the scene canvas's boundaries as its frame, getting no bigger than that.
 
 
@@ -99,12 +119,15 @@ One is to click the "Plus" button on an unlinked tile, which will create a new "
 
 
 https://user-images.githubusercontent.com/13098820/193417377-b3f0c34d-ae4d-4dcd-b7bb-cc55f1dfd7b8.mp4
-- create new tile demo (note: small bug where the Art Tile doesn't immediately update after being linked, but updates when the Frame Tile is linked to a canvas tile object)
+- create new tile demo (note: small bug where the Art Tile doesn't immediately update after being linked to the newly created tile, but updates when the Frame Tile is linked to a canvas tile object)
 
 A new Art Tile will be created with a black gradient as its image, while a new frame tile will have a completely transparent image (however you can still highlight both by hovering over them in the Art Gallery Config) 
 
 You can change the 'default' image for both Gallery tile types in the settings, as this also affects what image the Gallery tile 'resets' to if you 'clear' it (more on this functionality to be explained later)
 
+### Linking Preexisting Tiles
+
+If you have pre-existing canvas tiles you wish to turn *into* Gallery Tiles, you can do that too.
 
 The second method involves linking a Gallery Tile to a canvas tile object that already exists in the scene. 
 
