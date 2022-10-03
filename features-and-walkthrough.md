@@ -108,35 +108,65 @@ If there is no Art Tile that fits these conditions, you will receieve a notifica
 
 ---
 
-## Helpful Tips and Information
+## Tips and Utilities
 
-Tip: Clicking the button with two overlapping squares on a Gallery Tile item in the config will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other. 
+### Fading Overlapping Elements
+
+There are various ways to fade parts of the UI or tiles on the screen to better see the Highlighted Gallery Tiles on the Canvas.
+
+#### Fading Tiles
+
+Clicking the button with two overlapping squares on a Gallery Tile item in the Scene Gallery Config App will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other. 
 
 ![Frame Tile Highlight](https://user-images.githubusercontent.com/13098820/193483999-c455fab0-c7b8-47c7-8884-0c4255da3e94.png) 
 
+#### Fading Journals 
 
-Tip: Frame Tiles are completely transparent by default, and are used specifically for sizing and positioning Art Tiles, not really meant for displaying anything themselves. If you want the visual of a "Frame" (like a picture frame, a door, a window, etc.) overlayed on top of your Art Tiles, like is demonstrated in the included "Premade Gallery Scene", you could either use 'decorative tiles', tiles on the canvas that are not linked to an Art or Frame tile, and position them manually, or use two Art Tiles bound to the same Frame Tile, with one on top to represent the actual visual "Frame", and another below to repesent the "Art". 
+You can fade out the UI of the Journal Entry, Actor, and Item Sheets by clicking the Icon that looks like an Eye in the controls at the Sheets' bottom.
+
+https://user-images.githubusercontent.com/13098820/193676995-9468b148-8ff8-4345-9ab5-92bd2cdf9e42.mp4
+
+The transparency/fade can be toggled off by clicking the eye button once again. 
+
+![FadeToggle](https://user-images.githubusercontent.com/13098820/193677026-b2e2f5ea-0d12-4aab-9e56-bbe6e80ac1f6.gif)
+
+(Note: (QOL/UX Improvement) This feature could be improved so that the Fade Toggle Button itself is fully opaque and visible regardless of if the fade feature is toggled on or off) 
+
+#### Fading the Scene Gallery Config App
+
+This goes similarly for the Scene Gallery Config App. 
+
+https://user-images.githubusercontent.com/13098820/193676928-3709b5c5-2333-4584-8753-404edbde77d9.mp4
+
+(Note: The value dictating how transparent the document Sheets and the Scene Gallery Config App become when the fade function is toggled on can be changed in the JTCS Art Gallery Settings. )
+ 
+<img alt="fade section in config" src="https://user-images.githubusercontent.com/13098820/193680424-a2c4ca00-e01d-4953-bd18-bad417e602a3.png" width="500" height="auto"/>
+
+
+### Frame Tiles vs Decorative Tiles
+
+Frame Tiles are completely transparent by default, and are used specifically for sizing and positioning Art Tiles, not really meant for displaying anything themselves. If you want the visual of a "Frame" (like a picture frame, a door, a window, etc.) overlayed on top of your Art Tiles, like is demonstrated in the included "Premade Gallery Scene", you could either use 'decorative tiles', tiles on the canvas that are not linked to an Art or Frame tile, and position them manually, or use two Art Tiles bound to the same Frame Tile, with one on top to represent the actual visual "Frame", and another below to repesent the "Art". 
 
 Here's an example of how you could layer the various Gallery tile types with decorative tiles and/or scene foreground/background images
 
-![TileOverlayDemo](https://user-images.githubusercontent.com/13098820/193488971-98cd1084-e597-451f-a42c-a8dc8b90bb26.png)
+<img alt="tile layer demo diagram" src="https://user-images.githubusercontent.com/13098820/193488971-98cd1084-e597-451f-a42c-a8dc8b90bb26.png" width="500" height="auto"/>
 
 
 
 ---
 ## Art and Frame Tiles (Cont.)
 
-- By default after an Art Tile is created, or if you select "Use Canvas as Frame", the Art Tile will treat the scene canvas's boundaries as its frame, getting no bigger than that.
+By default after an Art Tile is created, or if you select "Use Canvas as Frame", the Art Tile will treat the scene canvas's boundaries as its frame, getting no bigger than that.
 
 
 https://user-images.githubusercontent.com/13098820/193417331-c6b03f54-550a-40fc-b377-6e18da26ab3c.mp4 
-- Art frame tile bounding demo
+> Art frame tile bounding demo
 
 You can change an Art Tile's "Frame" by selecting a new Frame in the dropdown on the ArtTile.
 Hovering over an Art Tile in the Art Gallery Config will also highlight the Frame Tile it was linked to
 
 https://user-images.githubusercontent.com/13098820/193417365-a8ff798e-dc84-4309-893e-7f0e9d7a5802.mp4
-- frame and art tile link demo
+> frame and art tile link demo
 
 ## Gallery Tile Creation
 
@@ -152,7 +182,7 @@ One is to click the "Plus" button on an unlinked tile, which will create a new "
 
 
 https://user-images.githubusercontent.com/13098820/193417377-b3f0c34d-ae4d-4dcd-b7bb-cc55f1dfd7b8.mp4
-- create new tile demo (note: small bug where the Art Tile doesn't immediately update after being linked to the newly created tile, but updates when the Frame Tile is linked to a canvas tile object)
+> create new tile demo (note: small bug where the Art Tile doesn't immediately update after being linked to the newly created tile, but updates when the Frame Tile is linked to a canvas tile object)
 
 A new Art Tile will be created with a black gradient as its image, while a new frame tile will have a completely transparent image (however you can still highlight both by hovering over them in the Art Gallery Config) 
 
