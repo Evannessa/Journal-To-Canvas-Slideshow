@@ -9,6 +9,12 @@ export class JTCSActions {
         });
     }
     static displayActions = {
+        anyScene: {
+            label: "Current Scene",
+            icon: "fas fa-vector-square",
+            tooltip: "display image on the Default Art Tile in the current scene",
+            onClick: JTCSActions.onDisplayActionClick,
+        },
         window: {
             label: "Popout Window",
             icon: "fas fa-external-link-alt",
@@ -25,12 +31,6 @@ export class JTCSActions {
             label: "Art Scene",
             icon: "far fa-image",
             tooltip: "display image in your chosen 'Art Scene'",
-            onClick: JTCSActions.onDisplayActionClick,
-        },
-        anyScene: {
-            label: "Current Scene",
-            icon: "fas fa-vector-square",
-            tooltip: "display image on the Default Art Tile in the current scene",
             onClick: JTCSActions.onDisplayActionClick,
         },
     };
