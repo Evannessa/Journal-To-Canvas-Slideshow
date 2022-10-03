@@ -140,6 +140,32 @@ https://user-images.githubusercontent.com/13098820/193632443-f18bc1aa-14f2-486b-
 This works the same for both Art and Frame Tiles.
 
 
-# Utilities and Customization
+# Utilities, Settings and Customization
 
-TODO 
+You can configure and customize various settings for this module. 
+
+The JTCS Art Gallery settings application can either be accessed as usual through the "Module Settings" tab in Foundry's default settings, or by clicking on this Gear icon in the Art Gallery Config app or on a sheet that has the controls toggled on.
+
+![Launching Settings App](https://user-images.githubusercontent.com/13098820/193644403-03a3c076-7848-487f-9703-e2c1c7a26edb.png)
+
+Here is what the JTCS Art Gallery Settings App looks like
+
+![JTCS Settings App Window](https://user-images.githubusercontent.com/13098820/193644547-9af4fdef-a68f-4d10-ae77-c225b018f4c1.png)
+
+## Color Theme and Color Customization
+
+### Custom Colors
+
+#TODO
+
+### Default Dark and Light Theme
+
+There are two default themes included, one Dark and one Light. 
+
+You can switch between them by clicking one of the buttons in the JTCS Art Gallery Settings app, but do be aware that doing so will overwrite any custom colors you have chosen. 
+
+https://user-images.githubusercontent.com/13098820/193636813-99a3c9fd-2e36-4af6-8324-7d42c853bc96.mp4
+
+
+
+## Fading
