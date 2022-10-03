@@ -84,7 +84,11 @@ Tip: Clicking the button with two overlapping squares on a Gallery Tile item in 
 
 Tip: Frame Tiles are completely transparent by default, and are used specifically for sizing and positioning Art Tiles, not really meant for displaying anything themselves. If you want the visual of a "Frame" (like a picture frame, a door, a window, etc.) overlayed on top of your Art Tiles, like is demonstrated in the included "Premade Gallery Scene", you could either use 'decorative tiles', tiles on the canvas that are not linked to an Art or Frame tile, and position them manually, or use two Art Tiles bound to the same Frame Tile, with one on top to represent the actual visual "Frame", and another below to repesent the "Art". 
 
-![Decorative Tile OVerlay](https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/assets/Character-Frames.png?raw=true)
+Here's an example of how you could layer the various Gallery tile types with decorative tiles and/or scene foreground/background images
+
+![TileOverlayDemo](https://user-images.githubusercontent.com/13098820/193488971-98cd1084-e597-451f-a42c-a8dc8b90bb26.png)
+
+
 
 ---
 ## Art and Frame Tiles (Cont.)
