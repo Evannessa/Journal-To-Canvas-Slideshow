@@ -174,7 +174,7 @@ export const extraActions = {
 
             //converting properties to fit the dialog's schema
             wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
-            wrappedActions[actionName].label = HelperFunctions.capitalizeEachWord(actionName, "");
+            // wrappedActions[actionName].label = HelperFunctions.capitalizeEachWord(actionName, "");
             wrappedActions[actionName].callback = async (html) => {
                 let urlInput = html.find("input[name='urlInput']");
                 let url = urlInput.val();
@@ -186,7 +186,6 @@ export const extraActions = {
                 }
             };
         }
-        delete wrappedActions.fadeJournal;
         delete wrappedActions.anyScene;
         let buttons = {
             ...wrappedActions,

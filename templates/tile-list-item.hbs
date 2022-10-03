@@ -29,8 +29,6 @@
             {{#with @root.settingsData}}
                 {{#each (filter itemActions.click.actions "renderOnMissing" ../missing)}}
                     {{#unless (checkAll "any" true overflow renderNever)}}
-                    {{!-- {{#unless (eq overflow true)}} --}}
-                    {{!-- {{#unless (eq renderNever true)}} --}}
                     {{> (dynamicPartial "icon-button")
                         action=(concat "itemActions.click.actions" "." @key)
                         name=(concat 

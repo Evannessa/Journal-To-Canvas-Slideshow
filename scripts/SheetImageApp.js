@@ -11,22 +11,22 @@ export class SheetImageApp {
         {
             name: "anyScene",
             icon: "fas fa-vector-square",
-            tooltip: "display image in any scene with a frame tile and display tile",
-        },
-        {
-            name: "artScene",
-            icon: "far fa-image",
-            tooltip: "display image in dedicated scene",
+            tooltip: "display image on Default Art Tile in current scene",
         },
         {
             name: "window",
             icon: "fas fa-external-link-alt",
-            tooltip: "display image in pop-out window",
+            tooltip: "Display image in pop-out window",
         },
         {
             name: "journalEntry",
             icon: "fas fa-book-open",
-            tooltip: "display image in a dedicated journal entry",
+            tooltip: "display image in your chosen 'Art Journal'",
+        },
+        {
+            name: "artScene",
+            icon: "far fa-image",
+            tooltip: "display image in your chosen 'Art Scene'",
         },
     ];
 
