@@ -20,7 +20,7 @@ Two of the options in the controls allow you to display images in a window popou
 https://user-images.githubusercontent.com/13098820/193417364-234769f5-4feb-4d5f-8b2e-14582dfecda9.mp4
 - journal entry popover demo
 
-Have a dedicated "Art" scene that images are sent to
+You can also have a dedicated "Art Scene" that images are sent to. Images displayed through this method will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
 
 https://user-images.githubusercontent.com/13098820/193417382-25c0aaca-ccc5-4232-b53e-95fe7bb06205.mp4
 - art scene demo 
@@ -67,6 +67,9 @@ Clicking on a sheet image itself, rather than any of its controls, will automati
 https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
 - display on default tile demo 
 
+Note: If you haven't manually selected a Default Art Tile, the first Art Tile in a scene that is linked to a tile on the canvas will be chosen as the Default Art Tile. 
+
+If there is no Art Tile that fits these conditions, you will receieve a notification that there are no Default Art Tiles in the scene. 
 
 
 ## Art Tiles and Frame Tiles
@@ -160,11 +163,23 @@ You can change the colors of various UI elements in the JTCS Art Gallery.
 
 
 https://user-images.githubusercontent.com/13098820/193647498-54f13886-6206-47d9-891c-585421e1cd2b.mp4
+
 (Selecting a new color, and clicking "Apply" to see how it appears. )
 
-The "Accent Color" property affects the colors of buttons, controls and inputs.
+The "Accent Color" property affects the colors of buttons, controls and inputs, including the color of the controls in Actor, Journal, and Item Sheets.
 
 ![ColorChangeControls](https://user-images.githubusercontent.com/13098820/193647516-718d0c16-b386-4fb6-abb4-cea865b29396.png)
+
+The "Background Color" property affects the background color of the "JTCS Art Gallery Settings" application and the "Scene Gallery Config" application.
+
+![BGColor](https://user-images.githubusercontent.com/13098820/193652877-2b492dc6-eaa2-46b3-a5a7-795a8a844a4e.png)
+
+The "Tile Indicator Colors" affect the colors that represent the different types of Gallery Tiles, both in the UI elements that represent them, and in the color they are highlighted on the canvas when hovering over the items in the UI. 
+
+![FrameArtDefaultColor](https://user-images.githubusercontent.com/13098820/193652903-07fa9141-8d49-4c45-ae66-69231e12ee7f.png)
+
+
+<img width="961" alt="ColorDemoTemplateFlat" src="https://user-images.githubusercontent.com/13098820/193660437-e01e36c9-1048-4abe-848f-215889f8add2.png">
 
 
 ### Default Dark and Light Theme
