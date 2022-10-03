@@ -129,11 +129,15 @@ You can change the 'default' image for both Gallery tile types in the settings, 
 
 If you have pre-existing canvas tiles you wish to turn *into* Gallery Tiles, you can do that too.
 
-The second method involves linking a Gallery Tile to a canvas tile object that already exists in the scene. 
+Upon creating a new Gallery Tile in the Art Gallery Config, one of the buttons that will appear has a "link" icon. 
 
+Clicking on that button display a list of all the "Unlinked" tile objects in your current scene. 
 
+You can hover over each item in the list to highlight the specific tile on the canvas, and then click to select which one you would like to "link" to the Gallery Tile.
 
-https://user-images.githubusercontent.com/13098820/193489930-41e3b0e0-ad00-485f-bb53-c782230f4290.mp4
+https://user-images.githubusercontent.com/13098820/193632443-f18bc1aa-14f2-486b-bf62-6ef2c23d4028.mp4
+
+This works the same for both Art and Frame Tiles.
 
 
 # Utilities and Customization
