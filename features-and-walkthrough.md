@@ -1,27 +1,26 @@
 - [Display Methods](#display-methods)
   - [Window Popouts, Display Journal and Dedicated Display Scene - (Upgraded Features)](#window-popouts-display-journal-and-dedicated-display-scene---upgraded-features)
   - [URL Image Sharing](#url-image-sharing)
-  - [IMPORTANT](#important)
-  - [URL Image Sharing (Cont.)](#url-image-sharing-cont)
+    - [IMPORTANT](#important)
+    - [URL Image Sharing (Cont.)](#url-image-sharing-cont)
   - [The Art Gallery - (New Features!)](#the-art-gallery---new-features)
     - [Art Gallery Config](#art-gallery-config)
-  - [Default Tiles](#default-tiles)
-  - [Art Tiles and Frame Tiles](#art-tiles-and-frame-tiles)
-  - [Tips and Utilities](#tips-and-utilities)
-    - [Fading Overlapping Elements](#fading-overlapping-elements)
-      - [Fading Tiles](#fading-tiles)
-      - [Fading Journals](#fading-journals)
-      - [Fading the Scene Gallery Config App](#fading-the-scene-gallery-config-app)
+    - [Default Tiles](#default-tiles)
+    - [Art Tiles and Frame Tiles](#art-tiles-and-frame-tiles)
     - [Frame Tiles vs Decorative Tiles](#frame-tiles-vs-decorative-tiles)
-  - [Art and Frame Tiles (Cont.)](#art-and-frame-tiles-cont)
-  - [Gallery Tile Creation](#gallery-tile-creation)
+    - [Art and Frame Tiles (Cont.)](#art-and-frame-tiles-cont)
+    - [Gallery Tile Creation](#gallery-tile-creation)
     - [Linking Preexisting Tiles](#linking-preexisting-tiles)
-  - [URL Image Sharing on Specific Art Tiles](#url-image-sharing-on-specific-art-tiles)
+    - [URL Image Sharing on Specific Art Tiles](#url-image-sharing-on-specific-art-tiles)
 - [Utilities, Settings and Customization](#utilities-settings-and-customization)
   - [Color Theme and Color Customization](#color-theme-and-color-customization)
     - [Custom Colors](#custom-colors)
     - [Default Dark and Light Theme](#default-dark-and-light-theme)
-  - [Fading](#fading)
+- [Tips and Utilities](#tips-and-utilities)
+  - [Fading Overlapping Elements](#fading-overlapping-elements)
+    - [Fading Tiles](#fading-tiles)
+    - [Fading Journals](#fading-journals)
+    - [Fading the Scene Gallery Config App](#fading-the-scene-gallery-config-app)
 
 (Note: Some of the footage below is a teeny bit outdated, with small visual and functional bugs having being fixed since they were recorded; If your interface looks a little bit different than in the videos below, it is due to those updates; but all major functionality should be the same )
 
@@ -63,7 +62,7 @@ https://user-images.githubusercontent.com/13098820/193662712-8ae3a10d-e917-44a1-
 
 ---
 
-## IMPORTANT
+### IMPORTANT
 
 Do be aware that for web security reasons, not all image URLs will work! Some sites do not allow resources like images to be shared "externally".
 
@@ -72,7 +71,7 @@ Do be aware that for web security reasons, not all image URLs will work! Some si
 
 ---
 
-## URL Image Sharing (Cont.)
+### URL Image Sharing (Cont.)
 
 The display methods in the URL Image Sharing Dialog work pretty much identically those available when hovering over a Journal Entry, Actor or Item Sheet.
 
@@ -81,8 +80,8 @@ The below options are included in both:
 -   Window - will render a new "popout" window each time you click it, allowing multiple windows for multiple different images
 -   Art Journal - will simply change the image in your Art Journal, showing one image at a time, and providing a "slideshow" effect.
 -   Art Scene - will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
--   
-![image](https://user-images.githubusercontent.com/13098820/193738467-8b321398-8ab8-41a9-8b9d-8b764542ac08.png)
+
+<img src="https://user-images.githubusercontent.com/13098820/193738467-8b321398-8ab8-41a9-8b9d-8b764542ac08.png" width="400"/>
 
 Note: A fourth option to Share URLs on specific tiles will be explained below in the Art Gallery section.
 
@@ -106,75 +105,42 @@ Click on the floating i button to toggle contextual instructions on and off.
 
 https://user-images.githubusercontent.com/13098820/193417374-e2e42fbd-684f-4e08-93f2-426473364348.mp4
 
->  config highlight demo
+> config highlight demo
 
 The Gallery Tiles shown in the "Art Gallery Config" automatically change depending on which scene you're viewing.
 
 Upon switching a scene, the Config will update to show that particular scene's Art Gallery tiles.
 
 https://user-images.githubusercontent.com/13098820/193417372-181cfcd0-06ce-4aaa-b8a6-eb71bb9000d4.mp4
->  change config based on scene
 
-## Default Tiles
+> change config based on scene
+
+### Default Tiles
 
 Select a "Default Art Tile" for each scene in the Art Gallery config with Ctrl/Cmd + Click.
 (The "Default" tile will automatically be set to the first "linked" Art Tile in a scene )
 
 https://user-images.githubusercontent.com/13098820/193417379-e38485a1-492d-425d-87de-4862e6406131.mp4
 
--   default Tile demo
+> default Tile demo
 
 Clicking on a sheet image itself, rather than any of its controls, will automatically send it to the "Default Art Tile" in the current scene
 
 https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
 
--   display on default tile demo
+> display on default tile demo
 
 Note: If you haven't manually selected a Default Art Tile, the first Art Tile in a scene that is linked to a tile on the canvas will be chosen as the Default Art Tile.
 
 If there is no Art Tile that fits these conditions, you will receive a notification that there are no Default Art Tiles in the scene.
 
-## Art Tiles and Frame Tiles
+### Art Tiles and Frame Tiles
 
 -   A frame tile acts like an "Frame" for the Art Tile.
 -   The "Frame" Tile will contain the Art Tile within it, making sure it gets no larger than the frame, but maintaining the image's original dimensions/aspect ratio.
 -   While an "Art Tile" can only have one "Frame Tile", a "Frame" tile can have more than one "Art Tile" linked to it, which can be useful for many reasons.
 
 ---
-
-## Tips and Utilities
-
-### Fading Overlapping Elements
-
-There are various ways to fade parts of the UI or tiles on the screen to better see the Highlighted Gallery Tiles on the Canvas.
-
-#### Fading Tiles
-
-Clicking the button with two overlapping squares on a Gallery Tile item in the Scene Gallery Config App will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other.
-
-![Frame Tile Highlight](https://user-images.githubusercontent.com/13098820/193483999-c455fab0-c7b8-47c7-8884-0c4255da3e94.png)
-
-#### Fading Journals
-
-You can fade out the UI of the Journal Entry, Actor, and Item Sheets by clicking the Icon that looks like an Eye in the controls at the Sheets' bottom.
-
-https://user-images.githubusercontent.com/13098820/193676995-9468b148-8ff8-4345-9ab5-92bd2cdf9e42.mp4
-
-The transparency/fade can be toggled off by clicking the eye button once again.
-
-![FadeToggle](https://user-images.githubusercontent.com/13098820/193677026-b2e2f5ea-0d12-4aab-9e56-bbe6e80ac1f6.gif)
-
-(Note: (QOL/UX Improvement) This feature could be improved so that the Fade Toggle Button itself is fully opaque and visible regardless of if the fade feature is toggled on or off)
-
-#### Fading the Scene Gallery Config App
-
-This goes similarly for the Scene Gallery Config App.
-
-https://user-images.githubusercontent.com/13098820/193676928-3709b5c5-2333-4584-8753-404edbde77d9.mp4
-
-(Note: The value dictating how transparent the document Sheets and the Scene Gallery Config App become when the fade function is toggled on can be changed in the JTCS Art Gallery Settings. )
-
-<img alt="fade section in config" src="https://user-images.githubusercontent.com/13098820/193680424-a2c4ca00-e01d-4953-bd18-bad417e602a3.png" width="500" height="auto"/>
 
 ### Frame Tiles vs Decorative Tiles
 
@@ -186,7 +152,7 @@ Here's an example of how you could layer the various Gallery tile types with dec
 
 ---
 
-## Art and Frame Tiles (Cont.)
+### Art and Frame Tiles (Cont.)
 
 By default after an Art Tile is created, or if you select "Use Canvas as Frame", the Art Tile will treat the scene canvas's boundaries as its frame, getting no bigger than that.
 
@@ -201,7 +167,7 @@ https://user-images.githubusercontent.com/13098820/193417365-a8ff798e-dc84-4309-
 
 > frame and art tile link demo
 
-## Gallery Tile Creation
+### Gallery Tile Creation
 
 When creating a new scene or viewing one without Art Gallery tiles, the Art Gallery Config will be blank.
 
@@ -235,7 +201,7 @@ https://user-images.githubusercontent.com/13098820/193632443-f18bc1aa-14f2-486b-
 
 This works the same for both Art and Frame Tiles.
 
-## URL Image Sharing on Specific Art Tiles
+### URL Image Sharing on Specific Art Tiles
 
 -   Clicking the icon highlighted below on a Gallery Tile item in the Scene Gallery Tile Config will bring up a small textbox.
 
@@ -289,3 +255,37 @@ There are two default themes included, one Dark and one Light.
 You can switch between them by clicking one of the buttons in the JTCS Art Gallery Settings app, but do be aware that doing so will overwrite any custom colors you have chosen.
 
 https://user-images.githubusercontent.com/13098820/193636813-99a3c9fd-2e36-4af6-8324-7d42c853bc96.mp4
+
+# Tips and Utilities
+
+## Fading Overlapping Elements
+
+There are various ways to fade parts of the UI or tiles on the screen to better see the Highlighted Gallery Tiles on the Canvas.
+
+### Fading Tiles
+
+Clicking the button with two overlapping squares on a Gallery Tile item in the Scene Gallery Config App will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other.
+
+![Frame Tile Highlight](https://user-images.githubusercontent.com/13098820/193483999-c455fab0-c7b8-47c7-8884-0c4255da3e94.png)
+
+### Fading Journals
+
+You can fade out the UI of the Journal Entry, Actor, and Item Sheets by clicking the Icon that looks like an Eye in the controls at the Sheets' bottom.
+
+https://user-images.githubusercontent.com/13098820/193676995-9468b148-8ff8-4345-9ab5-92bd2cdf9e42.mp4
+
+The transparency/fade can be toggled off by clicking the eye button once again.
+
+![FadeToggle](https://user-images.githubusercontent.com/13098820/193677026-b2e2f5ea-0d12-4aab-9e56-bbe6e80ac1f6.gif)
+
+(Note: (QOL/UX Improvement) This feature could be improved so that the Fade Toggle Button itself is fully opaque and visible regardless of if the fade feature is toggled on or off)
+
+### Fading the Scene Gallery Config App
+
+This goes similarly for the Scene Gallery Config App.
+
+https://user-images.githubusercontent.com/13098820/193676928-3709b5c5-2333-4584-8753-404edbde77d9.mp4
+
+(Note: The value dictating how transparent the document Sheets and the Scene Gallery Config App become when the fade function is toggled on can be changed in the JTCS Art Gallery Settings. )
+
+<img alt="fade section in config" src="https://user-images.githubusercontent.com/13098820/193680424-a2c4ca00-e01d-4953-bd18-bad417e602a3.png" width="350" height="auto"/>
