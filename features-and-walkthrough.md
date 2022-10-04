@@ -81,8 +81,8 @@ The below options are included in both:
 -   Window - will render a new "popout" window each time you click it, allowing multiple windows for multiple different images
 -   Art Journal - will simply change the image in your Art Journal, showing one image at a time, and providing a "slideshow" effect.
 -   Art Scene - will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
-
-![image](https://user-images.githubusercontent.com/13098820/193723017-ab61829e-8b4c-4437-a971-2a28d5980bc3.png)
+-   
+![image](https://user-images.githubusercontent.com/13098820/193738467-8b321398-8ab8-41a9-8b9d-8b764542ac08.png)
 
 Note: A fourth option to Share URLs on specific tiles will be explained below in the Art Gallery section.
 
@@ -92,7 +92,7 @@ Clicking the top button on the Sheet Image controls will display a button list o
 
 https://user-images.githubusercontent.com/13098820/193417360-70ceb7b4-0ab2-4160-afe9-6ee620d22ab5.mp4
 
--   art gallery display demo
+> art gallery display demo
 
 ### Art Gallery Config
 
@@ -106,15 +106,14 @@ Click on the floating i button to toggle contextual instructions on and off.
 
 https://user-images.githubusercontent.com/13098820/193417374-e2e42fbd-684f-4e08-93f2-426473364348.mp4
 
--   config highlight demo
+>  config highlight demo
 
 The Gallery Tiles shown in the "Art Gallery Config" automatically change depending on which scene you're viewing.
 
 Upon switching a scene, the Config will update to show that particular scene's Art Gallery tiles.
 
 https://user-images.githubusercontent.com/13098820/193417372-181cfcd0-06ce-4aaa-b8a6-eb71bb9000d4.mp4
-
--   change config based on scene
+>  change config based on scene
 
 ## Default Tiles
 
@@ -290,5 +289,3 @@ There are two default themes included, one Dark and one Light.
 You can switch between them by clicking one of the buttons in the JTCS Art Gallery Settings app, but do be aware that doing so will overwrite any custom colors you have chosen.
 
 https://user-images.githubusercontent.com/13098820/193636813-99a3c9fd-2e36-4af6-8324-7d42c853bc96.mp4
-
-## Fading
