@@ -41,7 +41,7 @@ Major feature additions and improvements are as follows:
 -   Gallery Tiles
     -   "Gallery Tiles" feature introduced, allowing the creation of "Art Tiles" and "Frame Tiles" (which are an overhauled and much more robust version of the old 'Display Tiles' and 'Bounding Tiles' feature)
     -   Gallery Tiles can be created, linked, configured, and given unique names in a new configuration application called the "Scene Gallery Config"
-![Scene Gallery Config App - Light Mode](https://user-images.githubusercontent.com/13098820/193947720-ed4a388f-e22f-466c-b14b-b26c64042c7c.png)
+    - ![Scene Gallery Config App - Light Mode](https://user-images.githubusercontent.com/13098820/193947720-ed4a388f-e22f-466c-b14b-b26c64042c7c.png)
 
 -   Settings and Customization
     -   JTCS Art Gallery Settings application that can be launched from multiple locations and includes several customization options
