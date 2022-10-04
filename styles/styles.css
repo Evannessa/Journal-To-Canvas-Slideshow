@@ -2640,15 +2640,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   width: fit-content;
   position: relative;
 }
-.clickableImageContainer.JTCS label {
-  border: 2px solid var(--color-deep-purple-darkest);
-  background-color: 2px solid var(--color-deep-purple-base);
-  box-shadow: none;
-}
-.clickableImageContainer.JTCS label:not(:first-of-type, :last-of-type) {
-  border-left: none;
-  border-right: none;
-}
 .clickableImageContainer .clickableImageControls {
   opacity: 0%;
   position: absolute;

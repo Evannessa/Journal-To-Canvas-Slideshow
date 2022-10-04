@@ -7,7 +7,7 @@
 - [Display Methods](#display-methods)
   - [Window Popouts, Art Journal and Art Scene - (Upgraded Features)](#window-popouts-art-journal-and-art-scene---upgraded-features)
   - [URL Image Sharing](#url-image-sharing)
-    - [IMPORTANT](#important)
+    - [URL Sharing Limitations (IMPORTANT)](#url-sharing-limitations-important)
     - [URL Image Sharing (Cont.)](#url-image-sharing-cont)
   - [The Art Gallery - (New Features!)](#the-art-gallery---new-features)
     - [Art Gallery Config](#art-gallery-config)
@@ -68,11 +68,14 @@ https://user-images.githubusercontent.com/13098820/193662712-8ae3a10d-e917-44a1-
 
 ---
 
-### IMPORTANT
+### URL Sharing Limitations (IMPORTANT)
 
-Do be aware that for web security reasons, not all image URLs will work! Some sites do not allow resources like images to be shared "externally".
+Do be aware that for web security reasons, not all image URLs will work.
+Some sites do not allow resources like images to be shared "externally".
 
--   See these WikiPedia article for more information [Same-Origin Policy](https://en.wikipedia.org/wiki/Same-origin_policy)
+See these Wikipedia articles for more information:
+
+-   [Same-Origin Policy | Wikipedia](https://en.wikipedia.org/wiki/Same-origin_policy)
 -   [Cross-Origin Resource Sharing | Wikipedia](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 
 ---

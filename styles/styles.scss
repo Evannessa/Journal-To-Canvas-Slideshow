@@ -710,24 +710,9 @@ $tile-types: ("frame", "art", "unlinked", "default");
     width: -moz-fit-content;
     width: fit-content;
     align-items: center;
-    // align-items: center;
-    // justify-content: center;
     width: fit-content;
     @extend .reset-margin;
-    // img {
-    //     height: auto;
-    // }
-    &.JTCS {
-        label {
-            border: 2px solid var(--color-deep-purple-darkest);
-            background-color: 2px solid var(--color-deep-purple-base);
-            box-shadow: none;
-        }
-        label:not(:first-of-type, :last-of-type) {
-            border-left: none;
-            border-right: none;
-        }
-    }
+
     position: relative;
 
     .clickableImageControls {
@@ -751,20 +736,6 @@ $tile-types: ("frame", "art", "unlinked", "default");
     }
 
     .displayLocations {
-        // li {
-        //     width: 50%;
-
-        //     &:after {
-        //         content: "";
-        //         display: block;
-        //         padding-bottom: 100%;
-        //     }
-        //     > button {
-        //         position: absolute;
-        //         width: 100%;
-        //         height: 100%;
-        //     }
-        // }
         * {
             pointer-events: auto;
         }
