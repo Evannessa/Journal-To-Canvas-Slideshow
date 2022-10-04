@@ -9,20 +9,19 @@
 
 # JTCS - Art Gallery
 
-Journal to Canvas Slideshow (Now renamed to "JTCS - Art Gallery") has received a major overhaul and big feature updates.
+Journal to Canvas Slideshow (Now renamed to "JTCS - Art Gallery") has received a major overhaul and several big feature updates.
 
 In addition to big updates to the core features, and major QOL improvements, the biggest new feature is called the "Art Gallery" which allows you to display multiple different images on multiple different "Art Tiles" in the same scene, bound by "Frame Tiles" that keep the Art Tiles scaled within a certain size.
 
 Here is a demonstration of some of the new features:
 
-#TODO - place video here
-Note: While the background and overlay art is included as part of the module in a compendium pack, the tabletop "trinket" assets and portraits seen in above video are NOT included as part of the module.
+
+https://user-images.githubusercontent.com/13098820/193938899-f5920be7-6148-4ac7-9738-8a5ee7d420e9.mp4
+
+
+Note: While the wooden scene background and overlay art is included as part of the module in a compendium pack, the tabletop "trinket" assets seen in above video are NOT included as part of the module.
 
 -   Tabletop Trinket Assets by Joe Neeves (Limonium) on Gumroad - [Limonium's Gumroad Library](https://limonium.gumroad.com/?recommended_by=library)
--   Portraits by "Justin Nichol and the Flare Project" on [Open Game Art](https://opengameart.org/content/flare-portrait-pack-female-edition)
-    -   Licenses:
-        -   [CC by 3.0](https://creativecommons.org/licenses/by/3.0/)
-        -   [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Features and Changelog
 
