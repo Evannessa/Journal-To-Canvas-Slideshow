@@ -11,7 +11,7 @@ export class SheetImageApp {
         {
             name: "anyScene",
             icon: "fas fa-vector-square",
-            tooltip: "display image on Default Art Tile in current scene",
+            tooltip: "choose Art Tile in current scene to display image on",
         },
         {
             name: "window",

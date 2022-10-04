@@ -38,17 +38,17 @@ export class ImageDisplayManager {
             console.error(url, artTile, artTileID);
             return;
         }
-        const tex = await loadTexture(url)
-            .catch((error) => {
-                console.log("Something went wrong", error);
-                return;
-            })
-            .then((result) => {
-                if (!result) {
-                    console.log("Result undefined?", result);
-                    return;
-                }
-            });
+        const tex = await loadTexture(url);
+        // .catch((error) => {
+        //     console.log("Something went wrong", error);
+        //     return;
+        // })
+        // .then((result) => {
+        //     if (!result) {
+        //         console.log("Result undefined?", result);
+        //         return;
+        //     }
+        // });
         if (!tex) {
             ui.notifications.error(`Error loading texture from '${url}'. Access to URL likely blocked by CORS policy.`);
             return;
