@@ -52,6 +52,9 @@ The below options are included in both:
 - Art Journal - will simply change the image in your Art Journal, showing one image at a time, and providing a "slideshow" effect.
 - Art Scene - will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
 
+![image](https://user-images.githubusercontent.com/13098820/193722768-5867588b-4d75-4c06-af13-4b9fa41a871e.png)
+
+
 Note: A fourth option to Share URLs on specific tiles will be explained below in the Art Gallery section.
 
 ## The Art Gallery - (New Features!)
