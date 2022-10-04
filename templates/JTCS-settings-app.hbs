@@ -3,7 +3,7 @@
         <button class="secondary active" type="button" data-action="scrollTo" data-target="JTCScolorSchemeData">Custom Colors</button>
         <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSsheetSettings">Sheet Img Controls</button>
         <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSsheetFadeData">Fade Settings</button>
-        <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSdefaultImages">Art & Frame Imgs</button>
+        <button class="secondary" type="button" data-action="scrollTo" data-target="JTCSDefaults">Defaults</button>
     </header>
     <div class="form-content overflow-scroll-y overflow-auto-x flow padding-large">
     <div class="form-group-stacked flow padding-large">
@@ -116,20 +116,50 @@
                 {{/with}}
             </div>
         </div>
-    
-        <div class="form-group-stacked flow" id="JTCSdefaultImages">
-            {{#with defaultTileImages}}
-            <h2>{{this.name}}</h2>
-            <p class="notes">{{{this.hint}}}</p>
-            {{#each this.paths}}
-               <div class="flex-row file-picker-group has-floating-label">
-                    <label class="floating-label"  for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
-                   <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
-                   {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}
-               </div>
-            {{/each}}
-            {{/with}}
-        </div>
+    <div class="form-group-stacked flow" id="JTCSDefaults">
+          <div class="form-group-stacked flow" id="JTCSArtSceneAndJournal">
+                {{#with dedicatedDisplayData}}
+                <h2>{{this.name}}</h2>
+                <p class="notes">{{{this.hint}}}</p>
+
+                <div class="form-group">
+                    <div class="input-span has-floating-label">
+                        <label for="artJournal" class="floating-label">Art Journal</label>
+                        <select id="artJournal" name="dedicatedDisplayData.journal.value">
+                            <option value="">--</option>
+                            {{#with this.journal}}
+                                {{selectOptions this.artJournalData.options selected=this.value}}
+                            {{/with}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-span has-floating-label">
+                        <label for="artJournal" class="floating-label">Art Scene</label>
+                        <select name="dedicatedDisplayData.scene.value">
+                            <option value="">--</option>
+                            {{#with this.scene}}
+                                {{selectOptions this.artSceneData.options selected=this.value}}
+                            {{/with}}
+                        </select>
+                    </div>
+                </div>
+                {{/with}}
+            </div>
+            <div class="form-group-stacked flow" id="JTCSdefaultImages">
+                {{#with defaultTileImages}}
+                <h2>{{this.name}}</h2>
+                <p class="notes">{{{this.hint}}}</p>
+                {{#each this.paths}}
+                   <div class="flex-row file-picker-group has-floating-label">
+                        <label class="floating-label"  for="{{@key}}">{{camelCaseToCapitalString @key}}</label>
+                       <input type="text" id="{{@key}}" name="{{concat "defaultTileImages.paths." @key}}" value="{{this}}" >
+                       {{filePicker type="image" target=(concat "defaultTileImages.paths." @key)}}
+                   </div>
+                {{/each}}
+                {{/with}}
+            </div>
+    </div>
     </div>
     <footer class="sheet-footer [ flex-row flex-justify-center ]
                 padding-inline-medium padding-block-small">

@@ -54,7 +54,8 @@ $tile-types: ("frame", "art", "unlinked", "default");
             background: var(--JTCS-background-color);
         }
         .form-group,
-        .form-group-stacked {
+        .form-group-stacked,
+        .input-span {
             button {
                 &.danger,
                 &.theme {
@@ -142,7 +143,8 @@ $tile-types: ("frame", "art", "unlinked", "default");
         // have labels highlight with accent color
         .form-group,
         .color-picker-group,
-        .file-picker-group {
+        .file-picker-group,
+        .input-span {
             &.has-floating-label {
                 input {
                     height: 100%;
@@ -160,6 +162,14 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 &:focus {
                     outline: 1px solid var(--JTCS-accent-color);
                 }
+            }
+        }
+        .form-group,
+        .form-group-stacked {
+            .input-span {
+                flex: 1;
+                width: fit-content;
+                max-width: fit-content;
             }
         }
         // remove borders from spans and list items

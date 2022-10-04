@@ -409,6 +409,11 @@ fieldset.toggle-button-group {
         }
     }
 }
+#slideshow-config {
+    .fade {
+        background: var(--JTCS-background-color) !important;
+    }
+}
 $sizes: (
     "small": 0.5rem,
     "medium": 1rem,

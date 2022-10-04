@@ -538,6 +538,10 @@ fieldset.toggle-button-group label:last-of-type {
   opacity: var(--journal-fade, 50%) !important;
 }
 
+#slideshow-config .fade {
+  background: var(--JTCS-background-color) !important;
+}
+
 .padding-top-small {
   padding-top: 0.5rem;
 }
@@ -1606,49 +1610,67 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content .form-group button.danger, #JTCSSettingsApplication .window-content .form-group button.theme,
 #JTCSSettingsApplication .window-content .form-group-stacked button.danger,
 #JTCSSettingsApplication .window-content .form-group-stacked button.theme,
+#JTCSSettingsApplication .window-content .input-span button.danger,
+#JTCSSettingsApplication .window-content .input-span button.theme,
 #slideshow-config .window-content .form-group button.danger,
 #slideshow-config .window-content .form-group button.theme,
 #slideshow-config .window-content .form-group-stacked button.danger,
 #slideshow-config .window-content .form-group-stacked button.theme,
+#slideshow-config .window-content .input-span button.danger,
+#slideshow-config .window-content .input-span button.theme,
 #JTCS-custom-dialog .window-content .form-group button.danger,
 #JTCS-custom-dialog .window-content .form-group button.theme,
 #JTCS-custom-dialog .window-content .form-group-stacked button.danger,
-#JTCS-custom-dialog .window-content .form-group-stacked button.theme {
+#JTCS-custom-dialog .window-content .form-group-stacked button.theme,
+#JTCS-custom-dialog .window-content .input-span button.danger,
+#JTCS-custom-dialog .window-content .input-span button.theme {
   width: 100%;
   max-width: 300px;
   margin-inline: auto;
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label input,
 #JTCSSettingsApplication .window-content .form-group-stacked.has-floating-label input,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label input,
 #slideshow-config .window-content .form-group.has-floating-label input,
 #slideshow-config .window-content .form-group-stacked.has-floating-label input,
+#slideshow-config .window-content .input-span.has-floating-label input,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label input,
-#JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label input {
+#JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label input,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label input {
   width: 100%;
   max-width: 300px;
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label label,
 #JTCSSettingsApplication .window-content .form-group-stacked.has-floating-label label,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label label,
 #slideshow-config .window-content .form-group.has-floating-label label,
 #slideshow-config .window-content .form-group-stacked.has-floating-label label,
+#slideshow-config .window-content .input-span.has-floating-label label,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label label,
-#JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label label {
+#JTCS-custom-dialog .window-content .form-group-stacked.has-floating-label label,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label label {
   color: var(--JTCS-text-color-on-bg);
 }
 #JTCSSettingsApplication .window-content .form-group .file-picker-group,
 #JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group,
+#JTCSSettingsApplication .window-content .input-span .file-picker-group,
 #slideshow-config .window-content .form-group .file-picker-group,
 #slideshow-config .window-content .form-group-stacked .file-picker-group,
+#slideshow-config .window-content .input-span .file-picker-group,
 #JTCS-custom-dialog .window-content .form-group .file-picker-group,
-#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group {
+#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group,
+#JTCS-custom-dialog .window-content .input-span .file-picker-group {
   align-items: stretch;
 }
 #JTCSSettingsApplication .window-content .form-group .file-picker-group input,
 #JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group input,
+#JTCSSettingsApplication .window-content .input-span .file-picker-group input,
 #slideshow-config .window-content .form-group .file-picker-group input,
 #slideshow-config .window-content .form-group-stacked .file-picker-group input,
+#slideshow-config .window-content .input-span .file-picker-group input,
 #JTCS-custom-dialog .window-content .form-group .file-picker-group input,
-#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group input {
+#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group input,
+#JTCS-custom-dialog .window-content .input-span .file-picker-group input {
   flex: 1;
   width: 100%;
   max-width: 450px;
@@ -1656,35 +1678,47 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCSSettingsApplication .window-content .form-group .file-picker-group button,
 #JTCSSettingsApplication .window-content .form-group-stacked .file-picker-group button,
+#JTCSSettingsApplication .window-content .input-span .file-picker-group button,
 #slideshow-config .window-content .form-group .file-picker-group button,
 #slideshow-config .window-content .form-group-stacked .file-picker-group button,
+#slideshow-config .window-content .input-span .file-picker-group button,
 #JTCS-custom-dialog .window-content .form-group .file-picker-group button,
-#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group button {
+#JTCS-custom-dialog .window-content .form-group-stacked .file-picker-group button,
+#JTCS-custom-dialog .window-content .input-span .file-picker-group button {
   flex: 0;
 }
 #JTCSSettingsApplication .window-content .form-group.color-picker-container,
 #JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container,
+#JTCSSettingsApplication .window-content .input-span.color-picker-container,
 #slideshow-config .window-content .form-group.color-picker-container,
 #slideshow-config .window-content .form-group-stacked.color-picker-container,
+#slideshow-config .window-content .input-span.color-picker-container,
 #JTCS-custom-dialog .window-content .form-group.color-picker-container,
-#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container {
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container,
+#JTCS-custom-dialog .window-content .input-span.color-picker-container {
   align-items: stretch;
 }
 #JTCSSettingsApplication .window-content .form-group.color-picker-container input,
 #JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container input,
+#JTCSSettingsApplication .window-content .input-span.color-picker-container input,
 #slideshow-config .window-content .form-group.color-picker-container input,
 #slideshow-config .window-content .form-group-stacked.color-picker-container input,
+#slideshow-config .window-content .input-span.color-picker-container input,
 #JTCS-custom-dialog .window-content .form-group.color-picker-container input,
-#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container input {
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container input,
+#JTCS-custom-dialog .window-content .input-span.color-picker-container input {
   width: 100%;
   max-width: 300px;
 }
 #JTCSSettingsApplication .window-content .form-group.color-picker-container .color-picker-group,
 #JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container .color-picker-group,
+#JTCSSettingsApplication .window-content .input-span.color-picker-container .color-picker-group,
 #slideshow-config .window-content .form-group.color-picker-container .color-picker-group,
 #slideshow-config .window-content .form-group-stacked.color-picker-container .color-picker-group,
+#slideshow-config .window-content .input-span.color-picker-container .color-picker-group,
 #JTCS-custom-dialog .window-content .form-group.color-picker-container .color-picker-group,
-#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-picker-group {
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-picker-group,
+#JTCS-custom-dialog .window-content .input-span.color-picker-container .color-picker-group {
   flex: 0;
   min-width: -webkit-fit-content;
   min-width: -moz-fit-content;
@@ -1692,10 +1726,13 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #JTCSSettingsApplication .window-content .form-group.color-picker-container .color-actions,
 #JTCSSettingsApplication .window-content .form-group-stacked.color-picker-container .color-actions,
+#JTCSSettingsApplication .window-content .input-span.color-picker-container .color-actions,
 #slideshow-config .window-content .form-group.color-picker-container .color-actions,
 #slideshow-config .window-content .form-group-stacked.color-picker-container .color-actions,
+#slideshow-config .window-content .input-span.color-picker-container .color-actions,
 #JTCS-custom-dialog .window-content .form-group.color-picker-container .color-actions,
-#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-actions {
+#JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-actions,
+#JTCS-custom-dialog .window-content .input-span.color-picker-container .color-actions {
   flex: 0;
 }
 #JTCSSettingsApplication .window-content .form-group-stacked,
@@ -1799,58 +1836,87 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content .form-group.has-floating-label input,
 #JTCSSettingsApplication .window-content .color-picker-group.has-floating-label input,
 #JTCSSettingsApplication .window-content .file-picker-group.has-floating-label input,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label input,
 #slideshow-config .window-content .form-group.has-floating-label input,
 #slideshow-config .window-content .color-picker-group.has-floating-label input,
 #slideshow-config .window-content .file-picker-group.has-floating-label input,
+#slideshow-config .window-content .input-span.has-floating-label input,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label input,
 #JTCS-custom-dialog .window-content .color-picker-group.has-floating-label input,
-#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label input {
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label input,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label input {
   height: 100%;
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label label,
 #JTCSSettingsApplication .window-content .color-picker-group.has-floating-label label,
 #JTCSSettingsApplication .window-content .file-picker-group.has-floating-label label,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label label,
 #slideshow-config .window-content .form-group.has-floating-label label,
 #slideshow-config .window-content .color-picker-group.has-floating-label label,
 #slideshow-config .window-content .file-picker-group.has-floating-label label,
+#slideshow-config .window-content .input-span.has-floating-label label,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label label,
 #JTCS-custom-dialog .window-content .color-picker-group.has-floating-label label,
-#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label label {
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label label,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label label {
   white-space: nowrap;
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:hover,
 #JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:hover,
 #JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:hover,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label:hover,
 #slideshow-config .window-content .form-group.has-floating-label:hover,
 #slideshow-config .window-content .color-picker-group.has-floating-label:hover,
 #slideshow-config .window-content .file-picker-group.has-floating-label:hover,
+#slideshow-config .window-content .input-span.has-floating-label:hover,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label:hover,
 #JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:hover,
-#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover {
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label:hover {
   --accent-color: var(--JTCS-accent-color);
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:hover label,
 #JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:hover label,
 #JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:hover label,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label:hover label,
 #slideshow-config .window-content .form-group.has-floating-label:hover label,
 #slideshow-config .window-content .color-picker-group.has-floating-label:hover label,
 #slideshow-config .window-content .file-picker-group.has-floating-label:hover label,
+#slideshow-config .window-content .input-span.has-floating-label:hover label,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label:hover label,
 #JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:hover label,
-#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover label {
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:hover label,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label:hover label {
   white-space: nowrap;
   color: var(--accent-color);
 }
 #JTCSSettingsApplication .window-content .form-group.has-floating-label:focus,
 #JTCSSettingsApplication .window-content .color-picker-group.has-floating-label:focus,
 #JTCSSettingsApplication .window-content .file-picker-group.has-floating-label:focus,
+#JTCSSettingsApplication .window-content .input-span.has-floating-label:focus,
 #slideshow-config .window-content .form-group.has-floating-label:focus,
 #slideshow-config .window-content .color-picker-group.has-floating-label:focus,
 #slideshow-config .window-content .file-picker-group.has-floating-label:focus,
+#slideshow-config .window-content .input-span.has-floating-label:focus,
 #JTCS-custom-dialog .window-content .form-group.has-floating-label:focus,
 #JTCS-custom-dialog .window-content .color-picker-group.has-floating-label:focus,
-#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:focus {
+#JTCS-custom-dialog .window-content .file-picker-group.has-floating-label:focus,
+#JTCS-custom-dialog .window-content .input-span.has-floating-label:focus {
   outline: 1px solid var(--JTCS-accent-color);
+}
+#JTCSSettingsApplication .window-content .form-group .input-span,
+#JTCSSettingsApplication .window-content .form-group-stacked .input-span,
+#slideshow-config .window-content .form-group .input-span,
+#slideshow-config .window-content .form-group-stacked .input-span,
+#JTCS-custom-dialog .window-content .form-group .input-span,
+#JTCS-custom-dialog .window-content .form-group-stacked .input-span {
+  flex: 1;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
 }
 #JTCSSettingsApplication .window-content span:not(.input-span):not(.tick-box):not(.tick-circle),
 #slideshow-config .window-content span:not(.input-span):not(.tick-box):not(.tick-circle),

@@ -85,6 +85,9 @@ export const artGalleryDefaultSettings = {
         autoContrast: true,
     },
     dedicatedDisplayData: {
+        name: "Art Journal and Art Scene",
+        hint: `Select your Art Journal and Art Scene. 
+            <br/> Note that only scenes with a Default Art Tile will be able to be picked as your 'Art Scene'.`,
         journal: {
             name: "Art Journal",
             value: "",

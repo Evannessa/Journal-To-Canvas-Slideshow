@@ -1,7 +1,8 @@
 import { log, MODULE_ID } from "../debug-mode.js";
 import { artGalleryDefaultSettings, colorThemes } from "../settings.js";
 import { universalInterfaceActions as UIA } from "../data/Universal-Actions.js";
-import { HelperFunctions as HF } from "./HelperFunctions.js";
+import { HelperFunctions, HelperFunctions as HF } from "./HelperFunctions.js";
+import { ArtTileManager } from "./ArtTileManager.js";
 
 const settingsActions = {
     global: {
@@ -41,11 +42,52 @@ export class JTCSSettingsApplication extends FormApplication {
         });
     }
 
+    async addArtSceneAndJournalData(dedicatedDisplayData) {
+        const { journal, scene } = dedicatedDisplayData;
+        function mapNameAndId(contents) {
+            const newData = {};
+            contents.forEach((c) => {
+                newData[c.id] = c.name;
+            });
+            return newData;
+        }
+        const allJournals = mapNameAndId(game.journal.contents);
+
+        const artJournalID = journal.value;
+
+        const artJournalData = {
+            options: allJournals,
+            value: artJournalID,
+        };
+
+        const allScenes = mapNameAndId(await ArtTileManager.getAllScenesWithSlideshowData());
+        const artSceneID = scene.value;
+
+        const artSceneData = {
+            options: allScenes,
+            value: artSceneID,
+        };
+        return {
+            ...dedicatedDisplayData,
+            journal: {
+                ...journal,
+                artJournalData,
+            },
+            scene: {
+                ...scene,
+                artSceneData,
+            },
+        };
+    }
+
     async getData() {
         // Send data to the template
         // let data = game.JTCS.utils.getSettingValue("artGallerySettings");
         this.data = await game.JTCS.utils.getSettingValue("artGallerySettings");
-        let data = this.data;
+        let data = { ...this.data };
+        let newDisplayData = await this.addArtSceneAndJournalData(data.dedicatedDisplayData);
+        setProperty(data, "dedicatedDisplayData", newDisplayData);
+        console.log("%cJTCSSettingsApplication.js line:80 data", "color: #26bfa5;", data);
         return data;
     }
 
