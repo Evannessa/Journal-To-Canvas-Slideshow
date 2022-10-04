@@ -1,11 +1,17 @@
+# JTCS Art Gallery
+
+### Table of Contents
+
+- [JTCS Art Gallery](#jtcs-art-gallery)
+    - [Table of Contents](#table-of-contents)
 - [Display Methods](#display-methods)
-  - [Window Popouts, Display Journal and Dedicated Display Scene - (Upgraded Features)](#window-popouts-display-journal-and-dedicated-display-scene---upgraded-features)
+  - [Window Popouts, Art Journal and Art Scene - (Upgraded Features)](#window-popouts-art-journal-and-art-scene---upgraded-features)
   - [URL Image Sharing](#url-image-sharing)
     - [IMPORTANT](#important)
     - [URL Image Sharing (Cont.)](#url-image-sharing-cont)
   - [The Art Gallery - (New Features!)](#the-art-gallery---new-features)
     - [Art Gallery Config](#art-gallery-config)
-    - [Default Tiles](#default-tiles)
+    - [Default Art Tiles](#default-art-tiles)
     - [Art Tiles and Frame Tiles](#art-tiles-and-frame-tiles)
     - [Frame Tiles vs Decorative Tiles](#frame-tiles-vs-decorative-tiles)
     - [Art and Frame Tiles (Cont.)](#art-and-frame-tiles-cont)
@@ -22,21 +28,21 @@
     - [Fading Journals](#fading-journals)
     - [Fading the Scene Gallery Config App](#fading-the-scene-gallery-config-app)
 
-(Note: Some of the footage below is a teeny bit outdated, with small visual and functional bugs having being fixed since they were recorded; If your interface looks a little bit different than in the videos below, it is due to those updates; but all major functionality should be the same )
+(**Note**: Some of the footage below is a teeny bit outdated, with small visual and functional bugs having being fixed since they were recorded; If your interface looks a little bit different than in the videos below, it is due to those updates; but all major functionality should be the same )
 
 # Display Methods
 
 -   Hovering over an image on an actor, item, or journal entry sheet will display controls that represent different methods by which you can display that image.
 
--   these controls can be toggled on and off by type or on each individual sheet (see "Customization and Utility Section" for more information)
+-   these controls can be toggled on and off by type or on each individual sheet (see "[Utilities, Settings and Customization](#utilities-settings-and-customization)" section for more information)
 
--   You can also click on the image itself, which will send it to whichever tile is selected as "Default" in that scene (see "Default Tiles" section for more information)
+-   You can also click on the image itself, which will send it to whichever tile is selected as "Default" in that scene (see "[Default Art Tiles](#default-art-tiles)" section for more information)
 
 https://user-images.githubusercontent.com/13098820/193417395-8f9aef27-7d09-47c2-8f66-a53917edae40.mp4
 
 > display on default tile demo
 
-## Window Popouts, Display Journal and Dedicated Display Scene - (Upgraded Features)
+## Window Popouts, Art Journal and Art Scene - (Upgraded Features)
 
 Two of the options in the controls allow you to display images in a window popout, or a dedicated Journal Entry
 
@@ -46,7 +52,7 @@ https://user-images.githubusercontent.com/13098820/193417364-234769f5-4feb-4d5f-
 
 > journal entry popover demo
 
-You can also have a dedicated "Art Scene" that images are sent to. Images displayed through this method will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
+You can also have a dedicated "Art Scene" that images are sent to. Images displayed through this method will automatically display on the "Default Art Tile" in that Art Scene (see "[Default Art Tiles](#default-art-tiles)" section for more info).
 
 https://user-images.githubusercontent.com/13098820/193417382-25c0aaca-ccc5-4232-b53e-95fe7bb06205.mp4
 
@@ -79,9 +85,9 @@ The below options are included in both:
 
 -   Window - will render a new "popout" window each time you click it, allowing multiple windows for multiple different images
 -   Art Journal - will simply change the image in your Art Journal, showing one image at a time, and providing a "slideshow" effect.
--   Art Scene - will automatically display on the "Default Art Tile" in that Art Scene (see "Default Tiles" section for more info).
+-   Art Scene - will automatically display on the "Default Art Tile" in that Art Scene (see "[Default Art Tiles](#default-art-tiles)" section for more info).
 
-<img src="https://user-images.githubusercontent.com/13098820/193738467-8b321398-8ab8-41a9-8b9d-8b764542ac08.png" width="400"/>
+<img src="https://user-images.githubusercontent.com/13098820/193738467-8b321398-8ab8-41a9-8b9d-8b764542ac08.png" width="70%"/>
 
 Note: A fourth option to Share URLs on specific tiles will be explained below in the Art Gallery section.
 
@@ -115,14 +121,14 @@ https://user-images.githubusercontent.com/13098820/193417372-181cfcd0-06ce-4aaa-
 
 > change config based on scene
 
-### Default Tiles
+### Default Art Tiles
 
 Select a "Default Art Tile" for each scene in the Art Gallery config with Ctrl/Cmd + Click.
 (The "Default" tile will automatically be set to the first "linked" Art Tile in a scene )
 
 https://user-images.githubusercontent.com/13098820/193417379-e38485a1-492d-425d-87de-4862e6406131.mp4
 
-> default Tile demo
+> default Art Tile demo
 
 Clicking on a sheet image itself, rather than any of its controls, will automatically send it to the "Default Art Tile" in the current scene
 
@@ -148,7 +154,7 @@ Frame Tiles are completely transparent by default, and are used specifically for
 
 Here's an example of how you could layer the various Gallery tile types with decorative tiles and/or scene foreground/background images
 
-<img alt="tile layer demo diagram" src="https://user-images.githubusercontent.com/13098820/193488971-98cd1084-e597-451f-a42c-a8dc8b90bb26.png" width="500" height="auto"/>
+<img alt="tile layer demo diagram" src="https://user-images.githubusercontent.com/13098820/193488971-98cd1084-e597-451f-a42c-a8dc8b90bb26.png" width="70%" height="auto"/>
 
 ---
 
@@ -181,7 +187,7 @@ One is to click the "Plus" button on an unlinked tile, which will create a new "
 
 https://user-images.githubusercontent.com/13098820/193417377-b3f0c34d-ae4d-4dcd-b7bb-cc55f1dfd7b8.mp4
 
-> create new tile demo (note: small bug where the Art Tile doesn't immediately update after being linked to the newly created tile, but updates when the Frame Tile is linked to a canvas tile object)
+> create new tile demo
 
 A new Art Tile will be created with a black gradient as its image, while a new frame tile will have a completely transparent image (however you can still highlight both by hovering over them in the Art Gallery Config)
 
@@ -236,15 +242,15 @@ https://user-images.githubusercontent.com/13098820/193647498-54f13886-6206-47d9-
 
 The "Accent Color" property affects the colors of buttons, controls and inputs, including the color of the controls in Actor, Journal, and Item Sheets.
 
-![ColorChangeControls](https://user-images.githubusercontent.com/13098820/193647516-718d0c16-b386-4fb6-abb4-cea865b29396.png)
+<img alt="color change controls" src="https://user-images.githubusercontent.com/13098820/193647516-718d0c16-b386-4fb6-abb4-cea865b29396.png" width="70%"/>
 
 The "Background Color" property affects the background color of the "JTCS Art Gallery Settings" application and the "Scene Gallery Config" application.
 
-![BGColor](https://user-images.githubusercontent.com/13098820/193652877-2b492dc6-eaa2-46b3-a5a7-795a8a844a4e.png)
+<img alt="color change controls" src="https://user-images.githubusercontent.com/13098820/193652877-2b492dc6-eaa2-46b3-a5a7-795a8a844a4e.png" width="70%"/>
 
 The "Tile Indicator Colors" affect the colors that represent the different types of Gallery Tiles, both in the UI elements that represent them, and in the color they are highlighted on the canvas when hovering over the items in the UI.
 
-![FrameArtDefaultColor](https://user-images.githubusercontent.com/13098820/193652903-07fa9141-8d49-4c45-ae66-69231e12ee7f.png)
+<img width="70%" alt="frame art default color" src="https://user-images.githubusercontent.com/13098820/193652903-07fa9141-8d49-4c45-ae66-69231e12ee7f.png"/>
 
 <img width="961" alt="ColorDemoTemplateFlat" src="https://user-images.githubusercontent.com/13098820/193660437-e01e36c9-1048-4abe-848f-215889f8add2.png">
 
@@ -266,7 +272,7 @@ There are various ways to fade parts of the UI or tiles on the screen to better 
 
 Clicking the button with two overlapping squares on a Gallery Tile item in the Scene Gallery Config App will make all tiles in the scene except the one whose button you clicked upon fade out/become partially translucent, allowing you to better see the highlighted area that represents each Gallery Tile if you have lots of tiles overlaid on top of each other.
 
-![Frame Tile Highlight](https://user-images.githubusercontent.com/13098820/193483999-c455fab0-c7b8-47c7-8884-0c4255da3e94.png)
+<img src="https://user-images.githubusercontent.com/13098820/193483999-c455fab0-c7b8-47c7-8884-0c4255da3e94.png" width="70%"/>
 
 ### Fading Journals
 
@@ -276,7 +282,7 @@ https://user-images.githubusercontent.com/13098820/193676995-9468b148-8ff8-4345-
 
 The transparency/fade can be toggled off by clicking the eye button once again.
 
-![FadeToggle](https://user-images.githubusercontent.com/13098820/193677026-b2e2f5ea-0d12-4aab-9e56-bbe6e80ac1f6.gif)
+<img alt="fade toggle demo" src="https://user-images.githubusercontent.com/13098820/193677026-b2e2f5ea-0d12-4aab-9e56-bbe6e80ac1f6.gif" width="50%"/>
 
 (Note: (QOL/UX Improvement) This feature could be improved so that the Fade Toggle Button itself is fully opaque and visible regardless of if the fade feature is toggled on or off)
 

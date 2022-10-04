@@ -1,4 +1,5 @@
 import { ArtTileManager } from "./ArtTileManager.js";
+import { HelperFunctions } from "./HelperFunctions.js";
 import ImageVideoPopout from "./MultiMediaPopout.js";
 /**
  * This class manages the images specifically, setting and clearing the tiles' images
@@ -227,13 +228,17 @@ export class ImageDisplayManager {
         //on click, this method will determine if the image should open in a scene or in a display journal
         switch (method) {
             case "artScene":
-                let artSceneID = await game.JTCS.utils.getSettingValue(
+                let artSceneID = await HelperFunctions.getSettingValue(
                     "artGallerySettings",
                     "dedicatedDisplayData.scene.value"
                 );
                 let artScene = game.scenes.get(artSceneID);
                 if (artScene) {
                     let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(artScene);
+                    if (!defaultArtTileID) {
+                        ui.notifications.error("No valid 'Art Tile' found in scene '" + artScene.name + "'");
+                        return;
+                    }
                     let frameTileID = await ArtTileManager.getGalleryTileDataFromID(
                         defaultArtTileID,
                         "linkedBoundingTile",
@@ -255,7 +260,7 @@ export class ImageDisplayManager {
                 if (method === "anyScene" && !artTileID) {
                     artTileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
                     if (!artTileID) {
-                        ui.notifications.error("No gallery tile found");
+                        ui.notifications.error("No valid 'Art Tile' found in current scene");
                         return;
                     }
                     frameTileID = await ArtTileManager.getGalleryTileDataFromID(artTileID, "linkedBoundingTile");
