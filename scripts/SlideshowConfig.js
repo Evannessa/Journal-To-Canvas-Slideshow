@@ -20,7 +20,7 @@ export class SlideshowConfig extends Application {
             height: 500,
             template: "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
             id: "slideshow-config",
-            title: "Slideshow Config",
+            title: "Scene Gallery Config",
             scrollY: ["ul"],
         });
     }

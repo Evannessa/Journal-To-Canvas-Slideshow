@@ -26,12 +26,12 @@ export const sheetControls = [
     },
     {
         action: "sheet.click.openSlideshowConfig",
-        tooltip: "open Art Gallery Tile Configuration for the current scene",
+        tooltip: "open Gallery Tile Config Application for the current scene",
         icon: "fas fa-cubes",
     },
     {
         action: "sheet.click.openSettingsApp",
-        tooltip: "open Journal to Canvas Slideshow Settings",
+        tooltip: "open JTCS Art Gallery Settings",
         icon: "fas fa-cog",
     },
 

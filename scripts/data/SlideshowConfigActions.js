@@ -348,7 +348,7 @@ export const slideshowDefaultSettingsData = {
                 },
                 showModuleSettings: {
                     icon: "fas fa-cog",
-                    tooltipText: "Open Journal-to-Canvas Slideshow Art Gallery Settings",
+                    tooltipText: "Open JTCS Art Gallery Settings",
                     onClick: (event, options = {}) => {
                         UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
                     },
