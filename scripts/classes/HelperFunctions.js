@@ -435,12 +435,12 @@ export class HelperFunctions {
             Feature demo</video>
 			    <ol style="list-style-type:decimal">
                 <li>
-                    <a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/features-and-walkthrough.md">
+                    <a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/master/features-and-walkthrough.md">
                     View a detailed guide and walkthrough of the new features here
                     </a>
                 </li>
-                <li><a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/README.md">ReadMe and Feature List</a></li>
-                <li><a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/release-notes.md">Release Notes</a></li>
+                <li><a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/master/README.md">ReadMe and Feature List</a></li>
+                <li><a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/master/release-notes.md">Release Notes</a></li>
 			</ol>
 		</p>
 		<p>Note: This welcome message can be turned on and off in the module settings, but will be enabled after updates to inform you of important changes.</p>
