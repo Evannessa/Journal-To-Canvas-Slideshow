@@ -41,11 +41,19 @@ export class SheetImageApp {
                 "artGallerySettings",
                 "sheetSettings.modularChoices"
             );
+            console.log("%cSheetImageApp.js line:44 app, app.document", "color: #26bfa5;", app, app.document);
             let doc = app.document;
             let onThisSheet = await game.JTCS.utils.manager.getFlagValue(doc, "showControls", "", false);
 
             let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
+            console.log(
+                "%cSheetImageApp.js line:48 documentName",
+                "color: white; background-color: #07758b;",
+                documentName,
+                whichSheets,
+                whichSheets[documentName]
+            );
             let selectorString = "img, video, .lightbox-image";
             if (whichSheets[documentName] || onThisSheet === true) {
                 if (onThisSheet) {
@@ -139,7 +147,7 @@ export class SheetImageApp {
             controls: controlsData,
             isActive,
         });
-        let $editorElement = $(journalSheet.element[0].querySelector(".window-content .editor-content"));
+        let $editorElement = $(journalSheet.element[0].querySelector(".window-content"));
         $editorElement.prepend(renderHtml);
         let controlsContainer = $("#sheet-controls");
         await SheetImageApp.activateSheetWideEventListeners({ controlsContainer, journalSheet, isActive });

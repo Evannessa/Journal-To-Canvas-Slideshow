@@ -695,14 +695,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
     }
     // --color-text-primary: ;
 }
-// .editor-content {
-//     p {
-//         display: flex;
-//         align-items: center;
-//         justify-content: center;
-//         flex-wrap: wrap;
-//     }
-// }
+
 .clickableImageContainer {
     display: inline-flex;
     @extend .padding-medium;
@@ -775,6 +768,22 @@ $tile-types: ("frame", "art", "unlinked", "default");
         label:last-of-type {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
+        }
+    }
+}
+.sheet.actor,
+.sheet.item {
+    .clickableImageContainer {
+        padding: unset;
+        margin: unset;
+        flex: 0 !important;
+        .clickableImageControls {
+            top: 0%;
+            transform: translateY(0%);
+            button.floating-control {
+                background: var(--bg-color);
+                border: unset;
+            }
         }
     }
 }

@@ -2718,6 +2718,23 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border-bottom-right-radius: 8px;
 }
 
+.sheet.actor .clickableImageContainer,
+.sheet.item .clickableImageContainer {
+  padding: unset;
+  margin: unset;
+  flex: 0 !important;
+}
+.sheet.actor .clickableImageContainer .clickableImageControls,
+.sheet.item .clickableImageContainer .clickableImageControls {
+  top: 0%;
+  transform: translateY(0%);
+}
+.sheet.actor .clickableImageContainer .clickableImageControls button.floating-control,
+.sheet.item .clickableImageContainer .clickableImageControls button.floating-control {
+  background: var(--bg-color);
+  border: unset;
+}
+
 .clickableImage,
 .rightClickableImage {
   border: 0px solid transparent;
