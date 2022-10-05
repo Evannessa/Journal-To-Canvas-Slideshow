@@ -21,11 +21,12 @@ https://user-images.githubusercontent.com/13098820/193938899-f5920be7-6148-4ac7-
 
 Note: While the wooden scene background and overlay art is included as part of the module in a compendium pack, the tabletop "trinket" assets seen in above video are NOT included as part of the module. They are by [Joe Neeves (Limonium) on Gumroad](https://limonium.gumroad.com/?recommended_by=library).
 
-## Features and Changelog
+## Features, Walkthrough and Changelog
 
+### Walkthrough/Tutorial
 A detailed walkthrough of the new features can be found here: [Features and Walkthrough](features-and-walkthrough.md)
 
-Major feature additions and improvements are as follows:
+### Major Feature Additions and Improvements
 
 ### **IMPROVED**
 
