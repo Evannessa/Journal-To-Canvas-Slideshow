@@ -33,8 +33,6 @@ Major feature additions and improvements are as follows:
 
     -   Various Display methods can be easily accessed and activated by hovering over an image and clicking on one of these controls, rather than having to change the method via settings
     -   the Original "click on an image to display it on the canvas" functionality remains intact.
-    
-    <img alt="Image Controls Demo" src="https://user-images.githubusercontent.com/13098820/193946807-644aed5c-e6ad-402f-a85f-91947343dbf7.png" width="45%"/>
 
     <img alt="Image Controls Demo" src="https://user-images.githubusercontent.com/13098820/193946807-644aed5c-e6ad-402f-a85f-91947343dbf7.png" width="45%"/>
 
