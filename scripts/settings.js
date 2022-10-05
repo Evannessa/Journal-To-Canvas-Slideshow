@@ -40,20 +40,7 @@ export const colorThemes = {
 export const artGalleryDefaultSettings = {
     sheetSettings: {
         name: "Sheet Types",
-        // globalChoices: {
-        //     //these will be radio buttons that control the checkboxes below
-        //     hint: "Should we toggle which sheets show the image controls by their type (Actor, Item, Journal Entry), or would you like to toggle the controls on each individual sheet",
-        //     chosen: "toggleType",
-        //     onChange: (event, options = { value: "" }) => {
-        //         let { value, app, html } = options;
-        //         let areDisabled = value === "toggleType" ? false : true;
-        //         html && html.find("#JTCSsheetSettings input[type='checkbox']").prop("disabled", areDisabled);
-        //     },
-        //     choices: {
-        //         toggleType: "Toggle Sheets By Type",
-        //         toggleEach: "Toggle Each Sheet Individually",
-        //     },
-        // },
+
         hint: `Which types of sheets would you like to show clickable image controls? <br/><br/> 
             <span class="accent"> Note: These options determine if these sheet types have the controls visible by default. You'll still be able to toggle controls on and off on each individual sheet regardless. </span>`,
         modularChoices: {
@@ -71,8 +58,6 @@ export const artGalleryDefaultSettings = {
         colors: {
             backgroundColor: "#010527",
             accentColor: "#6c4eff",
-            // accentColor: "#582eff",
-            // backgroundColor: "#ffffff",
         },
         propertyNames: {
             accentColor: "--JTCS-accent-color",
@@ -159,19 +144,25 @@ export const registerSettings = async function () {
         type: Object,
         default: artGalleryDefaultSettings,
         onChange: async (event) => {
-            const updateData = await HelperFunctions.getSettingValue("artGallerySettings");
+            const updateData = await HelperFunctions.getSettingValue(
+                "artGallerySettings"
+            );
             Hooks.callAll("updateJTCSSettings", { origin: "JTCSSettings", updateData });
         },
     });
 
-    await game.settings.register("journal-to-canvas-slideshow", "areConfigInstructionsVisible", {
-        name: "Visible Art Gallery Tile Config Instructions",
-        hint: "Toggle whether the Art Gallery Configuration App will show instructions at the bottom of the application when you hover or not",
-        scope: "world",
-        config: true,
-        type: Boolean,
-        default: true,
-    });
+    await game.settings.register(
+        "journal-to-canvas-slideshow",
+        "areConfigInstructionsVisible",
+        {
+            name: "Visible Art Gallery Tile Config Instructions",
+            hint: "Toggle whether the Art Gallery Configuration App will show instructions at the bottom of the application when you hover or not",
+            scope: "world",
+            config: true,
+            type: Boolean,
+            default: true,
+        }
+    );
 
     game.settings.register("journal-to-canvas-slideshow", "showWelcomeMessage", {
         name: "Show Welcome Message",
