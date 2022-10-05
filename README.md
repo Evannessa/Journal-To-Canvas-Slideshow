@@ -30,37 +30,39 @@ Major feature additions and improvements are as follows:
 ### **IMPROVED**
 
 -   Improved image-share controls in actor, item, and journal sheets
+
     -   Various Display methods can be easily accessed and activated by hovering over an image and clicking on one of these controls, rather than having to change the method via settings
     -   the Original "click on an image to display it on the canvas" functionality remains intact.
     
     <img alt="Image Controls Demo" src="https://user-images.githubusercontent.com/13098820/193946807-644aed5c-e6ad-402f-a85f-91947343dbf7.png" width="45%"/>
 
+    <img alt="Image Controls Demo" src="https://user-images.githubusercontent.com/13098820/193946807-644aed5c-e6ad-402f-a85f-91947343dbf7.png" width="45%"/>
 
 ### **NEW**
 
 -   Gallery Tiles
+
     -   "Gallery Tiles" feature introduced, allowing the creation of "Art Tiles" and "Frame Tiles" (which are an overhauled and much more robust version of the old 'Display Tiles' and 'Bounding Tiles' feature)
     -   Gallery Tiles can be created, linked, configured, and given unique names in a new configuration application called the "Scene Gallery Config"
-    
+
     <img alt="Scene Gallery Config App - Light Mode" src="https://user-images.githubusercontent.com/13098820/193947720-ed4a388f-e22f-466c-b14b-b26c64042c7c.png" width="45%"/>
 
-- Settings and Customization
-    - JTCS Art Gallery Settings application that can be launched from multiple locations and includes several customization options
-    - Canvas tiles highlight with colored overlays whenever you hover a connected UI item, to ensure you can easily find them.
-       - overlay colors are customizable
-          - Gallery Tile color customization options in the JTCS Art Gallery Settings App
-         <img alt="Tile Colors Demo" src="https://user-images.githubusercontent.com/13098820/193948186-86e8f4b8-7803-48bc-acef-93bbf54a0a67.png" width="75%"/>
-         
-         - Demonstration of how the colors translate to affect the UI elements and canvas tile overlays  
-         <img width="75%" alt="Color Demo Template" src="https://user-images.githubusercontent.com/13098820/193948287-2004ca17-a594-4d92-aec5-ad6e616abc52.png">
-         
-    -   Color customization of elements UI in JTCS Art Gallery apps, including a default light and dark theme.          
+-   Settings and Customization
+
+    -   JTCS Art Gallery Settings application that can be launched from multiple locations and includes several customization options
+    -   Canvas tiles highlight with colored overlays whenever you hover a connected UI item, to ensure you can easily find them.
+        -   overlay colors are customizable
+
+            -   Gallery Tile color customization options in the JTCS Art Gallery Settings App
+                <img alt="Tile Colors Demo" src="https://user-images.githubusercontent.com/13098820/193948186-86e8f4b8-7803-48bc-acef-93bbf54a0a67.png" width="75%"/>
+
+            -   Demonstration of how the colors translate to affect the UI elements and canvas tile overlays  
+                <img width="75%" alt="Color Demo Template" src="https://user-images.githubusercontent.com/13098820/193948287-2004ca17-a594-4d92-aec5-ad6e616abc52.png">
+    -   Color customization of elements UI in JTCS Art Gallery apps, including a default light and dark theme.  
          <img alt="Background Color Change Demo" src="https://user-images.githubusercontent.com/13098820/193948120-316f5f8c-9ea9-4ca2-b42f-cdc3ea7f8eb8.png" width="75%"/>
-     
 
           <img alt="Scene Gallery Config App - Dark Mode" src="https://user-images.githubusercontent.com/13098820/193947490-3baf8588-c679-4375-be76-0ad88ff892de.png" width="45%"/>
           <img alt="Scene Gallery Config App - Light Mode" src="https://user-images.githubusercontent.com/13098820/193947720-ed4a388f-e22f-466c-b14b-b26c64042c7c.png" width="45%"/>
-
 
 -   Compendiums
     -   Compendium pack of macros with featuring utilities to make moving and scaling tiles easier
