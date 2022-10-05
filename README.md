@@ -1,7 +1,9 @@
 - [JTCS - Art Gallery](#jtcs---art-gallery)
-  - [Features and Changelog](#features-and-changelog)
-    - [**IMPROVED**](#improved)
-    - [**NEW**](#new)
+  - [Features, Walkthrough and Changelog](#features-walkthrough-and-changelog)
+    - [Walkthrough/Tutorial](#walkthroughtutorial)
+    - [Major Feature Additions and Improvements](#major-feature-additions-and-improvements)
+      - [**IMPROVED**](#improved)
+      - [**NEW**](#new)
     - [Previous Versions Documentation](#previous-versions-documentation)
     - [Changelog/Release Notes](#changelogrelease-notes)
   - [Recommended Modules](#recommended-modules)
@@ -24,11 +26,12 @@ Note: While the wooden scene background and overlay art is included as part of t
 ## Features, Walkthrough and Changelog
 
 ### Walkthrough/Tutorial
+
 A detailed walkthrough of the new features can be found here: [Features and Walkthrough](features-and-walkthrough.md)
 
 ### Major Feature Additions and Improvements
 
-### **IMPROVED**
+#### **IMPROVED**
 
 -   Improved image-share controls in actor, item, and journal sheets
 
@@ -37,7 +40,7 @@ A detailed walkthrough of the new features can be found here: [Features and Walk
 
     <img alt="Image Controls Demo" src="https://user-images.githubusercontent.com/13098820/193946807-644aed5c-e6ad-402f-a85f-91947343dbf7.png" width="45%"/>
 
-### **NEW**
+#### **NEW**
 
 -   Gallery Tiles
 
@@ -50,13 +53,16 @@ A detailed walkthrough of the new features can be found here: [Features and Walk
 
     -   JTCS Art Gallery Settings application that can be launched from multiple locations and includes several customization options
     -   Canvas tiles highlight with colored overlays whenever you hover a connected UI item, to ensure you can easily find them.
+
         -   overlay colors are customizable
 
             -   Gallery Tile color customization options in the JTCS Art Gallery Settings App
+
                 <img alt="Tile Colors Demo" src="https://user-images.githubusercontent.com/13098820/193948186-86e8f4b8-7803-48bc-acef-93bbf54a0a67.png" width="75%"/>
 
             -   Demonstration of how the colors translate to affect the UI elements and canvas tile overlays  
                 <img width="75%" alt="Color Demo Template" src="https://user-images.githubusercontent.com/13098820/193948287-2004ca17-a594-4d92-aec5-ad6e616abc52.png">
+
     -   Color customization of elements UI in JTCS Art Gallery apps, including a default light and dark theme.  
          <img alt="Background Color Change Demo" src="https://user-images.githubusercontent.com/13098820/193948120-316f5f8c-9ea9-4ca2-b42f-cdc3ea7f8eb8.png" width="75%"/>
 
