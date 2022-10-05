@@ -421,24 +421,34 @@ export class HelperFunctions {
     }
 
     static async showWelcomeMessage() {
+        let options = {};
         let d = new Dialog({
             title: "Welcome Message",
             content: `<div><p>
 			<h2>Journal To Canvas Slideshow Has Updated</h2>
-			<ol style="list-style-type:decimal">
-				<li><a href="https://youtu.be/t4NX55vs9gU">Watch the tutorial video here</a></li><br>
-				<li>Please check the module's settings and reselect your prefered options, as the settings have changed</li><br>
-				<li>Please recreate your Display Scene, or replace the tile in your display scene with a "Display Tile" (see tutorial video for how-to)</li><br>
-				<li>Please create all Display Tiles from now on using the "Create Display Tile" button under the Tile controls.</li><br>
-				<li>Note that Display Tiles now are "flagged" by the script and no longer need to be the very first tile in the scene, so you can add it after other tiles</li><br>
+            <p>Journal to Canvas Slideshow is now known as "JTCS - Art Gallery"</p>
+            <p>The module has received a huge overhaul, updates and improvements to preexisting features, and the addition of brand new features. 
+           </p>
+            <video width="100%" controls> 
+            <source src="https://user-images.githubusercontent.com/13098820/193938899-f5920be7-6148-4ac7-9738-8a5ee7d420e9.mp4"
+            type="video/mp4"/>
+            Feature demo</video>
+			    <ol style="list-style-type:decimal">
+                <li>
+                    <a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/features-and-walkthrough.md">
+                    View a detailed guide and walkthrough of the new features here
+                    </a>
+                </li>
+                <li><a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/README.md">ReadMe and Feature List</a></li>
+                <li><a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/v9-overhaul-experimental/release-notes.md">Release Notes</a></li>
 			</ol>
 		</p>
-		<p>The welcome message can be turned on and off in the module settings, but will be enabled after updates to inform you of important changes.</p>
+		<p>Note: This welcome message can be turned on and off in the module settings, but will be enabled after updates to inform you of important changes.</p>
 		</div> `,
             buttons: {
                 disable: {
                     label: "Disable Welcome Message",
-                    callback: DisableWelcomeMessage,
+                    callback: async () => await HelperFunctions.disableWelcomeMessage(),
                 },
                 continue: {
                     label: "Continue without Disabling",

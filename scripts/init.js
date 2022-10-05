@@ -170,6 +170,13 @@ async function insertImageIntoJournal(file, editor) {
     if (contentToInsert) editor.insertContent(contentToInsert);
 }
 
+Hooks.once("canvasReady", async () => {
+    const showWelcomeMessage = await HelperFunctions.getSettingValue("showWelcomeMessage");
+    if (showWelcomeMessage) {
+        await HelperFunctions.showWelcomeMessage();
+    }
+});
+
 Hooks.on("canvasReady", async (canvas) => {
     //get tile data from scene flags
 

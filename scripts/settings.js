@@ -173,15 +173,6 @@ export const registerSettings = async function () {
         default: true,
     });
 
-    game.settings.register("journal-to-canvas-slideshow", "useActorSheetImages", {
-        name: "Use Actor Sheet Images",
-        hint: "If this is enabled, you can RIGHT CLICK on an image in an actor sheet to display it to your players. This is set to right click so it doesn't conflict with the default behavior of clicking on an actor's image.",
-        scope: "client",
-        config: true,
-        type: Boolean,
-        default: false,
-    });
-
     game.settings.register("journal-to-canvas-slideshow", "showWelcomeMessage", {
         name: "Show Welcome Message",
         scope: "client",
