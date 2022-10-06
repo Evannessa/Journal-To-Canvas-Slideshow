@@ -1,15 +1,15 @@
-- [JTCS - Art Gallery](#jtcs---art-gallery)
-  - [Features, Walkthrough and Changelog](#features-walkthrough-and-changelog)
-    - [Walkthrough/Tutorial](#walkthroughtutorial)
-    - [Major Feature Additions and Improvements](#major-feature-additions-and-improvements)
-      - [**IMPROVED**](#improved)
-      - [**NEW**](#new)
-    - [Previous Versions Documentation](#previous-versions-documentation)
-    - [Changelog/Release Notes](#changelogrelease-notes)
-  - [Recommended Modules](#recommended-modules)
-  - [Contributors & Thanks](#contributors--thanks)
-    - [Code Contributors](#code-contributors)
-    - [Visual FX/UI/Assets Contributions](#visual-fxuiassets-contributions)
+-   [JTCS - Art Gallery](#jtcs---art-gallery)
+    -   [Features, Walkthrough and Changelog](#features-walkthrough-and-changelog)
+        -   [Walkthrough/Tutorial](#walkthroughtutorial)
+        -   [Major Feature Additions and Improvements](#major-feature-additions-and-improvements)
+            -   [**IMPROVED**](#improved)
+            -   [**NEW**](#new)
+        -   [Previous Versions Documentation](#previous-versions-documentation)
+        -   [Changelog/Release Notes](#changelogrelease-notes)
+    -   [Recommended Modules](#recommended-modules)
+    -   [Contributors & Thanks](#contributors--thanks)
+        -   [Code Contributors](#code-contributors)
+        -   [Visual FX/UI/Assets Contributions](#visual-fxuiassets-contributions)
 
 # JTCS - Art Gallery
 
@@ -84,6 +84,7 @@ Go to [Release Notes](release-notes.md) to view the full changelog/release notes
 
 ## Recommended Modules
 
+-   [Tile Sort] by [theripper93](https://github.com/theripper93) - highly recommended for taking the pain out of layering tiles
 -   [Quickscale](https://foundryvtt.com/packages/quickscale) by [unsoluble](https://foundryvtt.com/community/unsoluble) - will make scaling and rotating tiles easier
 -   [FX Master](https://foundryvtt.com/packages/fxmaster) by [ghost](https://foundryvtt.com/community/saluu) - for cool visual effects on your Art Gallery scenes
 -   [Token Magic FX](https://foundryvtt.com/packages/tokenmagic) by [SecretFire](https://foundryvtt.com/community/galaktor) - for adding add filters and effects to tiles
