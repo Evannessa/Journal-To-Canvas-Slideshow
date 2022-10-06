@@ -4,7 +4,7 @@
     "description": "Show art from journal, actor, or item sheets to your players in a variety of ways, now including displaying multiple images simultaneously in tile-based 'Art Gallery'. (Previously named 'Journal-to-Canvas-Slideshow')",
     "author": "Eva",
     "socket": "true",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9",
     "type": "module",

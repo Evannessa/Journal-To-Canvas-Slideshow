@@ -1,4 +1,12 @@
-## v.0.2.0
+## v.0.2.1 - 10/06/2022
+
+**PATCHED**
+
+**Major**
+
+-   Fixed bug with src not being fetched from video elements
+
+## v.0.2.0 - 10/05/2022
 
 **CHANGED**
 
