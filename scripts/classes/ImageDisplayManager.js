@@ -11,7 +11,9 @@ export class ImageDisplayManager {
             "dedicatedDisplayData.scene.value"
         );
         let ourScene = game.scenes.get(artSceneID);
-        let artTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, { currentSceneID: artSceneID });
+        let artTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, {
+            currentSceneID: artSceneID,
+        });
         let artTileID = artTiles[0].id;
 
         let frameTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true, {
@@ -25,7 +27,13 @@ export class ImageDisplayManager {
             frameTileID: frameTileID,
         };
     }
-    static async updateTileObjectTexture(artTileID, frameTileID, url, method, sceneID = "") {
+    static async updateTileObjectTexture(
+        artTileID,
+        frameTileID,
+        url,
+        method,
+        sceneID = ""
+    ) {
         let ourScene = game.scenes.get(sceneID);
         if (!ourScene) ourScene = game.scenes.viewed;
 
@@ -39,33 +47,43 @@ export class ImageDisplayManager {
             return;
         }
         const tex = await loadTexture(url);
-        // .catch((error) => {
-        //     console.log("Something went wrong", error);
-        //     return;
-        // })
-        // .then((result) => {
-        //     if (!result) {
-        //         console.log("Result undefined?", result);
-        //         return;
-        //     }
-        // });
+
         if (!tex) {
-            ui.notifications.error(`Error loading texture from '${url}'. Access to URL likely blocked by CORS policy.`);
+            ui.notifications.error(
+                `Error loading texture from '${url}'. Access to URL likely blocked by CORS policy.`
+            );
             return;
         }
         var imageUpdate;
 
         if (!frameTile) {
-            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(artTile, tex, url, sceneID);
+            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(
+                artTile,
+                tex,
+                url,
+                sceneID
+            );
         } else {
-            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url, sceneID);
+            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(
+                artTile,
+                frameTile,
+                tex,
+                url,
+                sceneID
+            );
         }
 
         const updated = await ourScene
             .updateEmbeddedDocuments("Tile", [imageUpdate])
-            .catch((error) => ui.notifications.error(`Default art tile in ${ourScene.name} couldn't be updated`));
+            .catch((error) =>
+                ui.notifications.error(
+                    `Default art tile in ${ourScene.name} couldn't be updated`
+                )
+            );
         if (updated && method === "artScene") {
-            ui.notifications.info(`Default Tile in Art Scene ${ourScene.name}  successfully updated`);
+            ui.notifications.info(
+                `Default Tile in Art Scene ${ourScene.name}  successfully updated`
+            );
         }
     }
 
@@ -248,9 +266,13 @@ export class ImageDisplayManager {
                 );
                 let artScene = game.scenes.get(artSceneID);
                 if (artScene) {
-                    let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(artScene);
+                    let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(
+                        artScene
+                    );
                     if (!defaultArtTileID) {
-                        ui.notifications.error("No valid 'Art Tile' found in scene '" + artScene.name + "'");
+                        ui.notifications.error(
+                            "No valid 'Art Tile' found in scene '" + artScene.name + "'"
+                        );
                         return;
                     }
                     let frameTileID = await ArtTileManager.getGalleryTileDataFromID(
@@ -272,14 +294,26 @@ export class ImageDisplayManager {
                 //if the setting is to display it in a scene, proceed as normal
 
                 if (method === "anyScene" && !artTileID) {
-                    artTileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
+                    artTileID = await ArtTileManager.getDefaultArtTileID(
+                        game.scenes.viewed
+                    );
                     if (!artTileID) {
-                        ui.notifications.error("No valid 'Art Tile' found in current scene");
+                        ui.notifications.error(
+                            "No valid 'Art Tile' found in current scene"
+                        );
                         return;
                     }
-                    frameTileID = await ArtTileManager.getGalleryTileDataFromID(artTileID, "linkedBoundingTile");
+                    frameTileID = await ArtTileManager.getGalleryTileDataFromID(
+                        artTileID,
+                        "linkedBoundingTile"
+                    );
                 }
-                await ImageDisplayManager.updateTileObjectTexture(artTileID, frameTileID, url, method);
+                await ImageDisplayManager.updateTileObjectTexture(
+                    artTileID,
+                    frameTileID,
+                    url,
+                    method
+                );
                 break;
             case "journalEntry":
             case "window":
@@ -324,7 +358,10 @@ export class ImageDisplayManager {
     }
 
     static async determineWhatToClear() {
-        let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
+        let location = game.settings.get(
+            "journal-to-canvas-slideshow",
+            "displayLocation"
+        );
         if (location == "displayScene" || location == "anyScene") {
             clearDisplayTile();
         } else if (location == "window") {
@@ -336,7 +373,8 @@ export class ImageDisplayManager {
         if (!findDisplayJournal()) {
             return;
         }
-        let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
+        let url =
+            "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
         let update = {
             _id: displayJournal.id,
             img: url,
@@ -379,7 +417,9 @@ export class ImageDisplayManager {
             }
         }
         if (!displayTile) {
-            ui.notifications.error("No display tile found -- make sure your scene has a display tile");
+            ui.notifications.error(
+                "No display tile found -- make sure your scene has a display tile"
+            );
             doesMeetRequirements = false;
         }
         if (!boundingTile) {

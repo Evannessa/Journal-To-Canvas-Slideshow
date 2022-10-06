@@ -30,17 +30,28 @@ export const setupHookHandlers = async () => {
 
     async function updateGalleryTileIndicator(tileDoc) {
         let tileID = tileDoc.id; //this gets the id from the tile's document itself
-        let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
-        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(tileID, sceneGalleryTiles); //this is looking for tiles that are already linked
+        let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles(
+            "",
+            true
+        );
+        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(
+            tileID,
+            sceneGalleryTiles
+        ); //this is looking for tiles that are already linked
 
         await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     }
 
     async function updateAllGalleryIndicators(scene) {
         let tiles = scene.tiles;
-        let artTileDataArray = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
+        let artTileDataArray = await JTCSModules.ArtTileManager.getSceneSlideshowTiles(
+            "",
+            true
+        );
         tiles.forEach(async (tileDoc) => {
-            let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+            let foundTileData = artTileDataArray.find(
+                (tileData) => tileData.id === tileDoc.id
+            );
             await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
         });
     }
@@ -82,7 +93,9 @@ export const setupHookHandlers = async () => {
         console.log("Re-rendering in response to settings or flags");
         const { origin, currentScene, updateData } = options;
 
-        let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
+        let renderedSheets = Object.values(window.ui.windows).filter(
+            (item) => item.document?.documentName
+        );
         renderedSheets.forEach((sheet) => {
             const docType = sheet.document.documentName.toLowerCase();
 
@@ -100,13 +113,33 @@ export const setupHookHandlers = async () => {
     const hookHandlers = {
         rerenderImageSheet: {
             //when the art gallery tiles update, re-render the sheets
-            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile", "updateJTCSSettings", "canvasReady"],
+            hooks: [
+                "updateArtGalleryTiles",
+                "updateDefaultArtTile",
+                "updateJTCSSettings",
+                "canvasReady",
+            ],
             handlerFunction: rerenderImageSheet,
         },
         renderImageControls: {
-            hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet", "update"],
+            hooks: [
+                "renderItemSheet",
+                "renderActorSheet",
+                "renderJournalSheet",
+                "renderJournalPageSheet",
+                "renderJournalTextPageSheet",
+                "update",
+            ],
             // hooks: ["renderJournalSheet"],
             handlerFunction: renderImageControls,
+            // specialHooks: [
+            //     {
+            //         hookName: "renderJournalPageSheet",
+            //         handlerFunction: async (app, html) => {
+            //             console.log("Rendering journal page", app, html);
+            //         },
+            //     },
+            // ],
         },
         renderSlideshowConfig: {
             hooks: [

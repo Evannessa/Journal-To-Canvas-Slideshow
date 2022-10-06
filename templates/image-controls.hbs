@@ -25,6 +25,7 @@
         {{#if displayTiles.length}}
         {{#each displayTiles as |tileData|}}
         <button
+			type="button"
             name="{{concat "selectedDisplayTile" @root.imgPath}}"
             data-display-name="{{tileData.tile.displayName}}"
             data-action="tileButton.click.displayImageOnTile"

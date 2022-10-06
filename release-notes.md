@@ -1,3 +1,11 @@
+## v.0.2.1
+
+**CHANGED**
+**Major**
+
+-   Added support for v10 with backwards compatibility
+-   v10 version **REQUIRES** right-click on journal image instead of left-click, to avoid interfering with default JournalEntryPage functionality when clicking on an image
+
 ## v.0.2.0
 
 **CHANGED**

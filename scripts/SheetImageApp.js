@@ -37,49 +37,72 @@ export class SheetImageApp {
      */
     static async applyImageClasses(app, html) {
         if (game.user.isGM) {
-            let whichSheets = await game.JTCS.utils.getSettingValue(
+            const whichSheets = await HelperFunctions.getSettingValue(
                 "artGallerySettings",
                 "sheetSettings.modularChoices"
             );
-            console.log("%cSheetImageApp.js line:44 app, app.document", "color: #26bfa5;", app, app.document);
-            let doc = app.document;
-            let onThisSheet = await game.JTCS.utils.manager.getFlagValue(doc, "showControls", "", false);
+            const doc = app.document;
+            let onThisSheet = await HelperFunctions.getFlagValue(
+                doc,
+                "showControls",
+                "",
+                false
+            );
 
             let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
-            console.log(
-                "%cSheetImageApp.js line:48 documentName",
-                "color: white; background-color: #07758b;",
-                documentName,
-                whichSheets,
-                whichSheets[documentName]
-            );
+            // for v10 +
+            if (game.version >= 10) {
+                if (documentName === "journalEntryPage") {
+                    documentName = "journalEntry";
+                    onThisSheet = await HelperFunctions.getFlagValue(
+                        doc.parent,
+                        "showControls",
+                        "",
+                        false
+                    );
+                }
+            }
             let selectorString = "img, video, .lightbox-image";
             if (whichSheets[documentName] || onThisSheet === true) {
                 if (onThisSheet) {
-                    if (documentName === "journalEntry") {
+                    if (documentName === "journalEntry" && game.version < 10) {
                         html.find(selectorString).addClass("clickableImage");
                     } else {
                         html.find(selectorString).addClass("rightClickableImage");
                     }
                     //inject the controls into every image that has the clickableImage or rightClickableImage classes
-                    Array.from(html[0].querySelectorAll(".clickableImage, .rightClickableImage")).forEach((img) =>
-                        SheetImageApp.injectImageControls(img, app)
+                    console.log(
+                        "%cSheetImageApp.js line:75 html[0]",
+                        "color: white; background-color: #007acc;",
+                        html.find(".clickableImage, .rightClickableImage")
                     );
+
+                    Array.from(
+                        html.find(".clickableImage, .rightClickableImage")
+                    ).forEach((img) => SheetImageApp.injectImageControls(img, app));
                 }
-                //inject controls onto the sheet itself too
-                // if (!html[0].querySelector("#sheet-controls")) {
-                // }
             }
-            SheetImageApp.injectSheetWideControls(app);
+            if (doc.documentName !== "JournalEntryPage") {
+                SheetImageApp.injectSheetWideControls(app);
+            }
         }
     }
 
     static async applySheetFadeSettings(journalSheet) {
         //get opacity, and whether or not journals should be faded
-        let opacityValue = (await game.JTCS.utils.getSettingValue("artGallerySettings", "sheetFadeOpacityData")).value;
-        let shouldFadeImages = (await game.JTCS.utils.getSettingValue("artGallerySettings", "fadeSheetImagesData"))
-            .chosen;
+        let opacityValue = (
+            await game.JTCS.utils.getSettingValue(
+                "artGallerySettings",
+                "sheetFadeOpacityData"
+            )
+        ).value;
+        let shouldFadeImages = (
+            await game.JTCS.utils.getSettingValue(
+                "artGallerySettings",
+                "fadeSheetImagesData"
+            )
+        ).chosen;
         //set a CSS variable on the journal sheet to grab the opacity in css
         let sheetElement = journalSheet.element;
         sheetElement[0].style.setProperty("--journal-fade", opacityValue + "%");
@@ -97,15 +120,16 @@ export class SheetImageApp {
      * @param {*} journalSheet - the journal sheet we're searching within
      */
     static async injectImageControls(imgElement, journalSheet) {
-        await SheetImageApp.applySheetFadeSettings(journalSheet);
-
         let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
         // game.JTCS.templates["image-controls"]
-        let defaultArtTileID = await ArtTileManager.getDefaultArtTileID();
+        const defaultArtTileID = await ArtTileManager.getDefaultArtTileID();
 
-        let imageName = await SheetImageDataController.convertImageSourceToID(imgElement);
+        const imageName = await SheetImageDataController.convertImageSourceToID(
+            imgElement
+        );
         imgElement.dataset.name = imageName;
 
+        //get the art tiles in the scene
         let displayTiles = await ArtTileManager.getSceneSlideshowTiles("art", true);
         displayTiles = displayTiles.filter((tile) => !tile.missing);
         displayTiles = displayTiles.map((tile) => {
@@ -139,7 +163,13 @@ export class SheetImageApp {
     }
     static async injectSheetWideControls(journalSheet) {
         let template = game.JTCS.templates["sheet-wide-controls"];
-        let isActive = await HelperFunctions.getFlagValue(journalSheet.document, "showControls", "", false);
+        await SheetImageApp.applySheetFadeSettings(journalSheet);
+        let isActive = await HelperFunctions.getFlagValue(
+            journalSheet.document,
+            "showControls",
+            "",
+            false
+        );
         let controlsData = sheetControls.map((control) =>
             control.toggle ? { ...control, active: isActive } : control
         );
@@ -147,22 +177,30 @@ export class SheetImageApp {
             controls: controlsData,
             isActive,
         });
-        let $editorElement = $(journalSheet.element[0].querySelector(".window-content"));
+        let selector = ".window-content";
+        if (journalSheet.document.documentName === "JournalEntryPage") {
+            selector = ".journal-page-content";
+        }
+        let $editorElement = $(journalSheet.element[0].querySelector(selector));
         $editorElement.prepend(renderHtml);
         let controlsContainer = $("#sheet-controls");
-        await SheetImageApp.activateSheetWideEventListeners({ controlsContainer, journalSheet, isActive });
+        await SheetImageApp.activateSheetWideEventListeners({
+            controlsContainer,
+            journalSheet,
+            isActive,
+        });
     }
 
     static async activateSheetWideEventListeners(options) {
         let { controlsContainer, journalSheet, isActive } = options;
         $(controlsContainer)
             .off("click", "[data-action]")
-            .on(
-                "click",
-                "[data-action]",
-                async (event) => await SheetImageApp.handleAction(event, journalSheet, "action", false)
+            .on("click", "[data-action]", async (event) =>
+                SheetImageApp.handleAction(event, journalSheet, "action", false)
             );
-        const controlsToggleButton = $(controlsContainer).find("[data-action='sheet.click.toggleImageControls']")[0];
+        const controlsToggleButton = $(controlsContainer).find(
+            "[data-action='sheet.click.toggleImageControls']"
+        )[0];
 
         universalInterfaceActions.toggleHideAllSiblings(null, controlsToggleButton);
     }
@@ -179,12 +217,15 @@ export class SheetImageApp {
             //else just get the current target itself
 
             if (targetElement.prop("nodeName") !== "IMG") {
-                imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img");
+                imgElement = targetElement[0]
+                    .closest(".clickableImageContainer")
+                    .querySelector("img");
             } else {
                 imgElement = targetElement[0];
             }
             //if our target element is a label, get the input before it instead
-            targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
+            targetElement.prop("nodeName") === "LABEL" &&
+                (targetElement = targetElement.prev());
         }
 
         let action = targetElement.data()[actionType];
@@ -206,7 +247,9 @@ export class SheetImageApp {
                 action: action,
                 app: journalSheet,
                 html: journalSheet.element,
-                ...(imgElement && { parentItem: imgElement.closest(".clickableImageContainer") }),
+                ...(imgElement && {
+                    parentItem: imgElement.closest(".clickableImageContainer"),
+                }),
                 imgElement: imgElement,
             };
             actionData[handlerPropertyString](event, options);
@@ -229,21 +272,24 @@ export class SheetImageApp {
             .on(
                 "click",
                 "[data-action]",
-                async (event) => await SheetImageApp.handleAction(event, journalSheet, "action")
+                async (event) =>
+                    await SheetImageApp.handleAction(event, journalSheet, "action")
             );
         $(controlsContainer)
             .off("mouseenter mouseleave", "[data-hover-action]")
             .on(
                 "mouseenter mouseleave",
                 "[data-hover-action]",
-                async (event) => await SheetImageApp.handleAction(event, journalSheet, "hoverAction")
+                async (event) =>
+                    await SheetImageApp.handleAction(event, journalSheet, "hoverAction")
             );
         $(controlsContainer)
             .off("change", "[data-change-action]")
             .on(
                 "change",
                 "[data-change-action]",
-                async (event) => await SheetImageApp.handleAction(event, journalSheet, "changeAction")
+                async (event) =>
+                    await SheetImageApp.handleAction(event, journalSheet, "changeAction")
             );
     }
 
@@ -251,7 +297,9 @@ export class SheetImageApp {
         event.preventDefault();
 
         let windowContent = event.currentTarget.closest(".window-content");
-        let faded = windowContent.classList.contains("fade") || windowContent.classList.contains("fade-all");
+        let faded =
+            windowContent.classList.contains("fade") ||
+            windowContent.classList.contains("fade-all");
 
         if (faded) {
             windowContent.classList.remove("fade");
