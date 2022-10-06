@@ -127,7 +127,6 @@ export const setupHookHandlers = async () => {
                 "renderActorSheet",
                 "renderJournalSheet",
                 "renderJournalPageSheet",
-                "renderJournalTextPageSheet",
                 "update",
             ],
             // hooks: ["renderJournalSheet"],

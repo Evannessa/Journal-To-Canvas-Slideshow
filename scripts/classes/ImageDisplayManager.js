@@ -183,12 +183,12 @@ export class ImageDisplayManager {
     }
     static async displayImageInWindow(method, url) {
         if (method === "journalEntry") {
-            let dedicatedDisplayData = await game.JTCS.utils.getSettingValue(
+            let dedicatedDisplayData = await HelperFunctions.getSettingValue(
                 "artGallerySettings",
                 "dedicatedDisplayData"
             );
-            let displayJournalID = dedicatedDisplayData.journal.value;
-            let displayJournal = game.journal.get(displayJournalID);
+            const displayJournalID = dedicatedDisplayData.journal.value;
+            const displayJournal = game.journal.get(displayJournalID);
             //if we would like to display in a dedicated journal entry
             if (!displayJournal) {
                 //couldn't find display journal, so return
@@ -208,8 +208,9 @@ export class ImageDisplayManager {
             let update;
 
             if (fileType == ".mp4" || fileType == ".webm") {
-                // if the file type is a video, we have to do a bit of a wonky workaround
-                let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
+                if (game.version < 10) {
+                    // if the file type is a video and we're before v10, we have to do a bit of a wonky workaround
+                    let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
 			<video width="100%" height="auto" autoplay loop>
   				<source src=${url} type="video/mp4">
   				<source src=${url} type="video/webm">
@@ -217,22 +218,48 @@ export class ImageDisplayManager {
 			</div>
 			`;
 
-                update = {
-                    _id: displayJournal._id,
-                    content: videoHTML,
-                    img: "",
-                };
-                imageMode = "text";
+                    update = {
+                        _id: displayJournal._id,
+                        content: videoHTML,
+                        img: "",
+                    };
+                    imageMode = "text";
+                } else {
+                    //if we're after v10
+                    update = {
+                        _id: displayJournal.id,
+                        src: url,
+                        video: {
+                            loop: true,
+                            autoplay: true,
+                        },
+                        type: "video",
+                    };
+                }
             } else {
                 //change the background image to be the clicked image in the journal
-                update = {
-                    _id: displayJournal.id,
-                    content: "",
-                    img: url,
-                };
+                if (game.version < 10) {
+                    update = {
+                        _id: displayJournal.id,
+                        content: "",
+                        img: url,
+                    };
+                } else {
+                    update = {
+                        // _id: displayJournal.id,
+                        src: url,
+                        type: "image",
+                    };
+                }
             }
-            const updated = await displayJournal.update(update, {});
-            displayJournal.show(journalMode, true);
+            if (game.version < 10) {
+                await displayJournal.update(update, {});
+                displayJournal.show(journalMode, true);
+            } else {
+                const firstPage = displayJournal.pages.contents[0];
+                firstPage?.update({ _id: firstPage.id, ...update });
+                displayJournal.show(journalMode, true);
+            }
         } else if (method === "window") {
             //if we would like to display in a new popout window
             let popout = new ImageVideoPopout(url, {

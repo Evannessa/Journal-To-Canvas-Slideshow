@@ -72,11 +72,6 @@ export class SheetImageApp {
                         html.find(selectorString).addClass("rightClickableImage");
                     }
                     //inject the controls into every image that has the clickableImage or rightClickableImage classes
-                    console.log(
-                        "%cSheetImageApp.js line:75 html[0]",
-                        "color: white; background-color: #007acc;",
-                        html.find(".clickableImage, .rightClickableImage")
-                    );
 
                     Array.from(
                         html.find(".clickableImage, .rightClickableImage")
