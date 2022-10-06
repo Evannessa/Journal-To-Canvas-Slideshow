@@ -282,7 +282,7 @@ export class ImageDisplayManager {
         if (!url && imageElement) {
             url = ImageDisplayManager.getImageSource(imageElement);
         } else if (!url && !imageElement) {
-            console.error("No image data passed to this method");
+            console.error("No image data passed to this method", url, imageElement);
         }
         //on click, this method will determine if the image should open in a scene or in a display journal
         switch (method) {
@@ -368,7 +368,10 @@ export class ImageDisplayManager {
             url = imageElement.getAttribute("src");
         } else if (type == "VIDEO") {
             //if it's a video element
-            url = imageElement.getElementsByTagName("source")[0].getAttribute("src");
+            url = imageElement.getElementsByTagName("source")[0]?.getAttribute("src");
+            if (!url) {
+                url = imageElement.getAttribute("src");
+            }
         } else if (type == "DIV" && imageElement.classList.contains("lightbox-image")) {
             //if it's a lightbox image on an image-mode journal
             //https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript --
@@ -378,7 +381,9 @@ export class ImageDisplayManager {
             ui.notifications.error("Type not supported");
             url = null;
         }
-
+        if (!url) {
+            ui.notifications.error("url not found");
+        }
         return url;
 
         //load the texture from the source

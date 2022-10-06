@@ -211,10 +211,13 @@ export class SheetImageApp {
             //if our target element is not an image, get the closest image from our clickableImageContainer parent
             //else just get the current target itself
 
-            if (targetElement.prop("nodeName") !== "IMG") {
+            if (
+                targetElement.prop("nodeName") !== "IMG" ||
+                targetElement.prop("nodeName") !== "VIDEO"
+            ) {
                 imgElement = targetElement[0]
                     .closest(".clickableImageContainer")
-                    .querySelector("img");
+                    .querySelector("img, video");
             } else {
                 imgElement = targetElement[0];
             }

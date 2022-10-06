@@ -20,7 +20,6 @@ export const setupHookHandlers = async () => {
      */
 
     async function renderImageControls(app, html) {
-        console.log("Being re-rendered!!!");
         if (!game.user.isGM) {
             return;
         }
