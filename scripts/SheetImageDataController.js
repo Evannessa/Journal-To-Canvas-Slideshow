@@ -86,7 +86,6 @@ export class SheetImageDataController {
         // imageData = await SheetImageDataController.getSceneSpecificImageData(imageData);
 
         let flaggedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-        console.log("Image data is", imageData);
         // let artTileID = imageData.split(".").pop(); //if stored by uuid, should get the tile's id
         let frameTileID = await game.JTCS.tileUtils.getLinkedFrameID(artTileID, flaggedTiles);
         if (!artTileID) {

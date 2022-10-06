@@ -36,9 +36,6 @@ export class JTCSSettingsApplication extends FormApplication {
             id: "JTCSSettingsApplication",
             title: " JTCSSettings Application",
             scrollY: [".form-content"],
-            onsubmit: (event) => {
-                console.log("Submitting from", event.currentTarget.dataset.action);
-            },
         });
     }
 
@@ -87,7 +84,6 @@ export class JTCSSettingsApplication extends FormApplication {
         let data = { ...this.data };
         let newDisplayData = await this.addArtSceneAndJournalData(data.dedicatedDisplayData);
         setProperty(data, "dedicatedDisplayData", newDisplayData);
-        console.log("%cJTCSSettingsApplication.js line:80 data", "color: #26bfa5;", data);
         return data;
     }
 
@@ -259,7 +255,6 @@ export class JTCSSettingsApplication extends FormApplication {
             for (const key in formData) {
                 if (key.includes(".colors.") && !key.includes(bgColorKey)) {
                     //for all the colors, convert the colors
-                    // console.log("Before", key, formData[key]);
                     const bgColor = formData[bgColorKey];
                     const fgColor = formData[key];
                     const hasEnoughContrast = HF.checkIfColorsContrastEnough(bgColor, fgColor);
@@ -267,12 +262,10 @@ export class JTCSSettingsApplication extends FormApplication {
                     if (!hasEnoughContrast) {
                         formData[key] = HF.getColorWithContrast(bgColor, fgColor);
                     }
-                    // console.log("after", key, formData[key]);
                 }
             }
         }
 
-        // await HF.setSettingValue("artGallerySettings", )
         await game.JTCS.utils.setSettingValue("artGallerySettings", formData, "", true);
         await game.JTCSSettingsApp.render(true);
     }

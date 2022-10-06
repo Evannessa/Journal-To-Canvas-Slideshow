@@ -41,19 +41,12 @@ export class SheetImageApp {
                 "artGallerySettings",
                 "sheetSettings.modularChoices"
             );
-            console.log("%cSheetImageApp.js line:44 app, app.document", "color: #26bfa5;", app, app.document);
             let doc = app.document;
             let onThisSheet = await game.JTCS.utils.manager.getFlagValue(doc, "showControls", "", false);
 
             let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
-            console.log(
-                "%cSheetImageApp.js line:48 documentName",
-                "color: white; background-color: #07758b;",
-                documentName,
-                whichSheets,
-                whichSheets[documentName]
-            );
+
             let selectorString = "img, video, .lightbox-image";
             if (whichSheets[documentName] || onThisSheet === true) {
                 if (onThisSheet) {
@@ -178,8 +171,8 @@ export class SheetImageApp {
             //if our target element is not an image, get the closest image from our clickableImageContainer parent
             //else just get the current target itself
 
-            if (targetElement.prop("nodeName") !== "IMG") {
-                imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img");
+            if (targetElement.prop("nodeName") !== "IMG" || targetElement.prop("nodeName") !== "VIDEO") {
+                imgElement = targetElement[0].closest(".clickableImageContainer").querySelector("img, video");
             } else {
                 imgElement = targetElement[0];
             }

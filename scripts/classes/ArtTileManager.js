@@ -190,10 +190,8 @@ export class ArtTileManager {
 
             //
             if (!unlinkedDataID) {
-                console.log("Creating new tile data");
                 await ArtTileManager.createTileData(linkedFrameTileID, tileObjectID, false);
             } else {
-                console.log("updating already created tile data, and linking it");
                 await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
             }
         } else {
@@ -470,7 +468,6 @@ export class ArtTileManager {
     static async getTileObjectByID(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tileID.includes === "new") {
-            console.log("New tile created");
         } else {
             if (!tile) {
                 ArtTileManager.displayTileNotFoundError(tileID);
@@ -514,12 +511,7 @@ export class ArtTileManager {
     static async updateAllSceneTileFlags(tiles, currentSceneID = "") {
         let currentScene = game.scenes.get(currentSceneID);
         if (!currentScene) currentScene = game.scenes.viewed;
-        console.log(
-            "%cArtTileManager.js line:456 tiles, currentScene",
-            "color: white; background-color: #007acc;",
-            tiles,
-            currentScene
-        );
+
         await currentScene.setFlag("journal-to-canvas-slideshow", "slideshowTiles", tiles);
         Hooks.callAll("updateArtGalleryTiles", { currentScene, updateData: tiles });
     }

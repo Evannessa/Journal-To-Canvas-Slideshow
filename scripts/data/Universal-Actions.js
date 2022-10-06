@@ -144,10 +144,7 @@ function toggleActiveStyles(event, el) {
 function clearOtherActiveStyles(event, el, otherSelector, parentSelector) {
     const parentItem = el.closest(parentSelector);
     let others = Array.from(parentItem.querySelectorAll(otherSelector)).filter((item) => !item.isSameNode(el));
-    others.forEach((other) => console.log(other, el, other.isSameNode(el)));
     others = others.filter((other) => other.classList.contains("active"));
-
-    console.log("%cUniversal-Actions.js line:119 others", "color: white; background-color: #007acc;", others);
 
     others.forEach((other) => toggleActiveStyles(event, other));
 }
@@ -248,7 +245,6 @@ export const universalInterfaceActions = {
             await renderInlineNotification(event, "form-group", firstInvalidObject);
             // showInputNotification(event, options);
         }
-        console.log("Returning all valid which is", allValid);
         return allValid;
     },
 };

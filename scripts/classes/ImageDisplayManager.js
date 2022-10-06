@@ -39,16 +39,7 @@ export class ImageDisplayManager {
             return;
         }
         const tex = await loadTexture(url);
-        // .catch((error) => {
-        //     console.log("Something went wrong", error);
-        //     return;
-        // })
-        // .then((result) => {
-        //     if (!result) {
-        //         console.log("Result undefined?", result);
-        //         return;
-        //     }
-        // });
+
         if (!tex) {
             ui.notifications.error(`Error loading texture from '${url}'. Access to URL likely blocked by CORS policy.`);
             return;
@@ -204,7 +195,7 @@ export class ImageDisplayManager {
                     content: videoHTML,
                     img: "",
                 };
-                imageMode = "text";
+                journalMode = "text";
             } else {
                 //change the background image to be the clicked image in the journal
                 update = {
@@ -307,7 +298,10 @@ export class ImageDisplayManager {
             url = imageElement.getAttribute("src");
         } else if (type == "VIDEO") {
             //if it's a video element
-            url = imageElement.getElementsByTagName("source")[0].getAttribute("src");
+            url = imageElement.getElementsByTagName("source")[0]?.getAttribute("src");
+            if (!url) {
+                url = imageElement.getAttribute("src");
+            }
         } else if (type == "DIV" && imageElement.classList.contains("lightbox-image")) {
             //if it's a lightbox image on an image-mode journal
             //https://stackoverflow.com/questions/14013131/how-to-get-background-image-url-of-an-element-using-javascript --

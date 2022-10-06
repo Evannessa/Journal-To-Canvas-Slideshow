@@ -205,22 +205,12 @@ export class HelperFunctions {
 
         for (let adjustAmount = 0, times = 0; times < 15; adjustAmount += direction * 10, times += 1) {
             adjustedColor = HF.LightenDarkenColor(accentColor, adjustAmount);
-            // console.log(
-            //     `%c Adjusted color by ${adjustAmount}. New Color is ${adjustedColor}`,
-            //     `color: ${adjustedColor}`
-            // );
+
             const hasEnoughContrast = HF.checkIfColorsContrastEnough(backgroundColor, adjustedColor);
             if (hasEnoughContrast) {
                 break;
             }
         }
-        // for (let adjustAmount = 0; adjustAmount < 255; adjustAmount += direction * 10) {
-        //     adjustedColor = HF.LightenDarkenColor(accentColor, adjustAmount);
-        //     const hasEnoughContrast = HF.checkIfColorsContrastEnough(backgroundColor, adjustedColor);
-        //     if (hasEnoughContrast) {
-        //         break;
-        //     }
-        // }
 
         return adjustedColor;
     }
@@ -340,14 +330,12 @@ export class HelperFunctions {
             const direction = HF.lighterOrDarker(value);
             const shouldDarken = direction < 0 ? true : false;
             const text = direction < 0 ? "We should darken color" : "we should lighten color";
-            console.log(text);
 
             let startNumber = !shouldDarken ? 80 : 0;
             let step = !shouldDarken ? -10 : 10;
 
             for (var number = startNumber; Math.abs(number) < 90; number += step) {
                 const variantPropName = `${propertyName}-${number.toString().padStart(2, "0")}`;
-                // const amount = number;
                 const amount = shouldDarken ? number * -1 : number;
                 const variantValue = HF.LightenDarkenColor(value, amount);
                 html.style.setProperty(variantPropName, variantValue);

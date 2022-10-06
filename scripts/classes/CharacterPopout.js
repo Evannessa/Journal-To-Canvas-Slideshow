@@ -14,7 +14,6 @@ function getFirstParagraph(data) {
     let indexes = headings.map((heading) => {
         return allChildren.indexOf(heading);
     });
-    // console.log(content, indeces);
     let sections = [];
     let sectionHeaders = [];
     indexes.forEach((headingIndex, index) => {
@@ -37,7 +36,6 @@ function getFirstParagraph(data) {
     );
     let card = document.querySelector(".card");
     periods.map((array) => array.flat());
-    console.log(periods);
     periods.forEach((element) => {
         card.insertAdjacentHTML("beforeend", element);
     });
@@ -49,7 +47,6 @@ function getFirstParagraph(data) {
         if (a.classList.contains("internal-link")) {
             let oldHref = a.getAttribute("href");
             let newHref = `https://classy-bavarois-433634.netlify.app${oldHref}`;
-            console.log(newHref);
             a.setAttribute("href", newHref);
         }
     });

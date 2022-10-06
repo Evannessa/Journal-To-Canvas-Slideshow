@@ -20,7 +20,6 @@ export const setupHookHandlers = async () => {
      */
 
     async function renderImageControls(app, html) {
-        console.log("Being re-rendered!!!");
         if (!game.user.isGM) {
             return;
         }
@@ -79,7 +78,6 @@ export const setupHookHandlers = async () => {
      * @param {String} options.tileID - the ID of the tile, if updated
      */
     function rerenderImageSheet(options) {
-        console.log("Re-rendering in response to settings or flags");
         const { origin, currentScene, updateData } = options;
 
         let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
@@ -90,7 +88,6 @@ export const setupHookHandlers = async () => {
             //and it's not currently being edited
             //and we're not telling it to render anyway
             let editorsActive = HelperFunctions.editorsActive(sheet);
-            console.log(editorsActive);
             if (editorsActive !== true) {
                 sheet.render();
             }
@@ -153,7 +150,6 @@ export const setupHookHandlers = async () => {
                     hookName: "updateDefaultArtTile",
                     handlerFunction: async (options) => {
                         let currentScene = game.scenes.viewed;
-                        console.log("Default art tile updated, updating indicators");
                         await updateAllGalleryIndicators(currentScene);
                     },
                 },
