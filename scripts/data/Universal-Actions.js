@@ -14,7 +14,9 @@ function toggleHideAllSiblings(event, currentTarget) {
     if (!event && !currentTarget) return;
     if (!currentTarget) currentTarget = event.currentTarget;
 
-    const siblings = Array.from(currentTarget.parentNode.children).filter((item) => !item.isSameNode(currentTarget));
+    const siblings = Array.from(currentTarget.parentNode.children).filter(
+        (item) => !item.isSameNode(currentTarget)
+    );
 
     if (currentTarget.classList.contains("active")) {
         siblings.forEach((el) => el.classList.remove("hidden"));
@@ -27,7 +29,9 @@ function fadeSheetOpacity(event, selector = ".window-content") {
     event.preventDefault();
 
     const windowContent = event.currentTarget.closest(selector);
-    const faded = windowContent.classList.contains("fade") || windowContent.classList.contains("fade-all");
+    const faded =
+        windowContent.classList.contains("fade") ||
+        windowContent.classList.contains("fade-all");
 
     if (faded) {
         windowContent.classList.remove("fade");
@@ -43,7 +47,11 @@ function fadeSheetOpacity(event, selector = ".window-content") {
  * @param {String} options.message - the notification message
  * @param {String} options.notificationType - the type of notification, to affect its icon and styling
  */
-async function renderInlineNotification(event, ancestorSelector = "formGroup", options = {}) {
+async function renderInlineNotification(
+    event,
+    ancestorSelector = "formGroup",
+    options = {}
+) {
     let { notificationType, icon } = options;
     if (!icon) {
         if (notificationType) {
@@ -143,11 +151,10 @@ function toggleActiveStyles(event, el) {
  */
 function clearOtherActiveStyles(event, el, otherSelector, parentSelector) {
     const parentItem = el.closest(parentSelector);
-    let others = Array.from(parentItem.querySelectorAll(otherSelector)).filter((item) => !item.isSameNode(el));
-    others.forEach((other) => console.log(other, el, other.isSameNode(el)));
+    let others = Array.from(parentItem.querySelectorAll(otherSelector)).filter(
+        (item) => !item.isSameNode(el)
+    );
     others = others.filter((other) => other.classList.contains("active"));
-
-    console.log("%cUniversal-Actions.js line:119 others", "color: white; background-color: #007acc;", others);
 
     others.forEach((other) => toggleActiveStyles(event, other));
 }
@@ -198,7 +205,12 @@ export const universalInterfaceActions = {
         let scrollTargetID = currentTarget.dataset.target;
         let scrollTarget = $parentItem.find(`#${scrollTargetID}`);
         scrollTarget[0].scrollIntoView();
-        clearOtherActiveStyles(event, currentTarget, "[data-action='scrollTo']", "#JTCSsettingsHeader");
+        clearOtherActiveStyles(
+            event,
+            currentTarget,
+            "[data-action='scrollTo']",
+            "#JTCSsettingsHeader"
+        );
         toggleActiveStyles(event, currentTarget);
     },
     renderAnotherApp: async (appName, constructor) => {

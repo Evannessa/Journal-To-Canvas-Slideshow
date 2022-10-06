@@ -2316,6 +2316,24 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
   padding: 1rem;
 }
+#JTCSSettingsApplication .window-content form .form-content > .form-group img.demo-img,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked img.demo-img {
+  min-width: 200px;
+  width: 60%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  margin-block: 1rem;
+}
+#JTCSSettingsApplication .window-content form .form-content > .form-group a,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked a {
+  display: inline-block;
+}
+#JTCSSettingsApplication .window-content form .form-content > .form-group select,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked select {
+  min-width: 200px;
+}
 #JTCSSettingsApplication .window-content form .form-content > .form-group fieldset,
 #JTCSSettingsApplication .window-content form .form-content > .form-group-stacked fieldset {
   border: unset;

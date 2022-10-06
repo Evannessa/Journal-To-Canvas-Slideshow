@@ -46,6 +46,20 @@ export const sheetControls = [
     //     icon: "fas fa-external-link",
     // },
 ];
+export const dedicatedDisplayControls = [
+    {
+        label: "view",
+        callback: (controls) => {},
+    },
+    {
+        label: "showToAll",
+        callback: () => {},
+    },
+    {
+        label: "showToSome",
+        callback: () => {},
+    },
+];
 export const sheetImageActions = {
     sheet: {
         click: {
@@ -245,6 +259,19 @@ export const sheetImageActions = {
                         });
 
                     await ImageDisplayManager.determineDisplayMethod(sheetImageData);
+
+                    //TODO: add this functionality in later for prompting the user for what to do next
+                    // if (method === "journalEntry" || method === "artScene") {
+                    //     let property = method === "journalEntry" ? "journal" : "scene";
+                    //     const autoActivate = await HelperFunctions.getSettingValue(
+                    //         "artGallerySettings",
+                    //         `dedicatedDisplayData.${property}.autoActivate`
+                    //     );
+                    //     if (!autoActivate) {
+                    //         UIA.toggleShowAnotherElement(event, options);
+                    //         UIA.toggleActiveStyles(event);
+                    //     }
+                    // }
                 },
             },
             revealTileButtons: {

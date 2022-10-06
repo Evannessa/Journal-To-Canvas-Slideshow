@@ -1,0 +1,21 @@
+    <span class="input-span slight-rounded fit-content-width interactive" data-variant="{{this.variant}}">
+          <input
+            type="checkbox"
+            class="accent-input"
+            id="{{this.propertyString}}"
+            name="{{this.propertyString}}"
+            {{#if (eq this.isDisabled true)}} 
+                    disabled
+            {{/if}}
+
+                {{#if this.checked}}
+                    checked 
+                {{/if}} 
+          />
+          <label class="flex-row slight-rounded gap-small padding-small interactive flex-align-center" for="{{this.propertyString}}" data-title="">
+            {{#if (eq this.variant "visible-tick") }}
+                    <span class="tick-box"></span> 
+            {{/if}}
+                   {{camelCaseToCapitalString this.key}}
+          </label>
+      </span>

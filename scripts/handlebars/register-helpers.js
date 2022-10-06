@@ -1,28 +1,51 @@
 import { HelperFunctions } from "../classes/HelperFunctions.js";
 export const registerHelpers = function () {
+    Handlebars.registerHelper("flattenObject", (object) => {
+        return flattenObject(object);
+    });
+
+    /**
+     * Returns a property string that matches a dot-notation-chain for nested objects
+     */
+    Handlebars.registerHelper("getPropertyString", (rootObject, parentKey, childKey) => {
+        const parentObject = getProperty(rootObject, parentKey);
+        const flat = flattenObject(parentObject);
+        const newFlat = Object.keys(flat).map((key) => `${parentKey}.${key}`);
+        return newFlat.find((key) => key.includes(childKey));
+    });
+
     Handlebars.registerHelper("applyTemplate", function (subTemplateId, context) {
         var subTemplate = Handlebars.compile($("#" + subTemplateId).html());
         var innerContent = context.fn({});
-        var subTemplateArgs = _.extend({}, context.hash, { content: new Handlebars.SafeString(innerContent) });
+        var subTemplateArgs = _.extend({}, context.hash, {
+            content: new Handlebars.SafeString(innerContent),
+        });
 
         return subTemplate(subTemplateArgs);
     });
-    Handlebars.registerHelper("checkAll", function (anyOrAll = "all", valueToEqual = true, ...conditions) {
-        conditions.pop();
-        //if the property has every object, and every object is true
-        if (anyOrAll == "all") {
-            console.log("%cregister-helpers.js line:13 are these true?", "color: #26bfa5;", conditions);
+    Handlebars.registerHelper(
+        "checkAll",
+        function (anyOrAll = "all", valueToEqual = true, ...conditions) {
+            conditions.pop();
+            //if the property has every object, and every object is true
+            if (anyOrAll == "all") {
+                console.log(
+                    "%cregister-helpers.js line:13 are these true?",
+                    "color: #26bfa5;",
+                    conditions
+                );
+            }
+            if (anyOrAll === "all") {
+                return conditions.every((condition) => {
+                    return condition === valueToEqual;
+                });
+            } else {
+                return conditions.some((condition) => {
+                    return condition === valueToEqual;
+                });
+            }
         }
-        if (anyOrAll === "all") {
-            return conditions.every((condition) => {
-                return condition === valueToEqual;
-            });
-        } else {
-            return conditions.some((condition) => {
-                return condition === valueToEqual;
-            });
-        }
-    });
+    );
     Handlebars.registerHelper("filter", function (object, conditionName, conditionValue) {
         console.log(
             "%cregister-helpers.js line:11 object, conditionName, conditionValue",
@@ -65,15 +88,21 @@ export const registerHelpers = function () {
         return new Handlebars.SafeString(sentence);
     });
 
-    Handlebars.registerHelper("wrapInSpan", function (stringToWrap, classList = "accent") {
-        let wrappedString = `<span class=${classList}>${stringToWrap}</span>`;
-        return new Handlebars.SafeString(wrappedString);
-    });
+    Handlebars.registerHelper(
+        "wrapInSpan",
+        function (stringToWrap, classList = "accent") {
+            let wrappedString = `<span class=${classList}>${stringToWrap}</span>`;
+            return new Handlebars.SafeString(wrappedString);
+        }
+    );
 
-    Handlebars.registerHelper("wrapInElement", function (stringToWrap, tagName, classList = "") {
-        let wrappedString = `<${tagName} class=${classList}>${stringToWrap}</${tagName}>`;
-        return new Handlebars.SafeString(wrappedString);
-    });
+    Handlebars.registerHelper(
+        "wrapInElement",
+        function (stringToWrap, tagName, classList = "") {
+            let wrappedString = `<${tagName} class=${classList}>${stringToWrap}</${tagName}>`;
+            return new Handlebars.SafeString(wrappedString);
+        }
+    );
 
     Handlebars.registerHelper("generateChildPartials", function (object) {});
 

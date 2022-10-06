@@ -57,7 +57,7 @@ export const artGalleryDefaultSettings = {
         `,
         colors: {
             backgroundColor: "#010527",
-            accentColor: "#6c4eff",
+            accentColor: "#9876ff",
         },
         propertyNames: {
             accentColor: "--JTCS-accent-color",
@@ -72,16 +72,31 @@ export const artGalleryDefaultSettings = {
     dedicatedDisplayData: {
         name: "Art Journal and Art Scene",
         hint: `Select your Art Journal and Art Scene. 
-            <br/> Note that only scenes with a Default Art Tile will be able to be picked as your 'Art Scene'.`,
+			These are "dedicated" displays, meaning if you choose the "Art Journal" or "Art Scene" actions on the sheet image controls or within the URL Share Dialog, 
+			images will be sent directly to that scene or journal.
+			<br/><br/>
+			<a href="https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/blob/master/features-and-walkthrough.md#window-popouts-art-journal-and-art-scene---upgraded-features">View the Features and Walkthrough document for a demonstration and More Info</a>
+            .`,
         journal: {
             name: "Art Journal",
             value: "",
-            hint: "Art Journal",
+            hint: `Select your Art Journal, then choose additional functionality for what automatically happens when the image is changed
+			<br/> <br/> <b>Auto Activate</b> - will automatically show the Journal Entry to you and all of your players
+			<br/> <br/> <b>Auto View </b> - will render the journal entry for you but not your players (useful if you wish to check that the image properly updated)
+			`,
+            autoActivate: false,
+            autoView: false,
         },
         scene: {
             name: "Art Scene",
             value: "",
-            hint: "Art Scene",
+            hint: `Select your Art Scene, then choose additional functionality for what automatically happens when the image is changed:
+			<br/> <br/> <b>Auto Activate</b> - will automatically activate the scene for you and all of your players
+			<br/> <br/> <b>Auto View</b> - will automatically view the scene for you (useful if you wish to check that the default tile image actually updated)
+			<br/> <br/> Note: only scenes with a Default Art Tile will be able to be picked as your 'Art Scene'
+			`,
+            autoActivate: false,
+            autoView: false,
         },
     },
     sheetFadeOpacityData: {

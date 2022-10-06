@@ -27,6 +27,25 @@ export class ImageDisplayManager {
             frameTileID: frameTileID,
         };
     }
+    // static async postActivationPrompt(method, document){
+    // 	const type = method === "journalEntry" ? "Art Journal" : "Art Scene"
+    // 	const buttons = {
+    // 		view: {
+    // 			label: `View ${type}`,
+    // 			callback: ()=> {
+    // 				if(document.documentName === "JournalEntry"){
+    // 					document.show()
+    // 				}else if(document.documentName === "Scene"){
+    // 					document.view();
+    // 				}
+    // 			}
+
+    // 		}
+
+    // 	}
+    // 	HelperFunctions.createDialog("View Scene", {buttons: buttons})
+
+    // }
     static async updateTileObjectTexture(
         artTileID,
         frameTileID,
@@ -81,9 +100,26 @@ export class ImageDisplayManager {
                 )
             );
         if (updated && method === "artScene") {
-            ui.notifications.info(
-                `Default Tile in Art Scene ${ourScene.name}  successfully updated`
+            const { autoActivate, autoView } = await HelperFunctions.getSettingValue(
+                "artGallerySettings",
+                "dedicatedDisplayData.scene"
             );
+
+            if (autoActivate) {
+                ourScene.activate();
+            }
+            if (autoView) {
+                ourScene.view();
+            }
+            if (
+                game.user.isGM && //if we're GM
+                ((!autoActivate && !autoView) || (ourScene.active && !ourScene.viewed)) //if the scene is neither set to activate or to view, notify that the image updated.
+                // if the scene is active but not viewed, notify that the image updated
+            ) {
+                ui.notifications.info(
+                    `Default Tile in Art Scene '${ourScene.name}'  successfully updated`
+                );
+            }
         }
     }
 
@@ -192,9 +228,11 @@ export class ImageDisplayManager {
             //if we would like to display in a dedicated journal entry
             if (!displayJournal) {
                 //couldn't find display journal, so return
-                ui.notifications.error(
-                    `No Art Journal entry set! Please set your art journal in the module settings or Art Gallery Config`
-                );
+                if (game.user.isGM) {
+                    ui.notifications.error(
+                        `No Art Journal entry set! Please set your art journal in the module settings or Art Gallery Config`
+                    );
+                }
                 return;
             } else {
                 displayJournal.render(true);
@@ -252,13 +290,31 @@ export class ImageDisplayManager {
                     };
                 }
             }
+            let updated;
             if (game.version < 10) {
-                await displayJournal.update(update, {});
-                displayJournal.show(journalMode, true);
+                updated = await displayJournal.update(update, {});
             } else {
                 const firstPage = displayJournal.pages.contents[0];
-                firstPage?.update({ _id: firstPage.id, ...update });
-                displayJournal.show(journalMode, true);
+                updated = await firstPage?.update({ _id: firstPage.id, ...update });
+            }
+            if (updated === null && game.user.isGM) {
+                ui.notifications.error(
+                    `Could not display image in Art Journal '${displayJournal.name}.'`
+                );
+            }
+            const { autoActivate, autoView } = await HelperFunctions.getSettingValue(
+                "artGallerySettings",
+                "dedicatedDisplayData.journal"
+            );
+
+            if (autoActivate) displayJournal.show(journalMode, true);
+            if (autoView && !displayJournal.sheet.rendered)
+                displayJournal.sheet.render(true);
+
+            if (game.user.isGM && !autoActivate && !autoView) {
+                ui.notifications.info(
+                    `Image in Art Journal '${displayJournal.name}' successfully updated`
+                );
             }
         } else if (method === "window") {
             //if we would like to display in a new popout window
@@ -346,16 +402,6 @@ export class ImageDisplayManager {
             case "window":
                 await ImageDisplayManager.displayImageInWindow(method, url);
                 break;
-            // case "window":
-            //     await ImageDisplayManager.displayImageInWindow(
-            //         "window",
-            //         ImageDisplayManager.getImageSource(imageElement)
-            //     );
-            //     // if (!url) {
-            //     //     //if not, it happened because of an image click, so find the information of the clicked image
-            //     //     ImageDisplayManager.getImageSource(imageElement, ImageDisplayManager.displayImageInWindow);
-            //     // }
-            //     break;
         }
     }
 
@@ -419,7 +465,7 @@ export class ImageDisplayManager {
     static async clearTile(tileID, options = {}) {
         let { ourScene } = options;
         if (!ourScene) ourScene = game.scenes.viewed;
-        let clearImagePath = await game.JTCS.utils.getSettingValue(
+        let clearImagePath = await HelperFunctions.getSettingValue(
             "artGallerySettings",
             "defaultTileImages.paths.artTilePath"
         );

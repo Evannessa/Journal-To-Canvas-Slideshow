@@ -1,10 +1,17 @@
-## v.0.2.1
+## v.0.2.3
+
+**ADDED**
+**Major**
+
+-   Added "auto-view" and "auto-activate" options in settings for "Art Journal" and "Art Scene"
+
+## v.0.2.2
 
 **CHANGED**
 **Major**
 
 -   Added support for v10 with backwards compatibility
--   v10 version **REQUIRES** right-click on journal image instead of left-click, to avoid interfering with default JournalEntryPage functionality when clicking on an image
+-   v10 version **REQUIRES** right-click on sheet images instead of left-click, to avoid interfering with default JournalEntryPage functionality when clicking on an image
 
 ## v.0.2.0
 

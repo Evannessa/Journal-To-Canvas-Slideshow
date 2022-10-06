@@ -24,13 +24,16 @@ const templateBaseNames = [
     `delete-confirmation-prompt.hbs`,
     `scene-tile-wrapper.hbs`,
     `color-picker.hbs`,
+    `checkbox.hbs`,
 ];
 /**
  * @param {*} templateBaseNameArray
  * @returns
  */
 export function generateTemplates() {
-    let templates = templateBaseNames.map((baseName) => createTemplatePathString(baseName));
+    let templates = templateBaseNames.map((baseName) =>
+        createTemplatePathString(baseName)
+    );
     return templates;
 }
 export function createTemplatePathString(templateBaseName) {
