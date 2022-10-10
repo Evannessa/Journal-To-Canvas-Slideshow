@@ -50,12 +50,11 @@ export class SheetImageApp {
             );
 
             let documentName = doc.documentName;
-            // console.log("%cSheetImageApp.js line:53 doc", "color: #26bfa5;", doc);
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
-            if (documentName === "item" && doc.parent) {
-                //if it's an embedded item in a sheet
-                return;
-            }
+            // if (documentName === "item" && doc.parent) {
+            //     //if it's an embedded item in a sheet
+            //     return;
+            // }
             // for v10 +
             if (game.version >= 10) {
                 if (documentName === "journalEntryPage") {
@@ -192,12 +191,16 @@ export class SheetImageApp {
     }
 
     static async activateSheetWideEventListeners(options) {
-        let { controlsContainer, journalSheet, isActive } = options;
+        let { controlsContainer, journalSheet } = options;
+        console.log(controlsContainer, journalSheet);
+        controlsContainer = journalSheet.element.find("#sheet-controls");
+        //! Issue is that the "controlsContainer" is targeting the controls on the parent sheet
         $(controlsContainer)
             .off("click", "[data-action]")
-            .on("click", "[data-action]", async (event) =>
-                SheetImageApp.handleAction(event, journalSheet, "action", false)
-            );
+            .on("click", "[data-action]", async (event) => {
+                console.log("clicked");
+                SheetImageApp.handleAction(event, journalSheet, "action", false);
+            });
         const controlsToggleButton = $(controlsContainer).find(
             "[data-action='sheet.click.toggleImageControls']"
         )[0];
