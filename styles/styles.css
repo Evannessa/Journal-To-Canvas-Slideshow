@@ -252,7 +252,7 @@
   transition: opacity 500ms ease-out;
 }
 
-.hidden, .input-span[data-variant=visible-tick] input[type=radio],
+.JTCS-hidden, .input-span[data-variant=visible-tick] input[type=radio],
 .input-span[data-variant=visible-tick] input[type=checkbox], input:is([type=radio], [type=checkbox]).hidden-input {
   transform: scale(0);
   position: absolute;
@@ -2488,7 +2488,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border-left: 0.25rem solid var(--JTCS-accent-color);
   border-bottom-left-radius: 0px;
 }
-#slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.hidden) {
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.JTCS-hidden) {
   padding: 1rem;
   min-height: 10em;
 }

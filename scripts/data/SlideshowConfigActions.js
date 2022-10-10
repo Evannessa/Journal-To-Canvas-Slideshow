@@ -57,7 +57,10 @@ export const extraActions = {
     deleteTileData: async (event, options = {}) => {
         const { app, tileID, parentLI } = options;
         let type = parentLI.dataset.type;
-        let displayName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
+        let displayName = await ArtTileManager.getGalleryTileDataFromID(
+            tileID,
+            "displayName"
+        );
         const templatePath = game.JTCS.templates["delete-confirmation-prompt"];
         const buttons = {
             cancel: {
@@ -103,7 +106,9 @@ export const extraActions = {
         if (type === "frame") frameID = tileID;
 
         if (frameID) {
-            otherListItems = Array.from(hoveredElement[0].closest(".tilesInScene").querySelectorAll("li")).filter(
+            otherListItems = Array.from(
+                hoveredElement[0].closest(".tilesInScene").querySelectorAll("li")
+            ).filter(
                 //get list items with the opposite tile type
                 (item) => {
                     let passed = true;
@@ -152,7 +157,10 @@ export const extraActions = {
             let { tileID, parentLI } = options;
             let type = parentLI.dataset.type;
             let tileInScene = await ArtTileManager.getTileObjectByID(tileID);
-            let displayName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
+            let displayName = await ArtTileManager.getGalleryTileDataFromID(
+                tileID,
+                "displayName"
+            );
 
             if (tileInScene) {
                 await ArtTileManager.setDefaultArtTileID(tileID, game.scenes.viewed);
@@ -173,7 +181,9 @@ export const extraActions = {
             wrappedActions[actionName] = { ...displayActions[actionName] };
 
             //converting properties to fit the dialog's schema
-            wrappedActions[actionName].icon = `<i class='${displayActions[actionName].icon}'></i>`;
+            wrappedActions[
+                actionName
+            ].icon = `<i class='${displayActions[actionName].icon}'></i>`;
             // wrappedActions[actionName].label = HelperFunctions.capitalizeEachWord(actionName, "");
             wrappedActions[actionName].callback = async (html) => {
                 let urlInput = html.find("input[name='urlInput']");
@@ -203,9 +213,12 @@ export const extraActions = {
     },
     showInstructions: async (event, options = {}) => {
         const { html, type, isDefault, missing, frameId, tileID } = options;
-        const areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
+        const areVisible = await HelperFunctions.getSettingValue(
+            "areConfigInstructionsVisible"
+        );
         const instructionsElement = html.find("#JTCS-config-instructions");
-        const isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
+        const isLeave =
+            event.type === "mouseleave" || event.type === "mouseout" ? true : false;
 
         if ((!instructionsElement && !isLeave) || !areVisible) {
             //if the instructions element already exists and we're mousing over, or the instruction visibility has been toggled off
@@ -234,7 +247,10 @@ export const extraActions = {
                 break;
         }
         if (missing) {
-            const tileName = await ArtTileManager.getGalleryTileDataFromID(tileID, "displayName");
+            const tileName = await ArtTileManager.getGalleryTileDataFromID(
+                tileID,
+                "displayName"
+            );
             let suffix = `<span class='${type}-color'>${HelperFunctions.capitalizeEachWord(
                 type
             )} Tile "${tileName}"</span>`;
@@ -251,7 +267,10 @@ export const extraActions = {
         if (type === "art" && !frameId)
             instructionsContent += `<p id="noFrameTile">This <span class="art-color">Art Tile</span> will be bound by the scene's canvas.</p>`;
         else if (type === "art" && frameId) {
-            const frameTileName = await ArtTileManager.getGalleryTileDataFromID(frameId, "displayName");
+            const frameTileName = await ArtTileManager.getGalleryTileDataFromID(
+                frameId,
+                "displayName"
+            );
             instructionsContent += `<p id="hasFrameTile">This <span class="art-color">Art Tile</span> will be bound by frame tile <span class="frame-color">${frameTileName}</span> </p>`;
         }
         instructionsContent += "</div>";
@@ -278,17 +297,24 @@ export const extraActions = {
                     duration: 200,
                     isFadeOut: true,
                     onFadeOut: async () => {
-                        content.replaceWith(`<div class="instructions__content hidden"></div>`);
+                        content.replaceWith(
+                            `<div class="instructions__content hidden"></div>`
+                        );
                         instructionsElement.contentHidden = true;
-                        // content.addClass("hidden");
+                        // content.addClass("JTCS-hidden");
                     },
                 });
             }, 300);
         }
     },
     toggleInstructionsVisible: async (event, options = {}) => {
-        let areVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
-        await HelperFunctions.setSettingValue("areConfigInstructionsVisible", !areVisible);
+        let areVisible = await HelperFunctions.getSettingValue(
+            "areConfigInstructionsVisible"
+        );
+        await HelperFunctions.setSettingValue(
+            "areConfigInstructionsVisible",
+            !areVisible
+        );
         UIA.toggleActiveStyles(event);
     },
     /**
@@ -314,7 +340,9 @@ export const extraActions = {
             (fadeBtn) => fadeBtn.closest(".tile-list-item").dataset.id !== tileID
         );
 
-        const otherTiles = game.scenes.viewed.tiles.contents.filter((tile) => tile.id !== tileID);
+        const otherTiles = game.scenes.viewed.tiles.contents.filter(
+            (tile) => tile.id !== tileID
+        );
 
         otherTiles.forEach((tile) => {
             tile.object.alpha = alphaValue;
@@ -325,7 +353,12 @@ export const extraActions = {
 
         //toggle this button active
         if (otherToggleFadeButtons.length > 0) {
-            UIA.clearOtherActiveStyles(event, btn, `[data-action='${clickAction}']`, ".tilesInScene");
+            UIA.clearOtherActiveStyles(
+                event,
+                btn,
+                `[data-action='${clickAction}']`,
+                ".tilesInScene"
+            );
         }
         UIA.toggleActiveStyles(event);
         //toggle any other active buttons to be inactive
@@ -357,12 +390,14 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-eye-slash",
                     tooltipText: "toggle instruction visibility",
                     renderedInTemplate: true,
-                    onClick: async (event, options) => await extraActions.toggleInstructionsVisible(event, options),
+                    onClick: async (event, options) =>
+                        await extraActions.toggleInstructionsVisible(event, options),
                 },
                 toggleSheetOpacity: {
                     icon: "fas fa-eye-slash",
                     tooltipText: "fade this application to better see the canvas",
-                    onClick: async (event, options) => await extraActions.toggleSheetOpacity(event, options),
+                    onClick: async (event, options) =>
+                        await extraActions.toggleSheetOpacity(event, options),
                 },
                 // showArtScenes: {
                 //     icon: "fas fa-map",
@@ -429,7 +464,8 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-plus",
                     tooltipText: "Create new tile data",
                     renderedInTemplate: true,
-                    onClick: async (event, options) => await extraActions.updateTileData(event, options),
+                    onClick: async (event, options) =>
+                        await extraActions.updateTileData(event, options),
                 },
             },
         },
@@ -484,7 +520,8 @@ export const slideshowDefaultSettingsData = {
                     },
                 },
                 setFrameTile: {
-                    onChange: async (event, options) => await extraActions.updateTileData(event, options),
+                    onChange: async (event, options) =>
+                        await extraActions.updateTileData(event, options),
                 },
                 setDisplayName: {
                     onChange: async (event, options) => {
@@ -492,7 +529,8 @@ export const slideshowDefaultSettingsData = {
                         let isValid = await UIA.validateInput(event, {
                             noWhitespaceStart: {
                                 notificationType: "danger",
-                                message: "Please enter a name that doesn't start with a white space",
+                                message:
+                                    "Please enter a name that doesn't start with a white space",
                             },
                         });
                         if (isValid) {
@@ -507,7 +545,12 @@ export const slideshowDefaultSettingsData = {
                         const url = event.currentTarget.value;
                         const valid = HelperFunctions.validateInput(url, "image");
                         if (valid) {
-                            await ImageDisplayManager.updateTileObjectTexture(tileID, frameTileID, url, "anyScene");
+                            await ImageDisplayManager.updateTileObjectTexture(
+                                tileID,
+                                frameTileID,
+                                url,
+                                "anyScene"
+                            );
                         } else {
                             ui.notifications.error("URL not an image");
                         }
@@ -520,7 +563,8 @@ export const slideshowDefaultSettingsData = {
             actions: {
                 highlightTile: {
                     onHover: async (event, options = {}) => {
-                        let isLeave = event.type === "mouseout" || event.type === "mouseleave";
+                        let isLeave =
+                            event.type === "mouseout" || event.type === "mouseleave";
                         let { targetElement } = options;
                         if (!targetElement) targetElement = event.currentTarget;
                         if (targetElement.tagName === "LABEL") {
@@ -539,8 +583,14 @@ export const slideshowDefaultSettingsData = {
                     //TODO: refactor the name of this property to include the "showInstructions" method
                     onHover: async (event, options = {}) => {
                         const dataset = $(options.parentLI).data();
-                        await extraActions.highlightItemAndTile(event, { ...options, ...dataset });
-                        await extraActions.showInstructions(event, { ...options, ...dataset });
+                        await extraActions.highlightItemAndTile(event, {
+                            ...options,
+                            ...dataset,
+                        });
+                        await extraActions.showInstructions(event, {
+                            ...options,
+                            ...dataset,
+                        });
                     },
                 },
             },
@@ -568,7 +618,11 @@ export const slideshowDefaultSettingsData = {
                             label: "Share URL",
                         };
 
-                        let templateData = Popover.createTemplateData(parentLI, "input-with-error", context);
+                        let templateData = Popover.createTemplateData(
+                            parentLI,
+                            "input-with-error",
+                            context
+                        );
 
                         let elementData = { ...Popover.defaultElementData };
 
@@ -627,20 +681,28 @@ export const slideshowDefaultSettingsData = {
                 },
                 showUnlinkedTiles: {
                     icon: "fas fa-link",
-                    tooltipText: "Show tiles objects on canvas that aren't linked to any art or frame tile data",
+                    tooltipText:
+                        "Show tiles objects on canvas that aren't linked to any art or frame tile data",
                     onClick: async (event, options = {}) => {
                         let { app, tileID, parentLI } = options;
 
                         let frameTileID;
                         if (!frameTileID) frameTileID = parentLI.dataset.frameId;
 
-                        let artTileDataArray = await ArtTileManager.getSceneSlideshowTiles("", true);
-                        let unlinkedTilesIDs = await ArtTileManager.getUnlinkedTileIDs(artTileDataArray);
+                        let artTileDataArray =
+                            await ArtTileManager.getSceneSlideshowTiles("", true);
+                        let unlinkedTilesIDs = await ArtTileManager.getUnlinkedTileIDs(
+                            artTileDataArray
+                        );
                         let context = {
                             artTileDataArray: artTileDataArray,
                             unlinkedTilesIDs: unlinkedTilesIDs,
                         };
-                        let templateData = Popover.createTemplateData(parentLI, "tile-link-partial", context);
+                        let templateData = Popover.createTemplateData(
+                            parentLI,
+                            "tile-link-partial",
+                            context
+                        );
 
                         let elementData = { ...Popover.defaultElementData };
                         // elementData["popoverElement"].hideEvents.push({
@@ -666,7 +728,8 @@ export const slideshowDefaultSettingsData = {
                 toggleTilesOpacity: {
                     icon: "fas fa-clone",
                     tooltipText: "fade out other tiles in scene to better see this one",
-                    onClick: async (event, options = {}) => extraActions.toggleTilesOpacity(event, options),
+                    onClick: async (event, options = {}) =>
+                        extraActions.toggleTilesOpacity(event, options),
                 },
                 // the overflow menu should be last
                 toggleOverflowMenu: {
@@ -680,17 +743,23 @@ export const slideshowDefaultSettingsData = {
                         const type = parentLI.dataset.type;
                         const parentItemMissing = parentLI.dataset.missing ? true : false;
 
-                        const actions = slideshowDefaultSettingsData.itemActions.click.actions;
+                        const actions =
+                            slideshowDefaultSettingsData.itemActions.click.actions;
 
                         let overflowActions = {};
                         for (let actionKey in actions) {
-                            let { overflow, renderOnMissing, renderAlways, artTileOnly } = actions[actionKey];
+                            let { overflow, renderOnMissing, renderAlways, artTileOnly } =
+                                actions[actionKey];
                             if (!renderOnMissing) renderOnMissing = false; //if render on missing is undefined, set it to false
 
                             const shouldRender = renderOnMissing === parentItemMissing; //fif the parent item's missing status and the button's conditional rendering status are equal
                             const mismatchedTypes = type === "frame" && artTileOnly; //if the item should only render on an art tile
 
-                            if (overflow && (shouldRender || renderAlways) && !mismatchedTypes) {
+                            if (
+                                overflow &&
+                                (shouldRender || renderAlways) &&
+                                !mismatchedTypes
+                            ) {
                                 //if it's an action to renderon the overflow menu
                                 overflowActions[actionKey] = actions[actionKey];
                             }
@@ -699,7 +768,11 @@ export const slideshowDefaultSettingsData = {
                             propertyString: "itemActions.click.actions",
                             items: overflowActions,
                         };
-                        let templateData = Popover.createTemplateData(parentLI, "item-menu", context);
+                        let templateData = Popover.createTemplateData(
+                            parentLI,
+                            "item-menu",
+                            context
+                        );
 
                         const elementData = { ...Popover.defaultElementData };
 
@@ -721,7 +794,8 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-vector-square",
                     overflow: true,
                     renderOnMissing: false,
-                    onClick: async (event, options = {}) => await extraActions.selectTile(event, options),
+                    onClick: async (event, options = {}) =>
+                        await extraActions.selectTile(event, options),
                 },
                 fitTileToFrame: {
                     icon: "fas fa-expand",
@@ -731,7 +805,12 @@ export const slideshowDefaultSettingsData = {
                         const { type, frameId } = $(parentLI).data();
                         if (type === "art") {
                             let path = game.scenes.viewed.tiles.get(tileID).data.img;
-                            await ImageDisplayManager.updateTileObjectTexture(tileID, frameId, path, "anyScene");
+                            await ImageDisplayManager.updateTileObjectTexture(
+                                tileID,
+                                frameId,
+                                path,
+                                "anyScene"
+                            );
                         }
                     },
                     overflow: true,
@@ -739,16 +818,19 @@ export const slideshowDefaultSettingsData = {
                 },
                 renderTileConfig: {
                     text: "Render tile object config",
-                    tooltipText: "Render the config for the tile object linked to this tile",
+                    tooltipText:
+                        "Render the config for the tile object linked to this tile",
                     icon: "fas fa-cog",
                     overflow: true,
-                    onClick: async (event, options = {}) => await extraActions.renderTileConfig(event, options),
+                    onClick: async (event, options = {}) =>
+                        await extraActions.renderTileConfig(event, options),
                     renderOnMissing: false,
                 },
                 clearTileImage: {
                     icon: "fas fa-times-circle",
                     text: "Clear Tile Image",
-                    tooltipText: "'Clear' this tile's image, or reset it to your chosen default",
+                    tooltipText:
+                        "'Clear' this tile's image, or reset it to your chosen default",
                     overflow: true,
                     onClick: async (event, options = {}) => {
                         let { tileID } = options;
@@ -770,7 +852,8 @@ export const slideshowDefaultSettingsData = {
                     overflow: true,
                     renderAlways: true,
                     extraClass: "danger-text",
-                    onClick: async (event, options = {}) => extraActions.deleteTileData(event, options),
+                    onClick: async (event, options = {}) =>
+                        extraActions.deleteTileData(event, options),
                 },
             },
         },

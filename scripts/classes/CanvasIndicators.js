@@ -22,7 +22,10 @@ export class CanvasIndicators {
 
     static async getColors() {
         let colors = {};
-        let settingsColors = await HelperFunctions.getSettingValue("artGallerySettings", "indicatorColorData.colors");
+        let settingsColors = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            "indicatorColorData.colors"
+        );
         colors.frameTileColor = settingsColors.frameTileColor || "#ff3300";
         colors.artTileColor = settingsColors.artTileColor || "#2f2190";
         colors.unlinkedTileColor = settingsColors.unlinkedTileColor || "#a2ff00";
@@ -34,11 +37,13 @@ export class CanvasIndicators {
             ui.notifications.warn("Tile document not supplied.");
             return;
         }
+        //add check for if it's v10
+        const isV10 = game.version >= 10 ? true : false;
         let tileDimensions = {
-            width: tileDocument.data.width,
-            height: tileDocument.data.height,
-            x: tileDocument.data.x,
-            y: tileDocument.data.y,
+            width: isV10 ? tileDocument.width : tileDocument.data.width,
+            height: isV10 ? tileDocument.height : tileDocument.data.height,
+            x: isV10 ? tileDocument.x : tileDocument.data.x,
+            y: isV10 ? tileDocument.y : tileDocument.data.y,
         };
         let tileObject = tileDocument.object;
         if (!tileObject) {

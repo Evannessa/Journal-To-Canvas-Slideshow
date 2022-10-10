@@ -566,7 +566,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     border-bottom-left-radius: 0px;
                     // filter: blur(3px);
                 }
-                &:not(.hidden) {
+                &:not(.JTCS-hidden) {
                     padding: 1rem;
                     min-height: 10em;
                     // max-height

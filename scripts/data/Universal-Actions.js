@@ -19,9 +19,9 @@ function toggleHideAllSiblings(event, currentTarget) {
     );
 
     if (currentTarget.classList.contains("active")) {
-        siblings.forEach((el) => el.classList.remove("hidden"));
+        siblings.forEach((el) => el.classList.remove("JTCS-hidden"));
     } else {
-        siblings.forEach((el) => el.classList.add("hidden"));
+        siblings.forEach((el) => el.classList.add("JTCS-hidden"));
     }
 }
 
@@ -120,18 +120,18 @@ async function fade($element, options = {}) {
  */
 async function handleVisibilityTransitions($element) {
     //if the class already has hidden, set it to fadeIn rather than out
-    const isFadeOut = $element.hasClass("hidden") ? false : true;
+    const isFadeOut = $element.hasClass("JTCS-hidden") ? false : true;
 
     //if we're fading in, remove the hidden class
-    if (!isFadeOut) $($element).removeClass("hidden");
+    if (!isFadeOut) $($element).removeClass("JTCS-hidden");
 
     //set our fade animation options
     let options = {
         isFadeOut,
-        onFadeOut: ($element, event) => $element.addClass("hidden"),
+        onFadeOut: ($element, event) => $element.addClass("JTCS-hidden"),
     };
     //handle the fade animation
-    //? Fade will handle the opacity, while our "hidden" class handles everything else (transform, clip rect, position absolute, etc.)
+    //? Fade will handle the opacity, while our "JTCS-hidden" class handles everything else (transform, clip rect, position absolute, etc.)
     fade($($element), options);
 }
 function toggleActiveStyles(event, el) {
@@ -181,7 +181,7 @@ export const universalInterfaceActions = {
             if (fadeIn) {
                 handleVisibilityTransitions($(target));
             } else {
-                $(target).removeClass("hidden");
+                $(target).removeClass("JTCS-hidden");
             }
         }
     },
@@ -190,13 +190,13 @@ export const universalInterfaceActions = {
     fadeSheetOpacity: fadeSheetOpacity,
     toggleHideSelf: (event) => {
         let el = event.currentTarget;
-        el.classList.toggle("hidden");
+        el.classList.toggle("JTCS-hidden");
     },
     toggleHideAncestor: (event, options) => {
         let { ancestorSelector } = options;
         let el = event.currentTarget;
-        el.closest(ancestorSelector).classList.toggle("hidden");
-        // parentItem.classList.toggle("hidden");
+        el.closest(ancestorSelector).classList.toggle("JTCS-hidden");
+        // parentItem.classList.toggle("JTCS-hidden");
     },
     toggleHideAllSiblings,
     scrollOtherElementIntoView: (event, options) => {

@@ -465,10 +465,21 @@ export class ImageDisplayManager {
     static async clearTile(tileID, options = {}) {
         let { ourScene } = options;
         if (!ourScene) ourScene = game.scenes.viewed;
-        let clearImagePath = await HelperFunctions.getSettingValue(
-            "artGallerySettings",
-            "defaultTileImages.paths.artTilePath"
+        const isBoundingTile = await ArtTileManager.getGalleryTileDataFromID(
+            tileID,
+            "isBoundingTile"
         );
+
+        let propertyPath = "defaultTileImages.paths.artTilePath";
+        if (isBoundingTile) {
+            propertyPath = "defaultTileImages.paths.frameTilePath";
+        }
+
+        const clearImagePath = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            propertyPath
+        );
+
         var clearTileUpdate = {
             _id: tileID,
             img: clearImagePath,

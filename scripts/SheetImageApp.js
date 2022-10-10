@@ -50,7 +50,12 @@ export class SheetImageApp {
             );
 
             let documentName = doc.documentName;
+            // console.log("%cSheetImageApp.js line:53 doc", "color: #26bfa5;", doc);
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
+            if (documentName === "item" && doc.parent) {
+                //if it's an embedded item in a sheet
+                return;
+            }
             // for v10 +
             if (game.version >= 10) {
                 if (documentName === "journalEntryPage") {
