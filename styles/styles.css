@@ -252,7 +252,7 @@
   transition: opacity 500ms ease-out;
 }
 
-.JTCS-hidden, .input-span[data-variant=visible-tick] input[type=radio],
+.JTCS-hidden, #sheet-controls button.JTCS-hidden, .input-span[data-variant=visible-tick] input[type=radio],
 .input-span[data-variant=visible-tick] input[type=checkbox], input:is([type=radio], [type=checkbox]).hidden-input {
   transform: scale(0);
   position: absolute;
@@ -2364,7 +2364,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #sheet-controls[data-position=bottom-right] {
   bottom: 5px;
-  right: 5px;
+  right: 30px;
   flex-direction: row-reverse;
 }
 #sheet-controls[data-position=top-left] {
@@ -2406,7 +2406,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #sheet-controls button.active:hover, #sheet-controls button.active:focus {
   transform: scale(1.12);
 }
-
 #slideshow-config {
   width: min(600px, 45vw);
   max-width: min(600px, 55vw);
@@ -2746,7 +2745,12 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .sheet.item .clickableImageContainer {
   padding: unset;
   margin: unset;
-  flex: 0 !important;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  max-height: -webkit-fit-content;
+  max-height: -moz-fit-content;
+  max-height: fit-content;
 }
 .sheet.actor .clickableImageContainer .clickableImageControls,
 .sheet.item .clickableImageContainer .clickableImageControls {

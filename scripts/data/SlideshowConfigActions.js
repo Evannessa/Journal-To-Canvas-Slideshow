@@ -344,12 +344,22 @@ export const extraActions = {
             (tile) => tile.id !== tileID
         );
 
-        otherTiles.forEach((tile) => {
-            tile.object.alpha = alphaValue;
-        });
-
-        const ourTile = game.scenes.viewed.tiles.get(tileID);
-        ourTile.object.alpha = 1.0;
+        if (game.version >= 10) {
+            let update = otherTiles.map((data) => {
+                return {
+                    _id: data.id,
+                    alpha: alphaValue,
+                };
+            });
+            update.push({ _id: tileID, alpha: 1.0 });
+            await game.scenes.viewed.updateEmbeddedDocuments("Tile", update);
+        } else {
+            otherTiles.forEach((tile) => {
+                tile.object.alpha = alphaValue;
+            });
+            const ourTile = game.scenes.viewed.tiles.get(tileID);
+            ourTile.object.alpha = 1.0;
+        }
 
         //toggle this button active
         if (otherToggleFadeButtons.length > 0) {
@@ -804,7 +814,12 @@ export const slideshowDefaultSettingsData = {
                         const { parentLI, tileID } = options;
                         const { type, frameId } = $(parentLI).data();
                         if (type === "art") {
-                            let path = game.scenes.viewed.tiles.get(tileID).data.img;
+                            let path;
+                            if (game.version >= 10) {
+                                path = game.scenes.viewed.tiles.get(tileID).texture.src;
+                            } else {
+                                path = game.scenes.viewed.tiles.get(tileID).data.img;
+                            }
                             await ImageDisplayManager.updateTileObjectTexture(
                                 tileID,
                                 frameId,

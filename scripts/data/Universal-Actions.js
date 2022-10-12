@@ -11,6 +11,12 @@ const notificationIcons = {
  * @param {event} event - the event that triggered this
  */
 function toggleHideAllSiblings(event, currentTarget) {
+    console.log(
+        "%cUniversal-Actions.js, toggleHideAllSiblings line:14 event, currentTarget",
+        "color: #26bfa5;",
+        event,
+        currentTarget
+    );
     if (!event && !currentTarget) return;
     if (!currentTarget) currentTarget = event.currentTarget;
 

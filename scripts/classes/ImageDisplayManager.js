@@ -126,11 +126,18 @@ export class ImageDisplayManager {
     static async scaleArtTileToScene(displayTile, tex, url, sceneID = "") {
         let displayScene = game.scenes.get(sceneID);
         if (!displayScene) displayScene = game.scenes.viewed;
-        var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
+
+        let displaySceneWidth =
+            game.version >= 10 ? displayScene.width : displayScene.data.width;
+        let displaySceneHeight =
+            game.version >= 10 ? displayScene.height : displayScene.data.height;
+        let dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
-            displayScene.data.width,
-            displayScene.data.height
+            displaySceneWidth,
+            displaySceneHeight
+            // displayScene.data.width,
+            // displayScene.data.height
         );
         //scale down factor is how big the tile will be in the scene
         //make this scale down factor configurable at some point
@@ -140,22 +147,22 @@ export class ImageDisplayManager {
         //half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
         //separate objects depending on the texture's dimensions --
         //create an 'update' object for if the image is wide (width is bigger than height)
-        var wideImageUpdate = {
+        let wideImageUpdate = {
             _id: displayTile.id,
             width: dimensionObject.width,
             height: dimensionObject.height,
             img: url,
             x: scaleDownFactor / 2,
-            y: displayScene.data.height / 2 - dimensionObject.height / 2,
+            y: displaySceneHeight / 2 - dimensionObject.height / 2,
         };
         //create an 'update' object for if the image is tall (height is bigger than width)
-        var tallImageUpdate = {
+        let tallImageUpdate = {
             _id: displayTile.id,
             width: dimensionObject.width,
             height: dimensionObject.height,
             img: url,
             y: scaleDownFactor / 2,
-            x: displayScene.data.width / 2 - dimensionObject.width / 2,
+            x: displaySceneWidth / 2 - dimensionObject.width / 2,
         };
         //https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
         //^used the above StackOverflow post to help me figure that out

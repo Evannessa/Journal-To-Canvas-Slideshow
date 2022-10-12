@@ -453,7 +453,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
     position: absolute;
     &[data-position="bottom-right"] {
         bottom: 5px;
-        right: 5px;
+        right: 30px;
         flex-direction: row-reverse;
     }
     &[data-position="top-left"] {
@@ -483,6 +483,9 @@ $tile-types: ("frame", "art", "unlinked", "default");
         // background-color: var(--JTCS-accent-color);
         &.active {
             @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
+        }
+        &.JTCS-hidden {
+            @extend .JTCS-hidden;
         }
     }
 }
@@ -800,7 +803,10 @@ $tile-types: ("frame", "art", "unlinked", "default");
     .clickableImageContainer {
         padding: unset;
         margin: unset;
-        flex: 0 !important;
+        max-width: fit-content;
+        max-height: fit-content;
+        // flex: 0 !important;
+
         .clickableImageControls {
             top: 0%;
             transform: translateY(0%);
