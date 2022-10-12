@@ -1,38 +1,51 @@
 <div class="unlinked-tiles-list">
-    <header class="padding-medium">
-        <h3>
-            Link to Tile In Scene
-        </h3>
-        <p class="notes">Choose a tile object in this scene to link this
-            {{this.type}}
-            data to
+  <header class="padding-medium">
+    <h3>
+      Link to Tile In Scene
+    </h3>
+    <p class="notes">
+      Choose a tile object in this scene to link this
+      {{this.type}}
+      data to
+    </p>
+  </header>
+  <div class="form-field flex-column">
+    <ul class="reset-margin reset-padding">
+      {{#if this.unlinkedTilesIDs.length}}
+        {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
+          <li
+            class="interactive full-width"
+            data-type="unlinked"
+            data-id="{{unlinkedTileID}}"
+          >
+            <div
+              class="input-span interactive flex-justify-start"
+              data-variant="visible-tick"
+            >
+              <input
+                class="JTCS-hidden justify-self-left"
+                data-type="unlinked"
+                type="radio"
+                data-change-action="itemActions.change.actions.setLinkedTile"
+                data-hover-action="itemActions.hover.actions.highlightTile"
+                value="{{unlinkedTileID}}"
+                id="{{unlinkedTileID}}"
+                data-id="{{unlinkedTileID}}"
+              />
+              <label class="interactive" for="{{unlinkedTileID}}">
+                <span class="tick-circle"></span>
+                Tile: "
+                {{unlinkedTileID}}
+                "
+              </label>
+            </div>
+          </li>
+        {{/each}}
+      {{else}}
+        <p class="padding-medium">
+          No unlinked tiles in this scene. Try creating one!
         </p>
-    </header>
-    <div class="form-field flex-column">
-        <ul class="reset-margin reset-padding">
-            {{#if this.unlinkedTilesIDs.length}}
-                {{#each this.unlinkedTilesIDs as |unlinkedTileID|}}
-                    <li class="interactive full-width" data-type="unlinked" data-id="{{unlinkedTileID}}">
-                        <div class="input-span interactive flex-justify-start" data-variant="visible-tick">
-                            <input
-                                class="hidden justify-self-left"
-                                data-type="unlinked"
-                                type="radio"
-                                data-change-action="itemActions.change.actions.setLinkedTile"
-                                data-hover-action="itemActions.hover.actions.highlightTile"
-                                value="{{unlinkedTileID}}"
-                                id="{{unlinkedTileID}}"
-                                data-id="{{unlinkedTileID}}"
-                            />
-                            <label class="interactive" for="{{unlinkedTileID}}">
-                                <span class="tick-circle"></span>
-                                Tile: "{{unlinkedTileID}}"</label>
-                        </div>
-                    </li>
-                {{/each}}
-            {{else}}
-                <p class="padding-medium">No unlinked tiles in this scene. Try creating one!</p>
-            {{/if}}
-        </ul>
-    </div>
+      {{/if}}
+    </ul>
+  </div>
 </div>

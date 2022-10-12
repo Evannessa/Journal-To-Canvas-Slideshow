@@ -191,10 +191,8 @@ export class SheetImageApp {
     }
 
     static async activateSheetWideEventListeners(options) {
-        let { controlsContainer, journalSheet } = options;
-        console.log(controlsContainer, journalSheet);
-        controlsContainer = journalSheet.element.find("#sheet-controls");
-        //! Issue is that the "controlsContainer" is targeting the controls on the parent sheet
+        const { journalSheet } = options;
+        const controlsContainer = journalSheet.element.find("#sheet-controls");
         $(controlsContainer)
             .off("click", "[data-action]")
             .on("click", "[data-action]", async (event) => {
