@@ -35,7 +35,8 @@ export class CanvasIndicators {
 
     /**
      * for v10, create an indicator that better reflects the image
-     * @author TheRipper93 (original author), Eva (added small changes)
+     * @author TheRipper93 (original author)
+     * @author Eva (added small changes better to fit module)
      * https://github.com/theripper93/tile-sort/blob/master/scripts/main.js
      * @returns - the created sprite
      */
