@@ -9,9 +9,8 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
  */
 export const setupHookHandlers = async () => {
     async function renderSlideshowConfig(...args) {
-        console.log(args);
         if (args[2]?.diff && args[1]?.alpha) {
-            //likely a better way to handle this;
+            //TODO: ? this was a workaround for v10, keeping Scene Gallery Config from re-rendering on update of tile alpha, but should remove
             //don't update if the changes include alpha
             return;
         }
@@ -97,7 +96,6 @@ export const setupHookHandlers = async () => {
             //and it's not currently being edited
             //and we're not telling it to render anyway
             let editorsActive = HelperFunctions.editorsActive(sheet);
-            console.log(editorsActive);
             if (editorsActive !== true) {
                 sheet.render();
             }
@@ -125,14 +123,6 @@ export const setupHookHandlers = async () => {
             ],
             // hooks: ["renderJournalSheet"],
             handlerFunction: renderImageControls,
-            // specialHooks: [
-            //     {
-            //         hookName: "renderJournalPageSheet",
-            //         handlerFunction: async (app, html) => {
-            //             console.log("Rendering journal page", app, html);
-            //         },
-            //     },
-            // ],
         },
         renderSlideshowConfig: {
             hooks: [

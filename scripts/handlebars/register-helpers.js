@@ -28,13 +28,7 @@ export const registerHelpers = function () {
         function (anyOrAll = "all", valueToEqual = true, ...conditions) {
             conditions.pop();
             //if the property has every object, and every object is true
-            if (anyOrAll == "all") {
-                console.log(
-                    "%cregister-helpers.js line:13 are these true?",
-                    "color: #26bfa5;",
-                    conditions
-                );
-            }
+
             if (anyOrAll === "all") {
                 return conditions.every((condition) => {
                     return condition === valueToEqual;

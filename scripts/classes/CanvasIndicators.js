@@ -32,6 +32,26 @@ export class CanvasIndicators {
         colors.defaultTileColor = settingsColors.defaultTileColor || "#e75eff";
         return colors;
     }
+
+    /**
+     * for v10, create an indicator that better reflects the image
+     * @author TheRipper93 (original author), Eva (added small changes)
+     * https://github.com/theripper93/tile-sort/blob/master/scripts/main.js
+     * @returns - the created sprite
+     */
+    static createV10Indicator(tile, fillAlpha, color) {
+        let tileImg = tile.mesh;
+        if (!tileImg || !tileImg.texture.baseTexture) return;
+        let sprite = new PIXI.Sprite.from(tileImg.texture);
+        sprite.isSprite = true;
+        sprite.width = tile.document.width;
+        sprite.height = tile.document.height;
+        sprite.angle = tileImg.angle;
+        sprite.alpha = fillAlpha;
+        sprite.tint = color;
+        sprite.name = "tilesorthighlight";
+        return sprite;
+    }
     static async createTileIndicator(tileDocument, type = "art") {
         if (!tileDocument) {
             ui.notifications.warn("Tile document not supplied.");
@@ -64,22 +84,18 @@ export class CanvasIndicators {
         switch (type) {
             case "frame":
                 color = colors.frameTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 15;
                 break;
             case "art":
                 color = colors.artTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 5;
                 break;
             case "unlinked":
                 color = colors.unlinkedTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 15;
                 break;
             case "default":
                 color = colors.defaultTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 15;
                 break;
         }
@@ -91,13 +107,22 @@ export class CanvasIndicators {
 
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
 
-        const overlayGraphic = new PIXI.Graphics();
+        let overlayGraphic;
+        let overlaySprite;
+        if (game.version >= 10 && (type === "art" || type === "default")) {
+            overlaySprite = CanvasIndicators.createV10Indicator(
+                tileObject,
+                fillAlpha,
+                color
+            );
+            tileObject.overlayContainer.addChild(overlaySprite);
+        }
+        overlayGraphic = new PIXI.Graphics();
         const whiteColor = 0xffffff;
-
+        fillAlpha = overlaySprite ? 0.25 : 0.5;
         overlayGraphic.beginFill(whiteColor, fillAlpha);
         overlayGraphic.lineStyle(lineWidth, color, 1);
         overlayGraphic.tint = color;
-        // overlayGraphic.tint = colors[`${type}TileColor`];
 
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
@@ -131,5 +156,4 @@ export class CanvasIndicators {
             console.error("No overlay container found");
         }
     }
-    static deleteTileIndicator(tileDocument) {}
 }

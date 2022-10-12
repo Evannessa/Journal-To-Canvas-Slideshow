@@ -28,11 +28,16 @@ export class SheetImageDataController {
     static async removeTileDataFromDocs(removedTileID, sceneID) {
         let flaggedDocs = await SheetImageDataController.getAllFlaggedSheets();
         for (let doc of flaggedDocs) {
-            let clickableImages = await HelperFunctions.getFlagValue(doc, "clickableImages");
+            let clickableImages = await HelperFunctions.getFlagValue(
+                doc,
+                "clickableImages"
+            );
             clickableImages = clickableImages.map((item) => {
                 return {
                     ...item,
-                    scenesData: item.scenesData.filter((sceneData) => removedTileID !== sceneData.selectedTileID),
+                    scenesData: item.scenesData.filter(
+                        (sceneData) => removedTileID !== sceneData.selectedTileID
+                    ),
                 };
             });
 
@@ -50,7 +55,10 @@ export class SheetImageDataController {
     static async updateImageFlags(journalSheet, imgElement, newImgData) {
         let journalEntry = journalSheet.object;
         let imageName = await SheetImageDataController.convertImageSourceToID(imgElement);
-        let clickableImages = await HelperFunctions.getFlagValue(journalEntry, "clickableImages");
+        let clickableImages = await HelperFunctions.getFlagValue(
+            journalEntry,
+            "clickableImages"
+        );
         let foundImage = clickableImages.find((imgData) => imgData.name === imageName);
         if (foundImage) {
             setProperty(foundImage, newImgData);
@@ -62,8 +70,16 @@ export class SheetImageDataController {
             clickableImages.push({ name: imageName, ...newImgData });
         }
 
-        await HelperFunctions.setFlagValue(journalEntry, "clickableImages", clickableImages);
-        await HelperFunctions.setFlagValue(journalEntry, "linkedImageTilesByID", clickableImages);
+        await HelperFunctions.setFlagValue(
+            journalEntry,
+            "clickableImages",
+            clickableImages
+        );
+        await HelperFunctions.setFlagValue(
+            journalEntry,
+            "linkedImageTilesByID",
+            clickableImages
+        );
     }
 
     // /**
@@ -77,18 +93,20 @@ export class SheetImageDataController {
     // }
 
     static async getGalleryTileIDsFromImage(imageElement, journalSheet) {
-        let imageData = await SheetImageDataController.getJournalImageFlagData(journalSheet.object, imageElement);
+        let imageData = await SheetImageDataController.getJournalImageFlagData(
+            journalSheet.object,
+            imageElement
+        );
         if (!imageData) {
             console.error("could not get data from that sheet and element");
             return;
         }
 
-        // imageData = await SheetImageDataController.getSceneSpecificImageData(imageData);
-
         let flaggedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("", true);
-        console.log("Image data is", imageData);
-        // let artTileID = imageData.split(".").pop(); //if stored by uuid, should get the tile's id
-        let frameTileID = await game.JTCS.tileUtils.getLinkedFrameID(artTileID, flaggedTiles);
+        let frameTileID = await game.JTCS.tileUtils.getLinkedFrameID(
+            artTileID,
+            flaggedTiles
+        );
         if (!artTileID) {
             console.error("Image data has no tile ID");
             return;
@@ -116,7 +134,8 @@ export class SheetImageDataController {
      * @returns an object containing the data saved in the flags
      */
     static async getJournalImageFlagData(journalEntry, imgElement) {
-        let clickableImages = (await HelperFunctions.getFlagValue(journalEntry, "clickableImages")) || [];
+        let clickableImages =
+            (await HelperFunctions.getFlagValue(journalEntry, "clickableImages")) || [];
         // let clickableImages = (await journalEntry.getFlag("journal-to-canvas-slideshow", "clickableImages")) || [];
         let foundData = clickableImages.find((imgData) => {
             return imgData.name == imgElement.dataset["name"];

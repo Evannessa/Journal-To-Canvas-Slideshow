@@ -90,7 +90,7 @@ export class ArtTileManager {
     static async createTileInScene(isFrameTile) {
         let ourScene = game.scenes.viewed;
         let pathProperty = isFrameTile ? "frameTilePath" : "artTilePath";
-        let imageManager = ImageDisplayManager; //game.JTCS.imageUtils.manager;
+        let imageManager = ImageDisplayManager;
 
         let imgPath = await HF.getSettingValue(
             "artGallerySettings",
@@ -100,11 +100,13 @@ export class ArtTileManager {
             return;
         }
         const tex = await loadTexture(imgPath);
+        let sceneWidth = game.version >= 10 ? ourScene.width : ourScene.data.width;
+        let sceneHeight = game.version >= 10 ? ourScene.height : ourScene.data.height;
         let dimensionObject = imageManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
-            ourScene.data.width,
-            ourScene.data.height
+            sceneWidth,
+            sceneHeight
         );
 
         let newTile = await ourScene.createEmbeddedDocuments("Tile", [
@@ -112,8 +114,8 @@ export class ArtTileManager {
                 img: imgPath,
                 width: dimensionObject.width,
                 height: dimensionObject.height,
-                x: ourScene.data.width / 2 - tex.width / 2, // - dimensionObject.width / 2,
-                y: ourScene.data.height / 2 - tex.height / 2, // - dimensionObject.height / 2,
+                x: sceneWidth / 2 - tex.width / 2, // - dimensionObject.width / 2,
+                y: sceneWidth / 2 - tex.height / 2, // - dimensionObject.height / 2,
             },
         ]);
         return newTile;
@@ -204,14 +206,16 @@ export class ArtTileManager {
 
             //
             if (!unlinkedDataID) {
-                console.log("Creating new tile data");
+                console.log("Scene Gallery Config - Creating new tile data");
                 await ArtTileManager.createTileData(
                     linkedFrameTileID,
                     tileObjectID,
                     false
                 );
             } else {
-                console.log("updating already created tile data, and linking it");
+                console.log(
+                    "Scene Gallery Config | updating already created tile data, and linking it"
+                );
                 await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
             }
         } else {
@@ -511,7 +515,7 @@ export class ArtTileManager {
     static async getTileObjectByID(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tileID.includes === "new") {
-            console.log("New tile created");
+            // console.log("New tile created");
         } else {
             if (!tile) {
                 ArtTileManager.displayTileNotFoundError(tileID);

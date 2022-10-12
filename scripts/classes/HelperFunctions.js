@@ -242,10 +242,7 @@ export class HelperFunctions {
             adjustAmount += direction * 10, times += 1
         ) {
             adjustedColor = HF.LightenDarkenColor(accentColor, adjustAmount);
-            // console.log(
-            //     `%c Adjusted color by ${adjustAmount}. New Color is ${adjustedColor}`,
-            //     `color: ${adjustedColor}`
-            // );
+
             const hasEnoughContrast = HF.checkIfColorsContrastEnough(
                 backgroundColor,
                 adjustedColor
@@ -385,7 +382,6 @@ export class HelperFunctions {
             const shouldDarken = direction < 0 ? true : false;
             const text =
                 direction < 0 ? "We should darken color" : "we should lighten color";
-            console.log(text);
 
             let startNumber = !shouldDarken ? 80 : 0;
             let step = !shouldDarken ? -10 : 10;

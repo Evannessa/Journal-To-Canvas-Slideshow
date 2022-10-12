@@ -264,9 +264,7 @@ export const universalInterfaceActions = {
         //if one of the validators returns invalid, show a notification
         if (!allValid) {
             await renderInlineNotification(event, "form-group", firstInvalidObject);
-            // showInputNotification(event, options);
         }
-        console.log("Returning all valid which is", allValid);
         return allValid;
     },
 };

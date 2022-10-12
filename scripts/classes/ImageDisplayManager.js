@@ -167,46 +167,49 @@ export class ImageDisplayManager {
         //https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
         //^used the above StackOverflow post to help me figure that out
         //Determine if the image or video is wide, tall, or same dimensions and update depending on that
-        let testArray = [tallImageUpdate, wideImageUpdate];
 
         if (dimensionObject.height > dimensionObject.width) {
             //if the height is longer than the width, use the tall image object
             return tallImageUpdate;
-            // return await displayScene.updateEmbeddedDocuments("Tile", [tallImageUpdate]);
         } else if (dimensionObject.width > dimensionObject.height) {
             //if the width is longer than the height, use the wide image object
             return wideImageUpdate;
-            // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
         }
 
         //if the image length and width are pretty much the same, just default to the wide image update object
         return wideImageUpdate;
-        // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
     }
 
-    static async scaleArtTileToFrameTile(displayTile, boundingTile, tex, url) {
-        var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
+    static async scaleArtTileToFrameTile(artTile, frameTile, tex, url) {
+        const frameTileWidth =
+            game.version >= 10 ? frameTile.width : frameTile.data.width;
+        const frameTileHeight =
+            game.version >= 10 ? frameTile.height : frameTile.data.height;
+        const frameTileX = game.version >= 10 ? frameTile.x : frameTile.data.x;
+        const frameTileY = game.version >= 10 ? frameTile.y : frameTile.data.y;
+
+        let dimensionObject = ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
-            boundingTile.data.width,
-            boundingTile.data.height
+            frameTileWidth,
+            frameTileHeight
         );
 
-        var imageUpdate = {
-            _id: displayTile.id,
+        let imageUpdate = {
+            _id: artTile.id,
             width: dimensionObject.width,
             height: dimensionObject.height,
             img: url,
-            y: boundingTile.data.y,
-            x: boundingTile.data.x,
+            y: frameTileY,
+            x: frameTileX,
         };
         //Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
-        var boundingMiddle = {
-            x: boundingTile.data.x + boundingTile.data.width / 2,
-            y: boundingTile.data.y + boundingTile.data.height / 2,
+        let boundingMiddle = {
+            x: frameTileX + frameTileWidth / 2,
+            y: frameTileY + frameTileHeight / 2,
         };
 
-        var imageMiddle = {
+        let imageMiddle = {
             x: imageUpdate.x + imageUpdate.width / 2,
             y: imageUpdate.y + imageUpdate.height / 2,
         };
@@ -218,7 +221,7 @@ export class ImageDisplayManager {
     //  Used snippet from the below stackOverflow answer to help me with proportionally resizing the images
     /*https://stackoverflow.com/questions/3971841/how-to-resize-images-proportionally-keeping-the-aspect-ratio*/
     static calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
-        var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+        let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
         return {
             width: srcWidth * ratio,
             height: srcHeight * ratio,

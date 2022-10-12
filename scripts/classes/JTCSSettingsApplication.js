@@ -36,9 +36,7 @@ export class JTCSSettingsApplication extends FormApplication {
             id: "JTCSSettingsApplication",
             title: " JTCSSettings Application",
             scrollY: [".form-content"],
-            onsubmit: (event) => {
-                console.log("Submitting from", event.currentTarget.dataset.action);
-            },
+            onsubmit: (event) => {},
         });
     }
 
@@ -301,7 +299,6 @@ export class JTCSSettingsApplication extends FormApplication {
             for (const key in formData) {
                 if (key.includes(".colors.") && !key.includes(bgColorKey)) {
                     //for all the colors, convert the colors
-                    // console.log("Before", key, formData[key]);
                     const bgColor = formData[bgColorKey];
                     const fgColor = formData[key];
                     const hasEnoughContrast = HF.checkIfColorsContrastEnough(
@@ -312,7 +309,6 @@ export class JTCSSettingsApplication extends FormApplication {
                     if (!hasEnoughContrast) {
                         formData[key] = HF.getColorWithContrast(bgColor, fgColor);
                     }
-                    // console.log("after", key, formData[key]);
                 }
             }
         }

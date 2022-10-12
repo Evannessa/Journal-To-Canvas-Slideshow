@@ -330,11 +330,6 @@ export const extraActions = {
         const clickAction = btn.dataset.action;
         const removeFade = btn.classList.contains("active") ? true : false;
         const alphaValue = removeFade ? 1.0 : 0.5;
-        console.log(
-            "%cSlideshowConfigActions.js line:332 removeFade",
-            "color: #26bfa5;",
-            removeFade
-        );
 
         //get other buttons from other Tile Items that may be set to active, and so we can toggle them off
         let otherToggleFadeButtons = btn
@@ -751,6 +746,7 @@ export const slideshowDefaultSettingsData = {
                             extraActions.toggleTilesOpacity(event, options),
                     },
                 }),
+
                 // the overflow menu should be last
                 toggleOverflowMenu: {
                     icon: "fas fa-ellipsis-v",
