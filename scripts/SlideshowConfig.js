@@ -3,10 +3,9 @@ import { log, MODULE_ID } from "./debug-mode.js";
 import { slideshowDefaultSettingsData } from "./data/SlideshowConfigActions.js";
 import { Popover } from "./classes/PopoverGenerator.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
+
 export class SlideshowConfig extends Application {
     constructor(data = {}) {
-        // super({ renderData: { ...data } });
-        // super(data);
         super();
         this.data = data;
         this.element.find(".window-content").attr("data-fade-all");
@@ -18,7 +17,8 @@ export class SlideshowConfig extends Application {
             popOut: true,
             resizable: true,
             height: 500,
-            template: "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
+            template:
+                "modules/journal-to-canvas-slideshow/templates/scene-tiles-config.hbs",
             id: "slideshow-config",
             title: "Scene Gallery Config",
             scrollY: ["ul"],
@@ -30,13 +30,16 @@ export class SlideshowConfig extends Application {
         this.render(true, this.data);
     }
     hideButtons(html) {
-        Array.from(html.querySelectorAll(".tile-list-item .actions .icon-button")).forEach((btn) => {
+        Array.from(
+            html.querySelectorAll(".tile-list-item .actions .icon-button")
+        ).forEach((btn) => {
             btn = $(btn);
             let data = btn.data();
             let parentData = btn.closest(".tile-list-item").data();
             let type = parentData.type;
             let action = data.action.split(".").pop();
-            let itemActionsObject = slideshowDefaultSettingsData.itemActions.click.actions;
+            let itemActionsObject =
+                slideshowDefaultSettingsData.itemActions.click.actions;
             let filteredActionKeys = [];
             Object.keys(itemActionsObject).forEach((itemAction) => {
                 if (getProperty(itemActionsObject, itemAction).artTileOnly) {
@@ -60,7 +63,8 @@ export class SlideshowConfig extends Application {
 
         let targetElement = $(event.currentTarget);
         //if our target element is a label, get the input before it instead
-        targetElement.prop("nodeName") === "LABEL" && (targetElement = targetElement.prev());
+        targetElement.prop("nodeName") === "LABEL" &&
+            (targetElement = targetElement.prev());
 
         let action = targetElement.data()[actionType];
         let handlerPropertyString = "onClick";
@@ -94,17 +98,23 @@ export class SlideshowConfig extends Application {
 
     async getData() {
         //return data to template
-        let ourScene = game.scenes.viewed;
-        let shouldPromptConversion = false;
 
-        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true);
-        let frameTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true);
+        let artTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles(
+            "art",
+            true
+        );
+        let frameTileDataArray = await game.JTCS.tileUtils.getSceneSlideshowTiles(
+            "frame",
+            true
+        );
 
         let unlinkedTileIDs = await game.JTCS.tileUtils.getUnlinkedTileIDs([
             ...artTileDataArray,
             ...frameTileDataArray,
         ]);
-        let areConfigInstructionsVisible = await HelperFunctions.getSettingValue("areConfigInstructionsVisible");
+        let areConfigInstructionsVisible = await HelperFunctions.getSettingValue(
+            "areConfigInstructionsVisible"
+        );
 
         let allJournals = game.journal.contents;
         let artJournal = await game.JTCS.utils.getSettingValue(
@@ -118,7 +128,10 @@ export class SlideshowConfig extends Application {
         };
 
         let allScenes = await game.JTCS.tileUtils.getAllScenesWithSlideshowData();
-        let artScene = await game.JTCS.utils.getSettingValue("artGallerySettings", "dedicatedDisplayData.scene.value");
+        let artScene = await game.JTCS.utils.getSettingValue(
+            "artGallerySettings",
+            "dedicatedDisplayData.scene.value"
+        );
 
         let defaultArtTileID = await game.JTCS.tileUtils.manager.getDefaultArtTileID();
         let artSceneData = {
@@ -150,7 +163,11 @@ export class SlideshowConfig extends Application {
         // await this.setUIColors(html);
         // this._handleToggle(html);
 
-        html.off("click").on("click", "[data-action]", async (event) => await this.handleAction(event, "action", html));
+        html.off("click").on(
+            "click",
+            "[data-action]",
+            async (event) => await this.handleAction(event, "action", html)
+        );
 
         let hoverEventString = "mouseenter mouseleave";
         let hoverActionSelectorString = `[data-hover-action], 

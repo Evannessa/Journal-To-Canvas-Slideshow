@@ -64,15 +64,18 @@ export class HelperFunctions {
     static async scaleControlledTiles(scale = 0.5, axis = " ") {
         const ourScene = game.scenes.viewed;
 
-        const sceneTiles = canvas.background.controlled.filter(
+        const layerName = game.version >= 10 ? "tiles" : "background";
+        const sceneTiles = canvas[layerName].controlled.filter(
             (obj) => obj.document.documentName === "Tile"
         );
 
         let updateObjects = [];
 
         sceneTiles.forEach((tile) => {
-            let width = duplicate(tile.data.width);
-            let height = duplicate(tile.data.height);
+            let tileWidth = game.version >= 10 ? tile.width : tile.data.width;
+            let tileHeight = game.version >= 10 ? tile.height : tile.data.height;
+            let width = duplicate(tileWidth);
+            let height = duplicate(tileHeight);
             height *= scale;
             width *= scale;
             updateObjects.push({
@@ -91,13 +94,21 @@ export class HelperFunctions {
     static async moveControlledTiles(amount = 10, axis = "x") {
         const ourScene = game.scenes.viewed;
 
-        const tiles =
-            canvas.background.controlled.length === 0
-                ? canvas.foreground.controlled
-                : canvas.background.controlled;
+        let tiles;
+        if (game.version >= 10) {
+            tiles = canvas.tiles.controlled;
+        } else {
+            tiles =
+                canvas.background.controlled.length === 0
+                    ? canvas.foreground.controlled
+                    : canvas.background.controlled;
+        }
         if (tiles.length) {
             const updates = tiles
-                .filter((tile) => !tile.data.locked)
+                .filter((tile) => {
+                    if (game.version >= 10) return !tile.locked;
+                    else return !tile.data.locked;
+                })
                 .map((tile) => ({
                     _id: tile.id,
                     [axis]: tile[axis] + amount,

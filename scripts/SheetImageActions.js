@@ -69,12 +69,12 @@ export const sheetImageActions = {
                     UIA.toggleActiveStyles(event);
                 },
             },
-            setDefaultTileInScene: {
-                onClick: async (event, options) => {
-                    //TODO:
-                    //? show the tiles
-                },
-            },
+            // setDefaultTileInScene: {
+            //     onClick: async (event, options) => {
+            //         //TODO:
+            //         //? show the tiles
+            //     },
+            // },
             toggleImageControls: {
                 onClick: async (event, options) => {
                     let { app } = options;

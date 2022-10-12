@@ -8,7 +8,13 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
  * @returns object containing registerHooks function
  */
 export const setupHookHandlers = async () => {
-    async function renderSlideshowConfig() {
+    async function renderSlideshowConfig(...args) {
+        console.log(args);
+        if (args[2]?.diff && args[1]?.alpha) {
+            //likely a better way to handle this;
+            //don't update if the changes include alpha
+            return;
+        }
         if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
             game.JTCSlideshowConfig.render(false);
         }
@@ -70,16 +76,6 @@ export const setupHookHandlers = async () => {
             },
             button: true,
         });
-        //push the clear display button regardless of what setting is selected
-        tileControls.tools.push({
-            name: "ClearDisplay",
-            title: "ClearDisplay",
-            icon: "fas fa-times-circle",
-            onClick: () => {
-                determineWhatToClear();
-            },
-            button: true,
-        });
     }
     /**
      * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
@@ -89,7 +85,6 @@ export const setupHookHandlers = async () => {
      * @param {String} options.tileID - the ID of the tile, if updated
      */
     function rerenderImageSheet(options) {
-        console.log("Re-rendering in response to settings or flags");
         const { origin, currentScene, updateData } = options;
 
         let renderedSheets = Object.values(window.ui.windows).filter(
@@ -142,7 +137,8 @@ export const setupHookHandlers = async () => {
         renderSlideshowConfig: {
             hooks: [
                 "createTile",
-                "updateTile",
+                // "updateTile",
+                "preUpdateTile",
                 "deleteTile",
                 "canvasReady",
                 "createJournalEntry",
@@ -184,7 +180,6 @@ export const setupHookHandlers = async () => {
                     hookName: "updateDefaultArtTile",
                     handlerFunction: async (options) => {
                         let currentScene = game.scenes.viewed;
-                        console.log("Default art tile updated, updating indicators");
                         await updateAllGalleryIndicators(currentScene);
                     },
                 },

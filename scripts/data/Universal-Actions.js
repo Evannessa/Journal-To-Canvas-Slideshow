@@ -11,12 +11,6 @@ const notificationIcons = {
  * @param {event} event - the event that triggered this
  */
 function toggleHideAllSiblings(event, currentTarget) {
-    console.log(
-        "%cUniversal-Actions.js, toggleHideAllSiblings line:14 event, currentTarget",
-        "color: #26bfa5;",
-        event,
-        currentTarget
-    );
     if (!event && !currentTarget) return;
     if (!currentTarget) currentTarget = event.currentTarget;
 
@@ -140,14 +134,20 @@ async function handleVisibilityTransitions($element) {
     //? Fade will handle the opacity, while our "JTCS-hidden" class handles everything else (transform, clip rect, position absolute, etc.)
     fade($($element), options);
 }
-function toggleActiveStyles(event, el) {
-    if (!el) el = event.currentTarget;
+function toggleActiveStyles(event, el, useInitialTarget = true) {
+    if (!el) {
+        el = event.currentTarget;
+        if (useInitialTarget) {
+            //use target instead of currentTarget
+            el = event.target;
+        }
+    }
+
     if (el.classList.contains("active")) {
         el.classList.remove("active");
     } else {
         el.classList.add("active");
     }
-    // el.classList.toggle("active");
 }
 /**
  * Turn off other elements that have active styles

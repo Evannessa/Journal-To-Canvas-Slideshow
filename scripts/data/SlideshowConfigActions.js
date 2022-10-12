@@ -319,6 +319,7 @@ export const extraActions = {
     },
     /**
      * Lower the opacity of every other tile in the scene, to see this one more clearly
+     * This is disabled in v10, as the indicators are visible regardless
      * @param {HTMLEvent} event - the triggering event
      * @param {Object options  - an options object
      * @param {String} options.tileID - the ID of the Art Gallery tile we're operating upon
@@ -329,6 +330,11 @@ export const extraActions = {
         const clickAction = btn.dataset.action;
         const removeFade = btn.classList.contains("active") ? true : false;
         const alphaValue = removeFade ? 1.0 : 0.5;
+        console.log(
+            "%cSlideshowConfigActions.js line:332 removeFade",
+            "color: #26bfa5;",
+            removeFade
+        );
 
         //get other buttons from other Tile Items that may be set to active, and so we can toggle them off
         let otherToggleFadeButtons = btn
@@ -344,6 +350,7 @@ export const extraActions = {
             (tile) => tile.id !== tileID
         );
 
+        //check for game version
         if (game.version >= 10) {
             let update = otherTiles.map((data) => {
                 return {
@@ -407,7 +414,7 @@ export const slideshowDefaultSettingsData = {
                     icon: "fas fa-eye-slash",
                     tooltipText: "fade this application to better see the canvas",
                     onClick: async (event, options) =>
-                        await extraActions.toggleSheetOpacity(event, options),
+                        extraActions.toggleSheetOpacity(event, options),
                 },
                 // showArtScenes: {
                 //     icon: "fas fa-map",
@@ -735,12 +742,15 @@ export const slideshowDefaultSettingsData = {
                     overflow: false,
                     renderOnMissing: true,
                 },
-                toggleTilesOpacity: {
-                    icon: "fas fa-clone",
-                    tooltipText: "fade out other tiles in scene to better see this one",
-                    onClick: async (event, options = {}) =>
-                        extraActions.toggleTilesOpacity(event, options),
-                },
+                ...(game.version < 10 && {
+                    toggleTilesOpacity: {
+                        icon: "fas fa-clone",
+                        tooltipText:
+                            "fade out other tiles in scene to better see this one",
+                        onClick: async (event, options = {}) =>
+                            extraActions.toggleTilesOpacity(event, options),
+                    },
+                }),
                 // the overflow menu should be last
                 toggleOverflowMenu: {
                     icon: "fas fa-ellipsis-v",
