@@ -2453,6 +2453,12 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: transparent;
   width: 100%;
 }
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content p,
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content ul,
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content ol,
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content li {
+  color: var(--JTCS-text-color-on-bg);
+}
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content .art-color {
   color: var(--data-art-color);
   font-weight: bold;

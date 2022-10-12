@@ -539,6 +539,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 border-top-right-radius: 0px;
                 background-color: transparent;
                 width: 100%;
+                p,
+                ul,
+                ol,
+                li {
+                    color: var(--JTCS-text-color-on-bg);
+                }
                 $list: ("art", "frame", "unlinked", "default");
                 @each $var in $list {
                     .#{$var}-color {
