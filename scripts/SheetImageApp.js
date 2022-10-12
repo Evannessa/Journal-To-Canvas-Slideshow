@@ -196,7 +196,6 @@ export class SheetImageApp {
         $(controlsContainer)
             .off("click", "[data-action]")
             .on("click", "[data-action]", async (event) => {
-                console.log("clicked");
                 SheetImageApp.handleAction(event, journalSheet, "action", false);
             });
         const controlsToggleButton = $(controlsContainer).find(
@@ -272,9 +271,9 @@ export class SheetImageApp {
         $(imgElement).attr("data-action", "image.click.sendImageDataToDisplay");
 
         $(controlsContainer)
-            .off("click", "[data-action]")
+            .off("click, contextmenu", "[data-action]")
             .on(
-                "click",
+                "click, contextmenu",
                 "[data-action]",
                 async (event) =>
                     await SheetImageApp.handleAction(event, journalSheet, "action")
