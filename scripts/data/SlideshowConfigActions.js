@@ -226,7 +226,7 @@ export const extraActions = {
             return;
         }
 
-        let instructionsContent = "<div class='instructions__content hidden'>";
+        let instructionsContent = "<div class='instructions__content JTCS-hidden'>";
         // add different instruction content depending on the tile's type (art or frame), whether it's unlinked/missing, and whether, if it's an art tile, it's currently set to the default art tile.
         const defaultVariantText = isDefault ? "<em>another</em>" : "this";
         switch (type) {
@@ -298,7 +298,7 @@ export const extraActions = {
                     isFadeOut: true,
                     onFadeOut: async () => {
                         content.replaceWith(
-                            `<div class="instructions__content hidden"></div>`
+                            `<div class="instructions__content JTCS-hidden"></div>`
                         );
                         instructionsElement.contentHidden = true;
                         // content.addClass("JTCS-hidden");

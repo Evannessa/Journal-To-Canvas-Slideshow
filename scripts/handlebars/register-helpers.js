@@ -47,13 +47,6 @@ export const registerHelpers = function () {
         }
     );
     Handlebars.registerHelper("filter", function (object, conditionName, conditionValue) {
-        console.log(
-            "%cregister-helpers.js line:11 object, conditionName, conditionValue",
-            "color: #26bfa5;",
-            object,
-            conditionName,
-            conditionValue
-        );
         let array = Object.entries(object).filter(
             ([key, data]) => data[conditionName] === conditionValue || data.renderAlways
         );
