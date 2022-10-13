@@ -71,10 +71,7 @@ Hooks.on("quenchReady", async (quench) => {
                         await scene.activate();
                         await scene.view();
                     }
-                    async function getTestData() {
-                        con = new SlideshowConfig();
-                        await con._render(true);
-                        element = con.element;
+                    async function getTileData() {
                         tileID = await ArtTileManager.getDefaultArtTileID(scene);
                         tileData = await ArtTileManager.getGalleryTileDataFromID(tileID);
                         tileDoc = await getTileObject(tileID);
@@ -82,12 +79,19 @@ Hooks.on("quenchReady", async (quench) => {
                         ourTileElement = $(element).find(
                             `.tile-list-item[data-is-default]`
                         )[0];
+                    }
+                    async function getTestData() {
+                        con = new SlideshowConfig();
+                        await con._render(true);
+                        element = con.element;
+
                         defaultImageSrc = await getArtGallerySettings(
                             "defaultTileImages.paths.artTilePath"
                         );
+                        await getTileData();
                     }
                     async function deleteTestScene() {
-                        let dupedSceneId = dupedScene.id;
+                        let dupedSceneId = scene.id;
                         await Scene.deleteDocuments([dupedSceneId]);
                     }
 
@@ -189,17 +193,12 @@ Hooks.on("quenchReady", async (quench) => {
                         return overflowMenu;
                     }
                     it("renders the overflow menu when the 'toggle overflow menu'", async function () {
-                        // const actionName = "toggleOverflowMenu";
-                        // const actionQueryString = combine(actionName);
                         assert.notEqual(
                             ourTileElement,
                             undefined,
                             "Our tile element should be defined"
                         );
-                        // const ourButton = ourTileElement.querySelector(actionQueryString);
-                        // ourButton.click();
-                        // await quench.utils.pause(900);
-                        // const overflowMenu = element[0].querySelector(".popover");
+
                         assert.notEqual(
                             overflowMenu,
                             undefined,
@@ -302,17 +301,8 @@ Hooks.on("quenchReady", async (quench) => {
                         assert.isDefined(dialogElement, "Delete dialog is defined");
                         await app.close();
                     });
-                    it("closes the dialog button on cancel", async () => {
-                        // ? - & On cancel, dialog closes, nothing happens
-                        let { dialogElement } = await clickDeleteTileDataButton();
-                        await clickButton(dialogElement[0], ".dialog-button.cancel");
-                        //app should be undefined now after cancel is clicked
-                        let app = getAppFromWindow(Dialog);
-                        assert.isUndefined(app);
-                    });
                     it("deletes the tile data on 'Delete'", async () => {
                         // ! - & On approve, dialog closes, tile data is deleted
-                        await toggleOverflowMenu();
                         let { dialogElement } = await clickDeleteTileDataButton();
                         await clickButton(dialogElement[0], ".dialog-button.delete");
                         // - ~ Scene Config App updates
@@ -322,7 +312,24 @@ Hooks.on("quenchReady", async (quench) => {
                         );
                         let ourTile = sceneTiles.find((tile) => (tile.id = tileID));
                         console.log(sceneTiles, ourTile);
+
+                        //since deleting, re-get the tile data
+                        await getTileData();
+                        assert.fail();
                         // - ~ IF FRAME, linked Art Tiles default to "Canvas as Frame"
+
+                        //toggle the overflow menu again?
+                        // ourTileElement = await toggleOverflowMenu();
+                    });
+
+                    it("closes the dialog button on cancel", async () => {
+                        console.log(overflowMenu);
+                        // ? - & On cancel, dialog closes, nothing happens
+                        let { dialogElement } = await clickDeleteTileDataButton();
+                        await clickButton(dialogElement[0], ".dialog-button.cancel");
+                        //app should be undefined now after cancel is clicked
+                        let app = getAppFromWindow(Dialog);
+                        assert.isUndefined(app);
                     });
                 });
 
