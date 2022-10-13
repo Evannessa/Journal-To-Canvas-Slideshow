@@ -102,7 +102,7 @@ export class CanvasIndicators {
         }
         color = color.substring(1);
         if (color.length === 8) {
-            color = HelperFunctions.hex8To6(color); //.substring(-2);
+            color = HelperFunctions.hex8To6(color);
         }
         color = `0x${color}`;
 

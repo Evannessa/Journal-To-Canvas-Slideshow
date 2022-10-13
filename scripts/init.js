@@ -10,7 +10,11 @@ import { SheetImageDataController } from "./SheetImageDataController.js";
 import { SlideshowConfig } from "./SlideshowConfig.js";
 
 import { log, MODULE_ID } from "./debug-mode.js";
-import { generateTemplates, createTemplatePathString, mapTemplates } from "./data/templates.js";
+import {
+    generateTemplates,
+    createTemplatePathString,
+    mapTemplates,
+} from "./data/templates.js";
 import { registerHelpers } from "./handlebars/register-helpers.js";
 import { registerSettings } from "./settings.js";
 import { setupHookHandlers } from "./hooks.js";
@@ -130,7 +134,10 @@ Hooks.on("init", async () => {
     loadTemplates(templates);
     // now that we've created our API, inform other modules we are ready
     // provide a reference to the module api as the hook arguments for good measure
-    Hooks.callAll("journalToCanvasSlideshowReady", game.modules.get("journal-to-canvas-slideshow").api);
+    Hooks.callAll(
+        "journalToCanvasSlideshowReady",
+        game.modules.get("journal-to-canvas-slideshow").api
+    );
 });
 
 Hooks.on("journalToCanvasSlideshowReady", async (api) => {
@@ -171,8 +178,10 @@ async function insertImageIntoJournal(file, editor) {
 }
 
 Hooks.once("canvasReady", async () => {
-    const showWelcomeMessage = await HelperFunctions.getSettingValue("showWelcomeMessage");
-    if (showWelcomeMessage) {
+    const showWelcomeMessage = await HelperFunctions.getSettingValue(
+        "showWelcomeMessage"
+    );
+    if (showWelcomeMessage && game.user.isGM) {
         await HelperFunctions.showWelcomeMessage();
     }
 });
@@ -180,10 +189,14 @@ Hooks.once("canvasReady", async () => {
 Hooks.on("canvasReady", async (canvas) => {
     //get tile data from scene flags
 
-    let artTileDataArray = (await ArtTileManager.getSceneSlideshowTiles("", true)).filter((item) => !item.missing);
+    let artTileDataArray = (await ArtTileManager.getSceneSlideshowTiles("", true)).filter(
+        (item) => !item.missing
+    );
 
     game.scenes.viewed.tiles.forEach(async (tileDoc) => {
-        let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+        let foundTileData = artTileDataArray.find(
+            (tileData) => tileData.id === tileDoc.id
+        );
 
         await CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     });
@@ -196,12 +209,13 @@ Hooks.on("renderTileConfig", async (app, element) => {
     let currentScene = game.scenes.viewed;
 
     //get tiles with flags
-    let flaggedTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles();
-    let defaultData = await game.JTCS.tileUtils.getDefaultData();
+    let flaggedTiles = await ArtTileManager.getSceneSlideshowTiles();
+    let defaultData = await ArtTileManager.getDefaultData();
 
     //get data from tiles
     if (flaggedTiles) {
-        defaultData = await game.JTCS.tileUtils.getTileDataFromFlag(app.object.data._id, flaggedTiles);
+        let tileID = game.version >= 10 ? app.object._id : app.object.data._id;
+        defaultData = await ArtTileManager.getTileDataFromFlag(tileID, flaggedTiles);
         defaultData = { ...defaultData };
         defaultData.boundingTiles = await game.JTCS.tileUtils.getFrameTiles(flaggedTiles);
     }

@@ -100,6 +100,7 @@ export class ArtTileManager {
             return;
         }
         const tex = await loadTexture(imgPath);
+
         let sceneWidth = game.version >= 10 ? ourScene.width : ourScene.data.width;
         let sceneHeight = game.version >= 10 ? ourScene.height : ourScene.data.height;
         let dimensionObject = imageManager.calculateAspectRatioFit(
@@ -114,8 +115,8 @@ export class ArtTileManager {
                 img: imgPath,
                 width: dimensionObject.width,
                 height: dimensionObject.height,
-                x: sceneWidth / 2 - tex.width / 2, // - dimensionObject.width / 2,
-                y: sceneWidth / 2 - tex.height / 2, // - dimensionObject.height / 2,
+                x: sceneWidth / 2 - dimensionObject.width / 2,
+                y: sceneHeight / 2 - dimensionObject.height / 2,
             },
         ]);
         return newTile;

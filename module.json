@@ -11,7 +11,7 @@
         }
     ],
     "socket": "true",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "minimumCoreVersion": 9,
     "compatibleCoreVersion": 10,
     "compatibility": {
@@ -77,7 +77,14 @@
         "scripts/hooks.js",
         "scripts/data/ModuleManager.js"
     ],
-    "dependencies": ["lib - ColorSettings"],
+    "dependencies": [
+        {
+            "id": "colorsettings",
+            "name": "lib - Color Settings",
+            "type": "module",
+            "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/master/module.json"
+        }
+    ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
     "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/v10-migration-experimental/module.json",
