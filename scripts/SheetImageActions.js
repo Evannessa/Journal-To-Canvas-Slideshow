@@ -100,7 +100,6 @@ export const sheetImageActions = {
                         );
                     }
 
-                    // UIA.toggleHideAllSiblings(event);
                     UIA.toggleActiveStyles(event);
                 },
             },

@@ -73,7 +73,7 @@ export class ImageDisplayManager {
             );
             return;
         }
-        var imageUpdate;
+        let imageUpdate;
 
         if (!frameTile) {
             imageUpdate = await ImageDisplayManager.scaleArtTileToScene(
@@ -141,7 +141,7 @@ export class ImageDisplayManager {
         );
         //scale down factor is how big the tile will be in the scene
         //make this scale down factor configurable at some point
-        var scaleDownFactor = 200;
+        let scaleDownFactor = 200;
         dimensionObject.width -= scaleDownFactor;
         dimensionObject.height -= scaleDownFactor;
         //half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
@@ -218,7 +218,7 @@ export class ImageDisplayManager {
         imageUpdate.y += boundingMiddle.y - imageMiddle.y;
         return imageUpdate;
     }
-    //  Used snippet from the below stackOverflow answer to help me with proportionally resizing the images
+    /** Used snippet from the below stackOverflow answer to help me with proportionally resizing the images*/
     /*https://stackoverflow.com/questions/3971841/how-to-resize-images-proportionally-keeping-the-aspect-ratio*/
     static calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
         let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -445,18 +445,6 @@ export class ImageDisplayManager {
         //load the texture from the source
     }
 
-    static async determineWhatToClear() {
-        let location = game.settings.get(
-            "journal-to-canvas-slideshow",
-            "displayLocation"
-        );
-        if (location == "displayScene" || location == "anyScene") {
-            clearDisplayTile();
-        } else if (location == "window") {
-            ImageDisplayManager.clearDisplayWindow();
-        }
-    }
-
     static async clearDisplayWindow() {
         if (!findDisplayJournal()) {
             return;
@@ -495,41 +483,5 @@ export class ImageDisplayManager {
             img: clearImagePath,
         };
         await ourScene.updateEmbeddedDocuments("Tile", [clearTileUpdate]);
-    }
-
-    static async checkMeetsDisplayRequirements(source, displayTile, boundingTile) {
-        let doesMeetRequirements = true;
-
-        //get the name of the scene or journal
-        let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
-        if (!source) {
-            ui.notifications.warn("Type not supported");
-            doesMeetRequirements = false;
-        }
-        if (game.JTCS.utils.checkSettingEquals("displayLocation", "displayScene")) {
-            if (!displaySceneFound()) {
-                //if there is no display scene, return
-                ui.notifications.error(
-                    `No display scene found. Please make sure you have a scene named ${displayName}`
-                );
-                doesMeetRequirements = false;
-            }
-        }
-        if (!displayTile) {
-            ui.notifications.error(
-                "No display tile found -- make sure your scene has a display tile"
-            );
-            doesMeetRequirements = false;
-        }
-        if (!boundingTile) {
-            //if the scene isn't the display scene but has a bounding Tile
-            //the scene we're using is the currently viewed scene
-            ui.notifications.error(
-                "No bounding tile present in scene. Please use the display scene if you wish to display without a bounding tile"
-            );
-            doesMeetRequirements = false;
-        }
-
-        return doesMeetRequirements;
     }
 }
