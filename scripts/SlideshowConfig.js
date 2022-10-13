@@ -11,6 +11,15 @@ export class SlideshowConfig extends Application {
         this.element.find(".window-content").attr("data-fade-all");
     }
 
+    /**
+     * @override
+     */
+    async _render(force, options = {}) {
+        console.log("Rendering something?");
+
+        return super._render(force, options);
+    }
+
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["form"],
