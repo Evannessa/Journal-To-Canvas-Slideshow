@@ -2,107 +2,110 @@ import { SlideshowConfig } from "../SlideshowConfig.js";
 import { HelperFunctions } from "./HelperFunctions.js";
 import { ArtTileManager } from "./ArtTileManager.js";
 import { ImageDisplayManager } from "./ImageDisplayManager.js";
-function dispatchKeypress(element) {
-    element.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
-}
-function dispatchMouseDown(element) {
-    element.dispatchEvent(
-        new MouseEvent("click", {
-            ctrlKey: true, // if you aren't going to use them.
-            // metaKey: true, // these are here for example's sake.
-        })
-    );
-}
-function dispatchChange(element) {
-    // element.fireEvent("onchange");
-    const e = new Event("change", { bubbles: true });
-    element.dispatchEvent(e);
-    // element.dispatchEvent("onchange");
-}
+import { JTCSSettingsApplication } from "./JTCSSettingsApplication.js";
+import { TestUtils } from "../tests/test-utils.js";
+
+const slideshowConfigTest = async (context) => {};
+
 Hooks.on("quenchReady", async (quench) => {
     quench.registerBatch(
         "Slideshow Config Test",
         async (context) => {
             const { describe, it, assert, expect, should } = context;
+            const {
+                dispatchChange,
+                dispatchMouseDown,
+                getTileObject,
+                getDocData,
+                resizeTile,
+                changeTileImage,
+                getArtGallerySettings,
+                getDocIdFromApp,
+                getAppFromWindow,
+                getAreasOfDocs,
+                deleteTestScene,
+                duplicateTestScene,
+                initializeScene,
+                returnClassListAsArray,
+                returnComputedStyles,
+                checkAppElementForId,
+            } = TestUtils;
             describe("Slideshow Config Test Suite", async function () {
+                let configApp, configElement, scene, defaultImageSrc;
+
+                async function clickGlobalButton(actionName) {
+                    configElement[0]
+                        .querySelector(
+                            `[data-action='globalActions.click.actions.${actionName}']`
+                        )
+                        .click();
+                    await quench.utils.pause(900);
+                }
+
+                /**
+                 * @description - renders the Scene Config
+                 */
+                async function renderConfig() {
+                    configApp = new SlideshowConfig();
+                    await configApp._render(true);
+                    configElement = configApp.element;
+                }
+                async function getTestData() {
+                    defaultImageSrc = await getArtGallerySettings(
+                        "defaultTileImages.paths.artTilePath"
+                    );
+                }
+                before(async () => {
+                    let sourceScene = await initializeScene();
+                    scene = await duplicateTestScene(sourceScene);
+                    await getTestData();
+                    await renderConfig();
+                });
+                after(async () => {
+                    await deleteTestScene(scene);
+                });
                 describe("Testing Linked Gallery Tile Item Actions in overflow menu", async function () {
-                    let con,
-                        element,
-                        scene,
-                        dupedScene,
-                        tileID,
+                    let tileID,
                         tileData,
                         tileDoc,
                         tileItemPrefixString,
                         ourTileElement,
                         tileElements,
-                        defaultImageSrc,
                         overflowMenu,
                         ourButton;
 
-                    let doBeforeEach = async () => {
-                        await toggleOverflowMenu();
-                        await changeTileImage(defaultImageSrc);
-                        await getTileData();
-                    };
                     before(async () => {
-                        let sourceScene = game.scenes.getName("Display");
-                        await sourceScene.view();
-                        await duplicateTestScene(sourceScene);
-                        await getTestData();
+                        await getTileData();
                     });
                     beforeEach(async () => {
                         await doBeforeEach();
-                        // await toggleOverflowMenu();
-                        // await changeTileImage(defaultImageSrc);
                     });
+                    let doBeforeEach = async () => {
+                        await toggleOverflowMenu();
+                        await changeTileImage(tileID, defaultImageSrc);
+                        await getTileData();
+                    };
 
-                    after(async () => {
-                        await deleteTestScene();
-                    });
-
-                    /**
-									* clone scene and activate it
-									@returns duplicated scene
-								    */
-                    async function duplicateTestScene(sourceScene) {
-                        let dupedSceneData = sourceScene.clone({
-                            name: "Test Scene",
-                        });
-                        scene = await Scene.create(dupedSceneData);
-                        await scene.activate();
-                        await scene.view();
-                    }
                     async function getTileData() {
                         tileID = await ArtTileManager.getDefaultArtTileID(scene);
                         tileData = await ArtTileManager.getGalleryTileDataFromID(tileID);
                         tileDoc = await getTileObject(tileID);
                         tileItemPrefixString = "[data-action='itemActions.click.actions.";
-                        tileElements = $(element).find(
+                        tileElements = $(configElement).find(
                             `.tile-list-item:not([data-is-default])`
                         );
-                        // artTileElements =
-                        ourTileElement = $(element).find(
+                        ourTileElement = $(configElement).find(
                             `.tile-list-item[data-is-default]`
                         )[0];
-                    }
-                    async function getTestData() {
-                        con = new SlideshowConfig();
-                        await con._render(true);
-                        element = con.element;
-
-                        defaultImageSrc = await getArtGallerySettings(
-                            "defaultTileImages.paths.artTilePath"
-                        );
-                        await getTileData();
-                    }
-                    async function deleteTestScene() {
-                        let dupedSceneId = scene.id;
-                        await Scene.deleteDocuments([dupedSceneId]);
                     }
 
                     // get tile Item id
                     async function clickActionButton(actionName, element = overflowMenu) {
+                        console.log(
+                            "%cSlideshowConfig.test.js line:102 overflowMenu",
+                            "color: #26bfa5;",
+                            overflowMenu
+                        );
                         const actionQueryString = combine(actionName);
                         await clickButton(element, actionQueryString);
                         // ourButton = element.querySelector(actionQueryString);
@@ -112,90 +115,25 @@ Hooks.on("quenchReady", async (quench) => {
                     async function clickButton(element, selector) {
                         ourButton = element.querySelector(selector);
                         ourButton.click();
-                        await quench.utils.pause(900);
+                        await quench.utils.pause(500);
                     }
-                    async function getArtGallerySettings(nestedPropertyString = "") {
-                        let settings = await HelperFunctions.getSettingValue(
-                            "artGallerySettings",
-                            nestedPropertyString
-                        );
-                        return settings;
-                    }
-                    function getAppFromWindow(type) {
-                        return Object.values(ui.windows).filter(
-                            (w) => w instanceof type
-                        )[0];
-                    }
-                    function getDocIdFromApp(app) {
-                        return app.document.id;
-                    }
-                    async function getFameTileData() {
-                        let frameTileID = tileData.linkedBoundingTile;
-                        let frameTileData = await ArtTileManager.getGalleryTileDataFromID(
-                            frameTileID
-                        );
-                        return frameTileData;
-                    }
-                    async function getTileObject(tileID) {
-                        let tileObject = await ArtTileManager.getTileObjectByID(tileID);
-                        return tileObject;
-                    }
-                    async function getDocData(document, property = "") {
-                        let data = game.version >= 10 ? document : document.data;
-                        if (property) {
-                            return foundry.utils.getProperty(data, property);
-                        } else {
-                            return data;
-                        }
-                    }
-                    async function resizeTile(tileDoc) {
-                        //give it random dimensions bigger than scene
-                        let width = (await getDocData(scene, "width")) + 30;
-                        let height = (await getDocData(scene, "height")) + 30;
-                        let updateData = {
-                            _id: tileDoc.id,
-                            width,
-                            height,
-                        };
-                        await scene.updateEmbeddedDocuments("Tile", [updateData]);
-                    }
-                    async function getDimensions(doc) {
-                        let width = await getDocData(doc, "width");
-                        let height = await getDocData(doc, "height");
-                        return {
-                            width,
-                            height,
-                        };
-                    }
-                    async function getAreasOfDocs(frameDoc, artTileDoc) {
-                        const frameDimensions = await getDimensions(frameDoc);
-                        const frameArea = frameDimensions.width * frameDimensions.height;
 
-                        const artDimensions = await getDimensions(artTileDoc);
-                        const artArea = artDimensions.width * artDimensions.height;
-                        return { artArea, frameArea };
-                    }
-                    /**
-                     * change the tile's image to a test image
-                     */
-                    async function changeTileImage(url = "") {
-                        if (!url)
-                            url =
-                                "/modules/journal-to-canvas-slideshow/demo-images/pd19-20049_1.webp";
-                        await ImageDisplayManager.updateTileObjectTexture(
-                            tileID,
-                            "",
-                            url,
-                            "anyScene"
-                        );
-                    }
+                    // async function getFameTileData() {
+                    //     let frameTileID = tileData.linkedBoundingTile;
+                    //     let frameTileData = await ArtTileManager.getGalleryTileDataFromID(
+                    //         frameTileID
+                    //     );
+                    //     return frameTileData;
+                    // }
+
                     function combine(actionName) {
                         let string = `${tileItemPrefixString}${actionName}']`;
                         return string;
                     }
                     async function toggleOverflowMenu() {
                         await clickActionButton("toggleOverflowMenu", ourTileElement);
-                        overflowMenu = element[0].querySelector(".popover");
+                        //get the popover, which will be a child of the parent app's element
+                        overflowMenu = configElement[0].querySelector(".popover");
                         return overflowMenu;
                     }
                     it("renders the overflow menu when the 'toggle overflow menu'", async function () {
@@ -230,7 +168,7 @@ Hooks.on("quenchReady", async (quench) => {
 
                     it("Updates the tile's dimensions to be within that of its frame tile's dimensions when the 'Fit Tile to Frame' button is clicked", async () => {
                         //resize the tile to be bigger than scene
-                        await resizeTile(tileDoc);
+                        await resizeTile(tileDoc, scene);
 
                         //get the frame data, whether frame tile or scene
                         let { linkedBoundingTile } = tileData;
@@ -263,7 +201,7 @@ Hooks.on("quenchReady", async (quench) => {
                             "default image source is defined"
                         );
                         //change the current tile's image (without url, will default to another image)
-                        await changeTileImage();
+                        await changeTileImage(tileID);
 
                         // get tile's current image
                         const oldImgSrc = await getDocData(tileDoc, "texture.src");
@@ -305,6 +243,7 @@ Hooks.on("quenchReady", async (quench) => {
                         //click  "Delete Gallery Tile Data" Button
                         let { dialogElement, app } = await clickDeleteTileDataButton();
                         assert.isDefined(dialogElement, "Delete dialog is defined");
+                        expect(app.element.text()).to.include("Delete");
                         await app.close();
                     });
                     it("deletes the tile data on 'Delete'", async () => {
@@ -333,13 +272,13 @@ Hooks.on("quenchReady", async (quench) => {
                         let { dialogElement } = await clickDeleteTileDataButton();
                         await clickButton(dialogElement[0], ".dialog-button.cancel");
                         //app should be undefined now after cancel is clicked
-                        let app = getAppFromWindow(Dialog);
+                        let app = getAppFromWindow(Dialog, "Delete URL");
                         assert.isUndefined(app);
                     });
                     async function renderURLSharePopover() {
                         await clickActionButton("shareURLOnTile", ourTileElement);
                         let popoverId = "input-with-error";
-                        let urlShareElement = element[0].querySelector(
+                        let urlShareElement = configElement[0].querySelector(
                             `.popover[data-popover-id='${popoverId}']`
                         );
                         let inputBox = urlShareElement.querySelector("input");
@@ -350,11 +289,8 @@ Hooks.on("quenchReady", async (quench) => {
                             await getTileData();
                         };
                         // Click on "Share URL Image" button
-                        // await clickActionButton("shareURLOnTile", ourTileElement);
                         let { urlShareElement, inputBox } = await renderURLSharePopover();
                         assert.exists(urlShareElement, "the popover should exist");
-                        // - ~ Popover appears with Input Box and receives focus, allowing user to enter url into box
-
                         assert.exists(inputBox, "the input box should exist");
                     });
                     it("on change, notifies the user when an invalid url is provided", async () => {
@@ -405,15 +341,10 @@ Hooks.on("quenchReady", async (quench) => {
                             "A secondary tile element exists"
                         );
                         let oldDefaultID = tileID;
-                        otherTileElement.addEventListener("click", (e) => {
-                            console.log("Clicked");
-                            if (e.ctrlKey) {
-                                console.log("Clicked with ctrl pressed");
-                            }
-                        });
-                        dispatchMouseDown(otherTileElement); //dispatching an event with ctrl pressed?
-                        await quench.utils.pause(1200);
-                        await getTileData();
+
+                        dispatchMouseDown(otherTileElement); //dispatching an event witfh ctrl pressed?
+                        await quench.utils.pause(900);
+                        // await getTileData();
                         // - ~ Tile is set as default tile in current scene
                         let newDefaultId = await ArtTileManager.getDefaultArtTileID(
                             scene
@@ -423,22 +354,62 @@ Hooks.on("quenchReady", async (quench) => {
                         // 	- $ Tile Item now has color change to match.
                         // - $ Tile Indicator Color changes to match default color  as set in settings
                         // - ~ sheet images are sent to this tile when image clicked (maybe place under "Sheet") section
-                        assert.fail();
                     });
-                    // it("fades out other tiles in the scene", () => {
-
-                    //TODO: We'll test this in version 9 only
-                    //     assert.fail();
-                    //     // ~ Opacity  of other tiles in scene is faded
-                    //     //! - ! 🐜 Not working in V10
-                    //     // - $ Button has "Active" styles toggled on
-                    // });
                     it("creates a new tile with the same id as the unlinked tile", () => {
                         assert.fail();
                     });
                 });
-                describe("Slideshow config u actions", () => {
-                    it("creates a new tile with the same id");
+                describe("Slideshow config global actions", async () => {
+                    before(async () => {
+                        await renderConfig();
+                    });
+                    it("renders the JTCS Art Gallery settings Application", async () => {
+                        await clickGlobalButton("showModuleSettings");
+                        let app = getAppFromWindow(JTCSSettingsApplication);
+                        assert.exists(app, "The app has been rendered");
+                        await app.close();
+                    });
+                    it("renders the URL Share Dialog", async () => {
+                        await clickGlobalButton("showURLShareDialog");
+                        let app = getAppFromWindow(Dialog);
+                        assert.exists(app, "The app has been rendered");
+                        expect(app.element.text()).to.include("Share URL");
+                        await app.close();
+                    });
+                    it("fades out the Scene Gallery Config", async () => {
+                        let classList;
+                        let opacityValue;
+                        const recheckClassList = () => {
+                            let el = configElement;
+                            let sel = ".window-content";
+                            classList = returnClassListAsArray(el, sel);
+                            opacityValue = parseFloat(
+                                returnComputedStyles(el, sel, "opacity")
+                            );
+                            console.log(
+                                "%cSlideshowConfig.test.js line:378 opacity",
+                                "color: #26bfa5;",
+                                opacityValue
+                            );
+                        };
+                        //by default shouldn't include fade
+                        recheckClassList();
+                        expect(classList).to.not.include("fade");
+                        expect(opacityValue).to.equal(1.0);
+
+                        //should include fade after fade button is clicked
+                        await clickGlobalButton("toggleSheetOpacity");
+                        recheckClassList();
+                        expect(classList).to.include("fade");
+                        //check opacity
+                        expect(opacityValue).to.equal(0.5);
+
+                        //should not includ fade after fade button is clicked once more
+                        await clickGlobalButton("toggleSheetOpacity");
+                        recheckClassList();
+                        expect(classList).to.not.include("fade");
+                        expect(opacityValue).to.equal(1.0);
+                    });
                 });
             });
         },

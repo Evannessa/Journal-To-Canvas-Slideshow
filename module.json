@@ -75,7 +75,8 @@
         "scripts/data/SlideshowConfigActions.js",
         "scripts/classes/PopoverGenerator.js",
         "scripts/hooks.js",
-        "scripts/data/ModuleManager.js"
+        "scripts/data/ModuleManager.js",
+        "scripts/classes/SheetImage.test.js"
     ],
     "dependencies": [
         {

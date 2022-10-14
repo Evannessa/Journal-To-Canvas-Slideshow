@@ -27,25 +27,7 @@ export class ImageDisplayManager {
             frameTileID: frameTileID,
         };
     }
-    // static async postActivationPrompt(method, document){
-    // 	const type = method === "journalEntry" ? "Art Journal" : "Art Scene"
-    // 	const buttons = {
-    // 		view: {
-    // 			label: `View ${type}`,
-    // 			callback: ()=> {
-    // 				if(document.documentName === "JournalEntry"){
-    // 					document.show()
-    // 				}else if(document.documentName === "Scene"){
-    // 					document.view();
-    // 				}
-    // 			}
 
-    // 		}
-
-    // 	}
-    // 	HelperFunctions.createDialog("View Scene", {buttons: buttons})
-
-    // }
     static async updateTileObjectTexture(
         artTileID,
         frameTileID,
