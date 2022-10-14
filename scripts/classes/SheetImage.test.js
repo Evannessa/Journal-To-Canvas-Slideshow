@@ -49,7 +49,7 @@ export async function sheetImageDisplayTest(context) {
         ];
 
         before(async () => {
-            let sourceScene = await initializeScene();
+            let sourceScene = await initializeScene("Premade Gallery Scene");
             scene = await duplicateTestScene(sourceScene);
             // sheetApp = await game.journal.getName("Art").sheet._render(true);
             sheetApp = await game.journal.getName("Art").sheet.render(true);
@@ -65,7 +65,7 @@ export async function sheetImageDisplayTest(context) {
                 clickableContainerSelector,
                 true
             );
-            ourImageContainer = clickableImageContainers[0];
+            ourImageContainer = clickableImageContainers[1];
         });
 
         after(async () => {
@@ -81,7 +81,6 @@ export async function sheetImageDisplayTest(context) {
                 "artGallerySettings",
                 "dedicatedDisplayData.journal.value"
             );
-            console.log(artSceneID, artJournalID);
             artScene = game.scenes.get(artSceneID);
             artJournal = game.scenes.get(artJournalID);
         }
@@ -104,9 +103,9 @@ export async function sheetImageDisplayTest(context) {
                     windowImageSrc,
                     `${displayMethodAppName} src should equal clicked image src`
                 ).to.equal(src);
+                windowApp.close();
             }
             async function compareTileContent(ourScene) {
-                console.log(artScene);
                 let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(ourScene);
                 let tileDoc = await getTileObject(defaultArtTileID, ourScene.id);
                 let tileSrc = await getDocData(tileDoc, "texture.src");
@@ -117,17 +116,16 @@ export async function sheetImageDisplayTest(context) {
             }
             before(async () => {
                 await getDefaultDisplayIDs();
-                console.log(artScene, artJournal);
-                ourImage = ourImageContainer.querySelector("img"); //getChildElements(ourImageContainer, "img");
-
+                ourImage = ourImageContainer.querySelector("img");
                 src = ourImage.getAttribute("src");
             });
-            beforeEach(async () => {
+            let doBeforeEach = async () => {
                 ourImageContainer
                     .querySelector(`[data-method='${displayMethod}']`)
                     .click();
                 await quench.utils.pause(900);
-            });
+            };
+            beforeEach(doBeforeEach);
             it("Renders a popout window with the apporpriate image", async () => {
                 await compareWindowContent(ImagePopout, "ImagePopout");
                 // let popoutApp = getAppFromWindow(ImagePopout);
@@ -164,29 +162,41 @@ export async function sheetImageDisplayTest(context) {
             });
             it("Updates the default Art Tile in the Art Scene with the appropriate image", async () => {
                 await compareTileContent(artScene);
-
-                // let artSceneDefaultTileID = await ArtTileManager.getDefaultArtTileID(
-                //     artScene
-                // );
-                // let tileDoc = await getTileObject(artSceneDefaultTileID, artScene.id);
-                // let tileSrc = await getDocData(tileDoc, "texture.src");
-                // expect(
-                //     tileSrc,
-                //     "Art Journal image src should equal clicked image src"
-                // ).to.equal(src);
                 displayMethod = "anyScene";
             });
             it("Updates the default Art Tile in the current scene with the appropriate image", async () => {
-                await compareTileContent(game.scenes.viewed);
-                // let defaultTileID = await ArtTileManager.getDefaultArtTileID(
-                //     game.scenes.viewed
+                //so this is after the "any scene" button is clicked
+                //! make sure to get all the art tiles in the scene
+                // let slideshowTiles = await ArtTileManager.getSceneSlideshowTiles(
+                //     "art",
+                //     true
                 // );
-                // let tileDoc = await getTileObject(defaultTileID);
-                // assert.fail();
+                let tiles = scene.tiles.contents;
+                // compare the slideshow tiles to the tiles that are in the display
+                let buttons = Array.from(
+                    ourImageContainer.querySelectorAll(".displayTiles button")
+                );
+                console.log(
+                    "%cSheetImage.test.js line:173 buttons",
+                    "color: #26bfa5;",
+                    buttons
+                );
+                for (let button of buttons) {
+                    button.click();
+                    await quench.utils.pause(200);
+                    // tiles =
+                    //TODO: compare tile textures after click
+                }
+
+                assert.fail();
                 displayMethod = "anyScene";
             });
-            it("Updates the Art Tile associated with the particular sheet image", () => {
-                assert.fail();
+            doBeforeEach = async () => {
+                ourImage.click();
+                await quench.utils.pause(900);
+            };
+            it("Updates the Art Tile associated with the particular sheet image", async () => {
+                await compareTileContent(game.scenes.viewed);
             });
         });
     });

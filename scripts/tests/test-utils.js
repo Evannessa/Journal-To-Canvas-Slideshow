@@ -111,8 +111,8 @@ export class TestUtils {
         await scene.view();
         return scene;
     }
-    static async initializeScene() {
-        let sourceScene = game.scenes.getName("Display");
+    static async initializeScene(name = "Display") {
+        let sourceScene = game.scenes.getName(name);
         await sourceScene.view();
         return sourceScene;
     }
