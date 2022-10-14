@@ -2,7 +2,23 @@ import { SlideshowConfig } from "../SlideshowConfig.js";
 import { HelperFunctions } from "./HelperFunctions.js";
 import { ArtTileManager } from "./ArtTileManager.js";
 import { ImageDisplayManager } from "./ImageDisplayManager.js";
-
+function dispatchKeypress(element) {
+    element.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+}
+function dispatchMouseDown(element) {
+    element.dispatchEvent(
+        new MouseEvent("click", {
+            ctrlKey: true, // if you aren't going to use them.
+            // metaKey: true, // these are here for example's sake.
+        })
+    );
+}
+function dispatchChange(element) {
+    // element.fireEvent("onchange");
+    const e = new Event("change", { bubbles: true });
+    element.dispatchEvent(e);
+    // element.dispatchEvent("onchange");
+}
 Hooks.on("quenchReady", async (quench) => {
     quench.registerBatch(
         "Slideshow Config Test",
@@ -19,31 +35,16 @@ Hooks.on("quenchReady", async (quench) => {
                         tileDoc,
                         tileItemPrefixString,
                         ourTileElement,
+                        tileElements,
                         defaultImageSrc,
                         overflowMenu,
                         ourButton;
 
-                    // let testData = {};
-                    // let con = new SlideshowConfig();
-                    // await con._render(true);
-                    // let element = con.element;
-                    // let scene = game.scenes.viewed;
-                    // let dupedScene;
-                    // const tileID = await ArtTileManager.getDefaultArtTileID(scene);
-                    // const tileData = await ArtTileManager.getGalleryTileDataFromID(
-                    //     tileID
-                    // );
-                    // const tileDoc = await getTileObject(tileID);
-                    // const tileItemPrefixString =
-                    //     "[data-action='itemActions.click.actions.";
-                    // const ourTileElement = $(element).find(
-                    //     `.tile-list-item[data-is-default]`
-                    // )[0];
-                    // const defaultImageSrc = await getArtGallerySettings(
-                    //     "defaultTileImages.paths.artTilePath"
-                    // );
-                    // let overflowMenu;
-                    // let ourButton;
+                    let doBeforeEach = async () => {
+                        await toggleOverflowMenu();
+                        await changeTileImage(defaultImageSrc);
+                        await getTileData();
+                    };
                     before(async () => {
                         let sourceScene = game.scenes.getName("Display");
                         await sourceScene.view();
@@ -51,8 +52,9 @@ Hooks.on("quenchReady", async (quench) => {
                         await getTestData();
                     });
                     beforeEach(async () => {
-                        await toggleOverflowMenu();
-                        await changeTileImage(defaultImageSrc);
+                        await doBeforeEach();
+                        // await toggleOverflowMenu();
+                        // await changeTileImage(defaultImageSrc);
                     });
 
                     after(async () => {
@@ -76,6 +78,10 @@ Hooks.on("quenchReady", async (quench) => {
                         tileData = await ArtTileManager.getGalleryTileDataFromID(tileID);
                         tileDoc = await getTileObject(tileID);
                         tileItemPrefixString = "[data-action='itemActions.click.actions.";
+                        tileElements = $(element).find(
+                            `.tile-list-item:not([data-is-default])`
+                        );
+                        // artTileElements =
                         ourTileElement = $(element).find(
                             `.tile-list-item[data-is-default]`
                         )[0];
@@ -323,7 +329,6 @@ Hooks.on("quenchReady", async (quench) => {
                     });
 
                     it("closes the dialog button on cancel", async () => {
-                        console.log(overflowMenu);
                         // ? - & On cancel, dialog closes, nothing happens
                         let { dialogElement } = await clickDeleteTileDataButton();
                         await clickButton(dialogElement[0], ".dialog-button.cancel");
@@ -331,37 +336,109 @@ Hooks.on("quenchReady", async (quench) => {
                         let app = getAppFromWindow(Dialog);
                         assert.isUndefined(app);
                     });
-                });
-
-                describe("when the item actions not within the overflow menu are clicked", async () => {
+                    async function renderURLSharePopover() {
+                        await clickActionButton("shareURLOnTile", ourTileElement);
+                        let popoverId = "input-with-error";
+                        let urlShareElement = element[0].querySelector(
+                            `.popover[data-popover-id='${popoverId}']`
+                        );
+                        let inputBox = urlShareElement.querySelector("input");
+                        return { urlShareElement, inputBox };
+                    }
                     it("renders the SHARE URL IMAGE popover box", async () => {
-                        assert.fail();
-                        // & "Share URL Image"
+                        doBeforeEach = async () => {
+                            await getTileData();
+                        };
+                        // Click on "Share URL Image" button
+                        // await clickActionButton("shareURLOnTile", ourTileElement);
+                        let { urlShareElement, inputBox } = await renderURLSharePopover();
+                        assert.exists(urlShareElement, "the popover should exist");
                         // - ~ Popover appears with Input Box and receives focus, allowing user to enter url into box
+
+                        assert.exists(inputBox, "the input box should exist");
+                    });
+                    it("on change, notifies the user when an invalid url is provided", async () => {
                         // 	- & On Change
                         // 		- ~ Submits.
-                        // 			- $ Specific tile in scene's image source should now equal submitted image url
                         // 		- ! If not valid URL, notification appears warning user that is invalid
-                        // 	- & Enter Pressed while focused
-                        // 		- ~ Submits
-                        // 			- $ Specific tile in scene's image source should now equal submitted image url
-                        // 		- ! If not valid URL, notification appears warning user that is invalid
+                        let { inputBox } = await renderURLSharePopover();
+                        inputBox.value = "test";
+                        dispatchChange(inputBox);
+                        quench.utils.pause(100);
+                        let notification = ui.notifications.active[0][0];
+                        assert.exists(notification, "The notification exists");
+                        let includesErrorClass = notification.classList.contains("error");
+                        console.log(
+                            notification,
+                            notification.classList,
+                            notification.classList.contains("error")
+                        );
+                        assert.isTrue(
+                            includesErrorClass,
+                            "This is an error notification"
+                        );
                     });
-                    it("fades out other tiles in the scene", () => {
-                        assert.fail();
-                        // ~ Opacity  of other tiles in scene is faded
-                        //! - ! 🐜 Not working in V10
-                        // - $ Button has "Active" styles toggled on
+                    it("on change, if url is valid and not CORS, sets the tile image to equal the url", async () => {
+                        let { inputBox } = await renderURLSharePopover();
+                        let oldImg = await getDocData(tileDoc, "texture.src");
+                        console.log(oldImg);
+                        //enter placeholder png
+                        inputBox.value =
+                            "https://images.pexels.com/photos/934067/pexels-photo-934067.jpeg";
+                        dispatchChange(inputBox);
+                        await quench.utils.pause(900);
+                        await getTileData(); //reseting the tile data again
+
+                        let newImg = await getDocData(tileDoc, "texture.src");
+                        expect(
+                            newImg,
+                            "New Tile Image shouldn't Equal old img"
+                        ).to.not.equal(oldImg);
                     });
-                    it("sets the tile to be the default tile", () => {
-                        assert.fail();
+                    it("sets the tile to be the default tile", async () => {
                         // 	Ctrl + Click (Set Default Action)
+                        let otherTileElement = Array.from(tileElements).filter(
+                            (tileEl) => tileEl.dataset.type === "art"
+                        )[0];
+                        assert.exists(
+                            otherTileElement,
+                            "A secondary tile element exists"
+                        );
+                        let oldDefaultID = tileID;
+                        otherTileElement.addEventListener("click", (e) => {
+                            console.log("Clicked");
+                            if (e.ctrlKey) {
+                                console.log("Clicked with ctrl pressed");
+                            }
+                        });
+                        dispatchMouseDown(otherTileElement); //dispatching an event with ctrl pressed?
+                        await quench.utils.pause(1200);
+                        await getTileData();
                         // - ~ Tile is set as default tile in current scene
+                        let newDefaultId = await ArtTileManager.getDefaultArtTileID(
+                            scene
+                        );
+                        expect(newDefaultId).to.not.equal(oldDefaultID);
                         // - ~ Config app re-renders.
                         // 	- $ Tile Item now has color change to match.
                         // - $ Tile Indicator Color changes to match default color  as set in settings
                         // - ~ sheet images are sent to this tile when image clicked (maybe place under "Sheet") section
+                        assert.fail();
                     });
+                    // it("fades out other tiles in the scene", () => {
+
+                    //TODO: We'll test this in version 9 only
+                    //     assert.fail();
+                    //     // ~ Opacity  of other tiles in scene is faded
+                    //     //! - ! 🐜 Not working in V10
+                    //     // - $ Button has "Active" styles toggled on
+                    // });
+                    it("creates a new tile with the same id as the unlinked tile", () => {
+                        assert.fail();
+                    });
+                });
+                describe("Slideshow config u actions", () => {
+                    it("creates a new tile with the same id");
                 });
             });
         },
