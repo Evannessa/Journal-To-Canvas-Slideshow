@@ -37,8 +37,8 @@ export class TestUtils {
         element.dispatchEvent(e);
         // element.dispatchEvent("onchange");
     }
-    static async getTileObject(tileID) {
-        let tileObject = await ArtTileManager.getTileObjectByID(tileID);
+    static async getTileObject(tileID, sceneID = "") {
+        let tileObject = await ArtTileManager.getTileObjectByID(tileID, sceneID);
         return tileObject;
     }
     static async getDocData(document, property = "") {
@@ -116,7 +116,36 @@ export class TestUtils {
         await sourceScene.view();
         return sourceScene;
     }
+    static async clickActionButton(actionName, element, options = { quench }) {
+        const actionQueryString = combine(actionName);
+        await clickButton(element, actionQueryString, quench);
+    }
 
+    /**
+     * click a button, optionally one with a data-action attribute
+     * @param {HTMLElement} element - the element to click
+     * @param {Selector} selector - the selector of the button we want to find
+     * @param {Object} options - options object
+     * @param {Object} options.quench - the quench thing to pause the button
+     * @param {String} options.actionName - the individual action name
+     * @param {String} options.parentPath - the parent path to find the options' name
+     */
+    static async clickButton(element, selector, options) {
+        const { quench, actionName, parentPath } = options;
+        let ourButton = element.querySelector(selector);
+        ourButton.click();
+        await quench.utils.pause(900);
+    }
+    static getChildElements(element, selector, multiple = false) {
+        if (element.jquery) {
+            element = element[0];
+        }
+        if (multiple) {
+            return Array.from(element.querySelectorAll(selector));
+        } else {
+            return element.querySelector(selector);
+        }
+    }
     static getAppFromWindow(type, searchText = "") {
         let windows = Object.values(ui.windows);
         function predicate(w) {

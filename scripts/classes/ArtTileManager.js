@@ -514,7 +514,9 @@ export class ArtTileManager {
         }
     }
     static async getTileObjectByID(tileID, sceneID = "") {
-        let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
+        let ourScene = game.scenes.viewed;
+        if (sceneID) ourScene = game.scenes.get(sceneID);
+        let tile = await ourScene.getEmbeddedDocument("Tile", tileID);
         if (tileID.includes === "new") {
             // console.log("New tile created");
         } else {

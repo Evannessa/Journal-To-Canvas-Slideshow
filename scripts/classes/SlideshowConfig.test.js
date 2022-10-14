@@ -4,6 +4,7 @@ import { ArtTileManager } from "./ArtTileManager.js";
 import { ImageDisplayManager } from "./ImageDisplayManager.js";
 import { JTCSSettingsApplication } from "./JTCSSettingsApplication.js";
 import { TestUtils } from "../tests/test-utils.js";
+import { sheetImageDisplayTest } from "./SheetImage.test.js";
 
 const slideshowConfigTest = async (context) => {
     const { describe, it, assert, expect, should } = context;
@@ -96,21 +97,13 @@ const slideshowConfigTest = async (context) => {
 
             // get tile Item id
             async function clickActionButton(actionName, element = overflowMenu) {
-                console.log(
-                    "%cSlideshowConfig.test.js line:102 overflowMenu",
-                    "color: #26bfa5;",
-                    overflowMenu
-                );
                 const actionQueryString = combine(actionName);
                 await clickButton(element, actionQueryString);
-                // ourButton = element.querySelector(actionQueryString);
-                // ourButton.click();
-                // await quench.utils.pause(900);
             }
             async function clickButton(element, selector) {
                 ourButton = element.querySelector(selector);
                 ourButton.click();
-                await quench.utils.pause(500);
+                await quench.utils.pause(900);
             }
 
             // async function getFameTileData() {
@@ -280,9 +273,6 @@ const slideshowConfigTest = async (context) => {
                 assert.exists(inputBox, "the input box should exist");
             });
             it("on change, notifies the user when an invalid url is provided", async () => {
-                // 	- & On Change
-                // 		- ~ Submits.
-                // 		- ! If not valid URL, notification appears warning user that is invalid
                 let { inputBox } = await renderURLSharePopover();
                 inputBox.value = "test";
                 dispatchChange(inputBox);
@@ -290,11 +280,7 @@ const slideshowConfigTest = async (context) => {
                 let notification = ui.notifications.active[0][0];
                 assert.exists(notification, "The notification exists");
                 let includesErrorClass = notification.classList.contains("error");
-                console.log(
-                    notification,
-                    notification.classList,
-                    notification.classList.contains("error")
-                );
+
                 assert.isTrue(includesErrorClass, "This is an error notification");
             });
             it("on change, if url is valid and not CORS, sets the tile image to equal the url", async () => {
@@ -396,5 +382,12 @@ Hooks.on("quenchReady", async (quench) => {
             await slideshowConfigTest(context);
         },
         { displayName: "QUENCH: SlideshowConfig Test Suite" }
+    );
+    quench.registerBatch(
+        "Sheet image display test",
+        async (context) => {
+            await sheetImageDisplayTest(context);
+        },
+        { displayName: "QUENCH: Image Display Test Suite" }
     );
 });
