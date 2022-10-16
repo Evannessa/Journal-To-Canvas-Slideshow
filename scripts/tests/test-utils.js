@@ -5,6 +5,36 @@ import { ImageDisplayManager } from "../classes/ImageDisplayManager.js";
 
 export class TestUtils {
     /**
+     * Dispatch a simulated event, for when the simple element.click() won't do
+     * @param {HTMLElement} element - the element we're toggling
+     * @param {*} eventInterface - the interface such as MouseEvent, ChangeEvent, KeyboardEvent
+     * @param {String} eventName - the name of the event, such as "mouseenter", "change", "keydown"
+     * @param {Object} options - object for extra options to pass to the event
+     * @param {Boolean} options.bubbles - whether the event bubbles
+     * @param {Boolean} options.ctrlKey - whether we should consider the ctrl key pressed or not
+     * @example
+     *
+     */
+    static dispatchEvent(
+        element,
+        eventInterface,
+        eventName,
+        options = {
+            bubbles: true,
+            ctrlKey: false,
+        }
+    ) {
+        element.dispatchEvent(new eventInterface(eventName, options));
+    }
+    static dispatchMouseEnter(element) {
+        element.dispatchEvent(
+            new MouseEvent("mouseenter", {
+                bubbles: true,
+            })
+        );
+    }
+
+    /**
      * Simulate keypress
      * @param {*} element
      */
@@ -23,7 +53,7 @@ export class TestUtils {
             new MouseEvent("click", {
                 ctrlKey: true, // if you aren't going to use them.
                 bubbles: true,
-                // metaKey: true, // these are here for example's sake.
+                metaKey: true, // these are here for example's sake.
             })
         );
     }
@@ -81,13 +111,15 @@ export class TestUtils {
      * returns the "Computed Styles" Object or a property within if specified
      * @param {JQuery or HTMLElement} element - the element whose styles we're getting
      * @param {String} selector  - the selector of the element
+     * @param {String} property  - the style property we want to return
      * @returns the Object representing the computed styles, or a property within
      */
     static returnComputedStyles(element, selector, property = "") {
         if (element.jquery) {
             element = element[0];
         }
-        let selectedElement = element.querySelector(selector);
+        let selectedElement = element;
+        if (selector) selectedElement = element.querySelector(selector);
         if (!property) return getComputedStyle(selectedElement);
         else return getComputedStyle(selectedElement).getPropertyValue(property);
     }
@@ -100,6 +132,25 @@ export class TestUtils {
     }
     static getDocIdFromApp(app) {
         return app.document.id;
+    }
+
+    /**
+     * We want to test each of the qualifications for if a frame tile
+     * is properly linked to an art tile here
+     *
+     * @param {Object} frameTile - the frame tile
+     * @param {Object} artTile - the art tile
+     */
+    static async testFitToFrame(frameTileID, artTileID) {
+        const TU = TestUtils;
+
+        let artTileDoc = await TU.getTileObject(artTileID);
+        let frameDoc = await TU.getTileObject(frameTileID);
+        //TODO - test if the art tile fits within the frame (tile or scene)
+        let areas = await TU.getAreasOfDocs(frameDoc, artTileDoc);
+        return areas;
+
+        //TODO - test if the Config UI Updates to show that this art tile now has the frame tile as its child
     }
 
     static async duplicateTestScene(sourceScene) {
@@ -116,6 +167,56 @@ export class TestUtils {
         await sourceScene.view();
         return sourceScene;
     }
+
+    /**
+     * Get the auto-view or auto-activate settings of the dedicatedDisplayData property
+     * @param {String} sceneOrJournal - whether we want to access the scene or the journal sub-object
+     * @param {String} viewOrActivate - whether we want to get the view or activate property
+     */
+    static async getAutoViewOrActivate(
+        sceneOrJournal = "scene",
+        viewOrActivate = "view"
+    ) {
+        const key = `dedicatedDisplayData[${sceneOrJournal}].auto${viewOrActivate}`;
+        const current = await HelperFunctions.getSettingValue(`artGallerySettings`, key);
+        return { key, current };
+    }
+    /**
+     * Toggle the auto-view or auto-activate settings of the dedicatedDisplayData property
+     * @param {String} sceneOrJournal - whether we want to access the scene or the journal sub-object
+     * @param {String} viewOrActivate - whether we want to toggle the view or activate property
+     */
+    static async toggleAutoViewOrActivate(...args) {
+        let { key, current } = await TestUtils.getAutoViewOrActivate(...args); //(sceneOrJournal, viewOrActivate)
+        // const key = `dedicatedDisplayData[${sceneOrJournal}].auto${viewOrActivate}`;
+        // const current = await HelperFunctions.getSettingValue(`artGallerySettings`, key);
+        await HelperFunctions.setSettingValue("artGallerySettings", key, !current);
+    }
+
+    static async clickGlobalButton(configElement, actionName) {
+        configElement[0]
+            .querySelector(`[data-action='globalActions.click.actions.${actionName}']`)
+            .click();
+        await quench.utils.pause(900);
+    }
+
+    /**
+     * @description - renders the Scene Config
+     */
+    static async renderConfig() {
+        let configApp = new SlideshowConfig();
+        await configApp._render(true);
+        let configElement = configApp.element;
+        return { configApp, configElement };
+    }
+
+    static async getDefaultImageSrc(type = "art") {
+        let defaultImageSrc = await TestUtils.getArtGallerySettings(
+            `defaultTileImages.paths.${type}TilePath`
+        );
+        return defaultImageSrc;
+    }
+
     static async clickActionButton(actionName, element, options = { quench }) {
         const actionQueryString = combine(actionName);
         await clickButton(element, actionQueryString, quench);

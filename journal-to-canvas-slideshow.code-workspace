@@ -11,7 +11,8 @@
         "gotoSymbolStack.maxStackPosition": 0,
         "cSpell.words": ["JTCS", "PIXI", "Popouts"],
         "workbench.tree.renderIndentGuides": "always",
-        "todoist.projectId": 2297684184
+        "todoist.projectId": 2297684184,
+        "dimmer.enabled": false
     },
     "extensions": {
         "recommendations": ["riazxrazor.html-to-jsx"]

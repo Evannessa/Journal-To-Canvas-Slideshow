@@ -68,10 +68,12 @@ const slideshowConfigTest = async (context) => {
                 ourTileElement,
                 tileElements,
                 overflowMenu,
-                ourButton;
+                ourButton,
+                originalTileID;
 
             before(async () => {
                 await getTileData();
+                originalTileID = tileID; //store the very first tile
             });
             beforeEach(async () => {
                 await doBeforeEach();
@@ -98,6 +100,9 @@ const slideshowConfigTest = async (context) => {
             // get tile Item id
             async function clickActionButton(actionName, element = overflowMenu) {
                 const actionQueryString = combine(actionName);
+                if (actionName === "shareURLOnTile") {
+                    console.log(actionName, element, actionQueryString);
+                }
                 await clickButton(element, actionQueryString);
             }
             async function clickButton(element, selector) {
@@ -234,16 +239,10 @@ const slideshowConfigTest = async (context) => {
                 await clickButton(dialogElement[0], ".dialog-button.delete");
                 // - ~ Scene Config App updates
                 let sceneTiles = await ArtTileManager.getSceneSlideshowTiles("art", true);
-                let ourTile = sceneTiles.find((tile) => (tile.id = tileID));
-                console.log(sceneTiles, ourTile);
-
-                //since deleting, re-get the tile data
+                let ourOriginalTile = sceneTiles.find((tile) => tile.id === tileID);
+                console.log(sceneTiles, ourOriginalTile);
+                expect(ourOriginalTile).to.not.exist;
                 await getTileData();
-                assert.fail();
-                // - ~ IF FRAME, linked Art Tiles default to "Canvas as Frame"
-
-                //toggle the overflow menu again?
-                // ourTileElement = await toggleOverflowMenu();
             });
 
             it("closes the dialog button on cancel", async () => {
@@ -309,17 +308,12 @@ const slideshowConfigTest = async (context) => {
 
                 dispatchMouseDown(otherTileElement); //dispatching an event witfh ctrl pressed?
                 await quench.utils.pause(900);
-                // await getTileData();
                 // - ~ Tile is set as default tile in current scene
                 let newDefaultId = await ArtTileManager.getDefaultArtTileID(scene);
                 expect(newDefaultId).to.not.equal(oldDefaultID);
-                // - ~ Config app re-renders.
+                //TODO - test border colors and indicator colors
                 // 	- $ Tile Item now has color change to match.
                 // - $ Tile Indicator Color changes to match default color  as set in settings
-                // - ~ sheet images are sent to this tile when image clicked (maybe place under "Sheet") section
-            });
-            it("creates a new tile with the same id as the unlinked tile", () => {
-                assert.fail();
             });
         });
         describe("Slideshow config global actions", async () => {
@@ -374,6 +368,264 @@ const slideshowConfigTest = async (context) => {
         });
     });
 };
+const unlinkedTilesTest = async (context) => {
+    const { describe, it, assert, expect, should } = context;
+    const {
+        testFitToFrame,
+        getDefaultImageSrc,
+        renderConfig,
+        dispatchEvent,
+        getTileObject,
+        getDocData,
+        changeTileImage,
+        getArtGallerySettings,
+        deleteTestScene,
+        duplicateTestScene,
+        initializeScene,
+        returnClassListAsArray,
+        returnComputedStyles,
+    } = TestUtils;
+    const itemActionPrefixString = "[data-action='itemActions.click.actions.";
+    let configApp, configElement, scene, defaultImageSrc, newArtTileBtn, newFrameTileBtn;
+    async function bundleTestData() {
+        let sourceScene = await initializeScene("Empty Tile Scene");
+        scene = await duplicateTestScene(sourceScene);
+        await quench.utils.pause(300);
+
+        defaultImageSrc = await getDefaultImageSrc();
+        ({ configApp, configElement } = await renderConfig());
+
+        newArtTileBtn = configElement.find(
+            ".wrapper.art-tiles .new-tile-list-item button"
+        );
+        newFrameTileBtn = configElement.find(
+            ".wrapper.frame-tiles .new-tile-list-item button"
+        );
+    }
+    //reset all of the references
+    async function getConfigData() {
+        configElement = $(document.documentElement.querySelector("#slideshow-config"));
+        newArtTileBtn = configElement.find(
+            ".wrapper.art-tiles .new-tile-list-item button"
+        );
+        newFrameTileBtn = configElement.find(
+            ".wrapper.frame-tiles .new-tile-list-item button"
+        );
+    }
+    describe("It tests the creation and linking of new tiles", async function () {
+        before(async () => {
+            await bundleTestData();
+        });
+        after(async () => {
+            await deleteTestScene(scene);
+        });
+        // beforeEach(async ()=> {
+        // 	await getConfigData()
+        // })
+        async function getTileListItem(type) {
+            let tileListElement = configElement.find(
+                `.tile-list-item[data-type='${type}']:not(.new-tile-list-item)`
+            )[0];
+            return tileListElement;
+        }
+        async function createNewTileListItem(type) {
+            let btn = type === "art" ? newArtTileBtn : newFrameTileBtn;
+            btn.click();
+            await quench.utils.pause(900);
+            await getConfigData();
+            return await getTileListItem(type);
+            let tileListElement = configElement.find(
+                `.tile-list-item[data-type='${type}']:not(.new-tile-list-item)`
+            )[0];
+            return tileListElement;
+        }
+        function getInlineBadge(tileListElement) {
+            let unlinkedNotificationBadge = tileListElement.querySelector(
+                ".inline-notification[data-variant='warning']"
+            );
+            return unlinkedNotificationBadge;
+        }
+        async function checkInlineBadge(tileListElement, shouldExist = true) {
+            let unlinkedNotificationBadge = getInlineBadge(tileListElement);
+            if (shouldExist) {
+                assert.exists(
+                    unlinkedNotificationBadge,
+                    "The unlinked notification badge should exist"
+                );
+            } else {
+                expect(
+                    unlinkedNotificationBadge,
+                    "The unlinked notification badge should not exist"
+                ).to.not.exist;
+            }
+        }
+        async function clickUnlinkedActionButton(actionName, type) {
+            const fullActionString = `${itemActionPrefixString}${actionName}']`;
+            const tileListItem = await getTileListItem(type);
+            const btn = tileListItem.querySelector(fullActionString);
+            assert.exists(btn);
+            btn.click();
+            await quench.utils.pause(900);
+            await getConfigData();
+            // return await getConfigData();
+        }
+
+        async function createAndCheckNewLinkedTile(type) {
+            let tiles;
+
+            /**
+             * Get the tiles in the scene
+             */
+            function getTiles() {
+                tiles = scene.tiles.contents;
+            }
+
+            getTiles();
+            let length = tiles.length;
+            // expect(tiles, "Scene should have no tiles at first").to.be.empty;
+            const actionName = "createNewGalleryTile";
+            await clickUnlinkedActionButton(actionName, type);
+
+            getTiles();
+            expect(tiles).to.have.length.above(length);
+
+            //STUB - get the tile list item element
+            let tileListElement = await getTileListItem(type);
+            let tileID = tileListElement.dataset.id;
+            let tileDoc = await getTileObject(tileID);
+            let tileDocSrc = await getDocData(tileDoc, "texture.src");
+            let tileDocID = await getDocData(tileDoc, "id");
+
+            //STUB - Test that the Tile ID doesn't contain "unlinked" anymore
+            expect(
+                tileID,
+                "Tile id shouldn't have 'unlinked' anymore"
+            ).to.not.contain.oneOf(["unlinked"]);
+
+            //STUB - Test that the Tile has the Default Frame Tile Image as stored in the settings
+            let defaultSrc = await getDefaultImageSrc(type);
+            expect(tileDocSrc).to.equal(defaultSrc);
+
+            // STUB - test that the Tile List Item no longer has the 'unlinked' badge
+            await checkInlineBadge(tileListElement, false);
+
+            //STUB - Test that the created tile's id and the current tile's id now match
+            expect(tileID).to.equal(tileDocID);
+        }
+
+        function getSelectElementAndOptions(tileListItem) {
+            let frameSelect = tileListItem.querySelector("select");
+            let options = Array.from(frameSelect.querySelectorAll("option"));
+            return {
+                frameSelect,
+                options,
+            };
+        }
+
+        async function clickOptionElement(tileListItem) {
+            let { frameSelect, options } = getSelectElementAndOptions(tileListItem);
+            let frameOption1 = options[1];
+            assert.exists(frameOption1);
+
+            let optionValue = frameOption1.value;
+            frameSelect.value = optionValue;
+            await quench.utils.pause(400);
+        }
+        it("creates a new Scene Gallery Tile Element in the config, when 'new art tile button' is clicked", async function () {
+            let tileListElement = await createNewTileListItem("art");
+            assert.exists(
+                tileListElement,
+                "This new art Gallery Tile List Item element should exist"
+            );
+            await checkInlineBadge(tileListElement);
+
+            // TODO - assert also that the art tile has the Canvas as its frame
+        });
+        it("Creates a new Frame Gallery Tile Element in the config, when the 'new Frame Tile Button' is clicked", async function () {
+            let tileListElement = await createNewTileListItem("frame");
+            assert.exists(
+                tileListElement,
+                "This new FRAME Gallery Tile List Item element should exist"
+            );
+            await checkInlineBadge(tileListElement);
+        });
+
+        it("Creates a new ART tile on the canvas when the 'Button' is pressed", async function () {
+            await createAndCheckNewLinkedTile("art");
+        });
+        it("Creates a new FRAME tile on the canvas when the 'Button' is pressed", async function () {
+            await createAndCheckNewLinkedTile("frame");
+        });
+        it("Checks to see if selecting an Art Tile for the Frame Tile updates the art tile in the config", async function () {
+            // test that the selected Frame Tile updates in the config
+            let frameSelect, options, selectedValue, tileListItem;
+            async function getFrameAndTileListItem() {
+                tileListItem = await getTileListItem("art");
+            }
+            async function getFrameSelectAndOptions() {
+                tileListItem = await getTileListItem("art");
+                frameSelect = getSelectElementAndOptions(tileListItem).frameSelect;
+                options = getSelectElementAndOptions(tileListItem).options;
+                assert.exists(frameSelect);
+                selectedValue = frameSelect.value;
+            }
+            // get the selected option element, and click it, then wait
+            await getFrameSelectAndOptions();
+            let oldValue = selectedValue;
+
+            await clickOptionElement(tileListItem);
+
+            //get the selected option and elements again, and check the select's value
+            await getFrameSelectAndOptions();
+
+            //expect the option element to be a different element now
+            expect(
+                selectedValue,
+                "Selected frame Value should have changed"
+            ).to.not.equal(oldValue);
+
+            // await getConfigData();
+
+            const frameTileID = selectedValue;
+            const artTileID = tileListItem.dataset.id;
+
+            const frameTileListItem = configElement[0].querySelector(
+                `.tile-list-item[data-id='${frameTileID}']`
+            );
+
+            //TODO - uncomment the below code, and test the border color upon hover
+            // dispatchEvent(tileListItem, MouseEvent, "mouseover");
+            // await quench.utils.pause(100);
+
+            // let artBorderColor = returnComputedStyles(tileListItem, "", "border-color");
+            // let frameBorderColor = returnComputedStyles(
+            //     frameTileListItem,
+            //     "",
+            //     "border-color"
+            // );
+
+            // test that the Art Tile fits within the designated Frame Tile
+            const url =
+                "https://images.pexels.com/photos/934067/pexels-photo-934067.jpeg";
+
+            //update the art tile, and see if it fits within the frame tile now
+            await ImageDisplayManager.updateTileObjectTexture(
+                artTileID,
+                frameTileID,
+                url,
+                "anyScene"
+            );
+
+            let { artArea, frameArea } = await testFitToFrame(frameTileID, artTileID);
+            expect(
+                artArea,
+                "The art area should be smaller than the frame area"
+            ).to.be.below(frameArea);
+        });
+    });
+};
+
+const settingsToggleTest = () => {};
 
 Hooks.on("quenchReady", async (quench) => {
     quench.registerBatch(
@@ -389,5 +641,12 @@ Hooks.on("quenchReady", async (quench) => {
             await sheetImageDisplayTest(context);
         },
         { displayName: "QUENCH: Image Display Test Suite" }
+    );
+    quench.registerBatch(
+        "Config Unlinked Test",
+        async (context) => {
+            await unlinkedTilesTest(context);
+        },
+        { displayName: "Unlinked tiles test" }
     );
 });
