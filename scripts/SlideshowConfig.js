@@ -48,6 +48,12 @@ export class SlideshowConfig extends Application {
             let itemActionsObject =
                 slideshowDefaultSettingsData.itemActions.click.actions;
             let filteredActionKeys = [];
+            let v9onlyKeys = [];
+            Object.keys(itemActionsObject).forEach((itemAction) => {
+                if (getProperty(itemActionsObject, itemAction).v9Only === true) {
+                    v9onlyKeys.push(itemAction);
+                }
+            });
             Object.keys(itemActionsObject).forEach((itemAction) => {
                 if (getProperty(itemActionsObject, itemAction).artTileOnly) {
                     filteredActionKeys.push(itemAction);
@@ -55,6 +61,11 @@ export class SlideshowConfig extends Application {
             });
             filteredActionKeys.forEach((itemAction) => {
                 if (type === "frame" && itemAction === action) {
+                    btn.css({ display: "none" });
+                }
+            });
+            v9onlyKeys.forEach((itemAction) => {
+                if (game.version >= 10 && itemAction === action) {
                     btn.css({ display: "none" });
                 }
             });
