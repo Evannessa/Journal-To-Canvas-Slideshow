@@ -88,6 +88,6 @@
     ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
-    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/v10-migration-experimental/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/v10-migration-experimental.zip"
+    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
+    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/master.zip"
 }
