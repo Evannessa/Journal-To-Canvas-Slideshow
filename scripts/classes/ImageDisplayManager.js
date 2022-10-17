@@ -246,7 +246,7 @@ export class ImageDisplayManager {
   				<source src=${url} type="video/webm">
 			</video>
 			</div>
-			`;
+					`;
 
                     update = {
                         _id: displayJournal._id,
