@@ -39,7 +39,9 @@ export class TestUtils {
      * @param {*} element
      */
     static dispatchKeypress(element, keyCode) {
-        element.dispatchEvent(new KeyboardEvent("keydown", { key: keyCode, bubbles: true }));
+        element.dispatchEvent(
+            new KeyboardEvent("keydown", { key: keyCode, bubbles: true })
+        );
     }
 
     /**
@@ -93,11 +95,15 @@ export class TestUtils {
      * change the tile's image to a test image
      */
     static async changeTileImage(tileID, url = "") {
-        if (!url) url = "/modules/journal-to-canvas-slideshow/demo-images/pd19-20049_1.webp";
+        if (!url)
+            url = "/modules/journal-to-canvas-slideshow/demo-images/pd19-20049_1.webp";
         await ImageDisplayManager.updateTileObjectTexture(tileID, "", url, "anyScene");
     }
     static async getArtGallerySettings(nestedPropertyString = "") {
-        let settings = await HelperFunctions.getSettingValue("artGallerySettings", nestedPropertyString);
+        let settings = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            nestedPropertyString
+        );
         return settings;
     }
 
@@ -114,7 +120,6 @@ export class TestUtils {
         }
         let selectedElement = element;
         if (selector) selectedElement = element.querySelector(selector);
-        console.log(selectedElement, getComputedStyle(selectedElement).getPropertyValue("background-image"));
         if (!property) return getComputedStyle(selectedElement);
         else return getComputedStyle(selectedElement).getPropertyValue(property);
     }
@@ -175,7 +180,10 @@ export class TestUtils {
      * @param {String} sceneOrJournal - whether we want to access the scene or the journal sub-object
      * @param {String} viewOrActivate - whether we want to get the view or activate property
      */
-    static async getAutoViewOrActivate(sceneOrJournal = "scene", viewOrActivate = "view") {
+    static async getAutoViewOrActivate(
+        sceneOrJournal = "scene",
+        viewOrActivate = "view"
+    ) {
         const key = `dedicatedDisplayData[${sceneOrJournal}].auto${viewOrActivate}`;
         const current = await HelperFunctions.getSettingValue(`artGallerySettings`, key);
         return { key, current };
@@ -193,7 +201,9 @@ export class TestUtils {
     }
 
     static async clickGlobalButton(configElement, actionName) {
-        configElement[0].querySelector(`[data-action='globalActions.click.actions.${actionName}']`).click();
+        configElement[0]
+            .querySelector(`[data-action='globalActions.click.actions.${actionName}']`)
+            .click();
         await quench.utils.pause(900);
     }
 
@@ -208,8 +218,9 @@ export class TestUtils {
     }
 
     static async getDefaultImageSrc(type = "art") {
-        let defaultImageSrc = await TestUtils.getArtGallerySettings(`defaultTileImages.paths.${type}TilePath`);
-        console.log(defaultImageSrc);
+        let defaultImageSrc = await TestUtils.getArtGallerySettings(
+            `defaultTileImages.paths.${type}TilePath`
+        );
         return defaultImageSrc;
     }
 
@@ -251,7 +262,8 @@ export class TestUtils {
                 if (!searchText) {
                     allTrue = true;
                 } else {
-                    if (w.element && w.element.text().includes(searchText)) allTrue = true;
+                    if (w.element && w.element.text().includes(searchText))
+                        allTrue = true;
                 }
                 return allTrue;
             }
