@@ -121,34 +121,65 @@
                 {{#with dedicatedDisplayData}}
                 <h2>{{this.name}}</h2>
                 <p class="notes">{{{this.hint}}}</p>
-
-                <div class="form-group">
+                <div class="form-group flex-column flow flex-justify-space-evenly">
+					{{#with this.journal}}
+                	<h3>{{this.name}}</h3>
+                	<p class="notes">{{{this.hint}}}</p>
                     <div class="input-span has-floating-label">
                         <label for="artJournal" class="floating-label">Art Journal</label>
                         <select id="artJournal" name="dedicatedDisplayData.journal.value">
                             <option value="">--</option>
-                            {{#with this.journal}}
+                            {{!-- {{#with this.journal}} --}}
                                 {{selectOptions this.artJournalData.options selected=this.value}}
-                            {{/with}}
+                            {{!-- {{/with}} --}}
                         </select>
                     </div>
+					{{/with}}
+					{{> (dynamicPartial "checkbox")
+						propertyString=(getPropertyString @root "dedicatedDisplayData.journal" "autoActivate")
+						variant="visible-tick"
+						key="autoActivate"
+						checked=@root.dedicatedDisplayData.journal.autoActivate
+					}}
+					{{> (dynamicPartial "checkbox")
+						propertyString=(getPropertyString @root "dedicatedDisplayData.journal" "autoView")
+						variant="visible-tick"
+						key="autoView"
+						checked=@root.dedicatedDisplayData.journal.autoView
+					}}
                 </div>
-                <div class="form-group">
+                <div class="form-group flex-column flow flex-justify-space-evenly">
+					{{#with this.scene}}
+                	<h3>{{this.name}}</h3>
+                	<p class="notes">{{{this.hint}}}</p>
                     <div class="input-span has-floating-label">
-                        <label for="artJournal" class="floating-label">Art Scene</label>
+                        <label for="artScene" class="floating-label">Art Scene</label>
                         <select name="dedicatedDisplayData.scene.value">
                             <option value="">--</option>
-                            {{#with this.scene}}
+                            {{!-- {{#with this.scene}} --}}
                                 {{selectOptions this.artSceneData.options selected=this.value}}
-                            {{/with}}
+                            {{!-- {{/with}} --}}
                         </select>
                     </div>
+					{{/with}}
+					{{> (dynamicPartial "checkbox")
+							propertyString=(getPropertyString @root "dedicatedDisplayData.scene" "autoActivate")
+							variant="visible-tick"
+							key="autoActivate"
+							checked=@root.dedicatedDisplayData.scene.autoActivate
+					}}
+					{{> (dynamicPartial "checkbox")
+						propertyString=(getPropertyString @root "dedicatedDisplayData.scene" "autoView")
+						variant="visible-tick"
+						key="autoView"
+						checked=@root.dedicatedDisplayData.scene.autoView
+					}}
                 </div>
-                {{/with}}
+            {{/with}}
             </div>
             <div class="form-group-stacked flow" id="JTCSdefaultImages">
                 {{#with defaultTileImages}}
-                <h2>{{this.name}}</h2>
+                <h3>{{this.name}}</h3>
                 <p class="notes">{{{this.hint}}}</p>
                 {{#each this.paths}}
                    <div class="flex-row file-picker-group has-floating-label">

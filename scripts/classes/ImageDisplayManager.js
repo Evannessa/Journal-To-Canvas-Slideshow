@@ -11,7 +11,9 @@ export class ImageDisplayManager {
             "dedicatedDisplayData.scene.value"
         );
         let ourScene = game.scenes.get(artSceneID);
-        let artTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, { currentSceneID: artSceneID });
+        let artTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("art", true, {
+            currentSceneID: artSceneID,
+        });
         let artTileID = artTiles[0].id;
 
         let frameTiles = await game.JTCS.tileUtils.getSceneSlideshowTiles("frame", true, {
@@ -25,7 +27,14 @@ export class ImageDisplayManager {
             frameTileID: frameTileID,
         };
     }
-    static async updateTileObjectTexture(artTileID, frameTileID, url, method, sceneID = "") {
+
+    static async updateTileObjectTexture(
+        artTileID,
+        frameTileID,
+        url,
+        method,
+        sceneID = ""
+    ) {
         let ourScene = game.scenes.get(sceneID);
         if (!ourScene) ourScene = game.scenes.viewed;
 
@@ -41,102 +50,148 @@ export class ImageDisplayManager {
         const tex = await loadTexture(url);
 
         if (!tex) {
-            ui.notifications.error(`Error loading texture from '${url}'. Access to URL likely blocked by CORS policy.`);
+            ui.notifications.error(
+                `Error loading texture from '${url}'. Access to URL likely blocked by CORS policy.`
+            );
             return;
         }
-        var imageUpdate;
+        let imageUpdate;
 
         if (!frameTile) {
-            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(artTile, tex, url, sceneID);
+            imageUpdate = await ImageDisplayManager.scaleArtTileToScene(
+                artTile,
+                tex,
+                url,
+                sceneID
+            );
         } else {
-            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(artTile, frameTile, tex, url, sceneID);
+            imageUpdate = await ImageDisplayManager.scaleArtTileToFrameTile(
+                artTile,
+                frameTile,
+                tex,
+                url,
+                sceneID
+            );
         }
 
         const updated = await ourScene
             .updateEmbeddedDocuments("Tile", [imageUpdate])
-            .catch((error) => ui.notifications.error(`Default art tile in ${ourScene.name} couldn't be updated`));
+            .catch((error) =>
+                ui.notifications.error(
+                    `Default art tile in ${ourScene.name} couldn't be updated`
+                )
+            );
         if (updated && method === "artScene") {
-            ui.notifications.info(`Default Tile in Art Scene ${ourScene.name}  successfully updated`);
+            const { autoActivate, autoView } = await HelperFunctions.getSettingValue(
+                "artGallerySettings",
+                "dedicatedDisplayData.scene"
+            );
+
+            if (autoActivate) {
+                ourScene.activate();
+            }
+            if (autoView) {
+                ourScene.view();
+            }
+            if (
+                game.user.isGM && //if we're GM
+                ((!autoActivate && !autoView) || (ourScene.active && !ourScene.viewed)) //if the scene is neither set to activate or to view, notify that the image updated.
+                // if the scene is active but not viewed, notify that the image updated
+            ) {
+                ui.notifications.info(
+                    `Default Tile in Art Scene '${ourScene.name}'  successfully updated`
+                );
+            }
         }
     }
 
     static async scaleArtTileToScene(displayTile, tex, url, sceneID = "") {
         let displayScene = game.scenes.get(sceneID);
         if (!displayScene) displayScene = game.scenes.viewed;
-        var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
+
+        let displaySceneWidth =
+            game.version >= 10 ? displayScene.width : displayScene.data.width;
+        let displaySceneHeight =
+            game.version >= 10 ? displayScene.height : displayScene.data.height;
+        let dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
-            displayScene.data.width,
-            displayScene.data.height
+            displaySceneWidth,
+            displaySceneHeight
+            // displayScene.data.width,
+            // displayScene.data.height
         );
         //scale down factor is how big the tile will be in the scene
         //make this scale down factor configurable at some point
-        var scaleDownFactor = 200;
+        let scaleDownFactor = 200;
         dimensionObject.width -= scaleDownFactor;
         dimensionObject.height -= scaleDownFactor;
         //half of the scene's width or height is the center -- we're subtracting by half of the image's width or height to account for the offset because it's measuring from top/left instead of center
         //separate objects depending on the texture's dimensions --
         //create an 'update' object for if the image is wide (width is bigger than height)
-        var wideImageUpdate = {
+        let wideImageUpdate = {
             _id: displayTile.id,
             width: dimensionObject.width,
             height: dimensionObject.height,
             img: url,
             x: scaleDownFactor / 2,
-            y: displayScene.data.height / 2 - dimensionObject.height / 2,
+            y: displaySceneHeight / 2 - dimensionObject.height / 2,
         };
         //create an 'update' object for if the image is tall (height is bigger than width)
-        var tallImageUpdate = {
+        let tallImageUpdate = {
             _id: displayTile.id,
             width: dimensionObject.width,
             height: dimensionObject.height,
             img: url,
             y: scaleDownFactor / 2,
-            x: displayScene.data.width / 2 - dimensionObject.width / 2,
+            x: displaySceneWidth / 2 - dimensionObject.width / 2,
         };
         //https://stackoverflow.com/questions/38675447/how-do-i-get-the-center-of-an-image-in-javascript
         //^used the above StackOverflow post to help me figure that out
         //Determine if the image or video is wide, tall, or same dimensions and update depending on that
-        let testArray = [tallImageUpdate, wideImageUpdate];
 
         if (dimensionObject.height > dimensionObject.width) {
             //if the height is longer than the width, use the tall image object
             return tallImageUpdate;
-            // return await displayScene.updateEmbeddedDocuments("Tile", [tallImageUpdate]);
         } else if (dimensionObject.width > dimensionObject.height) {
             //if the width is longer than the height, use the wide image object
             return wideImageUpdate;
-            // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
         }
 
         //if the image length and width are pretty much the same, just default to the wide image update object
         return wideImageUpdate;
-        // return await displayScene.updateEmbeddedDocuments("Tile", [wideImageUpdate]);
     }
 
-    static async scaleArtTileToFrameTile(displayTile, boundingTile, tex, url) {
-        var dimensionObject = await ImageDisplayManager.calculateAspectRatioFit(
+    static async scaleArtTileToFrameTile(artTile, frameTile, tex, url) {
+        const frameTileWidth =
+            game.version >= 10 ? frameTile.width : frameTile.data.width;
+        const frameTileHeight =
+            game.version >= 10 ? frameTile.height : frameTile.data.height;
+        const frameTileX = game.version >= 10 ? frameTile.x : frameTile.data.x;
+        const frameTileY = game.version >= 10 ? frameTile.y : frameTile.data.y;
+
+        let dimensionObject = ImageDisplayManager.calculateAspectRatioFit(
             tex.width,
             tex.height,
-            boundingTile.data.width,
-            boundingTile.data.height
+            frameTileWidth,
+            frameTileHeight
         );
 
-        var imageUpdate = {
-            _id: displayTile.id,
+        let imageUpdate = {
+            _id: artTile.id,
             width: dimensionObject.width,
             height: dimensionObject.height,
             img: url,
-            y: boundingTile.data.y,
-            x: boundingTile.data.x,
+            y: frameTileY,
+            x: frameTileX,
         };
         //Ensure image is centered to bounding tile (stops images hugging the top left corner of the bounding box).
-        var boundingMiddle = {
-            x: boundingTile.data.x + boundingTile.data.width / 2,
-            y: boundingTile.data.y + boundingTile.data.height / 2,
+        let boundingMiddle = {
+            x: frameTileX + frameTileWidth / 2,
+            y: frameTileY + frameTileHeight / 2,
         };
 
-        var imageMiddle = {
+        let imageMiddle = {
             x: imageUpdate.x + imageUpdate.width / 2,
             y: imageUpdate.y + imageUpdate.height / 2,
         };
@@ -145,10 +200,10 @@ export class ImageDisplayManager {
         imageUpdate.y += boundingMiddle.y - imageMiddle.y;
         return imageUpdate;
     }
-    //  Used snippet from the below stackOverflow answer to help me with proportionally resizing the images
+    /** Used snippet from the below stackOverflow answer to help me with proportionally resizing the images*/
     /*https://stackoverflow.com/questions/3971841/how-to-resize-images-proportionally-keeping-the-aspect-ratio*/
     static calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
-        var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+        let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
         return {
             width: srcWidth * ratio,
             height: srcHeight * ratio,
@@ -156,18 +211,20 @@ export class ImageDisplayManager {
     }
     static async displayImageInWindow(method, url) {
         if (method === "journalEntry") {
-            let dedicatedDisplayData = await game.JTCS.utils.getSettingValue(
+            let dedicatedDisplayData = await HelperFunctions.getSettingValue(
                 "artGallerySettings",
                 "dedicatedDisplayData"
             );
-            let displayJournalID = dedicatedDisplayData.journal.value;
-            let displayJournal = game.journal.get(displayJournalID);
+            const displayJournalID = dedicatedDisplayData.journal.value;
+            const displayJournal = game.journal.get(displayJournalID);
             //if we would like to display in a dedicated journal entry
             if (!displayJournal) {
                 //couldn't find display journal, so return
-                ui.notifications.error(
-                    `No Art Journal entry set! Please set your art journal in the module settings or Art Gallery Config`
-                );
+                if (game.user.isGM) {
+                    ui.notifications.error(
+                        `No Art Journal entry set! Please set your art journal in the module settings or Art Gallery Config`
+                    );
+                }
                 return;
             } else {
                 displayJournal.render(true);
@@ -181,8 +238,9 @@ export class ImageDisplayManager {
             let update;
 
             if (fileType == ".mp4" || fileType == ".webm") {
-                // if the file type is a video, we have to do a bit of a wonky workaround
-                let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
+                if (game.version < 10) {
+                    // if the file type is a video and we're before v10, we have to do a bit of a wonky workaround
+                    let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
 			<video width="100%" height="auto" autoplay loop>
   				<source src=${url} type="video/mp4">
   				<source src=${url} type="video/webm">
@@ -190,22 +248,66 @@ export class ImageDisplayManager {
 			</div>
 			`;
 
-                update = {
-                    _id: displayJournal._id,
-                    content: videoHTML,
-                    img: "",
-                };
-                journalMode = "text";
+                    update = {
+                        _id: displayJournal._id,
+                        content: videoHTML,
+                        img: "",
+                    };
+                    imageMode = "text";
+                } else {
+                    //if we're after v10
+                    update = {
+                        _id: displayJournal.id,
+                        src: url,
+                        video: {
+                            loop: true,
+                            autoplay: true,
+                        },
+                        type: "video",
+                    };
+                }
             } else {
                 //change the background image to be the clicked image in the journal
-                update = {
-                    _id: displayJournal.id,
-                    content: "",
-                    img: url,
-                };
+                if (game.version < 10) {
+                    update = {
+                        _id: displayJournal.id,
+                        content: "",
+                        img: url,
+                    };
+                } else {
+                    update = {
+                        // _id: displayJournal.id,
+                        src: url,
+                        type: "image",
+                    };
+                }
             }
-            const updated = await displayJournal.update(update, {});
-            displayJournal.show(journalMode, true);
+            let updated;
+            if (game.version < 10) {
+                updated = await displayJournal.update(update, {});
+            } else {
+                const firstPage = displayJournal.pages.contents[0];
+                updated = await firstPage?.update({ _id: firstPage.id, ...update });
+            }
+            if (updated === null && game.user.isGM) {
+                ui.notifications.error(
+                    `Could not display image in Art Journal '${displayJournal.name}.'`
+                );
+            }
+            const { autoActivate, autoView } = await HelperFunctions.getSettingValue(
+                "artGallerySettings",
+                "dedicatedDisplayData.journal"
+            );
+
+            if (autoActivate) displayJournal.show(journalMode, true);
+            if (autoView && !displayJournal.sheet.rendered)
+                displayJournal.sheet.render(true);
+
+            if (game.user.isGM && !autoActivate && !autoView) {
+                ui.notifications.info(
+                    `Image in Art Journal '${displayJournal.name}' successfully updated`
+                );
+            }
         } else if (method === "window") {
             //if we would like to display in a new popout window
             let popout = new ImageVideoPopout(url, {
@@ -228,7 +330,7 @@ export class ImageDisplayManager {
         if (!url && imageElement) {
             url = ImageDisplayManager.getImageSource(imageElement);
         } else if (!url && !imageElement) {
-            console.error("No image data passed to this method");
+            console.error("No image data passed to this method", url, imageElement);
         }
         //on click, this method will determine if the image should open in a scene or in a display journal
         switch (method) {
@@ -239,9 +341,13 @@ export class ImageDisplayManager {
                 );
                 let artScene = game.scenes.get(artSceneID);
                 if (artScene) {
-                    let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(artScene);
+                    let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(
+                        artScene
+                    );
                     if (!defaultArtTileID) {
-                        ui.notifications.error("No valid 'Art Tile' found in scene '" + artScene.name + "'");
+                        ui.notifications.error(
+                            "No valid 'Art Tile' found in scene '" + artScene.name + "'"
+                        );
                         return;
                     }
                     let frameTileID = await ArtTileManager.getGalleryTileDataFromID(
@@ -263,29 +369,31 @@ export class ImageDisplayManager {
                 //if the setting is to display it in a scene, proceed as normal
 
                 if (method === "anyScene" && !artTileID) {
-                    artTileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
+                    artTileID = await ArtTileManager.getDefaultArtTileID(
+                        game.scenes.viewed
+                    );
                     if (!artTileID) {
-                        ui.notifications.error("No valid 'Art Tile' found in current scene");
+                        ui.notifications.error(
+                            "No valid 'Art Tile' found in current scene"
+                        );
                         return;
                     }
-                    frameTileID = await ArtTileManager.getGalleryTileDataFromID(artTileID, "linkedBoundingTile");
+                    frameTileID = await ArtTileManager.getGalleryTileDataFromID(
+                        artTileID,
+                        "linkedBoundingTile"
+                    );
                 }
-                await ImageDisplayManager.updateTileObjectTexture(artTileID, frameTileID, url, method);
+                await ImageDisplayManager.updateTileObjectTexture(
+                    artTileID,
+                    frameTileID,
+                    url,
+                    method
+                );
                 break;
             case "journalEntry":
             case "window":
                 await ImageDisplayManager.displayImageInWindow(method, url);
                 break;
-            // case "window":
-            //     await ImageDisplayManager.displayImageInWindow(
-            //         "window",
-            //         ImageDisplayManager.getImageSource(imageElement)
-            //     );
-            //     // if (!url) {
-            //     //     //if not, it happened because of an image click, so find the information of the clicked image
-            //     //     ImageDisplayManager.getImageSource(imageElement, ImageDisplayManager.displayImageInWindow);
-            //     // }
-            //     break;
         }
     }
 
@@ -311,26 +419,20 @@ export class ImageDisplayManager {
             ui.notifications.error("Type not supported");
             url = null;
         }
-
+        if (!url) {
+            ui.notifications.error("url not found");
+        }
         return url;
 
         //load the texture from the source
-    }
-
-    static async determineWhatToClear() {
-        let location = game.settings.get("journal-to-canvas-slideshow", "displayLocation");
-        if (location == "displayScene" || location == "anyScene") {
-            clearDisplayTile();
-        } else if (location == "window") {
-            ImageDisplayManager.clearDisplayWindow();
-        }
     }
 
     static async clearDisplayWindow() {
         if (!findDisplayJournal()) {
             return;
         }
-        let url = "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
+        let url =
+            "/modules/journal-to-canvas-slideshow/artwork/HD_transparent_picture.png";
         let update = {
             _id: displayJournal.id,
             img: url,
@@ -343,48 +445,25 @@ export class ImageDisplayManager {
     static async clearTile(tileID, options = {}) {
         let { ourScene } = options;
         if (!ourScene) ourScene = game.scenes.viewed;
-        let clearImagePath = await game.JTCS.utils.getSettingValue(
-            "artGallerySettings",
-            "defaultTileImages.paths.artTilePath"
+        const isBoundingTile = await ArtTileManager.getGalleryTileDataFromID(
+            tileID,
+            "isBoundingTile"
         );
+
+        let propertyPath = "defaultTileImages.paths.artTilePath";
+        if (isBoundingTile) {
+            propertyPath = "defaultTileImages.paths.frameTilePath";
+        }
+
+        const clearImagePath = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            propertyPath
+        );
+
         var clearTileUpdate = {
             _id: tileID,
             img: clearImagePath,
         };
         await ourScene.updateEmbeddedDocuments("Tile", [clearTileUpdate]);
-    }
-
-    static async checkMeetsDisplayRequirements(source, displayTile, boundingTile) {
-        let doesMeetRequirements = true;
-
-        //get the name of the scene or journal
-        let displayName = game.settings.get("journal-to-canvas-slideshow", "displayName");
-        if (!source) {
-            ui.notifications.warn("Type not supported");
-            doesMeetRequirements = false;
-        }
-        if (game.JTCS.utils.checkSettingEquals("displayLocation", "displayScene")) {
-            if (!displaySceneFound()) {
-                //if there is no display scene, return
-                ui.notifications.error(
-                    `No display scene found. Please make sure you have a scene named ${displayName}`
-                );
-                doesMeetRequirements = false;
-            }
-        }
-        if (!displayTile) {
-            ui.notifications.error("No display tile found -- make sure your scene has a display tile");
-            doesMeetRequirements = false;
-        }
-        if (!boundingTile) {
-            //if the scene isn't the display scene but has a bounding Tile
-            //the scene we're using is the currently viewed scene
-            ui.notifications.error(
-                "No bounding tile present in scene. Please use the display scene if you wish to display without a bounding tile"
-            );
-            doesMeetRequirements = false;
-        }
-
-        return doesMeetRequirements;
     }
 }

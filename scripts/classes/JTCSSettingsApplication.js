@@ -36,6 +36,7 @@ export class JTCSSettingsApplication extends FormApplication {
             id: "JTCSSettingsApplication",
             title: " JTCSSettings Application",
             scrollY: [".form-content"],
+            onsubmit: (event) => {},
         });
     }
 
@@ -57,7 +58,9 @@ export class JTCSSettingsApplication extends FormApplication {
             value: artJournalID,
         };
 
-        const allScenes = mapNameAndId(await ArtTileManager.getAllScenesWithSlideshowData());
+        const allScenes = mapNameAndId(
+            await ArtTileManager.getAllScenesWithSlideshowData()
+        );
         const artSceneID = scene.value;
 
         const artSceneData = {
@@ -82,7 +85,9 @@ export class JTCSSettingsApplication extends FormApplication {
         // let data = game.JTCS.utils.getSettingValue("artGallerySettings");
         this.data = await game.JTCS.utils.getSettingValue("artGallerySettings");
         let data = { ...this.data };
-        let newDisplayData = await this.addArtSceneAndJournalData(data.dedicatedDisplayData);
+        let newDisplayData = await this.addArtSceneAndJournalData(
+            data.dedicatedDisplayData
+        );
         setProperty(data, "dedicatedDisplayData", newDisplayData);
         return data;
     }
@@ -90,7 +95,11 @@ export class JTCSSettingsApplication extends FormApplication {
     activateListeners(html) {
         super.activateListeners(html);
 
-        html.off("click").on("click", "[data-action]", this._handleButtonClick.bind(this));
+        html.off("click").on(
+            "click",
+            "[data-action]",
+            this._handleButtonClick.bind(this)
+        );
         this._handleChange();
     }
 
@@ -119,10 +128,17 @@ export class JTCSSettingsApplication extends FormApplication {
                         propertyString = name;
                         break;
                 }
-                let settingsObject = getProperty(artGalleryDefaultSettings, propertyString);
+                let settingsObject = getProperty(
+                    artGalleryDefaultSettings,
+                    propertyString
+                );
                 if (settingsObject && settingsObject.hasOwnProperty("onChange")) {
                     let ourApp = game.JTCSSettingsApp;
-                    settingsObject.onChange(event, { value: value, app: ourApp, html: ourApp.element });
+                    settingsObject.onChange(event, {
+                        value: value,
+                        app: ourApp,
+                        html: ourApp.element,
+                    });
                 }
             }
         );
@@ -153,7 +169,10 @@ export class JTCSSettingsApplication extends FormApplication {
         let contrastNotification = outerWrapper.find(".inline-notification");
 
         if (action === "checkContrast") {
-            let hasEnoughContrast = HF.checkIfColorsContrastEnough(backgroundColor, accentColor);
+            let hasEnoughContrast = HF.checkIfColorsContrastEnough(
+                backgroundColor,
+                accentColor
+            );
             if (!hasEnoughContrast && contrastNotification.length === 0) {
                 await UIA.renderInlineNotification(event, "outer-wrapper", {
                     message:
@@ -174,7 +193,11 @@ export class JTCSSettingsApplication extends FormApplication {
                     label: "Turn Off Auto-Contrast",
                     icon: "<i class='fas fa-power-off'></i>",
                     callback: async () => {
-                        await HF.setSettingValue("artGallerySettings", false, "colorSchemeData.autoContrast");
+                        await HF.setSettingValue(
+                            "artGallerySettings",
+                            false,
+                            "colorSchemeData.autoContrast"
+                        );
                         this.render(true);
                     },
                 },
@@ -189,11 +212,18 @@ export class JTCSSettingsApplication extends FormApplication {
             };
             await HF.createDialog("Turn Off Auto Contrast", templatePath, data);
         } else if (action === "toggleAutoContrastOn") {
-            await HF.setSettingValue("artGallerySettings", true, "colorSchemeData.autoContrast");
+            await HF.setSettingValue(
+                "artGallerySettings",
+                true,
+                "colorSchemeData.autoContrast"
+            );
             this.render(true);
         } else if (action === "resetColor") {
             let key = accentElement.attr("name");
-            let theme = await HF.getSettingValue("artGallerySettings", "colorSchemeData.theme");
+            let theme = await HF.getSettingValue(
+                "artGallerySettings",
+                "colorSchemeData.theme"
+            );
             // const newScheme = mergeObject(currentSettings, colorThemes[theme]);
             const defaultValue = getProperty(colorThemes[theme], key);
             await HF.setSettingValue("artGallerySettings", defaultValue, key);
@@ -227,10 +257,19 @@ export class JTCSSettingsApplication extends FormApplication {
                     icon: "<i class='fas fa-power-off'></i>",
                     callback: async () => {
                         //store the chosen theme as a setting
-                        await HF.setSettingValue("artGallerySettings", theme, "colorSchemeData.theme");
-                        const currentSettings = await HF.getSettingValue("artGallerySettings");
+                        await HF.setSettingValue(
+                            "artGallerySettings",
+                            theme,
+                            "colorSchemeData.theme"
+                        );
+                        const currentSettings = await HF.getSettingValue(
+                            "artGallerySettings"
+                        );
 
-                        const newScheme = mergeObject(currentSettings, colorThemes[theme]);
+                        const newScheme = mergeObject(
+                            currentSettings,
+                            colorThemes[theme]
+                        );
                         await HF.setSettingValue("artGallerySettings", newScheme);
                         this.render(true);
                     },
@@ -239,7 +278,9 @@ export class JTCSSettingsApplication extends FormApplication {
             const data = {
                 icon: "fas fa-exclamation",
                 heading: `Apply Default ${HF.capitalizeEachWord(theme)} Theme?`,
-                destructiveActionText: `Apply Default ${HF.capitalizeEachWord(theme)} Theme`,
+                destructiveActionText: `Apply Default ${HF.capitalizeEachWord(
+                    theme
+                )} Theme`,
                 explanation: `This will overwrite any custom colors you've picked out`,
                 buttons,
             };
@@ -248,7 +289,10 @@ export class JTCSSettingsApplication extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        const autoContrast = await HF.getSettingValue("artGallerySettings", "colorSchemeData.autoContrast");
+        const autoContrast = await HF.getSettingValue(
+            "artGallerySettings",
+            "colorSchemeData.autoContrast"
+        );
         if (autoContrast) {
             //if auto-contrast is turned on
             const bgColorKey = "colorSchemeData.colors.backgroundColor";
@@ -257,7 +301,10 @@ export class JTCSSettingsApplication extends FormApplication {
                     //for all the colors, convert the colors
                     const bgColor = formData[bgColorKey];
                     const fgColor = formData[key];
-                    const hasEnoughContrast = HF.checkIfColorsContrastEnough(bgColor, fgColor);
+                    const hasEnoughContrast = HF.checkIfColorsContrastEnough(
+                        bgColor,
+                        fgColor
+                    );
                     //only alter the contrast if there isn't enough already
                     if (!hasEnoughContrast) {
                         formData[key] = HF.getColorWithContrast(bgColor, fgColor);

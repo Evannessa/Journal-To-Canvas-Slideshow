@@ -2,6 +2,9 @@
 	{{#if isVideo}}
 		<video autoplay loop playsinline src="{{image}}">
 	{{else}}
-		<div class="lightbox-image" style="background-image: url('{{image}}')" title="{{title}}"></div>
+	<figure class="flexcol">
+		<img src="{{image}}" alt="">
+		<!-- <div class="lightbox-image" style="background-image: url('{{image}}')" title="{{title}}"></div> -->
+	</figure>
 	{{/if}}
 </form>

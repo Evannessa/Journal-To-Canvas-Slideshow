@@ -403,6 +403,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 flex: 1 1 0;
                 > .form-group,
                 > .form-group-stacked {
+                    img.demo-img {
+                        min-width: 200px;
+                        width: 60%;
+                        object-fit: contain;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-block: 1rem;
+                    }
+                    a {
+                        display: inline-block;
+                    }
+                    select {
+                        min-width: 200px;
+                    }
                     fieldset {
                         border: unset;
                     }
@@ -439,7 +453,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
     position: absolute;
     &[data-position="bottom-right"] {
         bottom: 5px;
-        right: 5px;
+        right: 30px;
         flex-direction: row-reverse;
     }
     &[data-position="top-left"] {
@@ -469,6 +483,9 @@ $tile-types: ("frame", "art", "unlinked", "default");
         // background-color: var(--JTCS-accent-color);
         &.active {
             @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
+        }
+        &.JTCS-hidden {
+            @extend .JTCS-hidden;
         }
     }
 }
@@ -525,6 +542,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 border-top-right-radius: 0px;
                 background-color: transparent;
                 width: 100%;
+                p,
+                ul,
+                ol,
+                li {
+                    color: var(--JTCS-text-color-on-bg);
+                }
                 $list: ("art", "frame", "unlinked", "default");
                 @each $var in $list {
                     .#{$var}-color {
@@ -552,7 +575,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     border-bottom-left-radius: 0px;
                     // filter: blur(3px);
                 }
-                &:not(.hidden) {
+                &:not(.JTCS-hidden) {
                     padding: 1rem;
                     min-height: 10em;
                     // max-height
@@ -564,7 +587,10 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 border: 2px solid var(--JTCS-accent-color);
                 color: var(--JTCS-accent-color);
                 &.active {
-                    @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
+                    @include JTCS-accent-fill(
+                        $include-shadow: true,
+                        $is-icon-button: true
+                    );
                 }
 
                 // @include JTCS-accent-fill($include-shadow: true);
@@ -603,7 +629,8 @@ $tile-types: ("frame", "art", "unlinked", "default");
                         .item-wrapper {
                             border-color: var(--data-#{$type}-color);
                             ul {
-                                scrollbar-color: var(--data-#{$type}-color) var(--data-#{$type}-color);
+                                scrollbar-color: var(--data-#{$type}-color)
+                                    var(--data-#{$type}-color);
                                 &::-webkit-scrollbar-track {
                                     background-color: var(--JTCS-background-color-30);
                                 }
@@ -776,7 +803,10 @@ $tile-types: ("frame", "art", "unlinked", "default");
     .clickableImageContainer {
         padding: unset;
         margin: unset;
-        flex: 0 !important;
+        max-width: fit-content;
+        max-height: fit-content;
+        // flex: 0 !important;
+
         .clickableImageControls {
             top: 0%;
             transform: translateY(0%);
@@ -859,7 +889,8 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     border: unset;
                     border-bottom: 1px solid var(--JTCS-accent-color);
                     --border-color: var(--data-unlinked-color);
-                    transition: color 150ms ease-in, background-color 150ms ease-in, border-color 150ms ease-in;
+                    transition: color 150ms ease-in, background-color 150ms ease-in,
+                        border-color 150ms ease-in;
                     .tick-box,
                     .tick-circle {
                         border-color: var(--JTCS-accent-color);

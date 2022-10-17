@@ -17,7 +17,9 @@ export class HelperFunctions {
         if (!delimiter) {
             // if the delimiter is an empty string, split it by capital letters, as if camelCase
             sentenceArray = string.split(/(?=[A-Z])/).map((s) => s.toLowerCase());
-            capitalizedString = sentenceArray.map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ");
+            capitalizedString = sentenceArray
+                .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                .join(" ");
         } else {
             sentenceArray = string.split(delimiter);
 
@@ -29,10 +31,18 @@ export class HelperFunctions {
     }
     static async resetArtGallerySettings() {
         await HelperFunctions.setSettingValue("artGallerySettings", {}, "", false);
-        await HelperFunctions.setSettingValue("artGallerySettings", artGalleryDefaultSettings, "", true);
+        await HelperFunctions.setSettingValue(
+            "artGallerySettings",
+            artGalleryDefaultSettings,
+            "",
+            true
+        );
         // await game.settings.set(MODULE_ID, "artGallerySettings", newSettings);
     }
     static async swapTools(layerName = "background", tool = "select") {
+        if (game.version >= 10) {
+            if ((layerName = "background")) layerName = "tiles";
+        }
         ui.controls.controls.find((c) => c.layer === layerName).activeTool = tool;
 
         let ourLayer = game.canvas.layers.find((l) => l.options.name === layerName);
@@ -54,13 +64,18 @@ export class HelperFunctions {
     static async scaleControlledTiles(scale = 0.5, axis = " ") {
         const ourScene = game.scenes.viewed;
 
-        const sceneTiles = canvas.background.controlled.filter((obj) => obj.document.documentName === "Tile");
+        const layerName = game.version >= 10 ? "tiles" : "background";
+        const sceneTiles = canvas[layerName].controlled.filter(
+            (obj) => obj.document.documentName === "Tile"
+        );
 
         let updateObjects = [];
 
         sceneTiles.forEach((tile) => {
-            let width = duplicate(tile.data.width);
-            let height = duplicate(tile.data.height);
+            let tileWidth = game.version >= 10 ? tile.width : tile.data.width;
+            let tileHeight = game.version >= 10 ? tile.height : tile.data.height;
+            let width = duplicate(tileWidth);
+            let height = duplicate(tileHeight);
             height *= scale;
             width *= scale;
             updateObjects.push({
@@ -79,11 +94,21 @@ export class HelperFunctions {
     static async moveControlledTiles(amount = 10, axis = "x") {
         const ourScene = game.scenes.viewed;
 
-        const tiles =
-            canvas.background.controlled.length === 0 ? canvas.foreground.controlled : canvas.background.controlled;
+        let tiles;
+        if (game.version >= 10) {
+            tiles = canvas.tiles.controlled;
+        } else {
+            tiles =
+                canvas.background.controlled.length === 0
+                    ? canvas.foreground.controlled
+                    : canvas.background.controlled;
+        }
         if (tiles.length) {
             const updates = tiles
-                .filter((tile) => !tile.data.locked)
+                .filter((tile) => {
+                    if (game.version >= 10) return !tile.locked;
+                    else return !tile.data.locked;
+                })
                 .map((tile) => ({
                     _id: tile.id,
                     [axis]: tile[axis] + amount,
@@ -119,9 +144,17 @@ export class HelperFunctions {
      * @param {*} updateData - the value you want to set a property to
      * @param {String} nestedKey - a string of dot-separated values to refer to a nested property
      */
-    static async setSettingValue(settingName, updateData, nestedKey = "", isFormData = false) {
+    static async setSettingValue(
+        settingName,
+        updateData,
+        nestedKey = "",
+        isFormData = false
+    ) {
         if (isFormData) {
-            let currentSettingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
+            let currentSettingData = game.settings.get(
+                HelperFunctions.MODULE_ID,
+                settingName
+            );
             updateData = expandObject(updateData); //get expanded object version of formdata keys, which were strings in dot notation previously
             updateData = mergeObject(currentSettingData, updateData);
             // let updated = await game.settings.set(HelperFunctions.MODULE_ID, settingName, currentSettingData);
@@ -203,10 +236,17 @@ export class HelperFunctions {
         // const text = contrastValue < 0 ? "We should darken color" : "we should lighten color";
         let adjustedColor = HF.hex8To6(accentColor);
 
-        for (let adjustAmount = 0, times = 0; times < 15; adjustAmount += direction * 10, times += 1) {
+        for (
+            let adjustAmount = 0, times = 0;
+            times < 15;
+            adjustAmount += direction * 10, times += 1
+        ) {
             adjustedColor = HF.LightenDarkenColor(accentColor, adjustAmount);
 
-            const hasEnoughContrast = HF.checkIfColorsContrastEnough(backgroundColor, adjustedColor);
+            const hasEnoughContrast = HF.checkIfColorsContrastEnough(
+                backgroundColor,
+                adjustedColor
+            );
             if (hasEnoughContrast) {
                 break;
             }
@@ -276,7 +316,10 @@ export class HelperFunctions {
      */
     static async getColorDataFromSettings(settingPropertyString) {
         const HF = HelperFunctions;
-        let colorData = await HelperFunctions.getSettingValue("artGallerySettings", settingPropertyString);
+        let colorData = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            settingPropertyString
+        );
         let { colors, propertyNames, colorVariations } = colorData;
 
         Object.keys(colors).forEach((colorKey) => {
@@ -296,7 +339,8 @@ export class HelperFunctions {
             // accentColor = accentColor;//HF.getColorWithContrast(backgroundColor, accentColor);
             backgroundColor = HF.hex8To6(backgroundColor);
 
-            const colorNeutral = HF.getContrast(backgroundColor) >= 128 ? "black" : "white";
+            const colorNeutral =
+                HF.getContrast(backgroundColor) >= 128 ? "black" : "white";
             const textColor = HF.getContrast(accentColor) >= 128 ? "black" : "white";
 
             HF.setRootStyleProperty("--JTCS-text-color-on-bg", colorNeutral); //for text on the background color
@@ -329,13 +373,17 @@ export class HelperFunctions {
         if (makeVariations) {
             const direction = HF.lighterOrDarker(value);
             const shouldDarken = direction < 0 ? true : false;
-            const text = direction < 0 ? "We should darken color" : "we should lighten color";
+            const text =
+                direction < 0 ? "We should darken color" : "we should lighten color";
 
             let startNumber = !shouldDarken ? 80 : 0;
             let step = !shouldDarken ? -10 : 10;
 
             for (var number = startNumber; Math.abs(number) < 90; number += step) {
-                const variantPropName = `${propertyName}-${number.toString().padStart(2, "0")}`;
+                const variantPropName = `${propertyName}-${number
+                    .toString()
+                    .padStart(2, "0")}`;
+                // const amount = number;
                 const amount = shouldDarken ? number * -1 : number;
                 const variantValue = HF.LightenDarkenColor(value, amount);
                 html.style.setProperty(variantPropName, variantValue);
@@ -344,18 +392,26 @@ export class HelperFunctions {
                 const htmlStyle = getComputedStyle(html);
                 let inputBG = htmlStyle.getPropertyValue("--JTCS-background-color");
                 let elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color");
-                let borderColor = htmlStyle.getPropertyValue("--JTCS-background-color-70");
-                let shadowColor = htmlStyle.getPropertyValue("--JTCS-background-color-50");
+                let borderColor = htmlStyle.getPropertyValue(
+                    "--JTCS-background-color-70"
+                );
+                let shadowColor = htmlStyle.getPropertyValue(
+                    "--JTCS-background-color-50"
+                );
                 let dangerColor = htmlStyle.getPropertyValue("--color-danger-base");
                 let warningColor = htmlStyle.getPropertyValue("--color-warning-base");
                 let infoColor = htmlStyle.getPropertyValue("--color-info-base");
                 let successColor = htmlStyle.getPropertyValue("--color-success-base");
                 let tileItemColor = "transparent";
                 if (!shouldDarken) {
-                    inputBG = getComputedStyle(html).getPropertyValue("--JTCS-background-color-20");
+                    inputBG = getComputedStyle(html).getPropertyValue(
+                        "--JTCS-background-color-20"
+                    );
                     borderColor = "transparent"; //getComputedStyle(html).getPropertyValue("--JTCS-background-color");
                     shadowColor = "transparent";
-                    elevationBG = htmlStyle.getPropertyValue("--JTCS-background-color-10");
+                    elevationBG = htmlStyle.getPropertyValue(
+                        "--JTCS-background-color-10"
+                    );
                     dangerColor = htmlStyle.getPropertyValue("--color-danger-light");
                     dangerColor = htmlStyle.getPropertyValue("--color-danger-light");
                     infoColor = htmlStyle.getPropertyValue("--color-info-light");
@@ -510,7 +566,11 @@ export class HelperFunctions {
             options
         ).render(true);
     }
-    static async createEventActionObject(name, callback, shouldRenderAppOnAction = false) {
+    static async createEventActionObject(
+        name,
+        callback,
+        shouldRenderAppOnAction = false
+    ) {
         return {
             name: name,
             callback: callback,
@@ -519,7 +579,9 @@ export class HelperFunctions {
     }
 
     static editorsActive(sheet) {
-        let hasActiveEditors = Object.values(sheet.editors).some((editor) => editor.active);
+        let hasActiveEditors = Object.values(sheet.editors).some(
+            (editor) => editor.active
+        );
         return hasActiveEditors;
     }
     ///

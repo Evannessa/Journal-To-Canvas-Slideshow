@@ -45,8 +45,9 @@
     }
 }
 @mixin text-shadow($shadow-color: black) {
-    text-shadow: -1px -1px 0 $shadow-color, 0 -1px 0 $shadow-color, 1px -1px 0 $shadow-color, 1px 0 0 $shadow-color,
-        1px 1px 0 $shadow-color, 0 1px 0 $shadow-color, -1px 1px 0 $shadow-color, -1px 0 0 $shadow-color;
+    text-shadow: -1px -1px 0 $shadow-color, 0 -1px 0 $shadow-color,
+        1px -1px 0 $shadow-color, 1px 0 0 $shadow-color, 1px 1px 0 $shadow-color,
+        0 1px 0 $shadow-color, -1px 1px 0 $shadow-color, -1px 0 0 $shadow-color;
 }
 
 @mixin JTCS-accent-ghost($primary-color: var(--JTCS-accent-color), $border-side: "") {
@@ -71,10 +72,8 @@
     &[data-variant="visible-tick"] {
         input[type="radio"],
         input[type="checkbox"] {
-            @extend .hidden;
-            // &:not(:checked) + label {
-            //     // @include text-shadow($shadow-color: #21212187);
-            // }
+            @extend .JTCS-hidden;
+
             + label {
                 background-color: transparent;
                 color: $primary-color;

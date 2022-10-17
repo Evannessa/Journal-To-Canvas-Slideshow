@@ -14,12 +14,14 @@ function toggleHideAllSiblings(event, currentTarget) {
     if (!event && !currentTarget) return;
     if (!currentTarget) currentTarget = event.currentTarget;
 
-    const siblings = Array.from(currentTarget.parentNode.children).filter((item) => !item.isSameNode(currentTarget));
+    const siblings = Array.from(currentTarget.parentNode.children).filter(
+        (item) => !item.isSameNode(currentTarget)
+    );
 
     if (currentTarget.classList.contains("active")) {
-        siblings.forEach((el) => el.classList.remove("hidden"));
+        siblings.forEach((el) => el.classList.remove("JTCS-hidden"));
     } else {
-        siblings.forEach((el) => el.classList.add("hidden"));
+        siblings.forEach((el) => el.classList.add("JTCS-hidden"));
     }
 }
 
@@ -27,7 +29,9 @@ function fadeSheetOpacity(event, selector = ".window-content") {
     event.preventDefault();
 
     const windowContent = event.currentTarget.closest(selector);
-    const faded = windowContent.classList.contains("fade") || windowContent.classList.contains("fade-all");
+    const faded =
+        windowContent.classList.contains("fade") ||
+        windowContent.classList.contains("fade-all");
 
     if (faded) {
         windowContent.classList.remove("fade");
@@ -43,7 +47,11 @@ function fadeSheetOpacity(event, selector = ".window-content") {
  * @param {String} options.message - the notification message
  * @param {String} options.notificationType - the type of notification, to affect its icon and styling
  */
-async function renderInlineNotification(event, ancestorSelector = "formGroup", options = {}) {
+async function renderInlineNotification(
+    event,
+    ancestorSelector = "formGroup",
+    options = {}
+) {
     let { notificationType, icon } = options;
     if (!icon) {
         if (notificationType) {
@@ -112,28 +120,34 @@ async function fade($element, options = {}) {
  */
 async function handleVisibilityTransitions($element) {
     //if the class already has hidden, set it to fadeIn rather than out
-    const isFadeOut = $element.hasClass("hidden") ? false : true;
+    const isFadeOut = $element.hasClass("JTCS-hidden") ? false : true;
 
     //if we're fading in, remove the hidden class
-    if (!isFadeOut) $($element).removeClass("hidden");
+    if (!isFadeOut) $($element).removeClass("JTCS-hidden");
 
     //set our fade animation options
     let options = {
         isFadeOut,
-        onFadeOut: ($element, event) => $element.addClass("hidden"),
+        onFadeOut: ($element, event) => $element.addClass("JTCS-hidden"),
     };
     //handle the fade animation
-    //? Fade will handle the opacity, while our "hidden" class handles everything else (transform, clip rect, position absolute, etc.)
+    //? Fade will handle the opacity, while our "JTCS-hidden" class handles everything else (transform, clip rect, position absolute, etc.)
     fade($($element), options);
 }
-function toggleActiveStyles(event, el) {
-    if (!el) el = event.currentTarget;
+function toggleActiveStyles(event, el, useInitialTarget = true) {
+    if (!el) {
+        el = event.currentTarget;
+        if (useInitialTarget) {
+            //use target instead of currentTarget
+            el = event.target;
+        }
+    }
+
     if (el.classList.contains("active")) {
         el.classList.remove("active");
     } else {
         el.classList.add("active");
     }
-    // el.classList.toggle("active");
 }
 /**
  * Turn off other elements that have active styles
@@ -143,7 +157,9 @@ function toggleActiveStyles(event, el) {
  */
 function clearOtherActiveStyles(event, el, otherSelector, parentSelector) {
     const parentItem = el.closest(parentSelector);
-    let others = Array.from(parentItem.querySelectorAll(otherSelector)).filter((item) => !item.isSameNode(el));
+    let others = Array.from(parentItem.querySelectorAll(otherSelector)).filter(
+        (item) => !item.isSameNode(el)
+    );
     others = others.filter((other) => other.classList.contains("active"));
 
     others.forEach((other) => toggleActiveStyles(event, other));
@@ -171,7 +187,7 @@ export const universalInterfaceActions = {
             if (fadeIn) {
                 handleVisibilityTransitions($(target));
             } else {
-                $(target).removeClass("hidden");
+                $(target).removeClass("JTCS-hidden");
             }
         }
     },
@@ -180,13 +196,13 @@ export const universalInterfaceActions = {
     fadeSheetOpacity: fadeSheetOpacity,
     toggleHideSelf: (event) => {
         let el = event.currentTarget;
-        el.classList.toggle("hidden");
+        el.classList.toggle("JTCS-hidden");
     },
     toggleHideAncestor: (event, options) => {
         let { ancestorSelector } = options;
         let el = event.currentTarget;
-        el.closest(ancestorSelector).classList.toggle("hidden");
-        // parentItem.classList.toggle("hidden");
+        el.closest(ancestorSelector).classList.toggle("JTCS-hidden");
+        // parentItem.classList.toggle("JTCS-hidden");
     },
     toggleHideAllSiblings,
     scrollOtherElementIntoView: (event, options) => {
@@ -195,7 +211,12 @@ export const universalInterfaceActions = {
         let scrollTargetID = currentTarget.dataset.target;
         let scrollTarget = $parentItem.find(`#${scrollTargetID}`);
         scrollTarget[0].scrollIntoView();
-        clearOtherActiveStyles(event, currentTarget, "[data-action='scrollTo']", "#JTCSsettingsHeader");
+        clearOtherActiveStyles(
+            event,
+            currentTarget,
+            "[data-action='scrollTo']",
+            "#JTCSsettingsHeader"
+        );
         toggleActiveStyles(event, currentTarget);
     },
     renderAnotherApp: async (appName, constructor) => {
@@ -243,7 +264,6 @@ export const universalInterfaceActions = {
         //if one of the validators returns invalid, show a notification
         if (!allValid) {
             await renderInlineNotification(event, "form-group", firstInvalidObject);
-            // showInputNotification(event, options);
         }
         return allValid;
     },

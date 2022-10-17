@@ -46,6 +46,20 @@ export const sheetControls = [
     //     icon: "fas fa-external-link",
     // },
 ];
+export const dedicatedDisplayControls = [
+    {
+        label: "view",
+        callback: (controls) => {},
+    },
+    {
+        label: "showToAll",
+        callback: () => {},
+    },
+    {
+        label: "showToSome",
+        callback: () => {},
+    },
+];
 export const sheetImageActions = {
     sheet: {
         click: {
@@ -55,33 +69,54 @@ export const sheetImageActions = {
                     UIA.toggleActiveStyles(event);
                 },
             },
-            setDefaultTileInScene: {
-                onClick: async (event, options) => {
-                    //TODO:
-                    //? show the tiles
-                },
-            },
+            // setDefaultTileInScene: {
+            //     onClick: async (event, options) => {
+            //         //TODO:
+            //         //? show the tiles
+            //     },
+            // },
             toggleImageControls: {
                 onClick: async (event, options) => {
                     let { app } = options;
                     let journalEntry = app.object;
-                    let currentSetting = await HelperFunctions.getFlagValue(journalEntry, "showControls", "", false);
+                    let currentSetting = await HelperFunctions.getFlagValue(
+                        journalEntry,
+                        "showControls",
+                        "",
+                        false
+                    );
                     //if current setting is false, or doesn't exist, set it to true
                     if (!currentSetting || currentSetting.length === 0) {
-                        await HelperFunctions.setFlagValue(journalEntry, "showControls", true);
+                        await HelperFunctions.setFlagValue(
+                            journalEntry,
+                            "showControls",
+                            true
+                        );
                     } else {
-                        await HelperFunctions.setFlagValue(journalEntry, "showControls", false);
+                        await HelperFunctions.setFlagValue(
+                            journalEntry,
+                            "showControls",
+                            false
+                        );
                     }
 
-                    UIA.toggleHideAllSiblings(event);
                     UIA.toggleActiveStyles(event);
                 },
             },
             changeControlsPosition: {
                 onClick: async (event, options) => {
-                    let positions = ["top-left", "top-right", "bottom-left", "bottom-right"];
+                    let positions = [
+                        "top-left",
+                        "top-right",
+                        "bottom-left",
+                        "bottom-right",
+                    ];
                     await HelperFunctions.getFlagValue(journalEntry, "controlsPosition");
-                    await HelperFunctions.setFlagValue(journalEntry, "controlsPosition", true);
+                    await HelperFunctions.setFlagValue(
+                        journalEntry,
+                        "controlsPosition",
+                        true
+                    );
                 },
             },
             openSlideshowConfig: {
@@ -91,11 +126,15 @@ export const sheetImageActions = {
             },
             openSettingsApp: {
                 onClick: async () => {
-                    await UIA.renderAnotherApp("JTCSSettingsApp", JTCSSettingsApplication);
+                    await UIA.renderAnotherApp(
+                        "JTCSSettingsApp",
+                        JTCSSettingsApplication
+                    );
                 },
             },
             showURLShareDialog: {
-                onClick: async (event, options) => await extraActions.showURLShareDialog(event, options),
+                onClick: async (event, options) =>
+                    await extraActions.showURLShareDialog(event, options),
             },
             toggleInstructions: {
                 onClick: (event, option) => {
@@ -117,7 +156,8 @@ export const sheetImageActions = {
                     // event.stopImmediatePropagation();
 
                     // bundle all the necessary data into an object
-                    let sheetImageData = await SheetImageDataController.wrapSheetImageData(options);
+                    let sheetImageData =
+                        await SheetImageDataController.wrapSheetImageData(options);
 
                     await ImageDisplayManager.determineDisplayMethod(sheetImageData);
                 },
@@ -128,8 +168,13 @@ export const sheetImageActions = {
                 onHover: async (event, options) => {
                     //!get the default tile
                     //get the default art tile in this scene
-                    let tileID = await ArtTileManager.getDefaultArtTileID(game.scenes.viewed);
-                    let isLeave = event.type === "mouseleave" || event.type === "mouseout" ? true : false;
+                    let tileID = await ArtTileManager.getDefaultArtTileID(
+                        game.scenes.viewed
+                    );
+                    let isLeave =
+                        event.type === "mouseleave" || event.type === "mouseout"
+                            ? true
+                            : false;
                     let tile = await ArtTileManager.getTileObjectByID(tileID);
                     if (isLeave) {
                         await game.JTCS.indicatorUtils.hideTileIndicator(tile);
@@ -144,7 +189,8 @@ export const sheetImageActions = {
         hover: {
             showTileIndicator: {
                 onHover: async (event, data = {}) => {
-                    let isLeave = event.type === "mouseout" || event.type === "mouseleave";
+                    let isLeave =
+                        event.type === "mouseout" || event.type === "mouseleave";
                     let tileID = event.currentTarget.dataset.id; //this should grab the value from the radio button itself
                     let tile = await game.JTCS.tileUtils.getTileObjectByID(tileID);
 
@@ -178,11 +224,22 @@ export const sheetImageActions = {
                     }
 
                     let url = ImageDisplayManager.getImageSource(imgElement);
-                    const frameID = await ArtTileManager.getGalleryTileDataFromID(tileID, "linkedBoundingTile");
-                    await ImageDisplayManager.updateTileObjectTexture(tileID, frameID, url, "anyScene");
+                    const frameID = await ArtTileManager.getGalleryTileDataFromID(
+                        tileID,
+                        "linkedBoundingTile"
+                    );
+                    await ImageDisplayManager.updateTileObjectTexture(
+                        tileID,
+                        frameID,
+                        url,
+                        "anyScene"
+                    );
 
                     //once clicked, hide the buttons
-                    UIA.toggleHideAncestor(event, { ...options, ancestorSelector: "#displayTileButtons" });
+                    UIA.toggleHideAncestor(event, {
+                        ...options,
+                        ancestorSelector: "#displayTileButtons",
+                    });
                 },
             },
         },
@@ -193,12 +250,27 @@ export const sheetImageActions = {
                 onClick: async (event, options) => {
                     let { app, html, imgElement } = options;
                     let method = event.currentTarget.dataset.method;
-                    let sheetImageData = await SheetImageDataController.wrapSheetImageData({
-                        ...options,
-                        method: method,
-                        imgElement,
-                    });
+                    let sheetImageData =
+                        await SheetImageDataController.wrapSheetImageData({
+                            ...options,
+                            method: method,
+                            imgElement,
+                        });
+
                     await ImageDisplayManager.determineDisplayMethod(sheetImageData);
+
+                    //TODO: add this functionality in later for prompting the user for what to do next
+                    // if (method === "journalEntry" || method === "artScene") {
+                    //     let property = method === "journalEntry" ? "journal" : "scene";
+                    //     const autoActivate = await HelperFunctions.getSettingValue(
+                    //         "artGallerySettings",
+                    //         `dedicatedDisplayData.${property}.autoActivate`
+                    //     );
+                    //     if (!autoActivate) {
+                    //         UIA.toggleShowAnotherElement(event, options);
+                    //         UIA.toggleActiveStyles(event);
+                    //     }
+                    // }
                 },
             },
             revealTileButtons: {

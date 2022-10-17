@@ -1,5 +1,5 @@
 node_modules/*
-demo-images/*
+demo-images/Videos/*
 node_modules/.package-lock.json
 node_modules/@pixi/constants/index.d.ts
 node_modules/@pixi/constants/LICENSE
@@ -194,4 +194,7 @@ node_modules/url/url.js
 node_modules/url/util.js
 .prettierignore
 .vscode/settings.json
+.vscode/*
 ClickImage/
+debug.log
+journal-to-canvas-slideshow.code-workspace

@@ -252,7 +252,7 @@
   transition: opacity 500ms ease-out;
 }
 
-.hidden, .input-span[data-variant=visible-tick] input[type=radio],
+.JTCS-hidden, #sheet-controls button.JTCS-hidden, .input-span[data-variant=visible-tick] input[type=radio],
 .input-span[data-variant=visible-tick] input[type=checkbox], input:is([type=radio], [type=checkbox]).hidden-input {
   transform: scale(0);
   position: absolute;
@@ -2316,6 +2316,24 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
   padding: 1rem;
 }
+#JTCSSettingsApplication .window-content form .form-content > .form-group img.demo-img,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked img.demo-img {
+  min-width: 200px;
+  width: 60%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  margin-block: 1rem;
+}
+#JTCSSettingsApplication .window-content form .form-content > .form-group a,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked a {
+  display: inline-block;
+}
+#JTCSSettingsApplication .window-content form .form-content > .form-group select,
+#JTCSSettingsApplication .window-content form .form-content > .form-group-stacked select {
+  min-width: 200px;
+}
 #JTCSSettingsApplication .window-content form .form-content > .form-group fieldset,
 #JTCSSettingsApplication .window-content form .form-content > .form-group-stacked fieldset {
   border: unset;
@@ -2346,7 +2364,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 #sheet-controls[data-position=bottom-right] {
   bottom: 5px;
-  right: 5px;
+  right: 30px;
   flex-direction: row-reverse;
 }
 #sheet-controls[data-position=top-left] {
@@ -2388,7 +2406,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #sheet-controls button.active:hover, #sheet-controls button.active:focus {
   transform: scale(1.12);
 }
-
 #slideshow-config {
   width: min(600px, 45vw);
   max-width: min(600px, 55vw);
@@ -2435,6 +2452,12 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: transparent;
   width: 100%;
 }
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content p,
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content ul,
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content ol,
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content li {
+  color: var(--JTCS-text-color-on-bg);
+}
 #slideshow-config .window-content #JTCS-config-instructions .instructions__content .art-color {
   color: var(--data-art-color);
   font-weight: bold;
@@ -2470,7 +2493,7 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border-left: 0.25rem solid var(--JTCS-accent-color);
   border-bottom-left-radius: 0px;
 }
-#slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.hidden) {
+#slideshow-config .window-content #JTCS-config-instructions .instructions__content:not(.JTCS-hidden) {
   padding: 1rem;
   min-height: 10em;
 }
@@ -2722,7 +2745,12 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .sheet.item .clickableImageContainer {
   padding: unset;
   margin: unset;
-  flex: 0 !important;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  max-height: -webkit-fit-content;
+  max-height: -moz-fit-content;
+  max-height: fit-content;
 }
 .sheet.actor .clickableImageContainer .clickableImageControls,
 .sheet.item .clickableImageContainer .clickableImageControls {

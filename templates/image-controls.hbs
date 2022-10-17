@@ -21,10 +21,11 @@
 		</li>
 	  	{{/each}}
 	</ul>
-	<div class="displayTiles | hidden | flex-row flex-wrap | rounded " id="displayTileButtons">
+	<div class="displayTiles | JTCS-hidden | flex-row flex-wrap | rounded " id="displayTileButtons">
         {{#if displayTiles.length}}
         {{#each displayTiles as |tileData|}}
         <button
+			type="button"
             name="{{concat "selectedDisplayTile" @root.imgPath}}"
             data-display-name="{{tileData.tile.displayName}}"
             data-action="tileButton.click.displayImageOnTile"

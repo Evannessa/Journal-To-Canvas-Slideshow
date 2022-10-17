@@ -22,23 +22,49 @@ export class CanvasIndicators {
 
     static async getColors() {
         let colors = {};
-        let settingsColors = await HelperFunctions.getSettingValue("artGallerySettings", "indicatorColorData.colors");
+        let settingsColors = await HelperFunctions.getSettingValue(
+            "artGallerySettings",
+            "indicatorColorData.colors"
+        );
         colors.frameTileColor = settingsColors.frameTileColor || "#ff3300";
         colors.artTileColor = settingsColors.artTileColor || "#2f2190";
         colors.unlinkedTileColor = settingsColors.unlinkedTileColor || "#a2ff00";
         colors.defaultTileColor = settingsColors.defaultTileColor || "#e75eff";
         return colors;
     }
+
+    /**
+     * for v10, create an indicator that better reflects the image
+     * @author TheRipper93 (original author)
+     * @author Eva (added small changes better to fit module)
+     * https://github.com/theripper93/tile-sort/blob/master/scripts/main.js
+     * @returns - the created sprite
+     */
+    static createV10Indicator(tile, fillAlpha, color) {
+        let tileImg = tile.mesh;
+        if (!tileImg || !tileImg.texture.baseTexture) return;
+        let sprite = new PIXI.Sprite.from(tileImg.texture);
+        sprite.isSprite = true;
+        sprite.width = tile.document.width;
+        sprite.height = tile.document.height;
+        sprite.angle = tileImg.angle;
+        sprite.alpha = fillAlpha;
+        sprite.tint = color;
+        sprite.name = "tilesorthighlight";
+        return sprite;
+    }
     static async createTileIndicator(tileDocument, type = "art") {
         if (!tileDocument) {
             ui.notifications.warn("Tile document not supplied.");
             return;
         }
+        //add check for if it's v10
+        const isV10 = game.version >= 10 ? true : false;
         let tileDimensions = {
-            width: tileDocument.data.width,
-            height: tileDocument.data.height,
-            x: tileDocument.data.x,
-            y: tileDocument.data.y,
+            width: isV10 ? tileDocument.width : tileDocument.data.width,
+            height: isV10 ? tileDocument.height : tileDocument.data.height,
+            x: isV10 ? tileDocument.x : tileDocument.data.x,
+            y: isV10 ? tileDocument.y : tileDocument.data.y,
         };
         let tileObject = tileDocument.object;
         if (!tileObject) {
@@ -59,40 +85,45 @@ export class CanvasIndicators {
         switch (type) {
             case "frame":
                 color = colors.frameTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 15;
                 break;
             case "art":
                 color = colors.artTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 5;
                 break;
             case "unlinked":
                 color = colors.unlinkedTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 15;
                 break;
             case "default":
                 color = colors.defaultTileColor;
-                fillAlpha = 0.5;
                 lineWidth = 15;
                 break;
         }
         color = color.substring(1);
         if (color.length === 8) {
-            color = HelperFunctions.hex8To6(color); //.substring(-2);
+            color = HelperFunctions.hex8To6(color);
         }
         color = `0x${color}`;
 
         tileObject.overlayContainer = tileObject.addChild(new PIXI.Container());
 
-        const overlayGraphic = new PIXI.Graphics();
+        let overlayGraphic;
+        let overlaySprite;
+        if (game.version >= 10 && (type === "art" || type === "default")) {
+            overlaySprite = CanvasIndicators.createV10Indicator(
+                tileObject,
+                fillAlpha,
+                color
+            );
+            tileObject.overlayContainer.addChild(overlaySprite);
+        }
+        overlayGraphic = new PIXI.Graphics();
         const whiteColor = 0xffffff;
-
+        fillAlpha = overlaySprite ? 0.25 : 0.5;
         overlayGraphic.beginFill(whiteColor, fillAlpha);
         overlayGraphic.lineStyle(lineWidth, color, 1);
         overlayGraphic.tint = color;
-        // overlayGraphic.tint = colors[`${type}TileColor`];
 
         overlayGraphic.drawRect(0, 0, tileDimensions.width, tileDimensions.height);
         overlayGraphic.endFill();
@@ -126,5 +157,4 @@ export class CanvasIndicators {
             console.error("No overlay container found");
         }
     }
-    static deleteTileIndicator(tileDocument) {}
 }

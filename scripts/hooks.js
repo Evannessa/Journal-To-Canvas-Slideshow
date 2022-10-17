@@ -8,7 +8,12 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
  * @returns object containing registerHooks function
  */
 export const setupHookHandlers = async () => {
-    async function renderSlideshowConfig() {
+    async function renderSlideshowConfig(...args) {
+        if (args[2]?.diff && args[1]?.alpha) {
+            //TODO: ? this was a workaround for v10, keeping Scene Gallery Config from re-rendering on update of tile alpha, but should remove
+            //don't update if the changes include alpha
+            return;
+        }
         if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
             game.JTCSlideshowConfig.render(false);
         }
@@ -29,17 +34,28 @@ export const setupHookHandlers = async () => {
 
     async function updateGalleryTileIndicator(tileDoc) {
         let tileID = tileDoc.id; //this gets the id from the tile's document itself
-        let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
-        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(tileID, sceneGalleryTiles); //this is looking for tiles that are already linked
+        let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles(
+            "",
+            true
+        );
+        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(
+            tileID,
+            sceneGalleryTiles
+        ); //this is looking for tiles that are already linked
 
         await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
     }
 
     async function updateAllGalleryIndicators(scene) {
         let tiles = scene.tiles;
-        let artTileDataArray = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
+        let artTileDataArray = await JTCSModules.ArtTileManager.getSceneSlideshowTiles(
+            "",
+            true
+        );
         tiles.forEach(async (tileDoc) => {
-            let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+            let foundTileData = artTileDataArray.find(
+                (tileData) => tileData.id === tileDoc.id
+            );
             await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
         });
     }
@@ -59,16 +75,6 @@ export const setupHookHandlers = async () => {
             },
             button: true,
         });
-        //push the clear display button regardless of what setting is selected
-        tileControls.tools.push({
-            name: "ClearDisplay",
-            title: "ClearDisplay",
-            icon: "fas fa-times-circle",
-            onClick: () => {
-                determineWhatToClear();
-            },
-            button: true,
-        });
     }
     /**
      * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
@@ -80,7 +86,9 @@ export const setupHookHandlers = async () => {
     function rerenderImageSheet(options) {
         const { origin, currentScene, updateData } = options;
 
-        let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
+        let renderedSheets = Object.values(window.ui.windows).filter(
+            (item) => item.document?.documentName
+        );
         renderedSheets.forEach((sheet) => {
             const docType = sheet.document.documentName.toLowerCase();
 
@@ -97,18 +105,30 @@ export const setupHookHandlers = async () => {
     const hookHandlers = {
         rerenderImageSheet: {
             //when the art gallery tiles update, re-render the sheets
-            hooks: ["updateArtGalleryTiles", "updateDefaultArtTile", "updateJTCSSettings", "canvasReady"],
+            hooks: [
+                "updateArtGalleryTiles",
+                "updateDefaultArtTile",
+                "updateJTCSSettings",
+                "canvasReady",
+            ],
             handlerFunction: rerenderImageSheet,
         },
         renderImageControls: {
-            hooks: ["renderItemSheet", "renderActorSheet", "renderJournalSheet", "update"],
+            hooks: [
+                "renderItemSheet",
+                "renderActorSheet",
+                "renderJournalSheet",
+                "renderJournalPageSheet",
+                "update",
+            ],
             // hooks: ["renderJournalSheet"],
             handlerFunction: renderImageControls,
         },
         renderSlideshowConfig: {
             hooks: [
                 "createTile",
-                "updateTile",
+                // "updateTile",
+                "preUpdateTile",
                 "deleteTile",
                 "canvasReady",
                 "createJournalEntry",

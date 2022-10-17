@@ -1,12 +1,36 @@
 {
+    "id": "journal-to-canvas-slideshow",
     "name": "journal-to-canvas-slideshow",
     "title": "JTCS - Art Gallery",
     "description": "Show art from journal, actor, or item sheets to your players in a variety of ways, now including displaying multiple images simultaneously in tile-based 'Art Gallery'. (Previously named 'Journal-to-Canvas-Slideshow')",
-    "author": "Eva",
+    "authors": [
+        {
+            "name": "Eva",
+            "email": "evanesceexotica@gmail.com",
+            "discord": "Eva#3782"
+        }
+    ],
     "socket": "true",
-    "version": "0.2.1",
-    "minimumCoreVersion": "9",
-    "compatibleCoreVersion": "9",
+    "version": "0.2.4",
+    "minimumCoreVersion": 9,
+    "compatibleCoreVersion": 10,
+    "compatibility": {
+        "minimum": 9,
+        "verified": 10,
+        "maximum": 10
+    },
+    "relationships": [
+        {
+            "required": [
+                {
+                    "id": "colorsettings",
+                    "name": "lib - Color Settings",
+                    "type": "module",
+                    "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/master/module.json"
+                }
+            ]
+        }
+    ],
     "type": "module",
     "packs": [
         {
@@ -51,11 +75,19 @@
         "scripts/data/SlideshowConfigActions.js",
         "scripts/classes/PopoverGenerator.js",
         "scripts/hooks.js",
-        "scripts/data/ModuleManager.js"
+        "scripts/data/ModuleManager.js",
+        "scripts/classes/SheetImage.test.js"
     ],
-    "dependencies": ["lib - ColorSettings"],
+    "dependencies": [
+        {
+            "name": "colorsettings",
+            "id": "colorsettings",
+            "type": "module",
+            "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/2.8.4/module.json"
+        }
+    ],
     "styles": ["styles/styles.css"],
     "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
-    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/master.zip"
+    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/v10-migration-experimental/module.json",
+    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/v10-migration-experimental.zip"
 }
