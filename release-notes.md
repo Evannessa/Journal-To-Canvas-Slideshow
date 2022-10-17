@@ -2,14 +2,21 @@
 
 ## v.0.2.3
 
-**ADDED**
-**Major**
+### Added
+
+#### Major
 
 - Added "auto-view" and "auto-activate" options in settings for "Art Journal" and "Art Scene"
 
-**REMOVED**
+#### Minor
 
-- Due to changes in FoundryV10 making it easier to see indicators, removed the "fadeTileButton" from the Scene Gallery Config
+- Added tests to work with [Quench](https://github.com/Ethaks/FVTT-Quench)
+
+### REMOVED
+
+#### Minor
+
+- Due to changes in FoundryV10 making it easier to see indicators, removed the "fadeTileButton" from the Scene Gallery Config (in v10 version only)
 
 ## v.0.2.2
 
