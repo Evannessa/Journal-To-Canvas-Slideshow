@@ -41,12 +41,7 @@ export async function sheetImageDisplayTest(context) {
         const imageControlsSelector = ".clickableImageControls";
         const sheetControlsSelector = "#sheet-controls";
 
-        let sheetGlobalActionStrings = [
-            "togglelmageControls",
-            "openSlideshowConfig",
-            "openSettingsApp",
-            "fadeJournal",
-        ];
+        let sheetGlobalActionStrings = ["togglelmageControls", "openSlideshowConfig", "openSettingsApp", "fadeJournal"];
 
         /**
          * set the sheet data from the test journal
@@ -56,11 +51,7 @@ export async function sheetImageDisplayTest(context) {
 
             imageControls = getChildElements(sheetElement, imageControlsSelector, true);
 
-            clickableImageContainers = getChildElements(
-                sheetElement,
-                clickableContainerSelector,
-                true
-            );
+            clickableImageContainers = getChildElements(sheetElement, clickableContainerSelector, true);
             ourImageContainer = clickableImageContainers[1];
         }
 
@@ -95,36 +86,31 @@ export async function sheetImageDisplayTest(context) {
             let src;
             let displayMethod = "window";
             const clickImageControlButton = async () => {
-                ourImageContainer
-                    .querySelector(`[data-method='${displayMethod}']`)
-                    .click();
+                ourImageContainer.querySelector(`[data-method='${displayMethod}']`).click();
                 await quench.utils.pause(900);
             };
-            async function compareWindowContent(
-                type,
-                displayMethodAppName,
-                searchText = ""
-            ) {
+            async function compareWindowContent(type, displayMethodAppName, searchText = "") {
                 let windowApp = getAppFromWindow(type, searchText);
                 let windowElement = windowApp.element;
                 assert.exists(windowElement[0]);
-                let windowImageSrc = windowElement[0]
-                    .querySelector("img")
-                    .getAttribute("src");
-                expect(
-                    windowImageSrc,
-                    `${displayMethodAppName} src should equal clicked image src`
-                ).to.equal(src);
+                let windowImageSrc = windowElement[0].querySelector("img")?.getAttribute("src");
+
+                if (game.version < 10 && displayMethodAppName.toLowerCase().includes("journal"))
+                    windowImageSrc = returnComputedStyles(windowElement[0], ".lightbox-image", "background-image");
+                // windowImageSrc = getComputedStyle(
+                //     windowElement[0].querySelector(".lightbox-image")
+                // ).getPropertyValue("background-image");
+                let message = `${displayMethodAppName} src should equal clicked image src`;
+                if (game.version >= 10) expect(windowImageSrc, message).to.equal(src);
+                else expect(windowImageSrc, message).to.have.string(src);
                 windowApp.close();
             }
             async function compareTileContent(ourScene) {
                 let defaultArtTileID = await ArtTileManager.getDefaultArtTileID(ourScene);
                 let tileDoc = await getTileObject(defaultArtTileID, ourScene.id);
-                let tileSrc = await getDocData(tileDoc, "texture.src");
-                expect(
-                    tileSrc,
-                    `${displayMethod} image src should equal clicked image src`
-                ).to.equal(src);
+                let textureProperty = game.version >= 10 ? "texture.src" : "img";
+                let tileSrc = await getDocData(tileDoc, textureProperty);
+                expect(tileSrc, `${displayMethod} image src should equal clicked image src`).to.equal(src);
             }
             before(async () => {
                 await getDefaultDisplayIDs();
@@ -141,11 +127,7 @@ export async function sheetImageDisplayTest(context) {
                 displayMethod = "journalEntry";
             });
             it("Renders the art journal sheet with the appropriate image", async () => {
-                await compareWindowContent(
-                    JournalSheet,
-                    "Art Journal",
-                    "Display Journal"
-                );
+                await compareWindowContent(JournalSheet, "Art Journal", "Display Journal");
                 // //TODO: Ensure the id of this journal entry matches the Art Journal entry
 
                 displayMethod = "artScene";
@@ -157,16 +139,15 @@ export async function sheetImageDisplayTest(context) {
             it("Updates the default Art Tile in the current scene with the appropriate image", async () => {
                 let tiles = scene.tiles.contents;
                 // compare the slideshow tiles to the tiles that are in the display
-                let buttons = Array.from(
-                    ourImageContainer.querySelectorAll(".displayTiles button")
-                );
+                let buttons = Array.from(ourImageContainer.querySelectorAll(".displayTiles button"));
 
                 for (let button of buttons) {
                     button.click();
                     let id = button.dataset.id;
                     await quench.utils.pause(200);
                     let tile = tiles.find((tile) => tile.id === id);
-                    let tileSrc = await getDocData(tile, "texture.src");
+                    let textureProperty = game.version >= 10 ? "texture.src" : "img";
+                    let tileSrc = await getDocData(tile, textureProperty);
                     let imgSrc = ourImage.getAttribute("src");
                     expect(tileSrc, "Tile path should equal image path").to.equal(imgSrc);
                 }

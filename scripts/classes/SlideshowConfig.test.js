@@ -25,16 +25,13 @@ const slideshowConfigTest = async (context) => {
         returnClassListAsArray,
         returnComputedStyles,
         checkAppElementForId,
+        getDefaultImageSrc,
     } = TestUtils;
     describe("Slideshow Config Test Suite", async function () {
         let configApp, configElement, scene, defaultImageSrc;
 
         async function clickGlobalButton(actionName) {
-            configElement[0]
-                .querySelector(
-                    `[data-action='globalActions.click.actions.${actionName}']`
-                )
-                .click();
+            configElement[0].querySelector(`[data-action='globalActions.click.actions.${actionName}']`).click();
             await quench.utils.pause(900);
         }
 
@@ -47,9 +44,7 @@ const slideshowConfigTest = async (context) => {
             configElement = configApp.element;
         }
         async function getTestData() {
-            defaultImageSrc = await getArtGallerySettings(
-                "defaultTileImages.paths.artTilePath"
-            );
+            defaultImageSrc = await getArtGallerySettings("defaultTileImages.paths.artTilePath");
         }
         before(async () => {
             let sourceScene = await initializeScene();
@@ -89,12 +84,8 @@ const slideshowConfigTest = async (context) => {
                 tileData = await ArtTileManager.getGalleryTileDataFromID(tileID);
                 tileDoc = await getTileObject(tileID);
                 tileItemPrefixString = "[data-action='itemActions.click.actions.";
-                tileElements = $(configElement).find(
-                    `.tile-list-item:not([data-is-default])`
-                );
-                ourTileElement = $(configElement).find(
-                    `.tile-list-item[data-is-default]`
-                )[0];
+                tileElements = $(configElement).find(`.tile-list-item:not([data-is-default])`);
+                ourTileElement = $(configElement).find(`.tile-list-item[data-is-default]`)[0];
             }
 
             // get tile Item id
@@ -130,17 +121,9 @@ const slideshowConfigTest = async (context) => {
                 return overflowMenu;
             }
             it("renders the overflow menu when the 'toggle overflow menu'", async function () {
-                assert.notEqual(
-                    ourTileElement,
-                    undefined,
-                    "Our tile element should be defined"
-                );
+                assert.notEqual(ourTileElement, undefined, "Our tile element should be defined");
 
-                assert.notEqual(
-                    overflowMenu,
-                    undefined,
-                    "Our overflow menu element should be defined"
-                );
+                assert.notEqual(overflowMenu, undefined, "Our overflow menu element should be defined");
             });
 
             it("selects the tile when the 'Select Tile' action is clicked", async function () {
@@ -172,10 +155,7 @@ const slideshowConfigTest = async (context) => {
                     frameDoc = game.scenes.viewed;
                 }
                 //get the area of the frame, and that of the art tile while resized (which should be bigger)
-                const { frameArea, artArea: oldArtArea } = await getAreasOfDocs(
-                    frameDoc,
-                    tileDoc
-                );
+                const { frameArea, artArea: oldArtArea } = await getAreasOfDocs(frameDoc, tileDoc);
                 expect(oldArtArea).to.be.above(frameArea);
                 // press the Fit Tile to Frame Button
                 await clickActionButton("fitTileToFrame");
@@ -186,29 +166,30 @@ const slideshowConfigTest = async (context) => {
                 expect(newArtArea).to.be.below(frameArea);
             });
             it("resets the Tile Image back to default when Clear Tile Image button is clicked", async () => {
+                if (!defaultImageSrc) {
+                    defaultImageSrc = await getDefaultImageSrc("art");
+                } else {
+                    console.log(defaultImageSrc);
+                }
                 assert.isDefined(defaultImageSrc, "default image source is defined");
                 //change the current tile's image (without url, will default to another image)
                 await changeTileImage(tileID);
 
                 // get tile's current image
-                const oldImgSrc = await getDocData(tileDoc, "texture.src");
+                let textureProperty = game.version >= 10 ? "texture.src" : "img";
+                const oldImgSrc = await getDocData(tileDoc, textureProperty);
 
                 assert.isDefined(oldImgSrc, "Image source is defined");
                 //check to see if it changed
-                expect(
-                    oldImgSrc,
-                    "Tile's old texture src should NOT equal default image path"
-                ).to.not.equal(defaultImageSrc);
+                expect(oldImgSrc, "Tile's old texture src should NOT equal default image path").to.not.equal(
+                    defaultImageSrc
+                );
 
                 // * & click Clear Tile Image Button
                 await clickActionButton("clearTileImage");
-
-                const newImgSrc = await getDocData(tileDoc, "texture.src");
+                const newImgSrc = await getDocData(tileDoc, textureProperty);
                 // - test Tile Image now matches 'default' image saved
-                expect(
-                    newImgSrc,
-                    "Tile's texture src should equal default image path"
-                ).to.equal(defaultImageSrc);
+                expect(newImgSrc, "Tile's texture src should equal default image path").to.equal(defaultImageSrc);
             });
 
             /**
@@ -256,9 +237,7 @@ const slideshowConfigTest = async (context) => {
             async function renderURLSharePopover() {
                 await clickActionButton("shareURLOnTile", ourTileElement);
                 let popoverId = "input-with-error";
-                let urlShareElement = configElement[0].querySelector(
-                    `.popover[data-popover-id='${popoverId}']`
-                );
+                let urlShareElement = configElement[0].querySelector(`.popover[data-popover-id='${popoverId}']`);
                 let inputBox = urlShareElement.querySelector("input");
                 return { urlShareElement, inputBox };
             }
@@ -284,25 +263,20 @@ const slideshowConfigTest = async (context) => {
             });
             it("on change, if url is valid and not CORS, sets the tile image to equal the url", async () => {
                 let { inputBox } = await renderURLSharePopover();
-                let oldImg = await getDocData(tileDoc, "texture.src");
+                let textureProperty = game.version >= 10 ? "texture.src" : "img";
+                let oldImg = await getDocData(tileDoc, textureProperty);
                 console.log(oldImg);
                 //enter placeholder png
-                inputBox.value =
-                    "https://images.pexels.com/photos/934067/pexels-photo-934067.jpeg";
+                inputBox.value = "https://images.pexels.com/photos/934067/pexels-photo-934067.jpeg";
                 dispatchChange(inputBox);
                 await quench.utils.pause(900);
                 await getTileData(); //reseting the tile data again
-
-                let newImg = await getDocData(tileDoc, "texture.src");
-                expect(newImg, "New Tile Image shouldn't Equal old img").to.not.equal(
-                    oldImg
-                );
+                let newImg = await getDocData(tileDoc, textureProperty);
+                expect(newImg, "New Tile Image shouldn't Equal old img").to.not.equal(oldImg);
             });
             it("sets the tile to be the default tile", async () => {
                 // 	Ctrl + Click (Set Default Action)
-                let otherTileElement = Array.from(tileElements).filter(
-                    (tileEl) => tileEl.dataset.type === "art"
-                )[0];
+                let otherTileElement = Array.from(tileElements).filter((tileEl) => tileEl.dataset.type === "art")[0];
                 assert.exists(otherTileElement, "A secondary tile element exists");
                 let oldDefaultID = tileID;
 
@@ -341,11 +315,7 @@ const slideshowConfigTest = async (context) => {
                     let sel = ".window-content";
                     classList = returnClassListAsArray(el, sel);
                     opacityValue = parseFloat(returnComputedStyles(el, sel, "opacity"));
-                    console.log(
-                        "%cSlideshowConfig.test.js line:378 opacity",
-                        "color: #26bfa5;",
-                        opacityValue
-                    );
+                    console.log("%cSlideshowConfig.test.js line:378 opacity", "color: #26bfa5;", opacityValue);
                 };
                 //by default shouldn't include fade
                 recheckClassList();
@@ -395,22 +365,14 @@ const unlinkedTilesTest = async (context) => {
         defaultImageSrc = await getDefaultImageSrc();
         ({ configApp, configElement } = await renderConfig());
 
-        newArtTileBtn = configElement.find(
-            ".wrapper.art-tiles .new-tile-list-item button"
-        );
-        newFrameTileBtn = configElement.find(
-            ".wrapper.frame-tiles .new-tile-list-item button"
-        );
+        newArtTileBtn = configElement.find(".wrapper.art-tiles .new-tile-list-item button");
+        newFrameTileBtn = configElement.find(".wrapper.frame-tiles .new-tile-list-item button");
     }
     //reset all of the references
     async function getConfigData() {
         configElement = $(document.documentElement.querySelector("#slideshow-config"));
-        newArtTileBtn = configElement.find(
-            ".wrapper.art-tiles .new-tile-list-item button"
-        );
-        newFrameTileBtn = configElement.find(
-            ".wrapper.frame-tiles .new-tile-list-item button"
-        );
+        newArtTileBtn = configElement.find(".wrapper.art-tiles .new-tile-list-item button");
+        newFrameTileBtn = configElement.find(".wrapper.frame-tiles .new-tile-list-item button");
     }
     describe("It tests the creation and linking of new tiles", async function () {
         before(async () => {
@@ -448,15 +410,9 @@ const unlinkedTilesTest = async (context) => {
         async function checkInlineBadge(tileListElement, shouldExist = true) {
             let unlinkedNotificationBadge = getInlineBadge(tileListElement);
             if (shouldExist) {
-                assert.exists(
-                    unlinkedNotificationBadge,
-                    "The unlinked notification badge should exist"
-                );
+                assert.exists(unlinkedNotificationBadge, "The unlinked notification badge should exist");
             } else {
-                expect(
-                    unlinkedNotificationBadge,
-                    "The unlinked notification badge should not exist"
-                ).to.not.exist;
+                expect(unlinkedNotificationBadge, "The unlinked notification badge should not exist").to.not.exist;
             }
         }
         async function clickUnlinkedActionButton(actionName, type) {
@@ -493,18 +449,18 @@ const unlinkedTilesTest = async (context) => {
             let tileListElement = await getTileListItem(type);
             let tileID = tileListElement.dataset.id;
             let tileDoc = await getTileObject(tileID);
-            let tileDocSrc = await getDocData(tileDoc, "texture.src");
-            let tileDocID = await getDocData(tileDoc, "id");
+            let textureProperty = game.version >= 10 ? "texture.src" : "img";
+            let tileDocSrc = await getDocData(tileDoc, textureProperty);
+            let tileDocID = tileDoc.id; //await getDocData(tileDoc, "id");
 
             //STUB - Test that the Tile ID doesn't contain "unlinked" anymore
-            expect(
-                tileID,
-                "Tile id shouldn't have 'unlinked' anymore"
-            ).to.not.contain.oneOf(["unlinked"]);
+            expect(tileID, "Tile id shouldn't have 'unlinked' anymore").to.not.contain.oneOf(["unlinked"]);
 
             //STUB - Test that the Tile has the Default Frame Tile Image as stored in the settings
             let defaultSrc = await getDefaultImageSrc(type);
-            expect(tileDocSrc).to.equal(defaultSrc);
+            expect(tileDocSrc, "The tile should have the same image as the defalt frame tile image").to.equal(
+                defaultSrc
+            );
 
             // STUB - test that the Tile List Item no longer has the 'unlinked' badge
             await checkInlineBadge(tileListElement, false);
@@ -533,20 +489,14 @@ const unlinkedTilesTest = async (context) => {
         }
         it("creates a new Scene Gallery Tile Element in the config, when 'new art tile button' is clicked", async function () {
             let tileListElement = await createNewTileListItem("art");
-            assert.exists(
-                tileListElement,
-                "This new art Gallery Tile List Item element should exist"
-            );
+            assert.exists(tileListElement, "This new art Gallery Tile List Item element should exist");
             await checkInlineBadge(tileListElement);
 
             // TODO - assert also that the art tile has the Canvas as its frame
         });
         it("Creates a new Frame Gallery Tile Element in the config, when the 'new Frame Tile Button' is clicked", async function () {
             let tileListElement = await createNewTileListItem("frame");
-            assert.exists(
-                tileListElement,
-                "This new FRAME Gallery Tile List Item element should exist"
-            );
+            assert.exists(tileListElement, "This new FRAME Gallery Tile List Item element should exist");
             await checkInlineBadge(tileListElement);
         });
 
@@ -579,19 +529,14 @@ const unlinkedTilesTest = async (context) => {
             await getFrameSelectAndOptions();
 
             //expect the option element to be a different element now
-            expect(
-                selectedValue,
-                "Selected frame Value should have changed"
-            ).to.not.equal(oldValue);
+            expect(selectedValue, "Selected frame Value should have changed").to.not.equal(oldValue);
 
             // await getConfigData();
 
             const frameTileID = selectedValue;
             const artTileID = tileListItem.dataset.id;
 
-            const frameTileListItem = configElement[0].querySelector(
-                `.tile-list-item[data-id='${frameTileID}']`
-            );
+            const frameTileListItem = configElement[0].querySelector(`.tile-list-item[data-id='${frameTileID}']`);
 
             //TODO - uncomment the below code, and test the border color upon hover
             // dispatchEvent(tileListItem, MouseEvent, "mouseover");
@@ -605,22 +550,13 @@ const unlinkedTilesTest = async (context) => {
             // );
 
             // test that the Art Tile fits within the designated Frame Tile
-            const url =
-                "https://images.pexels.com/photos/934067/pexels-photo-934067.jpeg";
+            const url = "https://images.pexels.com/photos/934067/pexels-photo-934067.jpeg";
 
             //update the art tile, and see if it fits within the frame tile now
-            await ImageDisplayManager.updateTileObjectTexture(
-                artTileID,
-                frameTileID,
-                url,
-                "anyScene"
-            );
+            await ImageDisplayManager.updateTileObjectTexture(artTileID, frameTileID, url, "anyScene");
 
             let { artArea, frameArea } = await testFitToFrame(frameTileID, artTileID);
-            expect(
-                artArea,
-                "The art area should be smaller than the frame area"
-            ).to.be.below(frameArea);
+            expect(artArea, "The art area should be smaller than the frame area").to.be.below(frameArea);
         });
     });
 };
@@ -647,6 +583,6 @@ Hooks.on("quenchReady", async (quench) => {
         async (context) => {
             await unlinkedTilesTest(context);
         },
-        { displayName: "Unlinked tiles test" }
+        { displayName: "QUENCH: Unlinked tiles test" }
     );
 });

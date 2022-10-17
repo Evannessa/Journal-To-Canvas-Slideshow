@@ -80,10 +80,10 @@
     ],
     "dependencies": [
         {
+            "name": "colorsettings",
             "id": "colorsettings",
-            "name": "lib - Color Settings",
             "type": "module",
-            "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/master/module.json"
+            "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/2.8.4/module.json"
         }
     ],
     "styles": ["styles/styles.css"],
