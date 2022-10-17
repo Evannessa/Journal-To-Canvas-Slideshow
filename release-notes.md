@@ -1,9 +1,15 @@
+# Release Notes
+
 ## v.0.2.3
 
 **ADDED**
 **Major**
 
 - Added "auto-view" and "auto-activate" options in settings for "Art Journal" and "Art Scene"
+
+**REMOVED**
+
+- Due to changes in FoundryV10 making it easier to see indicators, removed the "fadeTileButton" from the Scene Gallery Config
 
 ## v.0.2.2
 
