@@ -1,93 +1,78 @@
 {
-    "id": "journal-to-canvas-slideshow",
-    "name": "journal-to-canvas-slideshow",
-    "title": "JTCS - Art Gallery",
-    "description": "Show art from journal, actor, or item sheets to your players in a variety of ways, now including displaying multiple images simultaneously in tile-based 'Art Gallery'. (Previously named 'Journal-to-Canvas-Slideshow')",
-    "authors": [
-        {
-            "name": "Eva",
-            "email": "evanesceexotica@gmail.com",
-            "discord": "Eva#3782"
-        }
-    ],
-    "socket": "true",
-    "version": "0.2.4",
-    "minimumCoreVersion": 9,
-    "compatibleCoreVersion": 10,
-    "compatibility": {
-        "minimum": 9,
-        "verified": 10,
-        "maximum": 10
+  "id": "journal-to-canvas-slideshow",
+  "title": "JTCS - Art Gallery",
+  "description": "Show art from journal, actor, or item sheets to your players in a variety of ways, now including displaying multiple images simultaneously in tile-based 'Art Gallery'. (Previously named 'Journal-to-Canvas-Slideshow')",
+  "authors": [
+    {
+      "name": "Eva",
+      "email": "evanesceexotica@gmail.com",
+      "discord": "Eva#3782",
+      "flags": {}
+    }
+  ],
+  "socket": true,
+  "version": "0.2.4",
+  "compatibility": {
+    "minimum": "9",
+    "verified": "10",
+    "maximum": "10"
+  },
+  "relationships": [
+    null
+  ],
+  "packs": [
+    {
+      "name": "jtcs-premade-scenes",
+      "label": "JTCS Premade Display Scenes",
+      "path": "packs/jtcs-premade-display-scenes.db",
+      "type": "Scene",
+      "private": false,
+      "flags": {}
     },
-    "relationships": [
-        {
-            "required": [
-                {
-                    "id": "colorsettings",
-                    "name": "lib - Color Settings",
-                    "type": "module",
-                    "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/master/module.json"
-                }
-            ]
-        }
-    ],
-    "type": "module",
-    "packs": [
-        {
-            "name": "jtcs-premade-scenes",
-            "label": "JTCS Premade Display Scenes",
-            "path": "./packs/jtcs-premade-display-scenes.db",
-            "type": "Scene",
-            "entity": "Scene"
-        },
-        {
-            "name": "jtcs-premade-journals",
-            "label": "JTCS Premade Journal Entries",
-            "path": "./packs/jtcs-premade-journal-entries.db",
-            "type": "JournalEntry",
-            "entity": "JournalEntry"
-        },
-        {
-            "name": "jtcs-utility-macros",
-            "label": "JTCS Utility Macros",
-            "path": "./packs/jtcs-utility-macros.db",
-            "type": "Macro",
-            "entity": "Macro"
-        }
-    ],
-    "esmodules": [
-        "scripts/shim.js",
-        "scripts/ClickImageInJournal.js",
-        "scripts/classes/MultiMediaPopout.js",
-        "scripts/classes/SlideshowConfig.test.js",
-        "scripts/SlideshowConfig.js",
-        "scripts/init.js",
-        "scripts/DragDropIntoJournal.js",
-        "scripts/classes/ArtTileManager.js",
-        "scripts/classes/CanvasIndicators.js",
-        "scripts/debug-mode.js",
-        "scripts/SheetImageApp.js",
-        "scripts/classes/HelperFunctions.js",
-        "scripts/classes/ImageDisplayManager.js",
-        "scripts/classes/JTCSSettingsApplication.js",
-        "scripts/data/JTCS-Actions.js",
-        "scripts/data/templates.js",
-        "scripts/data/SlideshowConfigActions.js",
-        "scripts/classes/PopoverGenerator.js",
-        "scripts/hooks.js",
-        "scripts/data/ModuleManager.js",
-        "scripts/classes/SheetImage.test.js"
-    ],
-    "dependencies": [
-        {
-            "name": "colorsettings",
-            "id": "colorsettings",
-            "type": "module",
-            "manifest": "https://raw.githubusercontent.com/ardittristan/VTTColorSettings/2.8.4/module.json"
-        }
-    ],
-    "styles": ["styles/styles.css"],
-    "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
-    "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
-    "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/master.zip"
+    {
+      "name": "jtcs-premade-journals",
+      "label": "JTCS Premade Journal Entries",
+      "path": "packs/jtcs-premade-journal-entries.db",
+      "type": "JournalEntry",
+      "private": false,
+      "flags": {}
+    },
+    {
+      "name": "jtcs-utility-macros",
+      "label": "JTCS Utility Macros",
+      "path": "packs/jtcs-utility-macros.db",
+      "type": "Macro",
+      "private": false,
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "scripts/shim.js",
+    "scripts/ClickImageInJournal.js",
+    "scripts/classes/MultiMediaPopout.js",
+    "scripts/classes/SlideshowConfig.test.js",
+    "scripts/SlideshowConfig.js",
+    "scripts/init.js",
+    "scripts/DragDropIntoJournal.js",
+    "scripts/classes/ArtTileManager.js",
+    "scripts/classes/CanvasIndicators.js",
+    "scripts/debug-mode.js",
+    "scripts/SheetImageApp.js",
+    "scripts/classes/HelperFunctions.js",
+    "scripts/classes/ImageDisplayManager.js",
+    "scripts/classes/JTCSSettingsApplication.js",
+    "scripts/data/JTCS-Actions.js",
+    "scripts/data/templates.js",
+    "scripts/data/SlideshowConfigActions.js",
+    "scripts/classes/PopoverGenerator.js",
+    "scripts/hooks.js",
+    "scripts/data/ModuleManager.js",
+    "scripts/classes/SheetImage.test.js"
+  ],
+  "styles": [
+    "styles/styles.css"
+  ],
+  "url": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow",
+  "manifest": "https://raw.githubusercontent.com/EvanesceExotica/Journal-To-Canvas-Slideshow/master/module.json",
+  "download": "https://github.com/EvanesceExotica/Journal-To-Canvas-Slideshow/archive/refs/heads/master.zip"
 }
