@@ -942,17 +942,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid var(--border-color);
 }
 
-.square {
+.jtcs-square {
   width: 2rem;
   height: 2rem;
 }
 
-.square-medium {
+.jtcs-square-medium {
   width: 4rem;
   height: 4rem;
 }
 
-.square-large {
+.jtcs-square-large {
   width: 6rem;
   height: 6rem;
 }
