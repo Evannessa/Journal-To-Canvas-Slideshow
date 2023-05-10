@@ -3,8 +3,8 @@
 	<ul class="displayLocations | flex-column gap-small reset-margin reset-padding">
 		{{#each displayMethods as |method|}}
 		<li class="button-container {{method.additionalParentClass}}">
-			<button class="floating-control square {{additionalClass}}" id="{{method.name}}" 
-                data-method="{{method.name}}" 
+			<button class="floating-control jtcs-square {{additionalClass}}" id="{{method.name}}"
+                data-method="{{method.name}}"
                 {{#if (eq method.name "fadeJournal")}}
                    data-action="displayActionButton.click.fadeJournal" 
                {{else if (eq method.name "anyScene")}}
