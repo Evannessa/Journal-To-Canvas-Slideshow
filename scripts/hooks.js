@@ -8,222 +8,223 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
  * @returns object containing registerHooks function
  */
 export const setupHookHandlers = async () => {
-    async function renderSlideshowConfig(...args) {
-        if (args[2]?.diff && args[1]?.alpha) {
-            //TODO: ? this was a workaround for v10, keeping Scene Gallery Config from re-rendering on update of tile alpha, but should remove
-            //don't update if the changes include alpha
-            return;
-        }
-        if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
-            game.JTCSlideshowConfig.render(false);
-        }
-    }
+	async function monksTest() {
+		console.log("Rendering monks journal");
+	}
 
-    /**
-     * Show a toggle in the journal sheet's header to toggle whether the journal
-     * has controls on or off
-     */
+	async function renderSlideshowConfig(...args) {
+		if (args[2]?.diff && args[1]?.alpha) {
+			//TODO: ? this was a workaround for v10, keeping Scene Gallery Config from re-rendering on update of tile alpha, but should remove
+			//don't update if the changes include alpha
+			return;
+		}
+		if (game.JTCSlideshowConfig && game.JTCSlideshowConfig.rendered) {
+			game.JTCSlideshowConfig.render(false);
+		}
+	}
 
-    async function renderImageControls(app, html) {
-        console.log("Renderingg image controls", app, html)
-        if (!game.user.isGM) {
-            return;
-        }
+	/**
+	Show a toggle in the journal sheet's header to toggle whether the journal
+	 * has controls on or off
+	 */
 
-        await JTCSModules.SheetImageApp.applyImageClasses(app, html);
-    }
+	async function renderImageControls(app, html) {
+		console.log("Rendering image controls", app, html);
+		if (!game.user.isGM) {
+			return;
+		}
 
-    async function updateGalleryTileIndicator(tileDoc) {
-        let tileID = tileDoc.id; //this gets the id from the tile's document itself
-        let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles(
-            "",
-            true
-        );
-        let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(
-            tileID,
-            sceneGalleryTiles
-        ); //this is looking for tiles that are already linked
+		await JTCSModules.SheetImageApp.applyImageClasses(app, html);
+	}
 
-        await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-    }
+	async function updateGalleryTileIndicator(tileDoc) {
+		let tileID = tileDoc.id; //this gets the id from the tile's document itself
+		let sceneGalleryTiles = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
+		let foundTileData = await JTCSModules.ArtTileManager.getTileDataFromFlag(tileID, sceneGalleryTiles); //this is looking for tiles that are already linked
 
-    async function updateAllGalleryIndicators(scene) {
-        let tiles = scene.tiles;
-        let artTileDataArray = await JTCSModules.ArtTileManager.getSceneSlideshowTiles(
-            "",
-            true
-        );
-        tiles.forEach(async (tileDoc) => {
-            let foundTileData = artTileDataArray.find(
-                (tileData) => tileData.id === tileDoc.id
-            );
-            await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
-        });
-    }
+		await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+	}
 
-    async function addJTCSControls(controls) {
-        if (!game.user.isGM) {
-            return;
-        }
-        const tileControls = controls.find((control) => control?.name === "tiles");
+	async function updateAllGalleryIndicators(scene) {
+		let tiles = scene.tiles;
+		let artTileDataArray = await JTCSModules.ArtTileManager.getSceneSlideshowTiles("", true);
+		tiles.forEach(async (tileDoc) => {
+			let foundTileData = artTileDataArray.find((tileData) => tileData.id === tileDoc.id);
+			await JTCSModules.CanvasIndicators.setUpIndicators(foundTileData, tileDoc);
+		});
+	}
 
-        tileControls.tools.push({
-            name: "ShowJTCSConfig",
-            title: "Show Slideshow Config",
-            icon: "far fa-image",
-            onClick: () => {
-                new JTCSModules.SlideshowConfig().render(true);
-            },
-            button: true,
-        });
-        tileControls.tools.push({
-            name: "ShowSheetCSConfig",
-            title: "Show Sheet Config",
-            icon: "far fa-image",
-            onClick: () => {
-                new JTCSModules.SheetConfigApp().render(true);
-            },
-            button: true,
-        });
-    }
-    /**
-     * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
-     * @param {Object} options - option arguments to be passed to this
-     * @param {String} options.origin - the origin of the Hook - was it the settings, or a flag update for the current scene's slideshow settings?
-     * @param {Object} options.currentScene - the scene, usually the current scene
-     * @param {String} options.tileID - the ID of the tile, if updated
-     */
-    function rerenderImageSheet(options) {
-        const { origin, currentScene, updateData } = options;
+	async function addJTCSControls(controls) {
+		if (!game.user.isGM) {
+			return;
+		}
+		const tileControls = controls.find((control) => control?.name === "tiles");
 
-        let renderedSheets = Object.values(window.ui.windows).filter(
-            (item) => item.document?.documentName
-        );
-        renderedSheets.forEach((sheet) => {
-            const docType = sheet.document.documentName.toLowerCase();
+		tileControls.tools.push({
+			name: "ShowJTCSConfig",
+			title: "Show Slideshow Config",
+			icon: "far fa-image",
+			onClick: () => {
+				new JTCSModules.SlideshowConfig().render(true);
+			},
+			button: true,
+		});
+		tileControls.tools.push({
+			name: "ShowSheetCSConfig",
+			title: "Show Sheet Config",
+			icon: "far fa-image",
+			onClick: () => {
+				new JTCSModules.SheetConfigApp().render(true);
+			},
+			button: true,
+		});
+	}
+	/**
+	 * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
+	 * @param {Object} options - option arguments to be passed to this
+	 * @param {String} options.origin - the origin of the Hook - was it the settings, or a flag update for the current scene's slideshow settings?
+	 * @param {Object} options.currentScene - the scene, usually the current scene
+	 * @param {String} options.tileID - the ID of the tile, if updated
+	 */
+	function rerenderImageSheet(options) {
+		const { origin, currentScene, updateData } = options;
 
-            //if our type of document is set to "true" as rendering controls in the settings
-            //and it's not currently being edited
-            //and we're not telling it to render anyway
-            let editorsActive = HelperFunctions.editorsActive(sheet);
-            if (editorsActive !== true) {
-                sheet.render();
-            }
-        });
-    }
+		let renderedSheets = Object.values(window.ui.windows).filter((item) => item.document?.documentName);
+		renderedSheets.forEach((sheet) => {
+			const docType = sheet.document.documentName.toLowerCase();
 
-    const hookHandlers = {
-        rerenderImageSheet: {
-            //when the art gallery tiles update, re-render the sheets
-            hooks: [
-                "updateArtGalleryTiles",
-                "updateDefaultArtTile",
-                "updateJTCSSettings",
-                "canvasReady",
-            ],
-            handlerFunction: rerenderImageSheet,
-        },
-        renderImageControls: {
-            hooks: [
-                "renderItemSheet",
-                "renderActorSheet",
-                "renderJournalSheet",
-                "renderJournalPageSheet",
-                "renderEnhancedJournalSheet",
-                "getDocumentSheetHeaderButtons",
-                "update",
-            ],
-            // hooks: ["renderJournalSheet"],
-            handlerFunction: renderImageControls,
-        },
-        renderSlideshowConfig: {
-            hooks: [
-                "createTile",
-                // "updateTile",
-                "preUpdateTile",
-                "deleteTile",
-                "canvasReady",
-                "createJournalEntry",
-                "updateJournalEntry",
-                "deleteJournalEntry",
-                "updateJTCSSettings",
-                // "updateArtGalleryTiles"
-                "updateDefaultArtTile",
-            ],
-            handlerFunction: renderSlideshowConfig,
-        },
-        updateCanvasIndicators: {
-            hooks: ["createTile", "updateTile", "deleteTile"],
-            handlerFunction: updateGalleryTileIndicator,
-            specialHooks: [
-                {
-                    hookName: "canvasReady",
-                    handlerFunction: async (canvas) => {
-                        updateAllGalleryIndicators(canvas.scene);
-                    },
-                },
-                {
-                    hookName: "updateJTCSSettings",
-                    handlerFunction: async (options) => {
-                        // let { currentScene } = options;
-                        let currentScene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(currentScene);
-                    },
-                },
-                {
-                    hookName: "updateArtGalleryTiles",
-                    handlerFunction: async (options) => {
-                        // let { currentScene } = options;
-                        let currentScene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(currentScene);
-                    },
-                },
-                {
-                    hookName: "updateDefaultArtTile",
-                    handlerFunction: async (options) => {
-                        let currentScene = game.scenes.viewed;
-                        await updateAllGalleryIndicators(currentScene);
-                    },
-                },
-            ],
-        },
-        addJTCSControls: {
-            hooks: ["getSceneControlButtons"],
-            handlerFunction: addJTCSControls,
-        },
-        updateUIColors: {
-            hooks: ["updateJTCSSettings"],
-            handlerFunction: async () => {
-                await HelperFunctions.setUIColors();
-            },
-        },
-        updateDefaultArtTile: {
-            hooks: ["deleteTile"],
-            handlerFunction: async (tileDoc) => {
-                // let tiles = (await ArtTileManager.getSceneSlideshowTiles("art", true)).filter((item)=> !item.missing)
-                // if(tiles){
-                // }
-                // await ArtTileManager.updateDefaultArtTile(tileDoc);
-            },
-        },
-    };
+			//if our type of document is set to "true" as rendering controls in the settings
+			//and it's not currently being edited
+			//and we're not telling it to render anyway
+			let editorsActive = HelperFunctions.editorsActive(sheet);
+			if (editorsActive !== true) {
+				sheet.render();
+			}
+		});
+	}
 
-    async function registerHooks() {
-        for (let handlerKey in hookHandlers) {
-            let handler = hookHandlers[handlerKey];
-            if (handler.specialHooks) {
-                handler.specialHooks.forEach((specialHookData) => {
-                    let { hookName, handlerFunction: callback } = specialHookData;
-                    Hooks.on(hookName, callback);
-                });
-            }
-            for (let hookName of handler.hooks) {
-                Hooks.on(hookName, handler.handlerFunction);
-                // Hooks.once(hookName, handler.handlerFunction);
-            }
-        }
-    }
-    return {
-        registerHooks: registerHooks,
-    };
+	const hookHandlers = {
+		renderMonksJournal: {
+			hooks: [
+				"getJournalSheetHeaderButtons",
+				"getJournalDirectoryEntryContext",
+				"renderJournalSheet",
+				"renderJournalPageSheet",
+				"renderEnhancedJournal",
+				"renderJournalDirectory",
+				"renderEnhancedJournalSheet",
+				"getDocumentSheetHeaderButtons",
+			],
+			handlerFunction: monksTest,
+		},
+		rerenderImageSheet: {
+			//when the art gallery tiles update, re-render the sheets
+			hooks: ["updateArtGalleryTiles", "updateDefaultArtTile", "updateJTCSSettings", "canvasReady"],
+			handlerFunction: rerenderImageSheet,
+		},
+		renderImageControls: {
+			hooks: [
+				"renderItemSheet",
+				"renderActorSheet",
+				"renderJournalSheet",
+				"renderJournalPageSheet",
+				"renderEnhancedJournal",
+				"renderJournalDirectory",
+				"renderEnhancedJournalSheet",
+				"getDocumentSheetHeaderButtons",
+				"update",
+			],
+			// hooks: ["renderJournalSheet"],
+			handlerFunction: renderImageControls,
+		},
+		renderSlideshowConfig: {
+			hooks: [
+				"createTile",
+				// "updateTile",
+				"preUpdateTile",
+				"deleteTile",
+				"canvasReady",
+				"createJournalEntry",
+				"updateJournalEntry",
+				"deleteJournalEntry",
+				"updateJTCSSettings",
+				// "updateArtGalleryTiles"
+				"updateDefaultArtTile",
+			],
+			handlerFunction: renderSlideshowConfig,
+		},
+		updateCanvasIndicators: {
+			hooks: ["createTile", "updateTile", "deleteTile"],
+			handlerFunction: updateGalleryTileIndicator,
+			specialHooks: [
+				{
+					hookName: "canvasReady",
+					handlerFunction: async (canvas) => {
+						updateAllGalleryIndicators(canvas.scene);
+					},
+				},
+				{
+					hookName: "updateJTCSSettings",
+					handlerFunction: async (options) => {
+						// let { currentScene } = options;
+						let currentScene = game.scenes.viewed;
+						await updateAllGalleryIndicators(currentScene);
+					},
+				},
+				{
+					hookName: "updateArtGalleryTiles",
+					handlerFunction: async (options) => {
+						// let { currentScene } = options;
+						let currentScene = game.scenes.viewed;
+						await updateAllGalleryIndicators(currentScene);
+					},
+				},
+				{
+					hookName: "updateDefaultArtTile",
+					handlerFunction: async (options) => {
+						let currentScene = game.scenes.viewed;
+						await updateAllGalleryIndicators(currentScene);
+					},
+				},
+			],
+		},
+		addJTCSControls: {
+			hooks: ["getSceneControlButtons"],
+			handlerFunction: addJTCSControls,
+		},
+		updateUIColors: {
+			hooks: ["updateJTCSSettings"],
+			handlerFunction: async () => {
+				await HelperFunctions.setUIColors();
+			},
+		},
+		updateDefaultArtTile: {
+			hooks: ["deleteTile"],
+			handlerFunction: async (tileDoc) => {
+				// let tiles = (await ArtTileManager.getSceneSlideshowTiles("art", true)).filter((item)=> !item.missing)
+				// if(tiles){
+				// }
+				// await ArtTileManager.updateDefaultArtTile(tileDoc);
+			},
+		},
+	};
+
+	async function registerHooks() {
+		for (let handlerKey in hookHandlers) {
+			let handler = hookHandlers[handlerKey];
+			if (handler.specialHooks) {
+				handler.specialHooks.forEach((specialHookData) => {
+					let { hookName, handlerFunction: callback } = specialHookData;
+					Hooks.on(hookName, callback);
+				});
+			}
+			for (let hookName of handler.hooks) {
+				Hooks.on(hookName, handler.handlerFunction);
+				// Hooks.once(hookName, handler.handlerFunction);
+			}
+		}
+	}
+	return {
+		registerHooks: registerHooks,
+	};
 };

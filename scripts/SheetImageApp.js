@@ -86,6 +86,7 @@ export class SheetImageApp {
                 }
             }
             if(game.modules.get("monks-enhanced-journal").active){
+
                 console.log("Monks is active")
                 SheetImageApp.injectSheetWideControls(app)
             }else{
@@ -197,8 +198,7 @@ export class SheetImageApp {
         }
         if(game.modules.get("monks-enhanced-journal").active){
             // selector = ".monks-enhanced-journal .mainbar"
-            console.log(targetElement)
-            selector = ".window-content"
+            selector = ".editor-content"
         }
         let $editorElement = $(targetElement.querySelector(selector));
         $editorElement.prepend(renderHtml);

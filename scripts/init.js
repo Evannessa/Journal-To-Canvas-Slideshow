@@ -43,9 +43,17 @@ Hooks.once("ready", () => {
             "error"
         );
     }
+  ui.notifications.notify(
+            'JTCS Art Gallery is working',
+            "error"
+        );
 });
 
-Hooks.on("init", async () => {
+Hooks.once("init", async () => {
+    ui.notifications.notify(
+            'JTCS Art Gallery is working',
+            "info"
+        );
     console.log("Initializing Journal to Canvas Slideshow");
 
     //register settings
@@ -75,6 +83,8 @@ Hooks.on("init", async () => {
         },
         "MIXED"
     );
+
+
 
     //map of template names w/ short keys
     let templates = generateTemplates();
