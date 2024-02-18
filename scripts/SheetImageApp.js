@@ -6,6 +6,9 @@ import { SheetImageDataController } from "./SheetImageDataController.js";
 import { artTileManager, helpers } from "./data/ModuleManager.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
 import { universalInterfaceActions } from "./data/Universal-Actions.js";
+
+
+
 export class SheetImageApp {
     static displayMethods = [
         {
@@ -82,8 +85,13 @@ export class SheetImageApp {
                     ).forEach((img) => SheetImageApp.injectImageControls(img, app));
                 }
             }
-            if (doc.documentName !== "JournalEntryPage") {
-                SheetImageApp.injectSheetWideControls(app);
+            if(game.modules.get("monks-enhanced-journal").active){
+                console.log("Monks is active")
+                SheetImageApp.injectSheetWideControls(app)
+            }else{
+                if (doc.documentName !== "JournalEntryPage") {
+                    SheetImageApp.injectSheetWideControls(app);
+                }
             }
         }
     }
@@ -162,7 +170,7 @@ export class SheetImageApp {
     }
     static async injectSheetWideControls(journalSheet) {
         let template = game.JTCS.templates["sheet-wide-controls"];
-        await SheetImageApp.applySheetFadeSettings(journalSheet);
+      //  await SheetImageApp.applySheetFadeSettings(journalSheet);
         let isActive = await HelperFunctions.getFlagValue(
             journalSheet.document,
             "showControls",
@@ -177,10 +185,22 @@ export class SheetImageApp {
             isActive,
         });
         let selector = ".window-content";
-        if (journalSheet.document.documentName === "JournalEntryPage") {
-            selector = ".journal-page-content";
+        let targetElement
+        if(journalSheet instanceof jQuery){
+            // console.log(journalSheet)
+            targetElement = journalSheet[0]
+        }else{
+            targetElement = journalSheet.element[0]
+            if (journalSheet.document.documentName === "JournalEntryPage") {
+                selector = ".journal-page-content";
+            }
         }
-        let $editorElement = $(journalSheet.element[0].querySelector(selector));
+        if(game.modules.get("monks-enhanced-journal").active){
+            // selector = ".monks-enhanced-journal .mainbar"
+            console.log(targetElement)
+            selector = ".window-content"
+        }
+        let $editorElement = $(targetElement.querySelector(selector));
         $editorElement.prepend(renderHtml);
         let controlsContainer = $("#sheet-controls");
         await SheetImageApp.activateSheetWideEventListeners({

@@ -25,6 +25,7 @@ export const setupHookHandlers = async () => {
      */
 
     async function renderImageControls(app, html) {
+        console.log("Renderingg image controls", app, html)
         if (!game.user.isGM) {
             return;
         }
@@ -75,6 +76,15 @@ export const setupHookHandlers = async () => {
             },
             button: true,
         });
+        tileControls.tools.push({
+            name: "ShowSheetCSConfig",
+            title: "Show Sheet Config",
+            icon: "far fa-image",
+            onClick: () => {
+                new JTCSModules.SheetConfigApp().render(true);
+            },
+            button: true,
+        });
     }
     /**
      * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
@@ -119,6 +129,8 @@ export const setupHookHandlers = async () => {
                 "renderActorSheet",
                 "renderJournalSheet",
                 "renderJournalPageSheet",
+                "renderEnhancedJournalSheet",
+                "getDocumentSheetHeaderButtons",
                 "update",
             ],
             // hooks: ["renderJournalSheet"],

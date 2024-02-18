@@ -19,6 +19,7 @@ import { registerHelpers } from "./handlebars/register-helpers.js";
 import { registerSettings } from "./settings.js";
 import { setupHookHandlers } from "./hooks.js";
 import { universalInterfaceActions as UIA } from "./data/Universal-Actions.js";
+import { SheetConfigApp } from "./classes/SheetConfigApp.js";
 
 export const JTCSModules = {
     ArtTileManager,
@@ -30,6 +31,7 @@ export const JTCSModules = {
     SheetImageApp,
     SheetImageDataController,
     SlideshowConfig,
+    SheetConfigApp
 };
 
 Hooks.once("ready", () => {

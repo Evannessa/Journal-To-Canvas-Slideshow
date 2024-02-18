@@ -28,6 +28,14 @@ export class ImageDisplayManager {
         };
     }
 
+    /**
+     * Update the texture of the tile to reflect the image we pass to it
+     * @param {string} artTileID - the ID of the art tile
+        * @param {string} frameTileID - the ID of the frame tile
+        *@param {string} url - the URL/path of the image
+        * @param {('anyScene'|'artScene'|'window'|'journalEntry')} method - the method via which we want to display the image
+        * @param {string} sceneID - the optional ID of the scene in which we want to update the tile
+     */
     static async updateTileObjectTexture(
         artTileID,
         frameTileID,

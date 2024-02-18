@@ -1,14 +1,14 @@
 <div class="clickableImageControls" data-image="{{imgPath}}">
-	
+
 	<ul class="displayLocations | flex-column gap-small reset-margin reset-padding">
 		{{#each displayMethods as |method|}}
 		<li class="button-container {{method.additionalParentClass}}">
-			<button class="floating-control square {{additionalClass}}" id="{{method.name}}" 
-                data-method="{{method.name}}" 
+			<button class="floating-control JTCS-square {{additionalClass}}" id="{{method.name}}"
+                data-method="{{method.name}}"
                 {{#if (eq method.name "fadeJournal")}}
-                   data-action="displayActionButton.click.fadeJournal" 
+                   data-action="displayActionButton.click.fadeJournal"
                {{else if (eq method.name "anyScene")}}
-                    data-action="displayActionButton.click.revealTileButtons"  
+                    data-action="displayActionButton.click.revealTileButtons"
                     data-hover-action="displayActionButton.hover.revealTileButtons"
                     data-target-id="displayTileButtons"
                 {{else}}
@@ -43,6 +43,6 @@
         {{else}}
             <p class="empty-state slight-rounded" data-type="art">No <span class="accent"> Art Tiles </span> in Scene</p>
         {{/if}}
-     
+
     </div>
 </div>

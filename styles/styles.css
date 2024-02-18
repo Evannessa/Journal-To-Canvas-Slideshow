@@ -6,50 +6,50 @@
   --foundry-purple-border: #3b1893;
   --foundry-purple-background: rgba(30, 0, 60, 0.5);
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
-  --color-secondary-darkest: hsl(221deg, 98%, 20%);
-  --color-secondary-800: hsl(215deg, 98%, 30%);
-  --color-secondary-700: hsl(210deg, 98%, 40%);
-  --color-secondary-600: hsl(205deg, 98%, 52%);
-  --color-secondary-base: hsl(199deg, 98%, 63%);
-  --color-secondary-400: hsl(190deg, 99%, 70%);
-  --color-secondary-300: hsl(185deg, 100%, 80%);
-  --color-secondary-lightest: hsl(175deg, 100%, 90%);
-  --color-primary-darkest: hsl(240deg, 58%, 28%);
-  --color-primary-800: hsl(240deg, 58%, 30%);
-  --color-primary-700: hsl(240deg, 58%, 40%);
-  --color-primary-600: hsl(240deg, 60%, 50%);
-  --color-primary-base: hsl(240deg, 60%, 60%);
-  --color-primary-400: hsl(240deg, 60%, 68%);
-  --color-primary-300: hsl(240deg, 65%, 75%);
-  --color-primary-200: hsl(240deg, 75%, 85%);
-  --color-primary-lightest: hsl(240deg, 86%, 92%);
-  --color-deep-purple-darkest: hsl(269deg, 100%, 8%);
-  --color-deep-purple-700: hsl(269deg, 100%, 18%);
-  --color-deep-purple-600: hsl(269deg, 100%, 28%);
-  --color-deep-purple-base: hsl(269deg, 100%, 38%);
-  --color-neutral-darkest: hsl(240deg, 17%, 20%);
-  --color-neutral-700: hsl(240deg, 17%, 30%);
-  --color-neutral-base: hsl(240deg, 12%, 50%);
-  --color-neutral-300: hsl(240deg, 17%, 70%);
-  --color-neutral-lightest: hsl(240deg, 17%, 90%);
-  --color-glass-no-blur: hsla(0deg, 0%, 44%, 0.478);
-  --color-glass-blur: hsla(0deg, 0%, 44%, 0.267);
-  --color-glass-border: hsla(0deg, 0%, 100%, 0.198);
-  --color-glass-no-blur-dark: hsla(240deg, 11%, 14%, 0.769);
-  --color-glass-blur-dark: hsla(240deg, 11%, 14%, 0.161);
-  --color-glass-border-dark: hsla(240deg, 10%, 40%, 0.568);
-  --color-danger-dark: hsl(0deg, 89%, 20%);
-  --color-danger-base: hsl(0deg, 59%, 50%);
-  --color-danger-light: hsl(0deg, 99%, 70%);
-  --color-warning-dark: hsl(28deg, 100%, 30%);
-  --color-warning-base: hsl(23deg, 80%, 50%);
-  --color-warning-light: hsl(21deg, 100%, 65%);
-  --color-success-dark: hsl(100deg, 100%, 30%);
-  --color-success-base: hsl(100deg, 100%, 50%);
-  --color-success-light: hsl(100deg, 100%, 70%);
-  --color-info-dark: hsl(200deg, 100%, 25%);
-  --color-info-base: hsl(200deg, 60%, 40%);
-  --color-info-light: hsl(200deg, 80%, 60%);
+  --color-secondary-darkest: hsl(221, 98%, 20%);
+  --color-secondary-800: hsl(215, 98%, 30%);
+  --color-secondary-700: hsl(210, 98%, 40%);
+  --color-secondary-600: hsl(205, 98%, 52%);
+  --color-secondary-base: hsl(199, 98%, 63%);
+  --color-secondary-400: hsl(190, 99%, 70%);
+  --color-secondary-300: hsl(185, 100%, 80%);
+  --color-secondary-lightest: hsl(175, 100%, 90%);
+  --color-primary-darkest: hsl(240, 58%, 28%);
+  --color-primary-800: hsl(240, 58%, 30%);
+  --color-primary-700: hsl(240, 58%, 40%);
+  --color-primary-600: hsl(240, 60%, 50%);
+  --color-primary-base: hsl(240, 60%, 60%);
+  --color-primary-400: hsl(240, 60%, 68%);
+  --color-primary-300: hsl(240, 65%, 75%);
+  --color-primary-200: hsl(240, 75%, 85%);
+  --color-primary-lightest: hsl(240, 86%, 92%);
+  --color-deep-purple-darkest: hsl(269, 100%, 8%);
+  --color-deep-purple-700: hsl(269, 100%, 18%);
+  --color-deep-purple-600: hsl(269, 100%, 28%);
+  --color-deep-purple-base: hsl(269, 100%, 38%);
+  --color-neutral-darkest: hsl(240, 17%, 20%);
+  --color-neutral-700: hsl(240, 17%, 30%);
+  --color-neutral-base: hsl(240, 12%, 50%);
+  --color-neutral-300: hsl(240, 17%, 70%);
+  --color-neutral-lightest: hsl(240, 17%, 90%);
+  --color-glass-no-blur: hsla(0, 0%, 44%, 0.478);
+  --color-glass-blur: hsla(0, 0%, 44%, 0.267);
+  --color-glass-border: hsla(0, 0%, 100%, 0.198);
+  --color-glass-no-blur-dark: hsla(240, 11%, 14%, 0.769);
+  --color-glass-blur-dark: hsla(240, 11%, 14%, 0.161);
+  --color-glass-border-dark: hsla(240, 10%, 40%, 0.568);
+  --color-danger-dark: hsl(0, 89%, 20%);
+  --color-danger-base: hsl(0, 59%, 50%);
+  --color-danger-light: hsl(0, 99%, 70%);
+  --color-warning-dark: hsl(28, 100%, 30%);
+  --color-warning-base: hsl(23, 80%, 50%);
+  --color-warning-light: hsl(21, 100%, 65%);
+  --color-success-dark: hsl(100, 100%, 30%);
+  --color-success-base: hsl(100, 100%, 50%);
+  --color-success-light: hsl(100, 100%, 70%);
+  --color-info-dark: hsl(200, 100%, 25%);
+  --color-info-base: hsl(200, 60%, 40%);
+  --color-info-light: hsl(200, 80%, 60%);
   --space-small: 1rem;
   --space-medium: 2rem;
   --space-large: 3rem;
@@ -71,29 +71,12 @@
   padding: unset;
 }
 
-@-webkit-keyframes fade {
-  from {
-    opacity: 0%;
-  }
-  to {
-    opacity: 100%;
-  }
-}
-
 @keyframes fade {
   from {
     opacity: 0%;
   }
   to {
     opacity: 100%;
-  }
-}
-@-webkit-keyframes fadeOut {
-  from {
-    opacity: 100%;
-  }
-  to {
-    opacity: 0%;
   }
 }
 @keyframes fadeOut {
@@ -131,7 +114,6 @@
   background-color: var(--JTCS-elevation-BG-color);
   color: var(--JTCS-text-color-on-bg);
   top: 100%;
-  min-width: -webkit-max-content;
   min-width: -moz-max-content;
   min-width: max-content;
   box-shadow: var(--box-shadow);
@@ -172,10 +154,8 @@
 .img-button {
   background: none;
   background-color: transparent;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
 }
@@ -273,10 +253,8 @@ input:is([type=radio], [type=checkbox]).hidden-input + label {
   border: 1px solid var(--border-color);
   padding: 0.5rem 0.5rem;
   overflow: visible;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
-  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   display: flex;
@@ -309,7 +287,6 @@ input:is([type=radio], [type=checkbox]).hidden-input:checked + label .tooltip {
 .minimize {
   transform: scaleY(0);
   opacity: 0;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   pointer-events: auto;
@@ -447,7 +424,6 @@ input[type=radio]:checked.accent-input {
 }
 
 .fit-content-width {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
 }
@@ -492,7 +468,6 @@ input[type=radio]:checked.accent-input {
 }
 
 fieldset.toggle-button-group {
-  max-width: -webkit-fit-content;
   max-width: -moz-fit-content;
   max-width: fit-content;
   box-shadow: var(--box-shadow);
@@ -942,17 +917,17 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   border: 2px solid var(--border-color);
 }
 
-.square {
+.JTCS-square {
   width: 2rem;
   height: 2rem;
 }
 
-.square-medium {
+.JTCS-square-medium {
   width: 4rem;
   height: 4rem;
 }
 
-.square-large {
+.JTCS-square-large {
   width: 6rem;
   height: 6rem;
 }
@@ -1020,7 +995,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   right: 100%;
 }
 [data-title] .tooltip.tooltip-wide {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   max-width: unset;
@@ -1190,7 +1164,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .chip-span {
   display: inline-flex;
   justify-content: space-evenly;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   width: 100%;
@@ -1411,7 +1384,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 }
 
 #JTCS-custom-dialog {
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
 }
@@ -1500,50 +1472,50 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   --foundry-purple-border: #3b1893;
   --foundry-purple-background: rgba(30, 0, 60, 0.5);
   --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
-  --color-secondary-darkest: hsl(221deg, 98%, 20%);
-  --color-secondary-800: hsl(215deg, 98%, 30%);
-  --color-secondary-700: hsl(210deg, 98%, 40%);
-  --color-secondary-600: hsl(205deg, 98%, 52%);
-  --color-secondary-base: hsl(199deg, 98%, 63%);
-  --color-secondary-400: hsl(190deg, 99%, 70%);
-  --color-secondary-300: hsl(185deg, 100%, 80%);
-  --color-secondary-lightest: hsl(175deg, 100%, 90%);
-  --color-primary-darkest: hsl(240deg, 58%, 28%);
-  --color-primary-800: hsl(240deg, 58%, 30%);
-  --color-primary-700: hsl(240deg, 58%, 40%);
-  --color-primary-600: hsl(240deg, 60%, 50%);
-  --color-primary-base: hsl(240deg, 60%, 60%);
-  --color-primary-400: hsl(240deg, 60%, 68%);
-  --color-primary-300: hsl(240deg, 65%, 75%);
-  --color-primary-200: hsl(240deg, 75%, 85%);
-  --color-primary-lightest: hsl(240deg, 86%, 92%);
-  --color-deep-purple-darkest: hsl(269deg, 100%, 8%);
-  --color-deep-purple-700: hsl(269deg, 100%, 18%);
-  --color-deep-purple-600: hsl(269deg, 100%, 28%);
-  --color-deep-purple-base: hsl(269deg, 100%, 38%);
-  --color-neutral-darkest: hsl(240deg, 17%, 20%);
-  --color-neutral-700: hsl(240deg, 17%, 30%);
-  --color-neutral-base: hsl(240deg, 12%, 50%);
-  --color-neutral-300: hsl(240deg, 17%, 70%);
-  --color-neutral-lightest: hsl(240deg, 17%, 90%);
-  --color-glass-no-blur: hsla(0deg, 0%, 44%, 0.478);
-  --color-glass-blur: hsla(0deg, 0%, 44%, 0.267);
-  --color-glass-border: hsla(0deg, 0%, 100%, 0.198);
-  --color-glass-no-blur-dark: hsla(240deg, 11%, 14%, 0.769);
-  --color-glass-blur-dark: hsla(240deg, 11%, 14%, 0.161);
-  --color-glass-border-dark: hsla(240deg, 10%, 40%, 0.568);
-  --color-danger-dark: hsl(0deg, 89%, 20%);
-  --color-danger-base: hsl(0deg, 59%, 50%);
-  --color-danger-light: hsl(0deg, 99%, 70%);
-  --color-warning-dark: hsl(28deg, 100%, 30%);
-  --color-warning-base: hsl(23deg, 80%, 50%);
-  --color-warning-light: hsl(21deg, 100%, 65%);
-  --color-success-dark: hsl(100deg, 100%, 30%);
-  --color-success-base: hsl(100deg, 100%, 50%);
-  --color-success-light: hsl(100deg, 100%, 70%);
-  --color-info-dark: hsl(200deg, 100%, 25%);
-  --color-info-base: hsl(200deg, 60%, 40%);
-  --color-info-light: hsl(200deg, 80%, 60%);
+  --color-secondary-darkest: hsl(221, 98%, 20%);
+  --color-secondary-800: hsl(215, 98%, 30%);
+  --color-secondary-700: hsl(210, 98%, 40%);
+  --color-secondary-600: hsl(205, 98%, 52%);
+  --color-secondary-base: hsl(199, 98%, 63%);
+  --color-secondary-400: hsl(190, 99%, 70%);
+  --color-secondary-300: hsl(185, 100%, 80%);
+  --color-secondary-lightest: hsl(175, 100%, 90%);
+  --color-primary-darkest: hsl(240, 58%, 28%);
+  --color-primary-800: hsl(240, 58%, 30%);
+  --color-primary-700: hsl(240, 58%, 40%);
+  --color-primary-600: hsl(240, 60%, 50%);
+  --color-primary-base: hsl(240, 60%, 60%);
+  --color-primary-400: hsl(240, 60%, 68%);
+  --color-primary-300: hsl(240, 65%, 75%);
+  --color-primary-200: hsl(240, 75%, 85%);
+  --color-primary-lightest: hsl(240, 86%, 92%);
+  --color-deep-purple-darkest: hsl(269, 100%, 8%);
+  --color-deep-purple-700: hsl(269, 100%, 18%);
+  --color-deep-purple-600: hsl(269, 100%, 28%);
+  --color-deep-purple-base: hsl(269, 100%, 38%);
+  --color-neutral-darkest: hsl(240, 17%, 20%);
+  --color-neutral-700: hsl(240, 17%, 30%);
+  --color-neutral-base: hsl(240, 12%, 50%);
+  --color-neutral-300: hsl(240, 17%, 70%);
+  --color-neutral-lightest: hsl(240, 17%, 90%);
+  --color-glass-no-blur: hsla(0, 0%, 44%, 0.478);
+  --color-glass-blur: hsla(0, 0%, 44%, 0.267);
+  --color-glass-border: hsla(0, 0%, 100%, 0.198);
+  --color-glass-no-blur-dark: hsla(240, 11%, 14%, 0.769);
+  --color-glass-blur-dark: hsla(240, 11%, 14%, 0.161);
+  --color-glass-border-dark: hsla(240, 10%, 40%, 0.568);
+  --color-danger-dark: hsl(0, 89%, 20%);
+  --color-danger-base: hsl(0, 59%, 50%);
+  --color-danger-light: hsl(0, 99%, 70%);
+  --color-warning-dark: hsl(28, 100%, 30%);
+  --color-warning-base: hsl(23, 80%, 50%);
+  --color-warning-light: hsl(21, 100%, 65%);
+  --color-success-dark: hsl(100, 100%, 30%);
+  --color-success-base: hsl(100, 100%, 50%);
+  --color-success-light: hsl(100, 100%, 70%);
+  --color-info-dark: hsl(200, 100%, 25%);
+  --color-info-base: hsl(200, 60%, 40%);
+  --color-info-light: hsl(200, 80%, 60%);
   --space-small: 1rem;
   --space-medium: 2rem;
   --space-large: 3rem;
@@ -1720,7 +1692,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content .form-group-stacked.color-picker-container .color-picker-group,
 #JTCS-custom-dialog .window-content .input-span.color-picker-container .color-picker-group {
   flex: 0;
-  min-width: -webkit-fit-content;
   min-width: -moz-fit-content;
   min-width: fit-content;
 }
@@ -1911,10 +1882,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCS-custom-dialog .window-content .form-group .input-span,
 #JTCS-custom-dialog .window-content .form-group-stacked .input-span {
   flex: 1;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
-  max-width: -webkit-fit-content;
   max-width: -moz-fit-content;
   max-width: fit-content;
 }
@@ -2112,9 +2081,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > select ::-moz-placeholder {
   color: var(--accent-color);
 }
-#JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type]:hover .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type]:focus-within .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:hover .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type]:focus-within .form-group.has-floating-label > select :-ms-input-placeholder {
-  color: var(--accent-color);
-}
 #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > input ::placeholder,
 #JTCSSettingsApplication .window-content [data-type]:hover .form-group.has-floating-label > select ::placeholder, #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > input ::placeholder,
 #JTCSSettingsApplication .window-content [data-type]:focus .form-group.has-floating-label > select ::placeholder, #JTCSSettingsApplication .window-content [data-type]:focus-within .form-group.has-floating-label > input ::placeholder,
@@ -2166,9 +2132,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: border-color 150ms ease-out;
 }
 #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input ::-moz-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select ::-moz-placeholder {
-  color: var(--accent-color);
-}
-#JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input :-ms-input-placeholder, #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > select :-ms-input-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > input :-ms-input-placeholder, #slideshow-config .window-content [data-type].accent .form-group.has-floating-label > select :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > input :-ms-input-placeholder, #JTCS-custom-dialog .window-content [data-type].accent .form-group.has-floating-label > select :-ms-input-placeholder {
   color: var(--accent-color);
 }
 #JTCSSettingsApplication .window-content [data-type].accent .form-group.has-floating-label > input ::placeholder,
@@ -2656,7 +2619,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 
 .clickableImageContainer {
   display: inline-flex;
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   align-items: center;
@@ -2672,7 +2634,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   left: 5px;
   display: flex;
   align-items: flex-start;
-  height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
   transition: opacity 100ms ease-in;
@@ -2696,7 +2657,6 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   min-width: 50%;
 }
 .clickableImageContainer .displayTiles button {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   white-space: nowrap;
@@ -2745,10 +2705,8 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .sheet.item .clickableImageContainer {
   padding: unset;
   margin: unset;
-  max-width: -webkit-fit-content;
   max-width: -moz-fit-content;
   max-width: fit-content;
-  max-height: -webkit-fit-content;
   max-height: -moz-fit-content;
   max-height: fit-content;
 }
