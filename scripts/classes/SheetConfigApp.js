@@ -1,4 +1,6 @@
-import { HelperFunctions } from "./HelperFunctions";
+"use strict";
+import { HelperFunctions } from "./HelperFunctions.js";
+import { MODULE_ID } from "../debug-mode.js";
 
 Hooks.on("ready", ()=> {
     let app = new SheetConfigApp()

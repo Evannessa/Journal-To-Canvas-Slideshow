@@ -48,7 +48,6 @@
   ],
   "esmodules": [
     "scripts/shim.js",
-    "scripts/init.js",
     "scripts/ClickImageInJournal.js",
     "scripts/classes/MultiMediaPopout.js",
     "scripts/classes/SlideshowConfig.test.js",
@@ -68,7 +67,8 @@
     "scripts/hooks.js",
     "scripts/data/ModuleManager.js",
     "scripts/classes/SheetImage.test.js",
-    "scripts/classes/SheetConfigApp.js"
+    "scripts/classes/SheetConfigApp.js",
+    "scripts/init.js"
   ],
   "styles": [
     "styles/styles.css"

@@ -40,10 +40,10 @@ export class CanvasIndicators {
      * https://github.com/theripper93/tile-sort/blob/master/scripts/main.js
      * @returns - the created sprite
      */
-    static createV10Indicator(tile, fillAlpha, color) {
+    static createV10Indicator(tile, fillAlpha, color, version) {
         let tileImg = tile.mesh;
         if (!tileImg || !tileImg.texture.baseTexture) return;
-        let sprite = new PIXI.Sprite.from(tileImg.texture);
+        let sprite = version < 11 ? new PIXI.Sprite.from(tileImg.texture) : PIXI.Sprite.from(tileImg.texture);
         sprite.isSprite = true;
         sprite.width = tile.document.width;
         sprite.height = tile.document.height;
@@ -114,7 +114,8 @@ export class CanvasIndicators {
             overlaySprite = CanvasIndicators.createV10Indicator(
                 tileObject,
                 fillAlpha,
-                color
+                color,
+                game.version
             );
             tileObject.overlayContainer.addChild(overlaySprite);
         }

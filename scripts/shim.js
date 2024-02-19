@@ -155,4 +155,6 @@ Hooks.once("init", () => {
             }
         });
     }
+    console.log("Testing if JTCS is ready")
+    
 });

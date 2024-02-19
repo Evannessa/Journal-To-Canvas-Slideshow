@@ -43,17 +43,12 @@ Hooks.once("ready", () => {
             "error"
         );
     }
-  ui.notifications.notify(
-            'JTCS Art Gallery is working',
-            "error"
-        );
 });
 
-Hooks.once("init", async () => {
-    ui.notifications.notify(
-            'JTCS Art Gallery is working',
-            "info"
-        );
+
+
+Hooks.on("init", async () => {
+
     console.log("Initializing Journal to Canvas Slideshow");
 
     //register settings
