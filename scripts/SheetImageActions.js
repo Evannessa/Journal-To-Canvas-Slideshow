@@ -101,6 +101,14 @@ export const sheetImageActions = {
                     }
 
                     UIA.toggleActiveStyles(event);
+                    if(game.modules.get("monks-enhanced-journal").active === true){
+                        // debugger
+                        await app.render()
+                        // if(journalEntry.sheet){
+                            // await journalEntry.sheet.render(true)
+                        // }
+
+                    }
                 },
             },
             changeControlsPosition: {

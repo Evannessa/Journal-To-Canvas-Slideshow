@@ -8,8 +8,33 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
  * @returns object containing registerHooks function
  */
 export const setupHookHandlers = async () => {
-	async function monksTest() {
-		console.log("Rendering monks journal");
+	async function monksTest(app, html, options) {
+		// console.log(app, html[0])
+	
+
+		await JTCSModules.SheetImageApp.applyImageClasses(app, html);
+	}
+	async function addContextItem(dialog, html, data) {
+		console.log({ dialog, html, data }, "Add context item")
+		const menu = {
+			"name": "Toggle JTCS Art Gallery Controls",
+			"icon": "<i class=\"fas fa-cog\"></i>",
+			"callback": async function (target) {
+				let journalId = target[0].dataset.documentId
+				let journal = game.journal.get(journalId)
+				let oldValue = await HelperFunctions.getFlagValue(
+					journal,
+					"showControls",
+					"",
+					false
+				);
+				let newValue = oldValue ? false : true
+				await HelperFunctions.setFlagValue(journal, "showControls", newValue)
+				return ui.notifications.warn(journal.name + ' Controls are now' + newValue.toString());
+			},
+		}
+		html.push(menu)
+
 	}
 
 	async function renderSlideshowConfig(...args) {
@@ -29,7 +54,10 @@ export const setupHookHandlers = async () => {
 	 */
 
 	async function renderImageControls(app, html) {
-		console.log("Rendering image controls", app, html);
+		// console.log("Rendering image controls", app, html);
+        // if(game.modules.get("monks-enhanced-journal").active){
+		// 	return
+		// }
 		if (!game.user.isGM) {
 			return;
 		}
@@ -104,16 +132,17 @@ export const setupHookHandlers = async () => {
 	}
 
 	const hookHandlers = {
+		addContextItem: {
+			hooks: [
+				"getActorDirectoryEntryContext",
+				"getJournalDirectoryEntryContext",
+				"getItemDirectoryEntryContext",
+			],
+			handlerFunction: addContextItem
+		},
 		renderMonksJournal: {
 			hooks: [
-				"getJournalSheetHeaderButtons",
-				"getJournalDirectoryEntryContext",
-				"renderJournalSheet",
-				"renderJournalPageSheet",
 				"renderEnhancedJournal",
-				"renderJournalDirectory",
-				"renderEnhancedJournalSheet",
-				"getDocumentSheetHeaderButtons",
 			],
 			handlerFunction: monksTest,
 		},
@@ -128,13 +157,12 @@ export const setupHookHandlers = async () => {
 				"renderActorSheet",
 				"renderJournalSheet",
 				"renderJournalPageSheet",
-				"renderEnhancedJournal",
+				// "renderEnhancedJournal",
 				"renderJournalDirectory",
-				"renderEnhancedJournalSheet",
-				"getDocumentSheetHeaderButtons",
+				// "renderEnhancedJournalSheet",
+				// "getDocumentSheetHeaderButtons",
 				"update",
 			],
-			// hooks: ["renderJournalSheet"],
 			handlerFunction: renderImageControls,
 		},
 		renderSlideshowConfig: {

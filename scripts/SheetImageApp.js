@@ -39,18 +39,37 @@ export class SheetImageApp {
      * @param {*} html
      */
     static async applyImageClasses(app, html) {
+        let enhancedJournal = false
+        let outerJournal = false
+	    let targetElement
+		if(html[0]?.id === "MonksEnhancedJournal"){
+			console.log("Fully enhanced journal")
+			targetElement = html[0].querySelector(".enhanced-journal")
+            enhancedJournal = true
+            outerJournal = true
+		}else if(html[0]?.classList?.contains("enhanced-journal")){
+			console.log("Page within journal")
+			targetElement = html[0]
+            enhancedJournal = true
+		}
+
+     
         if (game.user.isGM) {
             const whichSheets = await HelperFunctions.getSettingValue(
                 "artGallerySettings",
                 "sheetSettings.modularChoices"
             );
-            const doc = app.document;
+            const doc = !enhancedJournal ? app.document : app.object;
             let onThisSheet = await HelperFunctions.getFlagValue(
                 doc,
                 "showControls",
                 "",
                 false
             );
+            // let monksJournalEntry = await doc.getFlags("monks-enhanced-journal",)
+            // if(game.modules.get("monks-enhanced-journal").active === true){
+
+            // }
 
             let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
@@ -60,7 +79,7 @@ export class SheetImageApp {
             // }
             // for v10 +
             if (game.version >= 10) {
-                if (documentName === "journalEntryPage") {
+                if (documentName === "journalEntryPage" && doc.type === "text") {
                     documentName = "journalEntry";
                     onThisSheet = await HelperFunctions.getFlagValue(
                         doc.parent,
@@ -71,7 +90,8 @@ export class SheetImageApp {
                 }
             }
             let selectorString = "img, video, .lightbox-image";
-            if (whichSheets[documentName] || onThisSheet === true) {
+            // debugger
+            if ((whichSheets[documentName] || onThisSheet === true) && !outerJournal) {
                 if (onThisSheet) {
                     if (documentName === "journalEntry" && game.version < 10) {
                         html.find(selectorString).addClass("clickableImage");
@@ -85,9 +105,7 @@ export class SheetImageApp {
                     ).forEach((img) => SheetImageApp.injectImageControls(img, app));
                 }
             }
-            if(game.modules.get("monks-enhanced-journal").active){
-
-                console.log("Monks is active")
+            if(game.modules.get("monks-enhanced-journal").active && enhancedJournal){
                 SheetImageApp.injectSheetWideControls(app)
             }else{
                 if (doc.documentName !== "JournalEntryPage") {
@@ -172,8 +190,9 @@ export class SheetImageApp {
     static async injectSheetWideControls(journalSheet) {
         let template = game.JTCS.templates["sheet-wide-controls"];
       //  await SheetImageApp.applySheetFadeSettings(journalSheet);
+        let document = journalSheet.document || journalSheet.object
         let isActive = await HelperFunctions.getFlagValue(
-            journalSheet.document,
+            document,
             "showControls",
             "",
             false
@@ -192,13 +211,13 @@ export class SheetImageApp {
             targetElement = journalSheet[0]
         }else{
             targetElement = journalSheet.element[0]
-            if (journalSheet.document.documentName === "JournalEntryPage") {
+            if (document.documentName === "JournalEntryPage") {
                 selector = ".journal-page-content";
             }
         }
         if(game.modules.get("monks-enhanced-journal").active){
             // selector = ".monks-enhanced-journal .mainbar"
-            selector = ".editor-content"
+            selector = ".enhanced-journal-body"
         }
         let $editorElement = $(targetElement.querySelector(selector));
         $editorElement.prepend(renderHtml);
@@ -227,7 +246,13 @@ export class SheetImageApp {
         universalInterfaceActions.toggleHideAllSiblings(null, controlsToggleButton);
     }
 
-    // handle any interaction event
+    /**
+     * Handle any interation event from the user
+     * @param {*} event  - the input event
+     * @param {*} journalSheet - the journal sheet where the event took place
+     * @param {string} actionType - whether it was a button click, hover, input change, etc.
+     * @param {boolean} isItem  - if the element interacted with is a sheet-wide control or an item-specific control
+     */
     static async handleAction(event, journalSheet, actionType = "action", isItem = true) {
         event.preventDefault();
         let targetElement = $(event.currentTarget);
@@ -264,6 +289,7 @@ export class SheetImageApp {
                 handlerPropertyString = "onChange";
                 break;
         }
+        // get the actions for this specific type of action
         let actionData = getProperty(sheetImageActions, action);
 
         if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
@@ -282,7 +308,7 @@ export class SheetImageApp {
     }
 
     /**
-     *
+     * activate the listeners for each image
      * @param data - the data object
      */
     static async activateImageEventListeners(data) {

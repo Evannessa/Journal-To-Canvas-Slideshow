@@ -3,8 +3,8 @@ import { HelperFunctions } from "./HelperFunctions.js";
 import { MODULE_ID } from "../debug-mode.js";
 
 Hooks.on("ready", ()=> {
-    let app = new SheetConfigApp()
-    app.render(true)
+    // let app = new SheetConfigApp()
+    // app.render(true)
 })
 
 /**
@@ -44,8 +44,9 @@ export class SheetConfigApp extends FormApplication {
                 "",
                 false
             ); 
-            journalOptions.push(onThisSheet)
+            journalOptions.push({journal: journal, showControls: onThisSheet})
         }
+        // console.log(journalOptions)
         return {
             journalOptions
         };
@@ -54,7 +55,7 @@ export class SheetConfigApp extends FormApplication {
     async activateListeners(html) {
         // super.activateListeners(html);
         html = $(html[0].closest(".window-app"));
-        this.hideButtons(html[0]);
+        // this.hideButtons(html[0]);
         html.find(".window-content").attr("data-fade-all", true);
         // await this.setUIColors(html);
         // this._handleToggle(html);

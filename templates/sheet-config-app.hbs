@@ -2,7 +2,11 @@
     <form action="">
     <ul class="flex-column gap-small reset-margin reset-padding">
 		{{#each journalOptions as |option|}}
-            <li>{{option}}</li>
+            <li>
+                {{option.journal.name}}
+                {{option.journal.id}}
+                {{option.showControls}}
+            </li>
         {{/each}}
     </ul>
     </form>
