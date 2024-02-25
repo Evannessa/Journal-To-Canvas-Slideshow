@@ -2657,11 +2657,11 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   min-width: 50%;
 }
 .clickableImageContainer .displayTiles button {
-  width: -moz-fit-content;
-  width: fit-content;
-  white-space: nowrap;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  white-space: nowrap !important;
   border: unset;
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow) !important;
   background-color: var(--data-art-color);
   box-shadow: unset;
   color: var(--JTCS-text-color-on-fill);
@@ -2671,6 +2671,18 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   transition: transform 120ms ease-in-out;
 }
 .clickableImageContainer .displayTiles button:hover, .clickableImageContainer .displayTiles button:focus {
+  transform: scale(1.12);
+}
+.clickableImageContainer .displayTiles button[data-action="tileButton.click.displayImageOnTile"] {
+  background-color: var(--data-art-color);
+  box-shadow: unset;
+  color: var(--JTCS-text-color-on-fill);
+  border: unset;
+  transform: scale(1);
+  transition: transform 120ms ease-in-out;
+  transition: transform 120ms ease-in-out;
+}
+.clickableImageContainer .displayTiles button[data-action="tileButton.click.displayImageOnTile"]:hover, .clickableImageContainer .displayTiles button[data-action="tileButton.click.displayImageOnTile"]:focus {
   transform: scale(1.12);
 }
 .clickableImageContainer .displayTiles button[data-is-default] {
@@ -2699,6 +2711,39 @@ button.icon-button.active:hover, button.icon-button.active:focus {
 .clickableImageContainer .displayTiles label:last-of-type {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
+}
+
+/**/
+.monks-journal-sheet .journal-sheet-header .clickableImageContainer {
+  padding: unset;
+  margin: unset;
+  width: 100%;
+  height: 100%;
+}
+.monks-journal-sheet .journal-sheet-header .clickableImageControls .displayLocations button {
+  color: var(--color-text-secondary);
+  background-color: var(--bg-color);
+  box-shadow: 0 0 10px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  margin: unset;
+}
+.monks-journal-sheet .journal-sheet-header .clickableImageControls .displayTiles {
+  flex: auto;
+  height: unset;
+  width: unset;
+  border: none;
+  font-size: inherit;
+  line-height: unset;
+  padding: unset;
+  cursor: pointer;
+  box-shadow: initial;
+}
+
+.slideshow-body .slide-inner .clickableImageContainer {
+  min-width: 100%;
+  min-height: 100%;
+  z-index: 900;
+  padding: unset;
 }
 
 .sheet.actor .clickableImageContainer,

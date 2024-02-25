@@ -2,11 +2,19 @@
 @use "utility" as *;
 @use "mixins" as *;
 @import "_variables";
+
 :root {
     --box-shadow-inset: 1px 1px 3px 1px rgba(0, 0, 0, 0.36) inset;
     --box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.36);
 }
-$tile-types: ("frame", "art", "unlinked", "default");
+
+$tile-types: (
+    "frame",
+    "art",
+    "unlinked",
+    "default"
+);
+
 #slideshow-config,
 .clickableImageContainer {
     .empty-state {
@@ -14,15 +22,18 @@ $tile-types: ("frame", "art", "unlinked", "default");
         background-color: var(--JTCS-elevation-BG-color);
         color: var(--JTCS-text-color-on-bg);
         text-align: center;
+
         span.accent {
             padding-inline: 0.15rem;
             font-weight: bold;
         }
+
         &[data-type="art"] {
             span.accent {
                 color: var(--data-art-color);
             }
         }
+
         &[data-type="frame"] {
             span.accent {
                 color: var(--data-frame-color);
@@ -34,12 +45,14 @@ $tile-types: ("frame", "art", "unlinked", "default");
 #JTCSSettingsApplication,
 #slideshow-config,
 #JTCS-custom-dialog {
-    button > i {
+    button>i {
         margin-right: unset;
     }
+
     .window-content {
         --color-shadow-primary: var(--JTCS-accent-color);
         background: var(--JTCS-background-color);
+
         .container {
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
@@ -47,16 +60,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
         }
 
         --flow-space: 2em;
+
         .flow {
             @extend .flow;
         }
+
         .elevation-1 {
             background: var(--JTCS-background-color);
         }
+
         .form-group,
         .form-group-stacked,
         .input-span {
             button {
+
                 &.danger,
                 &.theme {
                     width: 100%;
@@ -65,37 +82,46 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     // margin-right: auto;
                 }
             }
+
             &.has-floating-label {
                 input {
                     width: 100%;
                     max-width: 300px;
                 }
+
                 label {
                     color: var(--JTCS-text-color-on-bg);
                 }
             }
+
             .file-picker-group {
                 align-items: stretch;
+
                 input {
                     flex: 1;
                     width: 100%;
                     max-width: 450px;
                     border: 1px solid var(--JTCS-accent-color-20);
                 }
+
                 button {
                     flex: 0;
                 }
             }
+
             &.color-picker-container {
                 input {
                     width: 100%;
                     max-width: 300px;
                 }
+
                 align-items: stretch;
+
                 .color-picker-group {
                     flex: 0;
                     min-width: fit-content;
                 }
+
                 .color-actions {
                     flex: 0;
                 }
@@ -104,10 +130,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
 
         .form-group-stacked {
             --flow-space: 1em;
+
             p.notes {
                 color: var(--JTCS-text-color-on-bg);
             }
         }
+
         select,
         input,
         label,
@@ -123,249 +151,285 @@ $tile-types: ("frame", "art", "unlinked", "default");
             "li:not(.accent) label",
             ".icon-button:not(.danger):not(.danger-text)"
         );
-        $selectors: join($selectors, returnAllHeadings());
-        // $headers: returnAllHeadings();
-        $properties: (
-            color: var(--JTCS-text-color-on-bg),
-        );
-        @include printSelectors($selectorList: $selectors, $propertyMap: $properties);
+    $selectors: join($selectors, returnAllHeadings());
+    // $headers: returnAllHeadings();
+    $properties: (
+        color: var(--JTCS-text-color-on-bg),
+    );
+@include printSelectors($selectorList: $selectors, $propertyMap: $properties);
 
-        // remove all border-bottoms on headings
+// remove all border-bottoms on headings
 
-        @include printSelectors(
-            $selectorList: returnAllHeadings(),
-            $propertyMap: (
-                border-bottom: unset,
-                color: var(--JTCS-accent-color),
-            )
-        );
+@include printSelectors($selectorList: returnAllHeadings(),
+    $propertyMap: (border-bottom: unset,
+        color: var(--JTCS-accent-color),
+    ));
 
-        // have labels highlight with accent color
-        .form-group,
-        .color-picker-group,
-        .file-picker-group,
-        .input-span {
-            &.has-floating-label {
-                input {
-                    height: 100%;
-                }
-                label {
-                    white-space: nowrap;
-                }
-                &:hover {
-                    --accent-color: var(--JTCS-accent-color);
-                    label {
-                        white-space: nowrap;
-                        color: var(--accent-color);
-                    }
-                }
-                &:focus {
-                    outline: 1px solid var(--JTCS-accent-color);
-                }
-            }
-        }
-        .form-group,
-        .form-group-stacked {
-            .input-span {
-                flex: 1;
-                width: fit-content;
-                max-width: fit-content;
-            }
-        }
-        // remove borders from spans and list items
-        span:not(.input-span):not(.tick-box):not(.tick-circle) {
-            border-color: transparent;
+// have labels highlight with accent color
+.form-group,
+.color-picker-group,
+.file-picker-group,
+.input-span {
+    &.has-floating-label {
+        input {
+            height: 100%;
         }
 
-        li.tile-list-item:not(.new-tile-list-item) {
-            box-shadow: var(--JTCS-box-shadow-color) 0px 1px 3px;
-            background-color: var(--JTCS-tile-item-bg-color);
-            .actions .icon-button {
-                box-shadow: unset;
-                outline: unset;
-                background-color: unset;
-                color: var(--JTCS-text-color-on-bg);
-                transition: color 150ms ease-in-out;
-                &:hover,
-                &:focus {
-                    box-shadow: unset;
-                    outline: unset;
-                    background-color: unset;
-                    color: var(--JTCS-accent-color);
-                }
-                &.active {
-                    color: var(--JTCS-accent-color);
-                    filter: drop-shadow(0px 0px 2px var(--JTCS-accent-color));
-                    transform: scale(1);
-                    transition: transform 150ms ease-in-out;
-                    &:hover,
-                    &:focus {
-                        transform: scale(1.12);
-                    }
-                }
-            }
-            // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
-            // var(--JTCS-background-color-60) 0px 4px 6px -1px, var(--JTCS-background-color-10) 0px 1px 0px inset;
+        label {
+            white-space: nowrap;
         }
 
-        input[type="text"],
-        select {
-            font-family: Arial, Helvetica, sans-serif;
-            border: 1px solid var(--JTCS-border-color);
-            background-color: var(--JTCS-input-background-color);
-            option {
-                background-color: var(--JTCS-input-background-color);
-                &:hover,
-                &:focus {
-                    background-color: var(--JTCS-accent-color);
-                    color: var(--JTCS-text-color-on-fill);
-                }
-            }
-            &:hover {
-                border-color: var(--JTCS-accent-color);
-            }
-        }
-        .color-picker-group {
+        &:hover {
+            --accent-color: var(--JTCS-accent-color);
+
             label {
-                background-color: var(--JTCS-background-color);
-                padding-inline: 0.15rem;
-                border-radius: 3px;
-            }
-        }
-        input[data-responsive-color]#backgroundColor {
-            border: 1px solid var(--JTCS-accent-color-20);
-        }
-
-        //for neutral text
-        input[type="radio"],
-        input[type="text"],
-        select {
-            color: var(--JTCS-text-color-on-bg);
-        }
-        // for the list items in the slideshow config
-        [data-type="art"] {
-            --accent-color: var(--data-art-color);
-            // border-color: var(--accent-color);
-            transition: border-color 150ms ease-in;
-        }
-
-        [data-type="frame"] {
-            --accent-color: var(--data-frame-color);
-            // border-color: var(--accent-color);
-            transition: border-color 150ms ease-in;
-        }
-        [data-type="unlinked"] {
-            --accent-color: var(--data-unlinked-color);
-            // border-color: var(--accent-color);
-            transition: border-color 150ms ease-in;
-        }
-        [data-is-default] {
-            --accent-color: var(--data-default-color);
-            border-color: var(--accent-color);
-            border: 2px solid var(--accent-color);
-            transition: border-color 150ms ease-in, border-style 150ms ease-in;
-            &:not(.accent) {
-                // outline: 1px solid var(--accent-color);
-                border: 2px dotted var(--accent-color);
-                transition: border-color 150ms ease-out, border-style 150ms ease-in;
-            }
-            .badge {
-                background-color: var(--accent-color);
-                color: var(--JTCS-text-color-on-fill);
-            }
-            &:span {
+                white-space: nowrap;
                 color: var(--accent-color);
             }
         }
-        [data-type] {
+
+        &:focus {
+            outline: 1px solid var(--JTCS-accent-color);
+        }
+    }
+}
+
+.form-group,
+.form-group-stacked {
+    .input-span {
+        flex: 1;
+        width: fit-content;
+        max-width: fit-content;
+    }
+}
+
+// remove borders from spans and list items
+span:not(.input-span):not(.tick-box):not(.tick-circle) {
+    border-color: transparent;
+}
+
+li.tile-list-item:not(.new-tile-list-item) {
+    box-shadow: var(--JTCS-box-shadow-color) 0px 1px 3px;
+    background-color: var(--JTCS-tile-item-bg-color);
+
+    .actions .icon-button {
+        box-shadow: unset;
+        outline: unset;
+        background-color: unset;
+        color: var(--JTCS-text-color-on-bg);
+        transition: color 150ms ease-in-out;
+
+        &:hover,
+        &:focus {
+            box-shadow: unset;
+            outline: unset;
+            background-color: unset;
+            color: var(--JTCS-accent-color);
+        }
+
+        &.active {
+            color: var(--JTCS-accent-color);
+            filter: drop-shadow(0px 0px 2px var(--JTCS-accent-color));
+            transform: scale(1);
+            transition: transform 150ms ease-in-out;
+
             &:hover,
-            &:focus,
-            &:focus-within {
-                color: var(--accent-color);
-                transition: color 150ms ease-in, border-color 150 ease-in;
-                .form-group.has-floating-label {
-                    > label.floating-label {
-                        transition: color 150ms ease-in;
-                        color: var(--accent-color);
-                    }
-                    > input,
-                    > select {
-                        font-family: Arial, Helvetica, sans-serif;
-                        border-color: var(--accent-color);
-                        transition: border-color 150ms ease-out;
-                        ::placeholder {
-                            color: var(--accent-color);
-                        }
-                    }
-                }
-                &.border-accent {
-                    border-color: var(--accent-color);
-                    transition: border-color 150ms ease-out;
-                }
+            &:focus {
+                transform: scale(1.12);
             }
         }
+    }
 
-        //for all things with a "data-type" (referring to tile), and an accent class on them
-        [data-type].accent {
-            color: var(--accent-color);
-            transition: color 150ms ease-in, border-color 150 ease-in;
+    // box-shadow: var(--JTCS-background-color-40) 0px 0px 0px 2px,
+    // var(--JTCS-background-color-60) 0px 4px 6px -1px, var(--JTCS-background-color-10) 0px 1px 0px inset;
+}
 
-            .form-group.has-floating-label {
-                > label.floating-label {
-                    transition: color 150ms ease-in;
-                    color: var(--accent-color);
-                }
-                > input,
-                > select {
-                    // border: unset;
-                    // border-bottom: 2px solid;
+input[type="text"],
+select {
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid var(--JTCS-border-color);
+    background-color: var(--JTCS-input-background-color);
 
-                    font-family: Arial, Helvetica, sans-serif;
-                    border-color: var(--accent-color);
-                    transition: border-color 150ms ease-out;
-                    ::placeholder {
-                        color: var(--accent-color);
-                    }
-                }
+    option {
+        background-color: var(--JTCS-input-background-color);
+
+        &:hover,
+        &:focus {
+            background-color: var(--JTCS-accent-color);
+            color: var(--JTCS-text-color-on-fill);
+        }
+    }
+
+    &:hover {
+        border-color: var(--JTCS-accent-color);
+    }
+}
+
+.color-picker-group {
+    label {
+        background-color: var(--JTCS-background-color);
+        padding-inline: 0.15rem;
+        border-radius: 3px;
+    }
+}
+
+input[data-responsive-color]#backgroundColor {
+    border: 1px solid var(--JTCS-accent-color-20);
+}
+
+//for neutral text
+input[type="radio"],
+input[type="text"],
+select {
+    color: var(--JTCS-text-color-on-bg);
+}
+
+// for the list items in the slideshow config
+[data-type="art"] {
+    --accent-color: var(--data-art-color);
+    // border-color: var(--accent-color);
+    transition: border-color 150ms ease-in;
+}
+
+[data-type="frame"] {
+    --accent-color: var(--data-frame-color);
+    // border-color: var(--accent-color);
+    transition: border-color 150ms ease-in;
+}
+
+[data-type="unlinked"] {
+    --accent-color: var(--data-unlinked-color);
+    // border-color: var(--accent-color);
+    transition: border-color 150ms ease-in;
+}
+
+[data-is-default] {
+    --accent-color: var(--data-default-color);
+    border-color: var(--accent-color);
+    border: 2px solid var(--accent-color);
+    transition: border-color 150ms ease-in, border-style 150ms ease-in;
+
+    &:not(.accent) {
+        // outline: 1px solid var(--accent-color);
+        border: 2px dotted var(--accent-color);
+        transition: border-color 150ms ease-out, border-style 150ms ease-in;
+    }
+
+    .badge {
+        background-color: var(--accent-color);
+        color: var(--JTCS-text-color-on-fill);
+    }
+
+    &:span {
+        color: var(--accent-color);
+    }
+}
+
+[data-type] {
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        color: var(--accent-color);
+        transition: color 150ms ease-in, border-color 150 ease-in;
+
+        .form-group.has-floating-label {
+            >label.floating-label {
+                transition: color 150ms ease-in;
+                color: var(--accent-color);
             }
-            &.border-accent {
+
+            >input,
+            >select {
+                font-family: Arial, Helvetica, sans-serif;
                 border-color: var(--accent-color);
                 transition: border-color 150ms ease-out;
-            }
-            [data-type="unlinked"] {
-                --accent-color: var(--data-unlinked-color);
-                + label {
-                    --accent-color: var(--data-unlinked-color);
+
+                ::placeholder {
+                    color: var(--accent-color);
                 }
             }
         }
-    }
-    .primary {
-        @include JTCS-accent-fill($hoverStyle: "border");
-    }
 
-    button {
-        &.file-picker,
-        &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary):not([data-button="danger"]):not([data-button="reset"]):not(.icon-button):not(.instructions__button) {
-            @include JTCS-accent-fill();
+        &.border-accent {
+            border-color: var(--accent-color);
+            transition: border-color 150ms ease-out;
         }
     }
-    .secondary {
-        @include JTCS-accent-ghost();
+}
+
+//for all things with a "data-type" (referring to tile), and an accent class on them
+[data-type].accent {
+    color: var(--accent-color);
+    transition: color 150ms ease-in, border-color 150 ease-in;
+
+    .form-group.has-floating-label {
+        >label.floating-label {
+            transition: color 150ms ease-in;
+            color: var(--accent-color);
+        }
+
+        >input,
+        >select {
+            // border: unset;
+            // border-bottom: 2px solid;
+
+            font-family: Arial, Helvetica, sans-serif;
+            border-color: var(--accent-color);
+            transition: border-color 150ms ease-out;
+
+            ::placeholder {
+                color: var(--accent-color);
+            }
+        }
     }
-    .primary,
-    .secondary {
-        max-width: 300px;
+
+    &.border-accent {
+        border-color: var(--accent-color);
+        transition: border-color 150ms ease-out;
     }
+
+    [data-type="unlinked"] {
+        --accent-color: var(--data-unlinked-color);
+
+        +label {
+            --accent-color: var(--data-unlinked-color);
+        }
+    }
+}
+}
+
+.primary {
+    @include JTCS-accent-fill($hoverStyle: "border");
+}
+
+button {
+
+    &.file-picker,
+    &[type="button"]:not(.danger):not([data-action="scrollTo"]):not(.new-tile-button):not(.secondary):not([data-button="danger"]):not([data-button="reset"]):not(.icon-button):not(.instructions__button) {
+        @include JTCS-accent-fill();
+    }
+}
+
+.secondary {
+    @include JTCS-accent-ghost();
+}
+
+.primary,
+.secondary {
+    max-width: 300px;
+}
 }
 
 #JTCSSettingsApplication {
     // min-height: 50vh;
     height: clamp(50vh, 530px, 80vh);
     max-width: 60vw;
+
     header,
     footer {
         position: relative;
+
         &:after {
             position: absolute;
             pointer-events: none;
@@ -378,13 +442,16 @@ $tile-types: ("frame", "art", "unlinked", "default");
             box-shadow: 0px 2px 8px var(--JTCS-box-shadow-color);
         }
     }
+
     footer {
         &:after {
             box-shadow: 0px -2px 8px var(--JTCS-box-shadow-color);
         }
     }
+
     .color-picker-group {
         position: relative;
+
         .picker_wrapper {
             position: absolute;
             /* top: -50%; */
@@ -393,16 +460,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
             left: 100%;
         }
     }
+
     .window-content {
         padding: unset;
+
         // overflow: hidden;
         form {
             display: flex;
             flex-direction: column;
+
             .form-content {
                 flex: 1 1 0;
-                > .form-group,
-                > .form-group-stacked {
+
+                >.form-group,
+                >.form-group-stacked {
                     img.demo-img {
                         min-width: 200px;
                         width: 60%;
@@ -411,36 +482,45 @@ $tile-types: ("frame", "art", "unlinked", "default");
                         margin-right: auto;
                         margin-block: 1rem;
                     }
+
                     a {
                         display: inline-block;
                     }
+
                     select {
                         min-width: 200px;
                     }
+
                     fieldset {
                         border: unset;
                     }
+
                     border-radius: 8px;
                     background-color: var(--JTCS-elevation-BG-color);
                     box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
                     padding: 1rem;
                 }
             }
+
             input[type="range"]::-webkit-slider-thumb {
                 background-color: var(--JTCS-accent-color);
             }
+
             .range-value {
                 color: var(--JTCS-accent-color);
                 font-weight: bold;
             }
+
             p.notes {
                 font-weight: 500;
                 margin-bottom: unset;
+
                 span.accent {
                     --accent-color: var(--JTCS-accent-color);
                     color: var(--JTCS-accent-color);
                 }
             }
+
             .sheet-footer {
                 flex: 0;
             }
@@ -451,19 +531,23 @@ $tile-types: ("frame", "art", "unlinked", "default");
 #sheet-controls {
     z-index: 100;
     position: absolute;
+
     &[data-position="bottom-right"] {
         bottom: 5px;
         right: 30px;
         flex-direction: row-reverse;
     }
+
     &[data-position="top-left"] {
         top: 5px;
         left: 5px;
     }
+
     &[data-position="bottom-left"] {
         bottom: 5px;
         left: 5px;
     }
+
     &[data-position="top-right"] {
         bottom: 5px;
         left: 5px;
@@ -471,19 +555,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
 
     // transform: translateX(-50%);
     min-width: 65px;
+
     button {
         width: 36px;
         height: 36px;
         --color-shadow-primary: var(--JTCS-accent-color);
-        @include JTCS-accent-fill(
-            $include-shadow: false,
+        @include JTCS-accent-fill($include-shadow: false,
             $is-icon-button: true,
-            $primary-color: var(--JTCS-accent-color)
-        );
+            $primary-color: var(--JTCS-accent-color));
+
         // background-color: var(--JTCS-accent-color);
         &.active {
             @include JTCS-accent-fill($include-shadow: true, $is-icon-button: true);
         }
+
         &.JTCS-hidden {
             @extend .JTCS-hidden;
         }
@@ -498,9 +583,11 @@ $tile-types: ("frame", "art", "unlinked", "default");
         --flow-space: 0.5rem;
         color: var(--color-text-primary);
         scrollbar-color: var(--JTCS-accent-color) var(--JTCS-accent-color-70);
+
         &::-webkit-scrollbar-track {
             background-color: var(--JTCS-accent-color-70);
         }
+
         &::-webkit-scrollbar-thumb {
             background-color: var(--JTCS-accent-color);
             border-color: var(--JTCS-accent-color-50);
@@ -515,12 +602,14 @@ $tile-types: ("frame", "art", "unlinked", "default");
             .form-group {
                 flex: 2;
             }
+
             .actions {
                 flex: 1;
                 min-width: 66px;
                 max-width: 108px;
             }
         }
+
         #JTCS-config-instructions {
             position: relative;
             margin-top: unset;
@@ -542,185 +631,215 @@ $tile-types: ("frame", "art", "unlinked", "default");
                 border-top-right-radius: 0px;
                 background-color: transparent;
                 width: 100%;
+
                 p,
                 ul,
                 ol,
                 li {
                     color: var(--JTCS-text-color-on-bg);
                 }
-                $list: ("art", "frame", "unlinked", "default");
-                @each $var in $list {
-                    .#{$var}-color {
-                        color: var(--data-#{$var}-color);
-                        font-weight: bold;
-                    }
-                }
 
-                &:before {
-                    content: "";
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    pointer-events: none;
-                    z-index: -1;
-                    border-top: 2px solid var(--JTCS-box-shadow-color);
-                    background-color: var(--JTCS-background-color-00);
-                    opacity: 95%;
-                    backdrop-filter: blur(12px);
-                    border-radius: 5px;
-                    border-top-left-radius: 0px;
-                    border-left: 0.25rem solid var(--JTCS-accent-color);
-                    border-bottom-left-radius: 0px;
-                    // filter: blur(3px);
-                }
-                &:not(.JTCS-hidden) {
-                    padding: 1rem;
-                    min-height: 10em;
-                    // max-height
-                }
-                //     opacity: 0%;
-            }
-            button {
-                background-color: var(--JTCS-background-color);
-                border: 2px solid var(--JTCS-accent-color);
-                color: var(--JTCS-accent-color);
-                &.active {
-                    @include JTCS-accent-fill(
-                        $include-shadow: true,
-                        $is-icon-button: true
-                    );
-                }
-
-                // @include JTCS-accent-fill($include-shadow: true);
-                position: absolute;
-                // top: 0;
-                bottom: 100%;
-                left: 0;
-                // right: 100%;
-                max-width: 2rem;
-                max-height: 2rem;
-            }
-        }
-        form {
-            height: 100%;
-            // max-height: 80vh;
-        }
-        .tilesInScene {
-            .wrapper {
-                $tile-types: (
-                    art: "art-tiles",
-                    frame: "frame-tiles",
+                $list: (
+                    "art",
+                    "frame",
+                    "unlinked",
+                    "default"
                 );
-                $tile-type-colors: ();
-                @each $type, $selector in $tile-types {
-                    &.#{$selector} {
-                        h3 {
-                            background-color: var(--data-#{$type}-color);
-                            width: 100%;
-                            color: var(--JTCS-text-color-on-fill);
-                            border-top-left-radius: 8px;
-                            border-top-right-radius: 8px;
-                            white-space: nowrap;
-                            text-align: center;
-                            margin-bottom: unset;
-                        }
-                        .item-wrapper {
-                            border-color: var(--data-#{$type}-color);
-                            ul {
-                                scrollbar-color: var(--data-#{$type}-color)
-                                    var(--data-#{$type}-color);
-                                &::-webkit-scrollbar-track {
-                                    background-color: var(--JTCS-background-color-30);
-                                }
-                                &::-webkit-scrollbar-thumb {
-                                    background-color: var(--data-#{$type}-color);
-                                    border-color: var(--data-#{$type}-color);
-                                    box-shadow: 0px 0px 4px var(--data-#{$type}-color);
-                                }
-                            }
-                        }
-                        .new-tile-list-item {
-                            button {
-                                border-radius: unset;
-                                border-bottom-left-radius: 5px;
-                                border-bottom-right-radius: 5px;
-                                @include JTCS-accent-ghost(
-                                    $primary-color: var(--data-#{$type}-color),
-                                    $border-side: "-top"
-                                );
-                                border-width: 1px;
-                                &:hover,
-                                &:focus {
-                                    box-shadow: unset;
-                                }
-                            }
-                        }
-                    }
-                }
-                h3 {
-                    font-size: min(1.25em, 100%);
+
+            @each $var in $list {
+                .#{$var}-color {
+                    color: var(--data-#{$var}-color);
+                    font-weight: bold;
                 }
             }
 
-            height: 95%;
-            position: relative;
-            .wrapper {
-                overflow: hidden;
-                .item-wrapper {
-                    overflow: hidden;
-                }
+            &:before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: -1;
+                border-top: 2px solid var(--JTCS-box-shadow-color);
+                background-color: var(--JTCS-background-color-00);
+                opacity: 95%;
+                backdrop-filter: blur(12px);
+                border-radius: 5px;
+                border-top-left-radius: 0px;
+                border-left: 0.25rem solid var(--JTCS-accent-color);
+                border-bottom-left-radius: 0px;
+                // filter: blur(3px);
+            }
+
+            &:not(.JTCS-hidden) {
+                padding: 1rem;
+                min-height: 10em;
+                // max-height
+            }
+
+            //     opacity: 0%;
+        }
+
+        button {
+            background-color: var(--JTCS-background-color);
+            border: 2px solid var(--JTCS-accent-color);
+            color: var(--JTCS-accent-color);
+
+            &.active {
+                @include JTCS-accent-fill($include-shadow: true,
+                    $is-icon-button: true);
+            }
+
+            // @include JTCS-accent-fill($include-shadow: true);
+            position: absolute;
+            // top: 0;
+            bottom: 100%;
+            left: 0;
+            // right: 100%;
+            max-width: 2rem;
+            max-height: 2rem;
+        }
+    }
+
+    form {
+        height: 100%;
+        // max-height: 80vh;
+    }
+
+    .tilesInScene {
+        .wrapper {
+            $tile-types: (
+                art: "art-tiles",
+                frame: "frame-tiles",
+            );
+        $tile-type-colors: (
+        );
+
+    @each $type, $selector in $tile-types {
+        &.#{$selector} {
+            h3 {
+                background-color: var(--data-#{$type}-color);
+                width: 100%;
+                color: var(--JTCS-text-color-on-fill);
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                white-space: nowrap;
+                text-align: center;
+                margin-bottom: unset;
             }
 
             .item-wrapper {
-                display: flex;
-                flex-direction: column;
-                // background-color: var(--JTCS-background-color-10);
-                // box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
-                // max-height: 90%;
+                border-color: var(--data-#{$type}-color);
+
                 ul {
-                    flex: 1 0 0;
-                    // max-height: 90%;
+                    scrollbar-color: var(--data-#{$type}-color) var(--data-#{$type}-color);
+
+                    &::-webkit-scrollbar-track {
+                        background-color: var(--JTCS-background-color-30);
+                    }
+
+                    &::-webkit-scrollbar-thumb {
+                        background-color: var(--data-#{$type}-color);
+                        border-color: var(--data-#{$type}-color);
+                        box-shadow: 0px 0px 4px var(--data-#{$type}-color);
+                    }
                 }
-                .new-tile-list-item {
-                    flex: 0;
-                    height: 100%;
-                    button {
-                        height: 100%;
+            }
+
+            .new-tile-list-item {
+                button {
+                    border-radius: unset;
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+                    @include JTCS-accent-ghost($primary-color: var(--data-#{$type}-color),
+                        $border-side: "-top"
+                    );
+                    border-width: 1px;
+
+                    &:hover,
+                    &:focus {
+                        box-shadow: unset;
                     }
                 }
             }
         }
+    }
 
-        .tile-list-item {
-            &:focus-within {
-                outline: 2px solid var(--accent-color);
-            }
-            select {
-                height: var(--form-field-height);
-            }
-            // &[data-is-default] {
-            //     border-width: 5px;
-            //     border-color: hotpink !important;
-            // }
-        }
-        li {
-            --flow-space: 0.25em;
-        }
-        li .actions {
-            display: flex;
-            align-items: center;
-            flex: 0 0 50px;
-            justify-content: center;
-        }
-        h1,
-        h2,
-        h3 {
-            font-weight: bold;
+    h3 {
+        font-size: min(1.25em, 100%);
+    }
+}
+
+height: 95%;
+position: relative;
+
+.wrapper {
+    overflow: hidden;
+
+    .item-wrapper {
+        overflow: hidden;
+    }
+}
+
+.item-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    // background-color: var(--JTCS-background-color-10);
+    // box-shadow: 1px 0px 8px 2px var(--JTCS-box-shadow-color);
+    // max-height: 90%;
+    ul {
+        flex: 1 0 0;
+        // max-height: 90%;
+    }
+
+    .new-tile-list-item {
+        flex: 0;
+        height: 100%;
+
+        button {
+            height: 100%;
         }
     }
-    // --color-text-primary: ;
+}
+}
+
+.tile-list-item {
+    &:focus-within {
+        outline: 2px solid var(--accent-color);
+    }
+
+    select {
+        height: var(--form-field-height);
+    }
+
+    // &[data-is-default] {
+    //     border-width: 5px;
+    //     border-color: hotpink !important;
+    // }
+}
+
+li {
+    --flow-space: 0.25em;
+}
+
+li .actions {
+    display: flex;
+    align-items: center;
+    flex: 0 0 50px;
+    justify-content: center;
+}
+
+h1,
+h2,
+h3 {
+    font-weight: bold;
+}
+}
+
+// --color-text-primary: ;
 }
 
 .clickableImageContainer {
@@ -753,6 +872,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
         &:hover {
             opacity: 100%;
         }
+
     }
 
     .displayLocations {
@@ -765,39 +885,106 @@ $tile-types: ("frame", "art", "unlinked", "default");
         pointer-events: auto;
         display: flex;
         flex-wrap: wrap;
+
         button {
-            width: fit-content;
-            white-space: nowrap;
+            width: fit-content !important;
+            white-space: nowrap !important;
             border: unset;
-            box-shadow: var(--box-shadow);
+            box-shadow: var(--box-shadow) !important;
             @include JTCS-accent-fill($primary-color: var(--data-art-color));
+
+            &[data-action="tileButton.click.displayImageOnTile"] {
+                @include JTCS-accent-fill($primary-color: var(--data-art-color));
+            }
+
+
             &[data-is-default] {
                 @include JTCS-accent-fill($primary-color: var(--data-default-color));
             }
+
         }
+
         * {
             pointer-events: auto;
         }
+
         legend {
             background-color: inherit;
             padding: 0.5rem;
         }
+
         display: flex;
         flex-direction: row;
         border: none;
         color: white;
         padding: 0rem 0rem;
         min-width: 50%;
+
         label:first-of-type {
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
         }
+
         label:last-of-type {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
         }
     }
 }
+
+// For Monks-enhanced-journal
+
+/**/
+.monks-journal-sheet {
+    .journal-sheet-header {
+        .clickableImageContainer {
+            padding: unset;
+            margin: unset;
+            width: 100%;
+            height: 100%;
+        }
+
+        .clickableImageControls {
+            .displayLocations {
+                button {
+                    color: var(--color-text-secondary);
+                    background-color: var(--bg-color);
+                    box-shadow: 0 0 10px var(--shadow-color);
+                    border: 1px solid var(--border-color);
+                    margin: unset;
+                }
+            }
+
+            .displayTiles {
+                flex: auto;
+                height: unset;
+                width: unset;
+                border: none;
+                font-size: inherit;
+                line-height: unset;
+                padding: unset;
+                cursor: pointer;
+                box-shadow: initial;
+                // color: var(--mej-sheet-header-button-color);
+                // background: var(--mej-sheet-header-button-background);
+                // border-radius: 3px;
+            }
+        }
+
+    }
+}
+
+.slideshow-body {
+    .slide-inner {
+        .clickableImageContainer {
+            min-width: 100%;
+            min-height: 100%;
+            z-index: 900;
+            padding: unset;
+        }
+    }
+}
+
 .sheet.actor,
 .sheet.item {
     .clickableImageContainer {
@@ -810,6 +997,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
         .clickableImageControls {
             top: 0%;
             transform: translateY(0%);
+
             button.floating-control {
                 background: var(--bg-color);
                 border: unset;
@@ -825,17 +1013,20 @@ $tile-types: ("frame", "art", "unlinked", "default");
     outline: 2px dotted transparent;
     transition: all 100ms ease-out;
     flex: 1;
+
     &:hover {
         border: 2px solid var(--JTCS-accent-color);
         box-shadow: inset 2px 2px 8px rgba(50, 51, 59, 0.5);
         // outline: 2px dotted var(--JTCS-accent-color);
         cursor: pointer;
         transition: all 100ms ease-out;
-        & ~ .clickableImageControls {
+
+        &~.clickableImageControls {
             opacity: 100%;
             // pointer-events: auto;
         }
     }
+
     &:active {
         box-shadow: inset 4px 4px 16px rgba(50, 51, 59, 0.5);
     }
@@ -852,10 +1043,12 @@ $tile-types: ("frame", "art", "unlinked", "default");
     &:hover {
         color: var(--JTCS-warning-color);
     }
+
     color: var(--JTCS-danger-color);
 
     button:disabled {
         opacity: 50%;
+
         &:hover {
             cursor: not-allowed;
         }
@@ -864,25 +1057,31 @@ $tile-types: ("frame", "art", "unlinked", "default");
 
 .unlinked-tiles-list {
     padding-block: 2em;
+
     h3 {
         color: var(--accent-color);
     }
+
     ul {
         background-color: var(--JTCS-elevation-BG-color);
     }
+
     li {
         margin: unset;
         list-style-type: none;
         padding: unset;
+
         .input-span[data-variant="visible-tick"] {
             display: flex;
             height: 100%;
             width: 100%;
             align-items: center;
+
             input[type="radio"] {
                 margin-right: 0.5rem;
                 padding: 1rem;
-                & + label {
+
+                &+label {
                     display: flex;
                     gap: 1rem;
                     color: var(--JTCS-text-color-on-bg);
@@ -891,14 +1090,17 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     --border-color: var(--data-unlinked-color);
                     transition: color 150ms ease-in, background-color 150ms ease-in,
                         border-color 150ms ease-in;
+
                     .tick-box,
                     .tick-circle {
                         border-color: var(--JTCS-accent-color);
                     }
+
                     &:hover {
                         background-color: var(--data-unlinked-color);
                         color: var(--JTCS-text-color-on-fill);
                         border-color: var(--data-unlinked-color);
+
                         .tick-box,
                         .tick-circle {
                             transition: border-color 150ms ease-in;
@@ -907,6 +1109,7 @@ $tile-types: ("frame", "art", "unlinked", "default");
                     }
                 }
             }
+
             label {
                 padding: 1rem;
                 height: 100%;

@@ -5,6 +5,13 @@ export class HelperFunctions {
     static MODULE_ID = "journal-to-canvas-slideshow";
 
     /**
+     * Check if MonksEnhanced Journal module is active
+     * @returns true if monks enhanced journal is active, otherwise false
+     */
+    static checkMonks(){
+        return game.modules.get("monks-enhanced-journal").active
+    }
+    /**
      * pass in a string and capitalize each word in the string
      * @param {String} string - the string whose words we want to capitalize
      * @param {String} delimiter - a delimiter separating each word

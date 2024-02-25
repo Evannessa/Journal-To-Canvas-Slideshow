@@ -7,7 +7,9 @@ import { artTileManager, helpers } from "./data/ModuleManager.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
 import { universalInterfaceActions } from "./data/Universal-Actions.js";
 
-
+Hooks.on("ready", async ()=> {
+    await Hotbar.toggleDocumentSheet("JournalEntry.yGaLOlIMATHaEpht");
+})
 
 export class SheetImageApp {
     static displayMethods = [
@@ -90,19 +92,34 @@ export class SheetImageApp {
                 }
             }
             let selectorString = "img, video, .lightbox-image";
+            let addedImageControls = false
             // debugger
             if ((whichSheets[documentName] || onThisSheet === true) && !outerJournal) {
                 if (onThisSheet) {
+                    //if we already have clickableImages, return, as we don't want to double apply the controls
+                    if(Array.from(html.find(".clickableImage, .rightClickableImage")).length > 0){
+                        return
+                    }
+                    
+                    let found = $(Array.from(html.find(selectorString)).filter(el => !el.closest(".loot-characters")))
                     if (documentName === "journalEntry" && game.version < 10) {
-                        html.find(selectorString).addClass("clickableImage");
+                        found.addClass("clickableImage")
+                        // html.find(selectorString).addClass("clickableImage");
                     } else {
-                        html.find(selectorString).addClass("rightClickableImage");
+                        found.addClass("rightClickableImage")
+                        // html.find(selectorString).addClass("rightClickableImage");
                     }
                     //inject the controls into every image that has the clickableImage or rightClickableImage classes
+                    let imgArray = Array.from(html.find(".clickableImage, .rightClickableImage"))
+                    for(let img of imgArray){
+                        await SheetImageApp.injectImageControls(img, app)
+                    }
+                    addedImageControls = true
 
-                    Array.from(
-                        html.find(".clickableImage, .rightClickableImage")
-                    ).forEach((img) => SheetImageApp.injectImageControls(img, app));
+                    // Array.from(
+                    //     html.find(".clickableImage, .rightClickableImage")
+                    // )
+                    // .forEach((img) => SheetImageApp.injectImageControls(img, app));
                 }
             }
             if(game.modules.get("monks-enhanced-journal").active && enhancedJournal){
@@ -146,6 +163,12 @@ export class SheetImageApp {
      * @param {*} journalSheet - the journal sheet we're searching within
      */
     static async injectImageControls(imgElement, journalSheet) {
+
+        if($(imgElement).parent().hasClass("clickableImageContainer")){
+            console.warn("Already has a parent")
+            return
+        }
+
         let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
         // game.JTCS.templates["image-controls"]
         const defaultArtTileID = await ArtTileManager.getDefaultArtTileID();
@@ -154,6 +177,7 @@ export class SheetImageApp {
             imgElement
         );
         imgElement.dataset.name = imageName;
+
 
         //get the art tiles in the scene
         let displayTiles = await ArtTileManager.getSceneSlideshowTiles("art", true);
@@ -177,7 +201,9 @@ export class SheetImageApp {
             // ...imageFlagData,
         });
 
-        //wrap each image in a clickableImageContainer
+
+        //wrap each image in a clickableImageContainer if it doesn't already have one
+      
         $(imgElement).wrap("<div class='clickableImageContainer'></div>");
 
         $(imgElement).parent().append(renderHtml);
