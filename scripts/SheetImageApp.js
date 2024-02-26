@@ -8,7 +8,7 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
 import { universalInterfaceActions } from "./data/Universal-Actions.js";
 
 Hooks.on("ready", async ()=> {
-    await Hotbar.toggleDocumentSheet("JournalEntry.yGaLOlIMATHaEpht");
+    // await Hotbar.toggleDocumentSheet("JournalEntry.yGaLOlIMATHaEpht");
 })
 
 export class SheetImageApp {
@@ -172,6 +172,11 @@ export class SheetImageApp {
         let template = "modules/journal-to-canvas-slideshow/templates/image-controls.hbs";
         // game.JTCS.templates["image-controls"]
         const defaultArtTileID = await ArtTileManager.getDefaultArtTileID();
+
+        //TODO: Hide tile display controls if there is no current scene
+        if(!defaultArtTileID){
+
+        }
 
         const imageName = await SheetImageDataController.convertImageSourceToID(
             imgElement

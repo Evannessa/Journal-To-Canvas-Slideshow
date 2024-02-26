@@ -2739,7 +2739,21 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   box-shadow: initial;
 }
 
-.slideshow-body .slide-inner .clickableImageContainer {
+.monks-journal-sheet .picture-outer .clickableImageContainer {
+  min-width: 100%;
+  min-height: 100%;
+  padding: unset;
+}
+.monks-journal-sheet .relationships .clickableImageContainer .clickableImageControls button, .monks-journal-sheet .shops .clickableImageContainer .clickableImageControls button, .monks-journal-sheet .townsfolk .clickableImageContainer .clickableImageControls button {
+  width: 1rem;
+  height: 1rem;
+  font-size: xx-small;
+  padding: unset;
+  margin: unset;
+  display: grid;
+  place-content: center;
+}
+.monks-journal-sheet .slideshow-body .slide-inner .clickableImageContainer {
   min-width: 100%;
   min-height: 100%;
   z-index: 900;

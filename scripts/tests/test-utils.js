@@ -170,7 +170,7 @@ export class TestUtils {
         return scene;
     }
     static async initializeScene(name = "Display") {
-        let sourceScene = game.scenes.getName(name);
+        let sourceScene = await game.scenes.getName(name);
         await sourceScene.view();
         return sourceScene;
     }
@@ -268,6 +268,7 @@ export class TestUtils {
                 return allTrue;
             }
         }
+        // console.log("Our windows are ", searchText, Object.values(ui.windows), Object.values(ui.windows).filter(predicate))
         return Object.values(ui.windows).filter(predicate)[0];
     }
     static checkAppElementForId(app, id) {

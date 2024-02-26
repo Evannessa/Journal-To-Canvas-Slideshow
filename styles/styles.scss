@@ -974,16 +974,48 @@ h3 {
     }
 }
 
-.slideshow-body {
-    .slide-inner {
+.monks-journal-sheet {
+
+    //for picture page type
+    .picture-outer {
         .clickableImageContainer {
             min-width: 100%;
             min-height: 100%;
-            z-index: 900;
+            // z-index: 900;
             padding: unset;
         }
+
     }
+    .relationships, .shops, .townsfolk{
+        .clickableImageContainer{
+            .clickableImageControls{
+                button{
+                    width: 1rem;
+                    height: 1rem;
+                    font-size: xx-small;
+                    padding: unset;
+                    margin: unset;
+                    display: grid;
+                    place-content: center;
+                }
+            }
+        }
+    }
+
+    //for slideshow page type
+    .slideshow-body {
+        .slide-inner {
+            .clickableImageContainer {
+                min-width: 100%;
+                min-height: 100%;
+                z-index: 900;
+                padding: unset;
+            }
+        }
+    }
+
 }
+
 
 .sheet.actor,
 .sheet.item {

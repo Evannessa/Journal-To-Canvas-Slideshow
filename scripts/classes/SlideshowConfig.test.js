@@ -128,7 +128,7 @@ const slideshowConfigTest = async (context) => {
                 overflowMenu = configElement[0].querySelector(".popover");
                 return overflowMenu;
             }
-            it("renders the overflow menu when the 'toggle overflow menu'", async function () {
+            it("renders the overflow menu when the 'toggle overflow menu' button is pressed", async function () {
                 assert.notEqual(
                     ourTileElement,
                     undefined,
@@ -490,6 +490,7 @@ const unlinkedTilesTest = async (context) => {
             let tileDoc = await getTileObject(tileID);
             let textureProperty = game.version >= 10 ? "texture.src" : "img";
             let tileDocSrc = await getDocData(tileDoc, textureProperty);
+            console.log(tileID, tileDoc, textureProperty, tileDocSrc)
             let tileDocID = tileDoc.id; //await getDocData(tileDoc, "id");
 
             //STUB - Test that the Tile ID doesn't contain "unlinked" anymore

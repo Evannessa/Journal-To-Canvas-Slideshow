@@ -337,6 +337,9 @@ export class ArtTileManager {
      */
     static async getDefaultArtTileID(currentScene) {
         if (!currentScene) currentScene = game.scenes.viewed;
+        if(!currentScene){
+            return undefined
+        }
 
         //get all the art tiles in the scene, filtering out the ones that aren't unlinked/missing
         let artTiles = (

@@ -51,15 +51,18 @@ export async function sheetImageDisplayTest(context) {
 
             imageControls = getChildElements(sheetElement, imageControlsSelector, true);
 
+
             clickableImageContainers = getChildElements(sheetElement, clickableContainerSelector, true);
             ourImageContainer = clickableImageContainers[1];
+            console.log(sheetElement, clickableImageContainers)
         }
 
         before(async () => {
             let sourceScene = await initializeScene("Premade Gallery Scene");
             scene = await duplicateTestScene(sourceScene);
             // sheetApp = await game.journal.getName("Art").sheet._render(true);
-            sheetApp = await game.journal.getName("Art").sheet.render(true);
+            // sheetApp = await game.journal.getName("Art").sheet.render(true);
+            sheetApp = await game.journal.getName("Test").sheet.render(true);
             await quench.utils.pause(900);
             sheetElement = sheetApp.element;
             await getSheetData();
@@ -114,6 +117,7 @@ export async function sheetImageDisplayTest(context) {
             }
             before(async () => {
                 await getDefaultDisplayIDs();
+                console.log(ourImageContainer) 
                 ourImage = ourImageContainer.querySelector("img");
                 src = ourImage.getAttribute("src");
             });
