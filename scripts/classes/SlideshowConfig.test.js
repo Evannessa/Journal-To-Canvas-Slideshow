@@ -490,7 +490,6 @@ const unlinkedTilesTest = async (context) => {
             let tileDoc = await getTileObject(tileID);
             let textureProperty = game.version >= 10 ? "texture.src" : "img";
             let tileDocSrc = await getDocData(tileDoc, textureProperty);
-            console.log(tileID, tileDoc, textureProperty, tileDocSrc)
             let tileDocID = tileDoc.id; //await getDocData(tileDoc, "id");
 
             //STUB - Test that the Tile ID doesn't contain "unlinked" anymore
