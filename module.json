@@ -6,12 +6,12 @@
     {
       "name": "Eva",
       "email": "evanesceexotica@gmail.com",
-      "discord": "Eva#3782",
+      "discord": "thempress_eva",
       "flags": {}
     }
   ],
   "socket": true,
-  "version": "0.2.4",
+  "version": "0.2.5",
   "compatibility": {
     "minimum": "9",
     "verified": "10",
