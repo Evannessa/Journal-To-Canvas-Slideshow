@@ -202,3 +202,6 @@ packs/jtcs-premade-display-scenes/LOCK
 packs/jtcs-premade-display-scenes/LOCK
 packs/jtcs-premade-journal-entries/LOCK
 packs/jtcs-utility-macros/LOCK
+packs/jtcs-premade-display-scenes/*
+packs/jtcs-premade-journal-entries/*
+packs/jtcs-utility-macros/*
