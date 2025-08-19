@@ -166,8 +166,7 @@
   position: relative;
 }
 .img-button.framed img {
-  -webkit-clip-path: circle(50%);
-          clip-path: circle(50%);
+  clip-path: circle(50%);
 }
 .img-button.framed:before {
   content: "";

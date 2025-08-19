@@ -8,7 +8,7 @@ export class HelperFunctions {
      * Check if MonksEnhanced Journal module is active
      * @returns true if monks enhanced journal is active, otherwise false
      */
-    static checkMonks(){
+    static checkMonks() {
         return game.modules.get("monks-enhanced-journal").active
     }
     /**
@@ -49,8 +49,19 @@ export class HelperFunctions {
     static async swapTools(layerName = "background", tool = "select") {
         if (game.version >= 10) {
             if ((layerName = "background")) layerName = "tiles";
+            if (game.version < 13) {
+                ui.controls.find((c) => c.layer === layerName).activeTool = tool;
+            }
+            else if (game.version >= 13) {
+                if (ui.controls.control) {
+                    let ourControls = ui.controls.control
+                    console.log(ourControls)
+                    // ourControls.activate()
+                    ourControls.active = true
+                    ourControls.activeTool = tool
+                }
+            }
         }
-        ui.controls.controls.find((c) => c.layer === layerName).activeTool = tool;
 
         let ourLayer = game.canvas.layers.find((l) => l.options.name === layerName);
         if (ourLayer) {

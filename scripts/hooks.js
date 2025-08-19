@@ -1,6 +1,7 @@
 import { JTCSModules } from "./init.js";
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { ArtTileManager } from "./classes/ArtTileManager.js";
+import { log } from "./debug-mode.js";
 /**
  * This sets up most hooks we want to respond to in our code,
  * grouping hooks with identical
@@ -10,7 +11,7 @@ import { ArtTileManager } from "./classes/ArtTileManager.js";
 export const setupHookHandlers = async () => {
 	async function monksTest(app, html, options) {
 		// console.log(app, html[0])
-	
+
 
 		await JTCSModules.SheetImageApp.applyImageClasses(app, html);
 	}
@@ -37,6 +38,11 @@ export const setupHookHandlers = async () => {
 
 	}
 
+	/**
+	 * Render the SlideshowConfig application
+	 * @param  {...any} args 
+	 * @returns 
+	 */
 	async function renderSlideshowConfig(...args) {
 		if (args[2]?.diff && args[1]?.alpha) {
 			//TODO: ? this was a workaround for v10, keeping Scene Gallery Config from re-rendering on update of tile alpha, but should remove
@@ -49,13 +55,13 @@ export const setupHookHandlers = async () => {
 	}
 
 	/**
-	Show a toggle in the journal sheet's header to toggle whether the journal
+	* Show a toggle in the journal sheet's header to toggle whether the journal
 	 * has controls on or off
 	 */
-
 	async function renderImageControls(app, html) {
+		console.log("Journal opened hook ", app, html)
 		// console.log("Rendering image controls", app, html);
-        // if(game.modules.get("monks-enhanced-journal").active){
+		// if(game.modules.get("monks-enhanced-journal").active){
 		// 	return
 		// }
 		if (!game.user.isGM) {
@@ -83,29 +89,37 @@ export const setupHookHandlers = async () => {
 	}
 
 	async function addJTCSControls(controls) {
+		console.log('Controls are ', controls['tiles'])
+
 		if (!game.user.isGM) {
 			return;
 		}
-		const tileControls = controls.find((control) => control?.name === "tiles");
+		//v12 update
+		const tileControls = controls['tiles']
+		//controls.find((control) => control?.name === "tiles");
+		if (tileControls) {
 
-		tileControls.tools.push({
-			name: "ShowJTCSConfig",
-			title: "Show Slideshow Config",
-			icon: "far fa-image",
-			onClick: () => {
-				new JTCSModules.SlideshowConfig().render(true);
-			},
-			button: true,
-		});
-		tileControls.tools.push({
-			name: "ShowSheetCSConfig",
-			title: "Show Sheet Config",
-			icon: "far fa-image",
-			onClick: () => {
-				new JTCSModules.SheetConfigApp().render(true);
-			},
-			button: true,
-		});
+			tileControls.tools['ShowJTCSConfig']={
+				name: "ShowJTCSConfig",
+				title: "Show Slideshow Config",
+				icon: "far fa-image",
+				onClick: () => {
+					new JTCSModules.SlideshowConfig().render(true);
+				},
+				button: true,
+			};
+			tileControls.tools['ShowSheetCSConfig'] = {
+				name: "ShowSheetCSConfig",
+				title: "Show Sheet Config",
+				icon: "far fa-image",
+				onClick: () => {
+					new JTCSModules.SheetConfigApp().render(true);
+				},
+				button: true,
+			};
+		} else {
+			console.error("Error finding controls named 'tiles' within collection")
+		}
 	}
 	/**
 	 * Re render the image sheet for fresh controls whenever the JTCSSettings, or the SlideshowConfig data for the current scene (individual tile data or the default tile, for instance) is updated
@@ -157,6 +171,7 @@ export const setupHookHandlers = async () => {
 				"renderActorSheet",
 				"renderJournalSheet",
 				"renderJournalPageSheet",
+				"renderJournalEntryPageSheet",
 				// "renderEnhancedJournal",
 				"renderJournalDirectory",
 				// "renderEnhancedJournalSheet",

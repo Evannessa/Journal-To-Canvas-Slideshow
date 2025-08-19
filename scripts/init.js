@@ -55,29 +55,30 @@ Hooks.on("init", async () => {
     registerSettings();
     //register handlebars helpers
     registerHelpers();
-
-    libWrapper.register(
-        "journal-to-canvas-slideshow",
-        "TextEditor._onDropEditorData",
-        function (wrapped, ...args) {
-            let event = args[0];
-            let editor = args[1];
-            var files = event.dataTransfer.files;
-            let containsImage = false;
-            for (let f of files) {
-                let type = f["type"].split("/")[0];
-                if (type === "image") {
-                    containsImage = true;
-                    insertImageIntoJournal(f, editor);
+    if (typeof libWrapper === 'function') {
+        libWrapper.register(
+            "journal-to-canvas-slideshow",
+            "TextEditor._onDropEditorData",
+            function (wrapped, ...args) {
+                let event = args[0];
+                let editor = args[1];
+                var files = event.dataTransfer.files;
+                let containsImage = false;
+                for (let f of files) {
+                    let type = f["type"].split("/")[0];
+                    if (type === "image") {
+                        containsImage = true;
+                        insertImageIntoJournal(f, editor);
+                    }
                 }
-            }
-            if (!containsImage) {
-                console.log("TextEditor._onDropEditorData called");
-                return wrapped(...args);
-            }
-        },
-        "MIXED"
-    );
+                if (!containsImage) {
+                    console.log("TextEditor._onDropEditorData called");
+                    return wrapped(...args);
+                }
+            },
+            "MIXED"
+        );
+    }
 
 
 

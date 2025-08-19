@@ -81,25 +81,27 @@ export class SheetImageApp {
             // }
             // for v10 +
             if (game.version >= 10) {
-                if (documentName === "journalEntryPage" && doc.type === "text") {
-                    documentName = "journalEntry";
-                    onThisSheet = await HelperFunctions.getFlagValue(
-                        doc.parent,
-                        "showControls",
-                        "",
-                        false
-                    );
+                    if (documentName === "journalEntryPage" && doc.type === "text") {
+                        documentName = "journalEntry";
+                        onThisSheet = await HelperFunctions.getFlagValue(
+                            doc.parent,
+                            "showControls",
+                            "",
+                            false
+                        );
+                    }
                 }
-            }
             let selectorString = "img, video, .lightbox-image";
             let addedImageControls = false
-            // debugger
+            console.log("Applying image classes")
             if ((whichSheets[documentName] || onThisSheet === true) && !outerJournal) {
                 if (onThisSheet) {
                     //if we already have clickableImages, return, as we don't want to double apply the controls
-                    if(Array.from(html.find(".clickableImage, .rightClickableImage")).length > 0){
+                    if(Array.from(html.querySelectorAll(".clickableImage, .rightClickableImage")).length > 0){
+                        console.log("We already have clickable images")
                         return
                     }
+                    // console.log(html, "Html is this ". html.querySelectorAll(".clickableImage"))
                     
                     let found = $(Array.from(html.find(selectorString)).filter(el => !el.closest(".loot-characters")))
                     if (documentName === "journalEntry" && game.version < 10) {
@@ -120,12 +122,18 @@ export class SheetImageApp {
                     //     html.find(".clickableImage, .rightClickableImage")
                     // )
                     // .forEach((img) => SheetImageApp.injectImageControls(img, app));
+                }else{
+                    console.log(onThisSheet, whichSheets, whichSheets[documentName])
                 }
             }
+            // console.log("Details ", app, html, documentName)
             if(game.modules.get("monks-enhanced-journal").active && enhancedJournal){
+                console.log("Injecting monk enhanced journal controls ", doc.documentName, doc)
                 SheetImageApp.injectSheetWideControls(app)
             }else{
-                if (doc.documentName !== "JournalEntryPage") {
+                console.log("Document name is ", doc.documentName)
+                if (documentName !== "JournalEntryPage") {
+                    console.log("Injecting sheet-wide controls ", doc.documentName, doc)
                     SheetImageApp.injectSheetWideControls(app);
                 }
             }
@@ -239,13 +247,17 @@ export class SheetImageApp {
         let targetElement
         if(journalSheet instanceof jQuery){
             // console.log(journalSheet)
-            targetElement = journalSheet[0]
+            targetElement = game.version > 10 ? journalSheet : journalSheet[0]
         }else{
-            targetElement = journalSheet.element[0]
-            if (document.documentName === "JournalEntryPage") {
+            // targetElement = journalSheet.element[0]
+            targetElement = game.version > 10 ? journalSheet.element : journalSheet.element[0]
+            // console.log(document, journalSheet.document)
+            if (journalSheet.document.documentName.includes("JournalEntryPage")) {
                 selector = ".journal-page-content";
             }
+            // debugger
         }
+        // console.log("Journal sheet ", journalSheet, "Target element ", targetElement, journalSheet.element)
         if(game.modules.get("monks-enhanced-journal").active){
             // selector = ".monks-enhanced-journal .mainbar"
             selector = ".enhanced-journal-body"
@@ -262,7 +274,8 @@ export class SheetImageApp {
 
     static async activateSheetWideEventListeners(options) {
         const { journalSheet, isActive } = options;
-        const controlsContainer = journalSheet.element.find("#sheet-controls");
+      
+        const controlsContainer = journalSheet.element instanceof jQuery ? journalSheet.element.find("#sheet-controls") : $(journalSheet.element).find("#sheet-controls");
         $(controlsContainer)
             .off("click", "[data-action]")
             .on("click", "[data-action]", async (event) => {
