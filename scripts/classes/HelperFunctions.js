@@ -149,6 +149,7 @@ export class HelperFunctions {
      * @returns
      */
     static async getFlagValue(document, flagName, nestedKey = "", returnIfEmpty = []) {
+        console.log(document, " hello world ")
         let flagData = await document.getFlag(MODULE_ID, flagName);
         if (!flagData) {
             flagData = returnIfEmpty;

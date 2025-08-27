@@ -68,10 +68,7 @@ export class SheetImageApp {
                 "",
                 false
             );
-            // let monksJournalEntry = await doc.getFlags("monks-enhanced-journal",)
-            // if(game.modules.get("monks-enhanced-journal").active === true){
-
-            // }
+         
 
             let documentName = doc.documentName;
             documentName = documentName.charAt(0).toLowerCase() + documentName.slice(1);
@@ -93,9 +90,10 @@ export class SheetImageApp {
                 }
             let selectorString = "img, video, .lightbox-image";
             let addedImageControls = false
-            console.log("Applying image classes")
+            // console.log("Applying image classes")
+        
             if ((whichSheets[documentName] || onThisSheet === true) && !outerJournal) {
-                if (onThisSheet) {
+                if (onThisSheet || whichSheets[documentName]) {
                     //if we already have clickableImages, return, as we don't want to double apply the controls
                     if(Array.from(html.querySelectorAll(".clickableImage, .rightClickableImage")).length > 0){
                         console.log("We already have clickable images")
@@ -103,7 +101,7 @@ export class SheetImageApp {
                     }
                     // console.log(html, "Html is this ". html.querySelectorAll(".clickableImage"))
                     
-                    let found = $(Array.from(html.find(selectorString)).filter(el => !el.closest(".loot-characters")))
+                    let found = $(Array.from($(html).find(selectorString)).filter(el => !el.closest(".loot-characters")))
                     if (documentName === "journalEntry" && game.version < 10) {
                         found.addClass("clickableImage")
                         // html.find(selectorString).addClass("clickableImage");
@@ -112,7 +110,7 @@ export class SheetImageApp {
                         // html.find(selectorString).addClass("rightClickableImage");
                     }
                     //inject the controls into every image that has the clickableImage or rightClickableImage classes
-                    let imgArray = Array.from(html.find(".clickableImage, .rightClickableImage"))
+                    let imgArray = Array.from($(html).find(".clickableImage, .rightClickableImage"))
                     for(let img of imgArray){
                         await SheetImageApp.injectImageControls(img, app)
                     }
@@ -123,17 +121,13 @@ export class SheetImageApp {
                     // )
                     // .forEach((img) => SheetImageApp.injectImageControls(img, app));
                 }else{
-                    console.log(onThisSheet, whichSheets, whichSheets[documentName])
+                    console.log("This sheet or all sheets of this type are toggled to not display controls")
                 }
             }
-            // console.log("Details ", app, html, documentName)
             if(game.modules.get("monks-enhanced-journal").active && enhancedJournal){
-                console.log("Injecting monk enhanced journal controls ", doc.documentName, doc)
                 SheetImageApp.injectSheetWideControls(app)
             }else{
-                console.log("Document name is ", doc.documentName)
                 if (documentName !== "JournalEntryPage") {
-                    console.log("Injecting sheet-wide controls ", doc.documentName, doc)
                     SheetImageApp.injectSheetWideControls(app);
                 }
             }

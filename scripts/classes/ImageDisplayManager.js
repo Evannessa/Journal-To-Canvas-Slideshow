@@ -84,11 +84,15 @@ export class ImageDisplayManager {
 
         const updated = await ourScene
             .updateEmbeddedDocuments("Tile", [imageUpdate])
-            .catch((error) =>
+            .catch((error)=> {
+                console.log(error)
                 ui.notifications.error(
                     `Default art tile in ${ourScene.name} couldn't be updated`
                 )
+            }
             );
+        console.log(updated)
+        debugger
         if (updated && method === "artScene") {
             const { autoActivate, autoView } = await HelperFunctions.getSettingValue(
                 "artGallerySettings",
@@ -113,6 +117,14 @@ export class ImageDisplayManager {
         }
     }
 
+    /**
+     * Make the art tile fit the bounds of the entire scene 
+     * @param {*} displayTile 
+     * @param {*} tex 
+     * @param {*} url 
+     * @param {*} sceneID 
+     * @returns 
+     */
     static async scaleArtTileToScene(displayTile, tex, url, sceneID = "") {
         let displayScene = game.scenes.get(sceneID);
         if (!displayScene) displayScene = game.scenes.viewed;
@@ -170,6 +182,14 @@ export class ImageDisplayManager {
         return wideImageUpdate;
     }
 
+    /**
+     * Make the art tile fit within its linked frame tile 
+     * @param {*} artTile 
+     * @param {*} frameTile 
+     * @param {*} tex 
+     * @param {*} url 
+     * @returns 
+     */
     static async scaleArtTileToFrameTile(artTile, frameTile, tex, url) {
         const frameTileWidth =
             game.version >= 10 ? frameTile.width : frameTile.data.width;

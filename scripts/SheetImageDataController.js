@@ -1,9 +1,6 @@
 import { HelperFunctions } from "./classes/HelperFunctions.js";
 import { log, MODULE_ID } from "./debug-mode.js";
-// Model: The backend that contains all the data logic
-// View: The frontend or graphical user interface (GUI)
-// Controller: The brains of the application that controls how data is displayed
-// import { artGalleryDefaultSettings } from "./settings.js";
+
 
 export class SheetImageDataController {
     static checkFlags(documentCollectionName, flagName = "journal-to-canvas-slideshow") {

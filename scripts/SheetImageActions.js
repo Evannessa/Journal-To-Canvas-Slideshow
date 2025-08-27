@@ -78,7 +78,9 @@ export const sheetImageActions = {
             toggleImageControls: {
                 onClick: async (event, options) => {
                     let { app } = options;
-                    let journalEntry = app.object;
+                    console.log(app)
+                    let journalEntry = app.object || app.document
+                    //app.object || app.element;
                     let currentSetting = await HelperFunctions.getFlagValue(
                         journalEntry,
                         "showControls",
