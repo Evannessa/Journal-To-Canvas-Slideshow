@@ -73,6 +73,7 @@ export class TestUtils {
     }
     static async getDocData(document, property = "") {
         let data = game.version >= 10 ? document : document.data;
+        console.log(document, property, foundry.utils.getProperty(data, property), data);
         if (property) {
             return foundry.utils.getProperty(data, property);
         } else {
@@ -268,7 +269,8 @@ export class TestUtils {
                 return allTrue;
             }
         }
-        // console.log("Our windows are ", searchText, Object.values(ui.windows), Object.values(ui.windows).filter(predicate))
+        // console.log()
+        console.log("Our windows are ", searchText, Object.values(ui.windows), Object.values(ui.windows).filter(predicate))
         return Object.values(ui.windows).filter(predicate)[0];
     }
     static checkAppElementForId(app, id) {

@@ -23,7 +23,7 @@ export default class ImageVideoPopout extends ImagePopout {
 			src.slice(-4).toLowerCase()
 		);
 
-		this.options.template = "modules/journal-to-canvas-slideshow/templates/media-popout.html";
+		// this.options.template = "modules/journal-to-canvas-slideshow/templates/media-popout.html";
 	}
 
 	/** @override */

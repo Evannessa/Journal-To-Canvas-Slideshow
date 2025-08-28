@@ -54,7 +54,7 @@ export async function sheetImageDisplayTest(context) {
 
             clickableImageContainers = getChildElements(sheetElement, clickableContainerSelector, true);
             ourImageContainer = clickableImageContainers[1];
-            console.log(sheetElement, clickableImageContainers)
+            // console.log(sheetElement, clickableImageContainers)
         }
 
         before(async () => {
@@ -93,13 +93,21 @@ export async function sheetImageDisplayTest(context) {
                 await quench.utils.pause(900);
             };
             async function compareWindowContent(type, displayMethodAppName, searchText = "") {
-                let windowApp = getAppFromWindow(type, searchText);
-                let windowElement = windowApp.element;
-                assert.exists(windowElement[0]);
-                let windowImageSrc = windowElement[0].querySelector("img")?.getAttribute("src");
+                let windowApp
+                let windowElement
+
+                if(game.version <= 10){
+                    windowApp = getAppFromWindow(type, searchText);
+                // console.log({windowApp})
+                // debugger
+                }else{
+                    windowApp = ui.activeWindow
+                }
+                windowElement = windowApp.element;
+                let windowImageSrc = windowElement.querySelector("img")?.getAttribute("src");
 
                 if (game.version < 10 && displayMethodAppName.toLowerCase().includes("journal"))
-                    windowImageSrc = returnComputedStyles(windowElement[0], ".lightbox-image", "background-image");
+                    windowImageSrc = returnComputedStyles(windowElement, ".lightbox-image", "background-image");
                 // windowImageSrc = getComputedStyle(
                 //     windowElement[0].querySelector(".lightbox-image")
                 // ).getPropertyValue("background-image");
@@ -117,7 +125,7 @@ export async function sheetImageDisplayTest(context) {
             }
             before(async () => {
                 await getDefaultDisplayIDs();
-                console.log(ourImageContainer) 
+                // console.log(ourImageContainer) 
                 ourImage = ourImageContainer.querySelector("img");
                 src = ourImage.getAttribute("src");
             });
@@ -127,16 +135,21 @@ export async function sheetImageDisplayTest(context) {
                 await getSheetData();
             });
             it("Renders a popout window with the apporpriate image", async () => {
+                displayMethod = "window"
                 await compareWindowContent(ImagePopout, "ImagePopout");
-                displayMethod = "journalEntry";
+                // displayMethod = "journalEntry";
             });
             it("Renders the art journal sheet with the appropriate image", async () => {
+                displayMethod = "journalEntry"
                 await compareWindowContent(JournalSheet, "Art Journal", "Display Journal");
                 // //TODO: Ensure the id of this journal entry matches the Art Journal entry
 
-                displayMethod = "artScene";
+                // displayMethod = "artScene";
             });
             it("Updates the default Art Tile in the Art Scene with the appropriate image", async () => {
+                //! Make sure the default art scene is set or the test will fail for the default
+                console.log({displayMethod})
+                displayMethod = "artScene"
                 await compareTileContent(artScene);
                 displayMethod = "anyScene";
             });

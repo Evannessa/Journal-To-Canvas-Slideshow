@@ -297,13 +297,13 @@ export class ImageDisplayManager {
             if (fileType == '.mp4' || fileType == '.webm') {
                 if (game.version < 10) {
                     // if the file type is a video and we're before v10, we have to do a bit of a wonky workaround
-                    let videoHTML = `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
-			<video width="100%" height="auto" autoplay loop>
-  				<source src=${url} type="video/mp4">
-  				<source src=${url} type="video/webm">
-			</video>
-			</div>
-					`
+                    let videoHTML = 
+                    `<div style="height:100%; display: flex; flex-direction: column; justify-content:center; align-items:center;">
+			            <video width="100%" height="auto" autoplay loop>
+  				            <source src=${url} type="video/mp4">
+  				            <source src=${url} type="video/webm">
+			            </video>
+			        </div>`
 
                     update = {
                         _id: displayJournal._id,
@@ -370,8 +370,13 @@ export class ImageDisplayManager {
             let popout = new ImageVideoPopout(url, {
                 shareable: true
             })
-                .render(true)
-                .shareImage()
+
+            await popout.render(true)
+
+            popout.shareImage()
+            // debugger
+            // .render(true)
+            // .shareImage()
         }
     }
 
