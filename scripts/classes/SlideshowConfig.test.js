@@ -152,7 +152,8 @@ const slideshowConfigTest = async (context) => {
 
             it("renders the Tile's configuration app when the 'render tile config' action is clicked", async () => {
                 await clickActionButton("renderTileConfig");
-                const app = getAppFromWindow(TileConfig);
+                // const app = getAppFromWindow(TileConfig);
+                const app = ui.activeWindow
                 let id = getDocIdFromApp(app);
                 expect(id).to.equal(tileID);
                 await app.close();

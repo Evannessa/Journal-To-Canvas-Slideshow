@@ -527,7 +527,10 @@ export class ImageDisplayManager {
 
         var clearTileUpdate = {
             _id: tileID,
-            img: clearImagePath
+            img: clearImagePath,
+            texture: {
+                src: clearImagePath
+            }
         }
         await ourScene.updateEmbeddedDocuments('Tile', [clearTileUpdate])
     }
