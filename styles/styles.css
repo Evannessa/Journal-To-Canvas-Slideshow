@@ -2384,6 +2384,10 @@ button.icon-button.active:hover, button.icon-button.active:focus {
   background-color: var(--JTCS-accent-color);
   border-color: var(--JTCS-accent-color-50);
 }
+#slideshow-config .window-content header.header-fit-content {
+  max-height: -moz-fit-content;
+  max-height: fit-content;
+}
 #slideshow-config .window-content header .wrapper {
   flex-wrap: wrap;
 }

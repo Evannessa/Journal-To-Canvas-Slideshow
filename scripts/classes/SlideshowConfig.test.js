@@ -384,6 +384,8 @@ const unlinkedTilesTest = async (context) => {
     const itemActionPrefixString = "[data-action='itemActions.click.actions.";
     let configApp, configElement, scene, defaultImageSrc, newArtTileBtn, newFrameTileBtn;
     async function bundleTestData() {
+        //! You need to create this scene before running the test, or it will fail
+        //TODO
         let sourceScene = await initializeScene("Empty Tile Scene");
         scene = await duplicateTestScene(sourceScene);
         await quench.utils.pause(300);
@@ -491,6 +493,7 @@ const unlinkedTilesTest = async (context) => {
             let tileDoc = await getTileObject(tileID);
             let textureProperty = game.version >= 10 ? "texture.src" : "img";
             let tileDocSrc = await getDocData(tileDoc, textureProperty);
+            debugger
             let tileDocID = tileDoc.id; //await getDocData(tileDoc, "id");
 
             //STUB - Test that the Tile ID doesn't contain "unlinked" anymore
