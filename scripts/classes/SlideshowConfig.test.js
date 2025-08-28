@@ -493,16 +493,17 @@ const unlinkedTilesTest = async (context) => {
             getTiles();
             expect(tiles).to.have.length.above(length);
 
-            // configApp._render(true)
             let tileListElement = await getTileListItem(type);
+
+            /* FIXME: This references a version of the SlideshowConfig app before it refreshes, so the id on the 
+             elements hasn't updated yet, causing the id to be
+             incorrect and the test to fail  */
             let tileID = tileListElement.dataset.id;
 
             let tileDoc = await getTileObject(tileID);
             let textureProperty = game.version >= 10 ? "texture.src" : "img";
             let tileDocSrc = await getDocData(tileDoc, textureProperty);
-            // debugger
             let tileDocID = tileDoc.id; //await getDocData(tileDoc, "id");
-            // console.log({ tileDocID, tileDocSrc, textureProperty })
 
             //STUB - Test that the Tile ID doesn't contain "unlinked" anymore
             expect(
