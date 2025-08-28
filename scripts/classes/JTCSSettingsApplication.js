@@ -128,7 +128,7 @@ export class JTCSSettingsApplication extends FormApplication {
                         propertyString = name;
                         break;
                 }
-                let settingsObject = getProperty(
+                let settingsObject = foundry.utils.getProperty(
                     artGalleryDefaultSettings,
                     propertyString
                 );
@@ -225,7 +225,7 @@ export class JTCSSettingsApplication extends FormApplication {
                 "colorSchemeData.theme"
             );
             // const newScheme = mergeObject(currentSettings, colorThemes[theme]);
-            const defaultValue = getProperty(colorThemes[theme], key);
+            const defaultValue = foundry.utils.getProperty(colorThemes[theme], key);
             await HF.setSettingValue("artGallerySettings", defaultValue, key);
             this.render(true);
             // accentElement.val(defaultValue);

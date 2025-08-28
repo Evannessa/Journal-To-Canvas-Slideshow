@@ -8,7 +8,7 @@ export const registerHelpers = function () {
      * Returns a property string that matches a dot-notation-chain for nested objects
      */
     Handlebars.registerHelper("getPropertyString", (rootObject, parentKey, childKey) => {
-        const parentObject = getProperty(rootObject, parentKey);
+        const parentObject = foundry.utils.getProperty(rootObject, parentKey);
         const flat = flattenObject(parentObject);
         const newFlat = Object.keys(flat).map((key) => `${parentKey}.${key}`);
         return newFlat.find((key) => key.includes(childKey));

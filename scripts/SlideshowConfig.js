@@ -8,6 +8,7 @@ export class SlideshowConfig extends Application {
     constructor(data = {}) {
         super();
         this.data = data;
+        console.log("Slideshow config data is ", data)
         this.element.find(".window-content").attr("data-fade-all");
     }
 
@@ -50,12 +51,12 @@ export class SlideshowConfig extends Application {
             let filteredActionKeys = [];
             let v9onlyKeys = [];
             Object.keys(itemActionsObject).forEach((itemAction) => {
-                if (getProperty(itemActionsObject, itemAction).v9Only === true) {
+                if (foundry.utils.getProperty(itemActionsObject, itemAction).v9Only === true) {
                     v9onlyKeys.push(itemAction);
                 }
             });
             Object.keys(itemActionsObject).forEach((itemAction) => {
-                if (getProperty(itemActionsObject, itemAction).artTileOnly) {
+                if (foundry.utils.getProperty(itemActionsObject, itemAction).artTileOnly) {
                     filteredActionKeys.push(itemAction);
                 }
             });
@@ -98,7 +99,7 @@ export class SlideshowConfig extends Application {
                 handlerPropertyString = "onChange";
                 break;
         }
-        let actionData = getProperty(slideshowDefaultSettingsData, action);
+        let actionData = foundry.utils.getProperty(slideshowDefaultSettingsData, action);
 
         if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
             //call the event handler stored on this object

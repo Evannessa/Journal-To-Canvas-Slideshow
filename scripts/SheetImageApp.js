@@ -328,7 +328,7 @@ export class SheetImageApp {
                 break;
         }
         // get the actions for this specific type of action
-        let actionData = getProperty(sheetImageActions, action);
+        let actionData = foundry.utils.getProperty(sheetImageActions, action);
 
         if (actionData && actionData.hasOwnProperty(handlerPropertyString)) {
             //call the event handler stored on this object

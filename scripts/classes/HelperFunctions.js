@@ -466,7 +466,7 @@ export class HelperFunctions {
         let settingData = await game.settings.get(HelperFunctions.MODULE_ID, settingName);
         if (settingData !== undefined && settingData !== null) {
             if (nestedKey) {
-                let nestedSettingData = getProperty(settingData, nestedKey);
+                let nestedSettingData = foundry.utils.getProperty(settingData, nestedKey);
 
                 return nestedSettingData;
             }

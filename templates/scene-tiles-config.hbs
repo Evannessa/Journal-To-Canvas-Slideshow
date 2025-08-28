@@ -45,6 +45,7 @@
 		</div>
     </header>
     {{!-- <h3 class="text-align-center flex0"><u>{{currentSceneName}}</u> Art Gallery</h3> --}}
+    {{!-- The two columns representing the scene tiles  --}}
     <section class="tilesInScene 
                 hidden-overflow-x hidden-overflow-y 
 				padding-inline-medium 
@@ -52,15 +53,20 @@
                 flex1"
     >
 
+        {{!-- A partial for the art tiles column--}}
         {{> (dynamicPartial "scene-tile-wrapper") 
             type="art"
             tiles=artTiles
         }}
+
+        {{!-- A partial for the frame tiles column--}}
         {{> (dynamicPartial "scene-tile-wrapper")
             type="frame"
             tiles=frameTiles
         }}
     </section>
+
+    {{!-- aside element displaying instructions that you can toggle with a button--}}
     <section id="JTCS-config-instructions">
         <button 
         class="{{ternary areConfigInstructionsVisible "active" ""}} instructions__button" 

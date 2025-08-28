@@ -8,7 +8,7 @@ import { ImageDisplayManager } from "./ImageDisplayManager.js";
 
 export class ArtTileManager {
     /**
-     *
+     * Update the id of a tile
      * @param {String} oldTileID - the id of a tile that's now missing
      * @param {String newTileID  - the id of a new tile we're linking it to
      */
@@ -32,6 +32,7 @@ export class ArtTileManager {
                 ArtTileManager.updateLinkedArtTiles(oldTileID, newTileID, tileDataArray);
             }
 
+            //update all of the flags of the tiles in scene 
             await ArtTileManager.updateAllSceneTileFlags(tileDataArray);
         }
     }
@@ -87,6 +88,10 @@ export class ArtTileManager {
         return finalName;
     }
 
+    /**
+     * Create a tile in the current scene
+     * apply the default image path from our JTCS settings to it, and return it
+     */
     static async createTileInScene(isFrameTile) {
         let ourScene = game.scenes.viewed;
         let pathProperty = isFrameTile ? "frameTilePath" : "artTilePath";
@@ -99,6 +104,7 @@ export class ArtTileManager {
         if (!imgPath) {
             return;
         }
+        //TODO: Modularize the creation/scaling of tiles into a separate function
         const tex = await loadTexture(imgPath);
 
         let sceneWidth = game.version >= 10 ? ourScene.width : ourScene.data.width;
@@ -371,6 +377,14 @@ export class ArtTileManager {
         return defaultArtTileID;
     }
 
+    /**
+     * Get the slideshow/gallery tiles flag data from the scene,
+     * find one with the appropriate id, and return either its data or a property within it
+     * @param {string} tileID - the id of the tile
+     * @param {string} property - a specific property we're looking for
+     * @param {string} currentSceneID - the id of the scene we're looking within
+     * @returns - either the flag data of the tile with the id, or a nested property
+     */
     static async getGalleryTileDataFromID(tileID, property = "", currentSceneID = "") {
         if (!currentSceneID) currentSceneID = game.scenes.viewed.current;
         let flaggedTiles = await ArtTileManager.getSceneSlideshowTiles("", false, {
@@ -446,6 +460,11 @@ export class ArtTileManager {
     static getDisplayTiles(flaggedTiles) {
         return flaggedTiles.filter((tileData) => !tileData.isBoundingTile);
     }
+    /**
+     * Render the tile's config application
+     * @param {*} tileID 
+     * @param {*} sceneID 
+     */
     static async renderTileConfig(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tile) {
@@ -455,6 +474,13 @@ export class ArtTileManager {
         }
     }
 
+    /**
+     * Change a tile's z-index to the front or to its "default" to move 
+     * it out of the way for convenience
+     * @param {id} tileID - the id of the tile
+     * @param {boolean} toFront - should we move it to the front
+     * @returns 
+     */
     static async toggleTileZ(tileID, toFront = true) {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (!tile) return;
@@ -475,7 +501,13 @@ export class ArtTileManager {
         }
     }
 
+    /**
+     * Select a tile with an id in our viewed scene
+     * @param {string} tileID - the id of the tile
+     * @param {string} sceneID - the id of the scene in which we're looking for the tile
+     */
     static async selectTile(tileID, sceneID = "") {
+        
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tile) {
             await game.JTCS.utils.swapTools();
@@ -495,7 +527,7 @@ export class ArtTileManager {
         return tileData.linkedBoundingTile;
     }
     /**
-     * Get the DisplayTile data
+     * Get the DisplayTile data from a tile with the scene id
      * @param {string} tileID - the id of the tile in scene we're looking to filter
      * @param {Array} flaggedTiles - the flagged tiles
      * @returns the flag data
@@ -516,10 +548,17 @@ export class ArtTileManager {
             return defaultData;
         }
     }
+    /**
+     * Returns a Tile document in either the viewed scene or the scene with the passed-in id
+     * @param {string} tileID - the id of the tile we're looking for
+     * @param {string} sceneID - the id of the scene (optional)
+     * @returns the tile with the id, or nothing
+     */
     static async getTileObjectByID(tileID, sceneID = "") {
         let ourScene = game.scenes.viewed;
         if (sceneID) ourScene = game.scenes.get(sceneID);
         let tile = await ourScene.getEmbeddedDocument("Tile", tileID);
+        // debugger
         if (tileID.includes === "new") {
             // console.log("New tile created");
         } else {
