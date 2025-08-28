@@ -8,9 +8,9 @@ import { ImageDisplayManager } from "./ImageDisplayManager.js";
 
 export class ArtTileManager {
     /**
-     * Update the id of a tile
+     * Update the id of a Gallery Tile document
      * @param {String} oldTileID - the id of a tile that's now missing
-     * @param {String newTileID  - the id of a new tile we're linking it to
+     * @param {String} newTileID  - the id of a new tile we're linking it to
      */
     static async updateTileDataID(oldTileID, newTileID) {
         //this is an array of objects
@@ -29,14 +29,26 @@ export class ArtTileManager {
             tileDataArray.splice(index, 1, tileObject);
 
             if (tileObject.isBoundingTile) {
+                /* if we're updating the id of a bounding tile, also update each art tile
+                that its boundingTileId reference has the correct updated id within it
+                */
                 ArtTileManager.updateLinkedArtTiles(oldTileID, newTileID, tileDataArray);
             }
 
-            //update all of the flags of the tiles in scene 
+            //update all of the scene's Gallery Tiles flags  
             await ArtTileManager.updateAllSceneTileFlags(tileDataArray);
+        } else {
+            console.error("JTCS Art Gallery - Tile object not found ", { tileObject, tileDataArray, oldTileID, newTileID })
         }
     }
 
+    /**
+     *  Update multiple art tiles to be linked to a new frame tile
+     * @param {string} oldFrameID - the id of the art tile's old frame
+     * @param {string} newFrameID - the id of the art tile's new frame
+     * @param {Array} tileDataArray - an array with all of the art tiles that are linked
+     * @returns the array of updated art tiles
+     */
     static async updateLinkedArtTiles(oldFrameID, newFrameID, tileDataArray) {
         //get art tiles that had us as their bounding tile
         let linkedArtTiles = [];
@@ -57,6 +69,12 @@ export class ArtTileManager {
         });
         return tileDataArray;
     }
+    /**
+     * Return default Display/Frame tile data
+     * @param {boolean} isBoundingTile - is what we're looking for a bounding tile
+     * @param {string} linkedBoundingTile - the id of the bounding tile
+     * @returns 
+     */
     static async getDefaultData(isBoundingTile, linkedBoundingTile = "") {
         //determine its default name based on whether it's a bounding or display tile
         let displayName = isBoundingTile ? "frameTile" : "displayTile";
@@ -105,7 +123,7 @@ export class ArtTileManager {
             return;
         }
         //TODO: Modularize the creation/scaling of tiles into a separate function
-        const tex = await loadTexture(imgPath);
+        const tex = await foundry.canvas.loadTexture(imgPath);
 
         let sceneWidth = game.version >= 10 ? ourScene.width : ourScene.data.width;
         let sceneHeight = game.version >= 10 ? ourScene.height : ourScene.data.height;
@@ -125,6 +143,7 @@ export class ArtTileManager {
                 y: sceneHeight / 2 - dimensionObject.height / 2,
             },
         ]);
+        console.log("JTCS Art Gallery - New Tile Created", newTile)
         return newTile;
     }
 
@@ -211,7 +230,6 @@ export class ArtTileManager {
         if (newTile) {
             let tileObjectID = newTile[0].id;
 
-            //
             if (!unlinkedDataID) {
                 console.log("Scene Gallery Config - Creating new tile data");
                 await ArtTileManager.createTileData(
@@ -225,14 +243,15 @@ export class ArtTileManager {
                 );
                 await ArtTileManager.updateTileDataID(unlinkedDataID, tileObjectID);
             }
+            // debugger
         } else {
-            ui.notifications.error("New art gallery tile couldn't be created");
+            ui.notifications.error("JTCS - Art Gallery | New art gallery tile couldn't be created");
         }
         return newTile;
     }
 
     /**
-     *
+     * Create an art tile 
      * @param {String} linkedFrameTileId - the frame tile linked to this art tile, if it is one
      * @param {*} unlinkedDataID - if we're creating a new tile from the config rather than from the tile itself, it may have an unlinkedId
      * @returns  - the created art tile
@@ -241,6 +260,8 @@ export class ArtTileManager {
         let linkedFrameTileId = _linkedFrameTileId;
 
         let newTile = await ArtTileManager.createTileInScene(false);
+
+        //if this is a new tile, create its data
         if (newTile) {
             let tileObjectID = newTile[0].id;
             if (!unlinkedDataID) {
@@ -259,7 +280,7 @@ export class ArtTileManager {
     }
 
     /**
-     * @param {String} linkedFrameTileId - the frame tile linked to this art tile, if it is one
+     * Create a tile Object in scene linked to the unlinked Frame Tile data  
      * @param {*} unlinkedDataID - if we're creating a new tile from the config rather than from the tile itself, it may have an unlinkedId
      * @returns  - the created frame tile
      * */
@@ -278,7 +299,9 @@ export class ArtTileManager {
         }
         return newTile;
     }
-
+    /** 
+     *  Legacy method to convert tiles from first version of JTCS
+    */
     static async convertToNewSystem() {
         let currentScene = game.scenes.viewed;
         let sceneTiles = currentScene.tiles.contents;
@@ -309,6 +332,9 @@ export class ArtTileManager {
         }
     }
 
+    /** 
+     *  Legacy method to convert tiles from first version of JTCS
+    */
     static convertBoundingTile(tileData) {
         let defaultData = {
             displayName: "BoundingTile1",
@@ -317,6 +343,11 @@ export class ArtTileManager {
         };
         updateSceneTileFlags(defaultData, tileData.id);
     }
+    /**
+     * Legacy method to convert tiles from first version of JTCS
+     * @param {*} tileData 
+     * @param {*} linkedBoundingTileId 
+     */
     static convertDisplayTile(tileData, linkedBoundingTileId = "") {
         let defaultData = {
             displayName: "DisplayTile1",
@@ -343,7 +374,7 @@ export class ArtTileManager {
      */
     static async getDefaultArtTileID(currentScene) {
         if (!currentScene) currentScene = game.scenes.viewed;
-        if(!currentScene){
+        if (!currentScene) {
             return undefined
         }
 
@@ -462,8 +493,8 @@ export class ArtTileManager {
     }
     /**
      * Render the tile's config application
-     * @param {*} tileID 
-     * @param {*} sceneID 
+     * @param {string} tileID - tile whose config will be rendered 
+     * @param {string} sceneID - the id of the scene
      */
     static async renderTileConfig(tileID, sceneID = "") {
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
@@ -507,7 +538,7 @@ export class ArtTileManager {
      * @param {string} sceneID - the id of the scene in which we're looking for the tile
      */
     static async selectTile(tileID, sceneID = "") {
-        
+
         let tile = await game.scenes.viewed.getEmbeddedDocument("Tile", tileID);
         if (tile) {
             await game.JTCS.utils.swapTools();
@@ -519,6 +550,12 @@ export class ArtTileManager {
         }
     }
 
+    /**
+     * Returrn an Art Tile's document's linked bounding/frame tile if it exists
+     * @param {string} tileID - the id of the art tile
+     * @param {string} flaggedTiles - the gallery tiles in the scene
+     * @returns 
+     */
     static async getLinkedFrameID(tileID, flaggedTiles) {
         let tileData = await ArtTileManager.getTileDataFromFlag(tileID, flaggedTiles);
         if (!tileData) {
@@ -569,8 +606,13 @@ export class ArtTileManager {
         return tile;
     }
 
+    /**
+     * Display an error that a tile with this id was not found
+     * @param {string} tileID - the id of the tile 
+     * @param {string} sceneID - the id of our scene
+     */
     static displayTileNotFoundError(tileID, sceneID = "") {
-        console.error("JTCS can't find tile in scene with ID " + tileID);
+        console.error("JTCS - Art Gallery can't find tile in scene with ID " + tileID);
     }
 
     /**
@@ -585,6 +627,7 @@ export class ArtTileManager {
         let currentScene = game.scenes.viewed;
         let tiles = (await ArtTileManager.getSceneSlideshowTiles()) || [];
 
+        //find tile with id from gallery tiles in scene
         if (tiles.find((tile) => tile.id === tileID)) {
             tiles = tiles.map((tileData) => {
                 // if the ids match, update the matching one with the new displayName
@@ -593,9 +636,11 @@ export class ArtTileManager {
                     : tileData; //else just return the original
             });
         } else {
+            //if not found, create a new tile with our data and the associated id
             tiles.push({ id: tileID, ...displayData });
         }
 
+        //update our scene flags with new tile or updated tiles
         await ArtTileManager.updateAllSceneTileFlags(tiles);
     }
 

@@ -71,6 +71,12 @@ export class TestUtils {
         let tileObject = await ArtTileManager.getTileObjectByID(tileID, sceneID);
         return tileObject;
     }
+    /**
+     * Get a property from a document
+     * @param {*} document 
+     * @param {*} property 
+     * @returns  the data within a property
+     */
     static async getDocData(document, property = "") {
         let data = game.version >= 10 ? document : document.data;
         console.log(document, property, foundry.utils.getProperty(data, property), data);

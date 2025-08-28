@@ -75,7 +75,7 @@ function setAnimDefaults(animOptions) {
             $el.remove();
         },
     };
-    return mergeObject(defaultOptions, animOptions);
+    return foundry.utils.mergeObject(defaultOptions, animOptions);
 }
 /**
  *

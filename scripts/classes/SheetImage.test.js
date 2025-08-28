@@ -96,11 +96,11 @@ export async function sheetImageDisplayTest(context) {
                 let windowApp
                 let windowElement
 
-                if(game.version <= 10){
+                if (game.version <= 10) {
                     windowApp = getAppFromWindow(type, searchText);
-                // console.log({windowApp})
-                // debugger
-                }else{
+                    // console.log({windowApp})
+                    // debugger
+                } else {
                     windowApp = ui.activeWindow
                 }
                 windowElement = windowApp.element;
@@ -148,7 +148,6 @@ export async function sheetImageDisplayTest(context) {
             });
             it("Updates the default Art Tile in the Art Scene with the appropriate image", async () => {
                 //! Make sure the default art scene is set or the test will fail for the default
-                console.log({displayMethod})
                 displayMethod = "artScene"
                 await compareTileContent(artScene);
                 displayMethod = "anyScene";

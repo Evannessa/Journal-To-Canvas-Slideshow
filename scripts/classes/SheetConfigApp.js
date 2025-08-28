@@ -17,7 +17,7 @@ export class SheetConfigApp extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["form"],
             width: 600,
             popOut: true,

@@ -174,14 +174,14 @@ export class HelperFunctions {
                 HelperFunctions.MODULE_ID,
                 settingName
             );
-            updateData = expandObject(updateData); //get expanded object version of formdata keys, which were strings in dot notation previously
-            updateData = mergeObject(currentSettingData, updateData);
+            updateData = foundry.utils.expandObject(updateData); //get expanded object version of formdata keys, which were strings in dot notation previously
+            updateData = foundry.utils.mergeObject(currentSettingData, updateData);
             // let updated = await game.settings.set(HelperFunctions.MODULE_ID, settingName, currentSettingData);
             // console.warn(updated);
         }
         if (nestedKey) {
             let settingData = game.settings.get(HelperFunctions.MODULE_ID, settingName);
-            setProperty(settingData, nestedKey, updateData);
+            foundry.utils.setProperty(settingData, nestedKey, updateData);
             await game.settings.set(HelperFunctions.MODULE_ID, settingName, settingData);
         } else {
             await game.settings.set(HelperFunctions.MODULE_ID, settingName, updateData);

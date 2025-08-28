@@ -689,6 +689,7 @@ export const slideshowDefaultSettingsData = {
                             isFrameTile: isFrameTile,
                         });
                         await app.renderWithData();
+                        // console.log("JTCS - Art Gallery | Rendering app with new data ", app)
                     },
                 },
                 showUnlinkedTiles: {

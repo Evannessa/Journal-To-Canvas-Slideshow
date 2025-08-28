@@ -23,7 +23,7 @@ export class JTCSSettingsApplication extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["form"],
             width: 600,
             popOut: true,
@@ -266,7 +266,7 @@ export class JTCSSettingsApplication extends FormApplication {
                             "artGallerySettings"
                         );
 
-                        const newScheme = mergeObject(
+                        const newScheme = foundry.utils.mergeObject(
                             currentSettings,
                             colorThemes[theme]
                         );

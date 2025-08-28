@@ -421,9 +421,12 @@ const unlinkedTilesTest = async (context) => {
         // 	await getConfigData()
         // })
         async function getTileListItem(type) {
+            configElement = ui.activeWindow.element
+
             let tileListElement = configElement.find(
                 `.tile-list-item[data-type='${type}']:not(.new-tile-list-item)`
             )[0];
+            console.log({ tileListElement })
             return tileListElement;
         }
         async function createNewTileListItem(type) {
@@ -462,13 +465,14 @@ const unlinkedTilesTest = async (context) => {
             const tileListItem = await getTileListItem(type);
             const btn = tileListItem.querySelector(fullActionString);
             assert.exists(btn);
-            btn.click();
+            await btn.click();
             await quench.utils.pause(900);
             await getConfigData();
             // return await getConfigData();
         }
 
         async function createAndCheckNewLinkedTile(type) {
+
             let tiles;
 
             /**
@@ -484,17 +488,21 @@ const unlinkedTilesTest = async (context) => {
             const actionName = "createNewGalleryTile";
             await clickUnlinkedActionButton(actionName, type);
 
+            await quench.utils.pause(1000);
+
             getTiles();
             expect(tiles).to.have.length.above(length);
 
-            //STUB - get the tile list item element
+            // configApp._render(true)
             let tileListElement = await getTileListItem(type);
             let tileID = tileListElement.dataset.id;
+
             let tileDoc = await getTileObject(tileID);
             let textureProperty = game.version >= 10 ? "texture.src" : "img";
             let tileDocSrc = await getDocData(tileDoc, textureProperty);
-            debugger
+            // debugger
             let tileDocID = tileDoc.id; //await getDocData(tileDoc, "id");
+            // console.log({ tileDocID, tileDocSrc, textureProperty })
 
             //STUB - Test that the Tile ID doesn't contain "unlinked" anymore
             expect(
@@ -628,7 +636,7 @@ const unlinkedTilesTest = async (context) => {
     });
 };
 
-const settingsToggleTest = () => {};
+const settingsToggleTest = () => { };
 
 Hooks.on("quenchReady", async (quench) => {
     quench.registerBatch(

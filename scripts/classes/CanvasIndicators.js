@@ -54,11 +54,12 @@ export class CanvasIndicators {
         return sprite;
     }
     static async createTileIndicator(tileDocument, type = "art") {
+        return
+        //TODO:REMOVE RETURN 
         if (!tileDocument) {
             ui.notifications.warn("Tile document not supplied.");
             return;
         }
-        //add check for if it's v10
         const isV10 = game.version >= 10 ? true : false;
         let tileDimensions = {
             width: isV10 ? tileDocument.width : tileDocument.data.width,
@@ -117,6 +118,7 @@ export class CanvasIndicators {
                 color,
                 game.version
             );
+            console.log({ overlaySprite, overlayContainer })
             tileObject.overlayContainer.addChild(overlaySprite);
         }
         overlayGraphic = new PIXI.Graphics();

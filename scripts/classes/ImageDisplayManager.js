@@ -63,7 +63,7 @@ export class ImageDisplayManager {
             console.error(url, artTile, artTileID)
             return
         }
-        const tex = await loadTexture(url)
+        const tex = await foundry.canvas.loadTexture(url)
 
         if (!tex) {
             ui.notifications.error(
